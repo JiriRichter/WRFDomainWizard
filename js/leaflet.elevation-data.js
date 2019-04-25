@@ -124,8 +124,7 @@ L.GeoJSON.ElevationData = L.GeoJSON.extend({
                     }
                     popupContent += '<tr><td>Filename:</td><td>' + filename + '</td></tr>';
                     popupContent += '</table>' +
-                        //'<a class="btn btn-outline-secondary btn-sm" role="button" href="' + downloadUrl + '" target="_blank">Download</a>' +
-                        '<a class="btn btn-outline-secondary btn-sm" role="button">Download</a>' +
+                        '<a class="btn btn-outline-secondary btn-sm" role="button" href="' + downloadUrl + '" target="_blank">Download</a>' +
                         '</div>';
 
                     layer.bindPopup(popupContent);
