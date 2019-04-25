@@ -1,0 +1,27 @@
+#
+# Region Configuration File
+#
+
+region:
+  name: 'UK12'
+  grib_model: 'GFS025'
+
+domains:
+#domain name is arbitrary but the index must correspond to 
+#domains in namelist.wps starting from 1
+#rasp will throw an exception if index is not starting from 1 and
+#is not consecutive 
+  d01:
+    index: 1
+    time_step: 60
+    local_time:
+      
+      #for better results this should be less then start hour for higher domain
+      start: 5
+      end: 20
+  d02:
+    index: 2
+    time_step: 24
+    local_time:
+      start: 8
+      end: 20
