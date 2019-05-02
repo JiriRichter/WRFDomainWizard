@@ -75,7 +75,7 @@ var WPSNamelist = function (obj) {
 }
 
 WPSNamelist.converFromWRFSIString = function (data) {
-    var ns = Namelist.createFromString(data);
+    var ns = new Namelist(data);
     var wpsNamelist = new WPSNamelist();
 
     wpsNamelist.share.wrf_core = 'AWR';
