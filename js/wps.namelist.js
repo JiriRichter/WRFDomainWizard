@@ -41,13 +41,27 @@ var WPSNamelist = function (obj) {
             this.share.debug_level = ns['share']['debug_level'];
         }
 
-        this.geogrid.parent_id = ns['geogrid']['parent_id'];
-        this.geogrid.parent_grid_ratio = ns['geogrid']['parent_grid_ratio'];
-        this.geogrid.i_parent_start = ns['geogrid']['i_parent_start'];
-        this.geogrid.j_parent_start = ns['geogrid']['j_parent_start'];
-        this.geogrid.e_we = ns['geogrid']['e_we'];
-        this.geogrid.e_sn = ns['geogrid']['e_sn'];
-        this.geogrid.geog_data_res = ns['geogrid']['geog_data_res'];
+        /*
+        1. PARENT_ID :  A list of MAX_DOM integers specifying, for each nest, the domain number of the nest’s parent; for the coarsest domain, this variable should be set to 1. Default value is 1.
+        2. PARENT_GRID_RATIO : A list of MAX_DOM integers specifying, for each nest, the nesting ratio relative to the domain’s parent. No default value.
+        3. I_PARENT_START : A list of MAX_DOM integers specifying, for each nest, the x-coordinate of the lower-left corner of the nest in the parent unstaggered grid. For the coarsest domain, a value of 1 should be specified. No default value.
+        4. J_PARENT_START : A list of MAX_DOM integers specifying, for each nest, the y-coordinate of the lower-left corner of the nest in the parent unstaggered grid. For the coarsest domain, a value of 1 should be specified. No default value.
+        5. S_WE : A list of MAX_DOM integers which should all be set to 1. Default value is 1.
+        6. E_WE : A list of MAX_DOM integers specifying, for each nest, the nest’s full west-east dimension. For nested domains, e_we must be one greater than an integer multiple of the nest's parent_grid_ratio (i.e., e_we = n*parent_grid_ratio+1 for some positive integer n). No default value.
+        7. S_SN : A list of MAX_DOM integers which should all be set to 1. Default value is 1.
+        8. E_SN : A list of MAX_DOM integers specifying, for each nest, the nest’s full south-north dimension. For nested domains, e_sn must be one greater than an integer multiple of the nest's parent_grid_ratio (i.e., e_sn = n*parent_grid_ratio+1 for some positive integer n). No default value.
+        9. GEOG_DATA_RES : A list of MAX_DOM character strings specifying, for each nest, a corresponding resolution or list of resolutions separated by + symbols of source data to be used when interpolating static terrestrial data to the nest’s grid. For each nest, this string should contain a resolution matching a string preceding a colon in a rel_path or abs_path specification (see the description of GEOGRID.TBL options) in the GEOGRID.TBL file for each field. If a resolution in the string does not match any such string in a rel_path or abs_path specification for a field in GEOGRID.TBL, a default resolution of data for that field, if one is specified, will be used. If multiple resolutions match, the first resolution to match a string in a rel_path or abs_path specification in the GEOGRID.TBL file will be used. Default value is 'default'.
+          */
+
+        this.geogrid.parent_id = [].concat(ns['geogrid']['parent_id']);
+        this.geogrid.parent_grid_ratio = [].concat(ns['geogrid']['parent_grid_ratio']);
+        this.geogrid.i_parent_start = [].concat(ns['geogrid']['i_parent_start']);
+        this.geogrid.j_parent_start = [].concat(ns['geogrid']['j_parent_start']);
+        this.geogrid.e_we = [].concat(ns['geogrid']['e_we']);
+        this.geogrid.e_sn = [].concat(ns['geogrid']['e_sn']);
+        this.geogrid.geog_data_res = [].concat(ns['geogrid']['geog_data_res']);
+
+
         this.geogrid.dx = ns['geogrid']['dx'];
         this.geogrid.dy = ns['geogrid']['dy'];
         this.geogrid.map_proj = ns['geogrid']['map_proj'];
