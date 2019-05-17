@@ -14,7 +14,8 @@
 var WRFDomain = L.Layer.extend({
 
     options: {
-
+        'editable': true,
+        'showTooltip': true,
     },
 
     _map: null,
@@ -88,43 +89,47 @@ var WRFDomain = L.Layer.extend({
     onAdd: function (map) {
         this._map = map;
 
-        this._map.on('click', function (e) {
-            if (this._map.getContainer() == e.originalEvent.target && this._selectedGrid) {
-                this._selectedGrid.unselect();
-                this._selectedGrid = null;
-            }
-        }, this);
+        if (this.options['editable']) {
+            this._map.on('click', function (e) {
+                if (this._map.getContainer() == e.originalEvent.target && this._selectedGrid) {
+                    this._selectedGrid.unselect();
+                    this._selectedGrid = null;
+                }
+            }, this);
 
-        this._centerMarker = L.marker([this.ref_lat, this.ref_lon], {
-            draggable: true,
-            title: 'Domain Center',
-        }).addTo(map);
+            this._centerMarker = L.marker([this.ref_lat, this.ref_lon], {
+                draggable: true,
+                title: 'Domain Center',
+            }).addTo(map);
+        }
 
         this._mainGrid.addTo(map);
         this._orderGrids();
 
-        this._centerMarker.on('dragstart', function (event) {
-            this._dragContext = {
-                stand_lon_delta: this.stand_lon - this.ref_lon,
-                truelat1_delta: this.truelat1 - this.ref_lat,
-                truelat2_delta: this.truelat2 - this.ref_lat
-            };
+        if (this.options['editable']) {
+            this._centerMarker.on('dragstart', function (event) {
+                this._dragContext = {
+                    stand_lon_delta: this.stand_lon - this.ref_lon,
+                    truelat1_delta: this.truelat1 - this.ref_lat,
+                    truelat2_delta: this.truelat2 - this.ref_lat
+                };
 
-            this._mainGrid.unbindTooltip();
-            if (this._selectedGrid) {
-                this._selectedGrid.hideGridLines();
-            }
-        }, this);
+                this._mainGrid.unbindTooltip();
+                if (this._selectedGrid) {
+                    this._selectedGrid.hideGridLines();
+                }
+            }, this);
 
-        this._centerMarker.on('drag', this._onCenterMarkerDrag, this);
-        this._centerMarker.on('dragend', function (e) {
-            e.latlng = this._centerMarker.getLatLng();
-            this._onCenterMarkerDrag(e);
-            this._mainGrid.bindTooltip();
-            if (this._selectedGrid) {
-                this._selectedGrid.showGridLines();
-            }
-        }, this);
+            this._centerMarker.on('drag', this._onCenterMarkerDrag, this);
+            this._centerMarker.on('dragend', function (e) {
+                e.latlng = this._centerMarker.getLatLng();
+                this._onCenterMarkerDrag(e);
+                this._mainGrid.bindTooltip();
+                if (this._selectedGrid) {
+                    this._selectedGrid.showGridLines();
+                }
+            }, this);
+        }
     },
 
     onRemove: function (map) {
@@ -145,6 +150,8 @@ var WRFDomain = L.Layer.extend({
 
     initialize: function (wpsNamelist, options) {
 
+        L.Util.setOptions(this, options);
+
         if (wpsNamelist !== undefined) {
             this.map_proj = wpsNamelist.geogrid.map_proj;
             this.truelat1 = wpsNamelist.geogrid.truelat1;
@@ -155,10 +162,11 @@ var WRFDomain = L.Layer.extend({
             this.dx = wpsNamelist.geogrid.dy;
             this.dy = wpsNamelist.geogrid.dy;
 
-            this._mainGrid = new WRFDomainGrid(this, null, 1, wpsNamelist);
+            this._mainGrid = new WRFDomainGrid(this, null, 1, wpsNamelist, {
+                'editable': this.options['editable'],
+                'showTooltip': this.options['showTooltip']
+            });
         }
-
-        L.Util.setOptions(this, options);
     },
 
     getWPSNamelist: function () {

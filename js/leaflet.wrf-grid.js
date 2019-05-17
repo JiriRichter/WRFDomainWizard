@@ -726,7 +726,7 @@ var WRFDomainGrid = L.Polygon.extend({
 
             for (var i = id; i < wpsNamelist.geogrid.parent_id.length; i++) {
                 if (id === wpsNamelist.geogrid.parent_id[i]) {
-                    this.nests.push(new WRFDomainGrid(domain, this, (i + 1), wpsNamelist));
+                    this.nests.push(new WRFDomainGrid(domain, this, (i + 1), wpsNamelist, options));
                 }
             }
         }
@@ -843,7 +843,7 @@ var WRFDomainGrid = L.Polygon.extend({
 
     createNest: function () {
 
-        var nest = new WRFDomainGrid(this.domain, this, this.domain.max_dom + 1);
+        var nest = new WRFDomainGrid(this.domain, this, this.domain.max_dom + 1, this.options);
 
         try {
             nest.parent_grid_ratio = WRFDomainGrid.defaultGridRatio;
