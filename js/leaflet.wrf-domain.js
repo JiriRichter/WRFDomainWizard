@@ -133,8 +133,10 @@ var WRFDomain = L.Layer.extend({
     },
 
     onRemove: function (map) {
-        this._centerMarker.off();
-        this._centerMarker.remove();
+        if (this._centerMarker) {
+            this._centerMarker.off();
+            this._centerMarker.remove();
+        }
         this._mainGrid.remove();
     },
 
