@@ -667,6 +667,15 @@ var WRFDomainGrid = L.Polygon.extend({
         }
     },
 
+    getBounds: function () {
+        if (!this._corners || !this._projection) {
+            this._projection = this._getProjection();
+            this._corners = this._getCorners();
+            this.setLatLngs(this._getPolygonPath());
+        }
+        return L.Polygon.prototype.getBounds.call(this);
+    },
+
     // implements layer onRemove function
     onRemove: function (map) {
 
@@ -843,7 +852,7 @@ var WRFDomainGrid = L.Polygon.extend({
 
     createNest: function () {
 
-        var nest = new WRFDomainGrid(this.domain, this, this.domain.max_dom + 1, this.options);
+        var nest = new WRFDomainGrid(this.domain, this, this.domain.max_dom + 1, null, this.options);
 
         try {
             nest.parent_grid_ratio = WRFDomainGrid.defaultGridRatio;
@@ -862,6 +871,24 @@ var WRFDomainGrid = L.Polygon.extend({
             nest.addTo(this._map);
         }
         return nest;
+    },
+
+    findGrid: function (id) {
+        var grid,
+            i;
+
+        if (this.id == id) {
+            return this;
+        }
+        else if (this.nests && this.nests.length > 0) {
+            for (i = 0; i < this.nests.length; i++) {
+                grid = this.nests[i].findGrid(id);
+                if (grid) {
+                    return grid;
+                }
+            }
+        }
+        return grid;
     }
 })
 

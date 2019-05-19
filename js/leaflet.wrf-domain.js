@@ -73,6 +73,10 @@ var WRFDomain = L.Layer.extend({
         }
     },
 
+    getGrid: function (id) {
+        return this._mainGrid.findGrid(id);
+    },
+
     _dragContext: null,
 
     _onCenterMarkerDrag: function (e) {
@@ -164,10 +168,7 @@ var WRFDomain = L.Layer.extend({
             this.dx = wpsNamelist.geogrid.dy;
             this.dy = wpsNamelist.geogrid.dy;
 
-            this._mainGrid = new WRFDomainGrid(this, null, 1, wpsNamelist, {
-                'editable': this.options['editable'],
-                'showTooltip': this.options['showTooltip']
-            });
+            this._mainGrid = new WRFDomainGrid(this, null, 1, wpsNamelist, this.options);
         }
     },
 

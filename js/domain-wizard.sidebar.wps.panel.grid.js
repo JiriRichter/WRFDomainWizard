@@ -103,12 +103,18 @@ WRFDomainWizard.Sidebar.WPSPanel.Grid = function (container, grid, errorHandler)
     // remove domain button click event handler
     buttonAddNest.on('click', function (e) {
         var nest = null;
-        try {
+        if (location.hostname === 'localhost') {
             nest = grid.createNest();
             nest.gridPanel = WRFDomainWizard.Sidebar.WPSPanel.grid(container, nest, errorHandler);
         }
-        catch (error) {
-            reportError(error);
+        else {
+            try {
+                nest = grid.createNest();
+                nest.gridPanel = WRFDomainWizard.Sidebar.WPSPanel.grid(container, nest, errorHandler);
+            }
+            catch (error) {
+                reportError(error);
+            }
         }
     });
 
