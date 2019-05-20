@@ -725,6 +725,9 @@ var WRFDomainGrid = L.Polygon.extend({
             this.e_we = wpsNamelist.geogrid.e_we[id - 1];
             this.e_sn = wpsNamelist.geogrid.e_sn[id - 1];
             this.geog_data_res = wpsNamelist.geogrid.geog_data_res[id - 1];
+            if (!this.geog_data_res) {
+                this.geog_data_res = 'default';
+            }
 
             if (((this.e_we - 1) % this.parent_grid_ratio) != 0) {
                 throw ("invalid e_we value");

@@ -225,6 +225,9 @@ GeogDataResDialog.Dialog = function () {
 
     this.show = function (geog_data_res, saveHandler) {
         this.saveHandler = saveHandler;
+        if (!geog_data_res) {
+            geog_data_res = 'default';
+        }
         this.geog_data_res = geog_data_res;
         inputGeogDataRes.val(geog_data_res);
         if (json === undefined) {
