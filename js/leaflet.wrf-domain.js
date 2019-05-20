@@ -90,16 +90,18 @@ var WRFDomain = L.Layer.extend({
         this.update();
     },
 
+    _onMapClick: function (e) {
+        if (this._map.getContainer() == e.originalEvent.target && this._selectedGrid) {
+            this._selectedGrid.unselect();
+            this._selectedGrid = null;
+        }
+    },
+
     onAdd: function (map) {
         this._map = map;
 
         if (this.options['editable']) {
-            this._map.on('click', function (e) {
-                if (this._map.getContainer() == e.originalEvent.target && this._selectedGrid) {
-                    this._selectedGrid.unselect();
-                    this._selectedGrid = null;
-                }
-            }, this);
+            this._map.on('click', this._onMapClick, this);
 
             this._centerMarker = L.marker([this.ref_lat, this.ref_lon], {
                 draggable: true,
@@ -141,6 +143,7 @@ var WRFDomain = L.Layer.extend({
             this._centerMarker.off();
             this._centerMarker.remove();
         }
+        this._map.off('click', this._onMapClick, this);
         this._mainGrid.remove();
     },
 
