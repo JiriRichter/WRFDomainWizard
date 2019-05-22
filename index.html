@@ -25,8 +25,9 @@
         <div class="sidebar-tabs">
             <ul role="tablist">
                 <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
-                <li><a href="#elevation-data" role="tab"><i class="fas fa-satellite"></i></a></li>
                 <li><a href="#wps" role="tab"><i class="fas fa-vector-square"></i></a></li>
+                <li><a href="#elevation-data" role="tab"><i class="fas fa-satellite"></i></a></li>
+                <li><a href="#waypoints" role="tab"><i class="fas fa-map-marker-alt"></i></a></li>
             </ul>
 
             <ul role="tablist">
@@ -231,8 +232,15 @@
                 </div>
             </div>
 
-            <div class="sidebar-pane" id="settings">
-                <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            <div class="sidebar-pane" id="waypoints">
+                <h1 class="sidebar-header">Waypoints<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+                <div class="my-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="button-waypoints-remove"><i class="fas fa-trash-alt mr-1"></i>Remove All</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="button-waypoints-add"><i class="fas fa-folder-open mr-1"></i>Add File</button>
+                    <input id="file-waypoints" type="file" style="display: none;" />
+                </div>
+                <div id="waypoints-layers" class="">
+                </div>
             </div>
         </div>
     </div>
@@ -338,6 +346,8 @@
 
     <script src="js/wrf.projection.js"></script>
 
+    <script src="js/leaflet.layer.waypoints.js"></script>
+
     <script src="js/leaflet.elevation-data.js"></script>
     <script src="js/leaflet.elevation-data.srtm-csi.js"></script>
     <script src="js/leaflet.elevation-data.srtm-nasa-v3.js"></script>
@@ -357,6 +367,7 @@
     <script src="js/domain-wizard.sidebar.wps.js"></script>
     <script src="js/domain-wizard.sidebar.wps.panel.js"></script>
     <script src="js/domain-wizard.sidebar.wps.panel.grid.js"></script>
+    <script src="js/domain-wizard.sidebar.waypoints.js"></script>
     <script src="js/domain-wizard.sidebar.settings.js"></script>
     <script src="js/domain-wizard.dialog.message-box.js"></script>
     <script src="js/domain-wizard.dialog.save.js"></script>

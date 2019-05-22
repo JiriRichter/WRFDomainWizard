@@ -11,9 +11,7 @@ var DomainWizardMap = function (options) {
         settings,
         map,
         persistentLayersControl,
-        sidebar,
-        sidebarWPS,
-        sidebarElevationData;
+        sidebar;
 
     // default options
     defaults = /** @dict */ {
@@ -64,15 +62,16 @@ var DomainWizardMap = function (options) {
     $('div.sidebar').show();
 
     // initialize sidebar pane controls
-    sidebarWPS = WRFDomainWizard.sidebar.wps(this.map, sidebar);
-    sidebarWPS = WRFDomainWizard.sidebar.settings(this.map, sidebar);
+    sidebar['wps'] = WRFDomainWizard.sidebar.wps(this.map, sidebar);
+    sidebar['settings'] = WRFDomainWizard.sidebar.settings(this.map, sidebar);
+    sidebar['waypoints'] = WRFDomainWizard.sidebar.waypoints(this.map, sidebar);
 
-    sidebarElevationData = WRFDomainWizard.sidebar.elevationData(this.map, sidebar);
-    sidebarElevationData.addElevationDataOverlay('SRTM-CSI 90m (5x5,TIFF)', L.srtmCSI('TIFF', 5));
-    sidebarElevationData.addElevationDataOverlay('SRTM-CSI 90m (30x30,TIFF)', L.srtmCSI('TIFF', 30));
-    sidebarElevationData.addElevationDataOverlay('SRTM NASA v3, 1 arc second (~30m)', L.srtmNASAV3(1));
-    sidebarElevationData.addElevationDataOverlay('SRTM NASA v3, 3 arc second (~90m)', L.srtmNASAV3(3));
-    sidebarElevationData.addElevationDataOverlay('ALOS World 3D - 30m (AW3D30)', L.alos());
+    sidebar['elevation'] = WRFDomainWizard.sidebar.elevationData(this.map, sidebar);
+    sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (5x5,TIFF)', L.srtmCSI('TIFF', 5));
+    sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (30x30,TIFF)', L.srtmCSI('TIFF', 30));
+    sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 1 arc second (~30m)', L.srtmNASAV3(1));
+    sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 3 arc second (~90m)', L.srtmNASAV3(3));
+    sidebar['elevation'].addElevationDataOverlay('ALOS World 3D - 30m (AW3D30)', L.alos());
 
     //add zoom control
     L.control.zoom({
