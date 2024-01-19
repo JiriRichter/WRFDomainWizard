@@ -1,0 +1,1336 @@
+{
+ "geog": [
+  {
+   "version": "4.0",
+   "categories": [
+    {
+     "name": "HGT_M",
+     "options": [
+      {
+       "id": "gmted2010_30s",
+       "dirname": "topo_gmted2010_30s"
+      },
+      {
+       "id": "gtopo_30s",
+       "dirname": "topo_30s"
+      },
+      {
+       "id": "gtopo_2m",
+       "dirname": "topo_2m"
+      },
+      {
+       "id": "gtopo_5m",
+       "dirname": "topo_5m"
+      },
+      {
+       "id": "gtopo_10m",
+       "dirname": "topo_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "topo_gmted2010_5m"
+      },
+      {
+       "id": "default",
+       "dirname": "topo_gmted2010_30s"
+      }
+     ],
+     "default": "gmted2010_30s"
+    },
+    {
+     "name": "LANDUSEF",
+     "options": [
+      {
+       "id": "nlcd2006_9s",
+       "dirname": "nlcd2006_ll_9s"
+      },
+      {
+       "id": "nlcd2006_30s",
+       "dirname": "nlcd2006_ll_30s"
+      },
+      {
+       "id": "nlcd2011_9s",
+       "dirname": "nlcd2011_ll_9s"
+      },
+      {
+       "id": "nlcd2006",
+       "dirname": "nlcd2006_ll_30s"
+      },
+      {
+       "id": "ssib_10m",
+       "dirname": "ssib_landuse_10m"
+      },
+      {
+       "id": "ssib_5m",
+       "dirname": "ssib_landuse_5m"
+      },
+      {
+       "id": "modis_15s",
+       "dirname": "modis_landuse_20class_15s"
+      },
+      {
+       "id": "modis_30s",
+       "dirname": "modis_landuse_20class_30s"
+      },
+      {
+       "id": "modis_30s_lake",
+       "dirname": "modis_landuse_20class_30s_with_lakes"
+      },
+      {
+       "id": "usgs_30s",
+       "dirname": "landuse_30s"
+      },
+      {
+       "id": "usgs_lakes",
+       "dirname": "landuse_30s_with_lakes"
+      },
+      {
+       "id": "modis_lakes",
+       "dirname": "modis_landuse_21class_30s"
+      },
+      {
+       "id": "usgs_2m",
+       "dirname": "landuse_2m"
+      },
+      {
+       "id": "usgs_5m",
+       "dirname": "landuse_5m"
+      },
+      {
+       "id": "usgs_10m",
+       "dirname": "landuse_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "modis_landuse_20class_5m_with_lakes"
+      },
+      {
+       "id": "default",
+       "dirname": "modis_landuse_20class_30s_with_lakes"
+      }
+     ],
+     "default": "modis_30s_lake"
+    },
+    {
+     "name": "SOILTEMP",
+     "options": [
+      {
+       "id": "lowres",
+       "dirname": "soiltemp_1deg"
+      },
+      {
+       "id": "default",
+       "dirname": "soiltemp_1deg"
+      }
+     ],
+     "default": "lowres"
+    },
+    {
+     "name": "SOILCTOP",
+     "options": [
+      {
+       "id": "bnu_soil_30s",
+       "dirname": "bnu_soiltype_top"
+      },
+      {
+       "id": "30s",
+       "dirname": "soiltype_top_30s"
+      },
+      {
+       "id": "2m",
+       "dirname": "soiltype_top_2m"
+      },
+      {
+       "id": "5m",
+       "dirname": "soiltype_top_5m"
+      },
+      {
+       "id": "10m",
+       "dirname": "soiltype_top_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "soiltype_top_5m"
+      },
+      {
+       "id": "default",
+       "dirname": "soiltype_top_30s"
+      }
+     ],
+     "default": "30s"
+    },
+    {
+     "name": "SOILCBOT",
+     "options": [
+      {
+       "id": "bnu_soil_30s",
+       "dirname": "bnu_soiltype_bot"
+      },
+      {
+       "id": "30s",
+       "dirname": "soiltype_bot_30s"
+      },
+      {
+       "id": "2m",
+       "dirname": "soiltype_bot_2m"
+      },
+      {
+       "id": "5m",
+       "dirname": "soiltype_bot_5m"
+      },
+      {
+       "id": "10m",
+       "dirname": "soiltype_bot_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "soiltype_bot_5m"
+      },
+      {
+       "id": "default",
+       "dirname": "soiltype_bot_30s"
+      }
+     ],
+     "default": "30s"
+    },
+    {
+     "name": "ALBEDO12M",
+     "options": [
+      {
+       "id": "albedo_modis",
+       "dirname": "albedo_modis"
+      },
+      {
+       "id": "albedo_ncep",
+       "dirname": "albedo_ncep"
+      },
+      {
+       "id": "lowres",
+       "dirname": "albedo_modis"
+      },
+      {
+       "id": "default",
+       "dirname": "albedo_modis"
+      }
+     ],
+     "default": "lowres"
+    },
+    {
+     "name": "GREENFRAC",
+     "options": [
+      {
+       "id": "modis_fpar",
+       "dirname": "greenfrac_fpar_modis"
+      },
+      {
+       "id": "nesdis_greenfrac",
+       "dirname": "greenfrac"
+      },
+      {
+       "id": "lowres",
+       "dirname": "greenfrac_fpar_modis_5m"
+      },
+      {
+       "id": "default",
+       "dirname": "greenfrac_fpar_modis"
+      }
+     ],
+     "default": "modis_fpar"
+    },
+    {
+     "name": "LAI12M",
+     "options": [
+      {
+       "id": "modis_lai",
+       "dirname": "lai_modis_30s"
+      },
+      {
+       "id": "lowres",
+       "dirname": "lai_modis_10m"
+      },
+      {
+       "id": "default",
+       "dirname": "lai_modis_10m"
+      }
+     ],
+     "default": "lowres"
+    },
+    {
+     "name": "SNOALB",
+     "options": [
+      {
+       "id": "maxsnowalb_modis",
+       "dirname": "maxsnowalb_modis"
+      },
+      {
+       "id": "maxsnowalb_ncep",
+       "dirname": "maxsnowalb"
+      },
+      {
+       "id": "lowres",
+       "dirname": "maxsnowalb_modis"
+      },
+      {
+       "id": "default",
+       "dirname": "maxsnowalb_modis"
+      }
+     ],
+     "default": "lowres"
+    },
+    {
+     "name": "CON",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "VAR",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OA1",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OA2",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OA3",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OA4",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OL1",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OL2",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OL3",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OL4",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "VAR_SSO",
+     "options": [
+      {
+       "id": "30s",
+       "dirname": "varsso"
+      },
+      {
+       "id": "2m",
+       "dirname": "varsso_2m"
+      },
+      {
+       "id": "5m",
+       "dirname": "varsso_5m"
+      },
+      {
+       "id": "10m",
+       "dirname": "varsso_10m"
+      },
+      {
+       "id": "lowres",
+       "dirname": "varsso_10m"
+      },
+      {
+       "id": "default",
+       "dirname": "varsso_10m"
+      }
+     ],
+     "default": "lowres"
+    },
+    {
+     "name": "LAKE_DEPTH",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "lake_depth"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "URB_PARAM",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "NUDAPT44_1km"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "FRC_URB2D",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "urbfrac_nlcd2011"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "IMPERV",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "nlcd2011_imp_ll_9s"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "CANFRA",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "nlcd2011_can_ll_9s"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "EROD",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "erod"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "CLAYFRAC",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "clayfrac_5m"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "SANDFRAC",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "sandfrac_5m"
+      }
+     ],
+     "default": "default"
+    }
+   ]
+  },
+  {
+   "version": "3.9.1",
+   "categories": [
+    {
+     "name": "HGT_M",
+     "options": [
+      {
+       "id": "gmted2010_30s",
+       "dirname": "topo_gmted2010_30s"
+      },
+      {
+       "id": "gtopo_30s",
+       "dirname": "topo_30s"
+      },
+      {
+       "id": "gtopo_2m",
+       "dirname": "topo_2m"
+      },
+      {
+       "id": "gtopo_5m",
+       "dirname": "topo_5m"
+      },
+      {
+       "id": "gtopo_10m",
+       "dirname": "topo_10m"
+      },
+      {
+       "id": "default",
+       "dirname": "topo_gmted2010_30s"
+      }
+     ],
+     "default": "gmted2010_30s"
+    },
+    {
+     "name": "LANDUSEF",
+     "options": [
+      {
+       "id": "nlcd2006_9s",
+       "dirname": "nlcd2006_ll_9s"
+      },
+      {
+       "id": "nlcd2006_30s",
+       "dirname": "nlcd2006_ll_30s"
+      },
+      {
+       "id": "nlcd2011_9s",
+       "dirname": "nlcd2011_ll_9s"
+      },
+      {
+       "id": "nlcd2006",
+       "dirname": "nlcd2006_ll_30s"
+      },
+      {
+       "id": "ssib_10m",
+       "dirname": "ssib_landuse_10m"
+      },
+      {
+       "id": "ssib_5m",
+       "dirname": "ssib_landuse_5m"
+      },
+      {
+       "id": "modis_15s",
+       "dirname": "modis_landuse_20class_15s"
+      },
+      {
+       "id": "modis_30s",
+       "dirname": "modis_landuse_20class_30s"
+      },
+      {
+       "id": "modis_30s_lake",
+       "dirname": "modis_landuse_20class_30s_with_lakes"
+      },
+      {
+       "id": "usgs_30s",
+       "dirname": "landuse_30s"
+      },
+      {
+       "id": "usgs_lakes",
+       "dirname": "landuse_30s_with_lakes"
+      },
+      {
+       "id": "modis_lakes",
+       "dirname": "modis_landuse_21class_30s"
+      },
+      {
+       "id": "usgs_2m",
+       "dirname": "landuse_2m"
+      },
+      {
+       "id": "usgs_5m",
+       "dirname": "landuse_5m"
+      },
+      {
+       "id": "usgs_10m",
+       "dirname": "landuse_10m"
+      },
+      {
+       "id": "default",
+       "dirname": "modis_landuse_20class_30s_with_lakes"
+      }
+     ],
+     "default": "modis_30s_lake"
+    },
+    {
+     "name": "SOILTEMP",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "soiltemp_1deg"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "SOILCTOP",
+     "options": [
+      {
+       "id": "bnu_soil_30s",
+       "dirname": "bnu_soiltype_top"
+      },
+      {
+       "id": "30s",
+       "dirname": "soiltype_top_30s"
+      },
+      {
+       "id": "2m",
+       "dirname": "soiltype_top_2m"
+      },
+      {
+       "id": "5m",
+       "dirname": "soiltype_top_5m"
+      },
+      {
+       "id": "10m",
+       "dirname": "soiltype_top_10m"
+      },
+      {
+       "id": "default",
+       "dirname": "soiltype_top_30s"
+      }
+     ],
+     "default": "30s"
+    },
+    {
+     "name": "SOILCBOT",
+     "options": [
+      {
+       "id": "bnu_soil_30s",
+       "dirname": "bnu_soiltype_bot"
+      },
+      {
+       "id": "30s",
+       "dirname": "soiltype_bot_30s"
+      },
+      {
+       "id": "2m",
+       "dirname": "soiltype_bot_2m"
+      },
+      {
+       "id": "5m",
+       "dirname": "soiltype_bot_5m"
+      },
+      {
+       "id": "10m",
+       "dirname": "soiltype_bot_10m"
+      },
+      {
+       "id": "default",
+       "dirname": "soiltype_bot_30s"
+      }
+     ],
+     "default": "30s"
+    },
+    {
+     "name": "ALBEDO12M",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "albedo_ncep"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "GREENFRAC",
+     "options": [
+      {
+       "id": "modis_fpar",
+       "dirname": "greenfrac_fpar_modis"
+      },
+      {
+       "id": "nesdis_greenfrac",
+       "dirname": "greenfrac"
+      },
+      {
+       "id": "default",
+       "dirname": "greenfrac_fpar_modis"
+      }
+     ],
+     "default": "modis_fpar"
+    },
+    {
+     "name": "LAI12M",
+     "options": [
+      {
+       "id": "modis_lai",
+       "dirname": "lai_modis_30s"
+      },
+      {
+       "id": "default",
+       "dirname": "lai_modis_10m"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "SNOALB",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "maxsnowalb"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "SLOPECAT",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "islope"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "CON",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "VAR",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OA1",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OA2",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OA3",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OA4",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OL1",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OL2",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OL3",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "OL4",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "10m",
+       "dirname": "orogwd_10m"
+      },
+      {
+       "id": "20m",
+       "dirname": "orogwd_20m"
+      },
+      {
+       "id": "30m",
+       "dirname": "orogwd_30m"
+      },
+      {
+       "id": "1deg",
+       "dirname": "orogwd_1deg"
+      },
+      {
+       "id": "2deg",
+       "dirname": "orogwd_2deg"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "VAR_SSO",
+     "options": [
+      {
+       "id": "30s",
+       "dirname": "varsso"
+      },
+      {
+       "id": "2m",
+       "dirname": "varsso_2m"
+      },
+      {
+       "id": "5m",
+       "dirname": "varsso_5m"
+      },
+      {
+       "id": "10m",
+       "dirname": "varsso_10m"
+      },
+      {
+       "id": "default",
+       "dirname": "varsso_10m"
+      }
+     ],
+     "default": "10m"
+    },
+    {
+     "name": "LAKE_DEPTH",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "lake_depth"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "URB_PARAM",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "NUDAPT44_1km"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "IMPERV",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "nlcd2011_imp_ll_9s"
+      }
+     ],
+     "default": "default"
+    },
+    {
+     "name": "CANFRA",
+     "options": [
+      {
+       "id": "default",
+       "dirname": "nlcd2011_can_ll_9s"
+      }
+     ],
+     "default": "default"
+    }
+   ]
+  }
+ ]
+}
