@@ -1,0 +1,56 @@
+{
+  "name": "wrf-domain-wizard",
+  "version": "2.0.0",
+  "description": "WRF Domain Wizard",
+  "main": "dist/leaflet.wps.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "npm run grunt clean && npm run rollup && npm run uglify && npm run grunt",
+    "rollup": "rollup -c rollup.config.mjs",
+    "grunt": "grunt",
+    "uglify": "uglifyjs build/js/wrf-domain-wizard.js -c -m -o build/js/wrf-domain-wizard.min.js --source-map filename=build/js/wrf-domain-wizard.min.js.map --comments",
+    "serve": "live-server build --open=index.html --verbose",
+    "watch-js": "rollup --config rollup.config.mjs --watch",
+    "watch-less": "npm run grunt watch",
+    "dev": "concurrently \"npm:watch-js\" \"npm:watch-less\" \"npm:serve\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.21.8",
+    "@babel/preset-env": "^7.21.5",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.2",
+    "concurrently": "^8.2.2",
+    "grunt": "^1.6.1",
+    "grunt-contrib-clean": "^2.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^5.0.0",
+    "grunt-contrib-less": "^3.0.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-text-replace": "^0.4.0",
+    "live-server": "^1.1.0",
+    "rollup": "^3.21.7",
+    "uglify-js": "^3.17.4"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "blob-polyfill": "^7.0.20220408",
+    "bootstrap": "^4.6.1",
+    "file-saver": "^2.0.5",
+    "immediate": "^3.3.0",
+    "jquery": "^3.7.1",
+    "leaflet": "^1.9.4",
+    "leaflet-providers": "^2.0.0",
+    "leaflet-sidebar-v2": "^3.2.3",
+    "leaflet-spin": "^1.1.2",
+    "proj4": "^2.9.0",
+    "spin.js": "^4.1.1"
+  }
+}
