@@ -6,14 +6,6 @@ export var ElevationDataSRTMCSI = ElevationData.extend({
 
     downloadBaseUrl: "http://srtm.csi.cgiar.org/wp-content/uploads/files/",
 
-    //jsonBaseUrl: "http://srtm.csi.cgiar.org/wp-content/themes/srtm_theme/json/",
-    jsonBaseUrl: "json/srtm/csi/",
-
-    jsonFileByTileSize: {
-        '5': 'srtm30_5x5.json',
-        '30': 'srtm30_30x30.json',
-    },
-
     downloadFolderByTileSize: {
         '5': 'srtm_5x5',
         '30': 'srtm_30x30',
@@ -35,17 +27,8 @@ export var ElevationDataSRTMCSI = ElevationData.extend({
         return this.downloadBaseUrl + filename;
     },
 
-    initialize: function (type, tileSize, color) {
-        var jsonUrl = this.jsonBaseUrl;
-
+    initialize: function (jsonUrl, type, tileSize, color) {
         type = type.toUpperCase().trim();
-
-        if (this.jsonFileByTileSize[tileSize]) {
-            jsonUrl += this.jsonFileByTileSize[tileSize]
-        }
-        else {
-            throw "Invalid SRTM-CSI tile size";
-        }
 
         if (this.downloadFolderByTileSize[tileSize]) {
             this.downloadBaseUrl += this.downloadFolderByTileSize[tileSize] + '/';
@@ -69,6 +52,6 @@ export var ElevationDataSRTMCSI = ElevationData.extend({
     }
 });
 
-export function elevationDataSRTMCSI (type, tileSize, color) {
-    return new ElevationDataSRTMCSI(type, tileSize, color);
+export function elevationDataSRTMCSI (jsonUrl, type, tileSize, color) {
+    return new ElevationDataSRTMCSI(jsonUrl, type, tileSize, color);
 };

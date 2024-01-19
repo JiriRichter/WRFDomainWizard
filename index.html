@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -10,13 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
-    <link rel="stylesheet" href="lib/bootstrap.min.css" />
-    <link rel="stylesheet" href="lib/leaflet.css" />
-    <link rel="stylesheet" href="lib/all.min.css" />
-    <link rel="stylesheet" href="lib/leaflet-sidebar.min.css" />
-    <link rel="stylesheet" href="css/wrf-domain-wizard.css?{{timestamp}}" />
+    <link rel="stylesheet" href="demo/lib/bootstrap.min.css" />
+    <link rel="stylesheet" href="demo/lib/leaflet.css" />
+    <link rel="stylesheet" href="demo/lib/all.min.css" />
+    <link rel="stylesheet" href="demo/lib/leaflet-sidebar.min.css" />
+    <link rel="stylesheet" href="demo/css/wrf-domain-wizard.css?1705686994956" />
 
-    <link rel="icon" href="img/globe_32x32.png" />
+    <link rel="icon" href="demo/img/globe_32x32.png" />
 </head>
 <body>
 
@@ -332,22 +332,23 @@
     </div>
 
 
-    <script src="lib/jquery.min.js"></script>
-    <script src="lib/bootstrap.bundle.min.js"></script>
+    <script src="demo/lib/jquery.min.js"></script>
+    <script src="demo/lib/bootstrap.bundle.min.js"></script>
     <script src="https://spin.js.org/spin.umd.js"></script>
-    <script src="lib/immediate.min.js"></script>
-    <script src="lib/proj4.js"></script>
-    <script src="lib/leaflet.js"></script>
-    <script src="lib/leaflet.spin.min.js"></script>
-    <script src="lib/leaflet-sidebar.min.js"></script>
-    <script src="lib/leaflet-providers.js"></script>
-    <script src="lib/Blob.js"></script>
-    <script src="lib/FileSaver.min.js"></script>
+    <script src="demo/lib/immediate.min.js"></script>
+    <script src="demo/lib/proj4.js"></script>
+    <script src="demo/lib/leaflet.js"></script>
+    <script src="demo/lib/leaflet.spin.min.js"></script>
+    <script src="demo/lib/leaflet-sidebar.min.js"></script>
+    <script src="demo/lib/leaflet-providers.js"></script>
+    <script src="demo/lib/Blob.js"></script>
+    <script src="demo/lib/FileSaver.min.js"></script>
 
-    <script src="js/wrf-domain-wizard.js"></script>
+    <script src="demo/js/wrf-domain-wizard.js"></script>
     <script>
         var wizard = new WRF.DomainWizard({
-            'div': $('div#map')
+            'div': $('div#map'),
+            'jsonBaseUrl': 'demo/json'
         });
     </script>
 </body>

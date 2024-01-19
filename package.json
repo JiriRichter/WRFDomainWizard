@@ -11,8 +11,8 @@
     "build": "npm run grunt clean && npm run rollup && npm run uglify && npm run grunt",
     "rollup": "rollup -c rollup.config.mjs",
     "grunt": "grunt",
-    "uglify": "uglifyjs build/js/wrf-domain-wizard.js -c -m -o build/js/wrf-domain-wizard.min.js --source-map filename=build/js/wrf-domain-wizard.min.js.map --comments",
-    "serve": "live-server build --open=index.html --verbose",
+    "uglify": "uglifyjs demo/js/wrf-domain-wizard.js -c -m -o demo/js/wrf-domain-wizard.min.js --source-map filename=demo/js/wrf-domain-wizard.min.js.map --comments",
+    "serve": "live-server . --open=index.html --verbose",
     "watch-js": "rollup --config rollup.config.mjs --watch",
     "watch-less": "npm run grunt watch",
     "dev": "concurrently \"npm:watch-js\" \"npm:watch-less\" \"npm:serve\""

@@ -175,6 +175,7 @@ div#geog-data-res-dialog table.geog-categories > tbody > tr:last-child > td:last
 }
 div.leaflet-sidebar {
   z-index: 1000;
+  font-size: 16px;
 }
 div.leaflet-sidebar-pane {
   padding: 10px 10px;

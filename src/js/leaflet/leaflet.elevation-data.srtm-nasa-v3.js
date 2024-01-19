@@ -4,17 +4,14 @@ export var ElevationDataSRTMNASAV3 = ElevationData.extend({
 
     downloadBaseUrl: 'https://e4ftl01.cr.usgs.gov/MEASURES/',
 
-    jsonBaseUrl: "json/srtm/nasa/",
-
     registrationUrl: 'https://urs.earthdata.nasa.gov/',
 
     getDownloadUrl: function (feature, filename) {
         return this.downloadBaseUrl + filename;
     },
 
-    initialize: function (dim, color) {
-        var jsonUrl = this.jsonBaseUrl,
-            folderName;
+    initialize: function (jsonUrl, dim, color) {
+        var folderName;
 
         switch (dim) {
             case 1:
@@ -33,13 +30,12 @@ export var ElevationDataSRTMNASAV3 = ElevationData.extend({
                 throw "Invalid arc second dimension. Allowed values are 1 and 3"
         }
 
-        jsonUrl += folderName + '.json';
         this.downloadBaseUrl = this.downloadBaseUrl + folderName + '/2000.02.11/';
 
         ElevationData.prototype.initialize.call(this, jsonUrl, color);
     }
 });
 
-export function elevationDataSRTMNASAV3(dim, color) {
-    return new ElevationDataSRTMNASAV3(dim, color);
+export function elevationDataSRTMNASAV3(jsonUrl, dim, color) {
+    return new ElevationDataSRTMNASAV3(jsonUrl, dim, color);
 };
