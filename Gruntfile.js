@@ -4,8 +4,10 @@ module.exports = function(grunt) {
 
     timestamp: new Date().getTime(),
 
+    targetFolder: "demo",
+
     clean: [
-      'build'
+      '<%= targetFolder %>'
     ],
 
     copy: {
@@ -16,7 +18,7 @@ module.exports = function(grunt) {
           'img/**',
           'json/**'
         ],
-        dest: 'build/',
+        dest: '<%= targetFolder %>/',
       },
       lib: {
         expand: true,
@@ -64,7 +66,7 @@ module.exports = function(grunt) {
           // https://www.npmjs.com/package/leaflet-providers
           'leaflet-providers/leaflet-providers.js'
         ],
-        dest: 'build/lib',
+        dest: '<%= targetFolder %>/lib',
       },
       images: {
         expand: true,
@@ -75,7 +77,7 @@ module.exports = function(grunt) {
           // https://www.npmjs.com/package/leaflet
           'leaflet/dist/images/*.png',
         ],
-        dest: 'build/lib/images',
+        dest: '<%= targetFolder %>/lib/images',
       },
       webfonts: {
         expand: true,
@@ -85,14 +87,15 @@ module.exports = function(grunt) {
         src: [
           '@fortawesome/fontawesome-free/webfonts/*.*',
         ],
-        dest: 'build/webfonts',
+        dest: '<%= targetFolder %>/webfonts',
       }
     },
 
     replace: {
       html: {
-        src: ['src/*.html'],
-        dest: 'build/',             
+        src: ['src/demo.html'],
+        // index.html must be placed to root folder for GitHub Pages to work
+        dest: './index.html',             
         replacements: [{
           from: '{{timestamp}}',
           to: '<%= timestamp %>'
@@ -105,7 +108,7 @@ module.exports = function(grunt) {
         options: {
         },
         files: {
-          "build/css/wrf-domain-wizard.css": "src/less/wrf-domain-wizard.less"
+          "<%= targetFolder %>/css/wrf-domain-wizard.css": "src/less/wrf-domain-wizard.less"
         }
       }
     },
@@ -114,9 +117,9 @@ module.exports = function(grunt) {
       target: {
         files: [{
           expand: true,
-          cwd: 'build/css',
+          cwd: '<%= targetFolder %>/css',
           src: ['wrf-domain-wizard.css'],
-          dest: 'build/css',
+          dest: '<%= targetFolder %>/css',
           ext: '.min.css'
         }]
       }

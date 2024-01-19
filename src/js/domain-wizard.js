@@ -18,7 +18,8 @@ export class DomainWizard {
 
         // default options
         const defaults = /** @dict */ {
-            div: null
+            div: null,
+            jsonBaseUrl: null
         }
 
         // current settings
@@ -73,11 +74,11 @@ export class DomainWizard {
         sidebar['waypoints'] = sidebarWaypoints(map, sidebar);
 
         sidebar['elevation'] = sidebarElevationData(map, sidebar);
-        sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (5x5,TIFF)', elevationDataSRTMCSI('TIFF', 5));
-        sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (30x30,TIFF)', elevationDataSRTMCSI('TIFF', 30));
-        sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 1 arc second (~30m)', elevationDataSRTMNASAV3(1));
-        sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 3 arc second (~90m)', elevationDataSRTMNASAV3(3));
-        sidebar['elevation'].addElevationDataOverlay('ALOS World 3D - 30m (AW3D30)', elevationDataALOS());
+        sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (5x5,TIFF)', elevationDataSRTMCSI(`${settings.jsonBaseUrl}/srtm/csi/srtm30_5x5.json`, 'TIFF', 5));
+        sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (30x30,TIFF)', elevationDataSRTMCSI(`${settings.jsonBaseUrl}/srtm/csi/srtm30_30x30.json`, 'TIFF', 30));
+        sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 1 arc second (~30m)', elevationDataSRTMNASAV3(`${settings.jsonBaseUrl}/srtm/nasa/SRTMGL1.003.json`, 1));
+        sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 3 arc second (~90m)', elevationDataSRTMNASAV3(`${settings.jsonBaseUrl}/srtm/nasa/SRTMGL3.003.json`, 3));
+        sidebar['elevation'].addElevationDataOverlay('ALOS World 3D - 30m (AW3D30)', elevationDataALOS(`${settings.jsonBaseUrl}/srtm/alos/AW3D30.json`));
 
         //add zoom control
         L.control.zoom({

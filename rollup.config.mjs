@@ -8,7 +8,7 @@ export default {
     input: 'src/js/index.js',
     output: [
         {
-            file: "build/js/wrf-domain-wizard.js",
+            file: "demo/js/wrf-domain-wizard.js",
             format: 'umd',
             name: 'WRF',
             sourcemap: true,

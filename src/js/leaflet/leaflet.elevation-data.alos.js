@@ -8,8 +8,6 @@ export var ElevationDataALOS = ElevationData.extend({
 
     registrationUrl: 'https://www.eorc.jaxa.jp/ALOS/en/aw3d30/registration.htm',
 
-    jsonUrl: "json/srtm/alos/AW3D30.json",
-
     getFeatureFilename: function (feature) {
         return feature.properties.filename;
     },
@@ -18,16 +16,16 @@ export var ElevationDataALOS = ElevationData.extend({
         return this.downloadBaseUrl + feature.properties.path + '/' + filename;
     },
 
-    initialize: function (color) {
+    initialize: function (jsonUrl, color) {
 
         L.setOptions(this, {
             'attribution': this.attribution
         })
 
-        ElevationData.prototype.initialize.call(this, this.jsonUrl, color);
+        ElevationData.prototype.initialize.call(this, jsonUrl, color);
     }
 });
 
-export function elevationDataALOS(color) {
-    return new ElevationDataALOS(color);
+export function elevationDataALOS(jsonUrl, color) {
+    return new ElevationDataALOS(jsonUrl, color);
 };

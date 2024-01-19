@@ -10789,33 +10789,26 @@
     attribution: 'Provided by Japan Aerospace Exploration Agency (JAXA), product <a href="https://www.eorc.jaxa.jp/ALOS/en/aw3d30/" target="_blank">aw3d30</a>.',
     downloadBaseUrl: "ftp://ftp.eorc.jaxa.jp/",
     registrationUrl: 'https://www.eorc.jaxa.jp/ALOS/en/aw3d30/registration.htm',
-    jsonUrl: "json/srtm/alos/AW3D30.json",
     getFeatureFilename: function getFeatureFilename(feature) {
       return feature.properties.filename;
     },
     getDownloadUrl: function getDownloadUrl(feature, filename) {
       return this.downloadBaseUrl + feature.properties.path + '/' + filename;
     },
-    initialize: function initialize(color) {
+    initialize: function initialize(jsonUrl, color) {
       L.setOptions(this, {
         'attribution': this.attribution
       });
-      ElevationData.prototype.initialize.call(this, this.jsonUrl, color);
+      ElevationData.prototype.initialize.call(this, jsonUrl, color);
     }
   });
-  function elevationDataALOS(color) {
-    return new ElevationDataALOS(color);
+  function elevationDataALOS(jsonUrl, color) {
+    return new ElevationDataALOS(jsonUrl, color);
   }
 
   var ElevationDataSRTMCSI = ElevationData.extend({
     attribution: 'Jarvis A., H.I. Reuter, A. Nelson, E. Guevara, 2008, Hole-filled seamless SRTM data V4, International Centre for Tropical Agriculture (CIAT), available from <a href="http://srtm.csi.cgiar.org" target="_blank">http://srtm.csi.cgiar.org</a>.',
     downloadBaseUrl: "http://srtm.csi.cgiar.org/wp-content/uploads/files/",
-    //jsonBaseUrl: "http://srtm.csi.cgiar.org/wp-content/themes/srtm_theme/json/",
-    jsonBaseUrl: "json/srtm/csi/",
-    jsonFileByTileSize: {
-      '5': 'srtm30_5x5.json',
-      '30': 'srtm30_30x30.json'
-    },
     downloadFolderByTileSize: {
       '5': 'srtm_5x5',
       '30': 'srtm_30x30'
@@ -10833,14 +10826,8 @@
     getDownloadUrl: function getDownloadUrl(feature, filename) {
       return this.downloadBaseUrl + filename;
     },
-    initialize: function initialize(type, tileSize, color) {
-      var jsonUrl = this.jsonBaseUrl;
+    initialize: function initialize(jsonUrl, type, tileSize, color) {
       type = type.toUpperCase().trim();
-      if (this.jsonFileByTileSize[tileSize]) {
-        jsonUrl += this.jsonFileByTileSize[tileSize];
-      } else {
-        throw "Invalid SRTM-CSI tile size";
-      }
       if (this.downloadFolderByTileSize[tileSize]) {
         this.downloadBaseUrl += this.downloadFolderByTileSize[tileSize] + '/';
       } else {
@@ -10857,20 +10844,18 @@
       ElevationData.prototype.initialize.call(this, jsonUrl, color);
     }
   });
-  function elevationDataSRTMCSI(type, tileSize, color) {
-    return new ElevationDataSRTMCSI(type, tileSize, color);
+  function elevationDataSRTMCSI(jsonUrl, type, tileSize, color) {
+    return new ElevationDataSRTMCSI(jsonUrl, type, tileSize, color);
   }
 
   var ElevationDataSRTMNASAV3 = ElevationData.extend({
     downloadBaseUrl: 'https://e4ftl01.cr.usgs.gov/MEASURES/',
-    jsonBaseUrl: "json/srtm/nasa/",
     registrationUrl: 'https://urs.earthdata.nasa.gov/',
     getDownloadUrl: function getDownloadUrl(feature, filename) {
       return this.downloadBaseUrl + filename;
     },
-    initialize: function initialize(dim, color) {
-      var jsonUrl = this.jsonBaseUrl,
-        folderName;
+    initialize: function initialize(jsonUrl, dim, color) {
+      var folderName;
       switch (dim) {
         case 1:
           folderName = 'SRTMGL1.003';
@@ -10887,13 +10872,12 @@
         default:
           throw "Invalid arc second dimension. Allowed values are 1 and 3";
       }
-      jsonUrl += folderName + '.json';
       this.downloadBaseUrl = this.downloadBaseUrl + folderName + '/2000.02.11/';
       ElevationData.prototype.initialize.call(this, jsonUrl, color);
     }
   });
-  function elevationDataSRTMNASAV3(dim, color) {
-    return new ElevationDataSRTMNASAV3(dim, color);
+  function elevationDataSRTMNASAV3(jsonUrl, dim, color) {
+    return new ElevationDataSRTMNASAV3(jsonUrl, dim, color);
   }
 
   var MouseCoordinates = L.Control.extend({
@@ -10943,7 +10927,8 @@
     _classCallCheck(this, DomainWizard);
     // default options
     var defaults = /** @dict */{
-      div: null
+      div: null,
+      jsonBaseUrl: null
     };
 
     // current settings
@@ -10989,11 +10974,11 @@
     sidebar['settings'] = sidebarSettings(map, sidebar);
     sidebar['waypoints'] = sidebarWaypoints(map, sidebar);
     sidebar['elevation'] = sidebarElevationData(map, sidebar);
-    sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (5x5,TIFF)', elevationDataSRTMCSI('TIFF', 5));
-    sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (30x30,TIFF)', elevationDataSRTMCSI('TIFF', 30));
-    sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 1 arc second (~30m)', elevationDataSRTMNASAV3(1));
-    sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 3 arc second (~90m)', elevationDataSRTMNASAV3(3));
-    sidebar['elevation'].addElevationDataOverlay('ALOS World 3D - 30m (AW3D30)', elevationDataALOS());
+    sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (5x5,TIFF)', elevationDataSRTMCSI("".concat(settings.jsonBaseUrl, "/srtm/csi/srtm30_5x5.json"), 'TIFF', 5));
+    sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (30x30,TIFF)', elevationDataSRTMCSI("".concat(settings.jsonBaseUrl, "/srtm/csi/srtm30_30x30.json"), 'TIFF', 30));
+    sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 1 arc second (~30m)', elevationDataSRTMNASAV3("".concat(settings.jsonBaseUrl, "/srtm/nasa/SRTMGL1.003.json"), 1));
+    sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 3 arc second (~90m)', elevationDataSRTMNASAV3("".concat(settings.jsonBaseUrl, "/srtm/nasa/SRTMGL3.003.json"), 3));
+    sidebar['elevation'].addElevationDataOverlay('ALOS World 3D - 30m (AW3D30)', elevationDataALOS("".concat(settings.jsonBaseUrl, "/srtm/alos/AW3D30.json")));
 
     //add zoom control
     L.control.zoom({
