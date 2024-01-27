@@ -1,0 +1,13 @@
+ &lapsparms_nl
+
+ c6_maproj='plrstr',
+ standard_latitude=46.4488,
+ standard_latitude2=90.0,
+ standard_longitude=-121.3392,
+ grid_cen_lat=46.4488,
+ grid_cen_lon=-121.3392,
+ grid_spacing_m=1833,
+ NX_L=30,
+ NY_L=45,
+
+ /

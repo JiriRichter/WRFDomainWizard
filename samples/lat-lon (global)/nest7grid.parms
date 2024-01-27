@@ -1,0 +1,4 @@
+ &lapsparms_nl
+
+Unable to create nest7grid.parms file
+Only Lambert, Mercator, Rotated Lat Lon (NMM), and Polar Stereographic projects are allowed.

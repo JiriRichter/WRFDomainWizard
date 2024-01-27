@@ -1,0 +1,77 @@
+&share
+ wrf_core = 'ARW',
+ max_dom = 1,
+ start_date = '2024-01-26_00:00:00', 
+ end_date   = '2024-01-26_12:00:00', 
+ interval_seconds = 21600,
+ io_form_geogrid = 2,
+ opt_output_from_geogrid_path = '/home/jiri/wrf/output/lat-lon/',
+ debug_level = 0,
+/
+
+&geogrid
+ parent_id         = 1,
+ parent_grid_ratio = 1,
+ i_parent_start    = 1,
+ j_parent_start    = 1,
+ e_we          = 136,
+ e_sn          = 68,
+ geog_data_res = '10m',
+ map_proj =  'lat-lon',
+ pole_lat  = 90,
+ pole_lon  = 0,
+ stand_lon = 180,
+ geog_data_path = '/home/jiri/wrf',
+ opt_geogrid_tbl_path = '/home/jiri/wrf/output/lat-lon/',
+ ref_x = 68.0,
+ ref_y = 34.0,
+/
+
+&ungrib
+ out_format = 'WPS',
+ prefix = 'FILE',
+/
+
+&metgrid
+ fg_name = 'FILE',
+ io_form_metgrid = 2,
+ opt_output_from_metgrid_path = '/home/jiri/wrf/output/lat-lon/',
+ opt_metgrid_tbl_path = '/home/jiri/wrf/output/lat-lon/',
+/
+
+&mod_levs
+ press_pa = 201300 , 200100 , 100000 ,
+             95000 ,  90000 ,
+             85000 ,  80000 ,
+             75000 ,  70000 ,
+             65000 ,  60000 ,
+             55000 ,  50000 ,
+             45000 ,  40000 ,
+             35000 ,  30000 ,
+             25000 ,  20000 ,
+             15000 ,  10000 ,
+              5000 ,   1000
+ /
+
+
+&domain_wizard
+ grib_data_path = 'null',
+ grib_vtable = 'Vtable.GFS',
+ dwiz_name    =lat-lon
+ dwiz_desc    =
+ dwiz_user_rect_x1 =138
+ dwiz_user_rect_y1 =92
+ dwiz_user_rect_x2 =649
+ dwiz_user_rect_y2 =534
+ dwiz_show_political =true
+ dwiz_center_over_gmt =true
+ dwiz_latlon_space_in_deg =10
+ dwiz_latlon_linecolor =-8355712
+ dwiz_map_scale_pct =12.5
+ dwiz_map_vert_scrollbar_pos =0
+ dwiz_map_horiz_scrollbar_pos =0
+ dwiz_gridpt_dist_km =294.3
+ dwiz_mpi_command =null
+ dwiz_tcvitals =null
+ dwiz_bigmap =Y
+/
