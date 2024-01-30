@@ -5,7 +5,7 @@
  end_date   = '2024-01-26_12:00:00', '2024-01-26_12:00:00', 
  interval_seconds = 21600,
  io_form_geogrid = 2,
- opt_output_from_geogrid_path = '/home/jiri/wrf/output/lat-lon/',
+ opt_output_from_geogrid_path = 'output',
  debug_level = 0,
 /
 
@@ -25,8 +25,8 @@
  truelat1  = 43.96,
  truelat2  = 43.96,
  stand_lon = -117.606,
- geog_data_path = '/home/jiri/wrf',
- opt_geogrid_tbl_path = '/home/jiri/wrf/output/lat-lon/',
+ geog_data_path = 'datasets/geog',
+ opt_geogrid_tbl_path = 'geogrid',
  ref_x = 50.0,
  ref_y = 42.0,
 /
@@ -39,8 +39,8 @@
 &metgrid
  fg_name = 'FILE',
  io_form_metgrid = 2,
- opt_output_from_metgrid_path = '/home/jiri/wrf/output/lat-lon/',
- opt_metgrid_tbl_path = '/home/jiri/wrf/output/lat-lon/',
+ opt_output_from_metgrid_path = 'output',
+ opt_metgrid_tbl_path = 'metgrid',
 /
 
 &mod_levs
