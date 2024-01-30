@@ -3,19 +3,17 @@
   "version": "2.0.0",
   "description": "WRF Domain Wizard",
   "main": "dist/leaflet.wps.js",
-  "files": [
-    "dist",
-    "src"
-  ],
+  "type": "module",
   "scripts": {
     "build": "npm run grunt clean && npm run rollup && npm run uglify && npm run grunt",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "rollup": "rollup -c rollup.config.mjs",
     "grunt": "grunt",
     "uglify": "uglifyjs demo/js/wrf-domain-wizard.js -c -m -o demo/js/wrf-domain-wizard.min.js --source-map filename=demo/js/wrf-domain-wizard.min.js.map --comments",
-    "serve": "live-server . --open=index.html --verbose",
+    "serve": "live-server . --open=index.html --verbose --watch=demo,index.html --wait=1000",
     "watch-js": "rollup --config rollup.config.mjs --watch",
     "watch-less": "npm run grunt watch",
-    "dev": "concurrently \"npm:watch-js\" \"npm:watch-less\" \"npm:serve\""
+    "dev": "npm run build && concurrently \"npm:watch-js\" \"npm:watch-less\" \"npm:serve\""
   },
   "keywords": [],
   "author": "",
@@ -35,6 +33,7 @@
     "grunt-contrib-less": "^3.0.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-text-replace": "^0.4.0",
+    "jest": "^29.7.0",
     "live-server": "^1.1.0",
     "rollup": "^3.21.7",
     "uglify-js": "^3.17.4"
@@ -51,6 +50,7 @@
     "leaflet-sidebar-v2": "^3.2.3",
     "leaflet-spin": "^1.1.2",
     "proj4": "^2.9.0",
+    "save-dev": "^0.0.1-security",
     "spin.js": "^4.1.1"
   }
 }
