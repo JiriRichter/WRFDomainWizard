@@ -1,3 +1,5 @@
+import { errorMessageBox } from "./domain-wizard.dialog.message-box";
+
 export var SidebarWaypoints = function (map, sidebar) {
 
     var container,
@@ -19,7 +21,7 @@ export var SidebarWaypoints = function (map, sidebar) {
             checkboxHtml;
 
         if (layers[filename] !== undefined) {
-            MessageBoxDialog.error('File Open Error', 'File name ' + filename + ' already loaded');
+            errorMessageBox('File Open Error', 'File name ' + filename + ' already loaded');
             return;
         }
 
@@ -30,7 +32,7 @@ export var SidebarWaypoints = function (map, sidebar) {
             map.fitBounds(layers[filename].getBounds());
         }
         catch (e) {
-            MessageBoxDialog.error('File Open Error', 'Unable to parse file ' + filename + ': ' + e);
+            errorMessageBox('File Open Error', 'Unable to parse file ' + filename + ': ' + e);
             return;
         }
 
@@ -53,11 +55,11 @@ export var SidebarWaypoints = function (map, sidebar) {
         });
     }
 
-    buttonAdd.click(function (e) {
+    buttonAdd.on('click', function (e) {
         inputFile.click();
     });
 
-    buttonRemoveAll.click(function (e) {
+    buttonRemoveAll.on('click', function (e) {
         object.keys(layers).forEach(function (filename) {
             layers[filename].remove();
         });
@@ -75,7 +77,7 @@ export var SidebarWaypoints = function (map, sidebar) {
         if (!e.target.files[0].name.endsWith('.wpt') &&
             !e.target.files[0].name.endsWith('.cup') &&
             !e.target.files[0].name.endsWith('.gpx')) {
-            MessageBoxDialog.error('File Open Error', 'Only files with extensions .wpt, .cup and .gpx are allowed!');
+                errorMessageBox('File Open Error', 'Only files with extensions .wpt, .cup and .gpx are allowed!');
             return;
         }
 
@@ -83,13 +85,13 @@ export var SidebarWaypoints = function (map, sidebar) {
         filename = e.target.files[0].name;
 
         reader.onerror = function (e) {
-            MessageBoxDialog.error('File Open Error', 'Unable to read file!');
+            errorMessageBox('File Open Error', 'Unable to read file!');
         }
 
         reader.onload = function (e) {
             addWaypoints(filename, e.target.result);
         };
-        reader.readAsText(event.target.files[0]);
+        reader.readAsText(e.target.files[0]);
         inputFile.val(null);
     });
 

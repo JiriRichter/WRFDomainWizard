@@ -41,14 +41,17 @@
             <div class="leaflet-sidebar-content">
                 <div class="leaflet-sidebar-pane" id="home">
                     <h1 class="leaflet-sidebar-header">
-                        WRF Domain Wizard
+                        About
                         <div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div>
                     </h1>
                     <p>
-                        This page is HTML/JavaScript implementation of the <a href="https://esrl.noaa.gov/gsd/wrfportal/DomainWizard.html">WRF Preprocessing System (WPS)</a> for creating and editing namelist.wps files.
+                        WRF Domain Wizard is a single-page application to simplify creation, visualization and modification of <a href="https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html#" target="_blank">WRF Preprocessing System (WPS)</a> namelist.wps input file.
                     </p>
                     <p>
                         <a href="https://github.com/JiriRichter/WRFDomainWizard"><i class="fab fa-github mr-1"></i>Project Home</a>
+                    </p>
+                    <p>
+                        <a href="https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html#wps-namelist-variables">WPS Namelist Variables</a>
                     </p>
                 </div>
         
@@ -83,8 +86,10 @@
                                     <span class="input-group-text all-domains" title="Projection of the simulation domain">map_proj</span>
                                 </div>
                                 <select name="map_proj" class="form-control" aria-describedby="basic-addon1">
-                                    <option value="lambert">lambert</option>
-                                    <option value="mercator">mercator</option>
+                                    <option value="lambert" data-title="The Lambert conformal projection is well-suited for mid-latitude domains">lambert</option>
+                                    <option value="mercator" data-title="The Mercator projection is good for low-latitude domains or domains with predominantly west-east extent">mercator</option>
+                                    <option value="polar" data-title="The polar stereographic projection is best suited for high-latitude WRF domains">polar</option>
+                                    <option value="lat-lon" data-title="The cylindrical equidistant projection is required for global simulations, although in its rotated aspect (i.e., when pole_lat, pole_lon, and stand_lon are changed from their default values) it can also be well-suited for regional domains anywhere on the earth's surface">lat-lon</option>
                                 </select>
                             </div>
                             <div class="input-group input-group-sm">
@@ -123,8 +128,17 @@
                             </div>
                             <div class="input-group input-group-sm">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" title="A real value specifying the grid distance in the x-direction where the map scale factor is 1. For ARW, the grid distance is in meters for the 'polar', 'lambert', and 'mercator' projection.">dx</span>
-                                    <span class="input-group-text" title="A real value specifying the nominal grid distance in the y-direction where the map scale factor is 1. For ARW, the grid distance is in meters for the 'polar', 'lambert', and 'mercator' projection, and in degrees latitude for the 'lat-lon' projection; for NMM, the grid distance is in degrees latitude. Grid distances for nests are determined recursively based on values specified for parent_grid_ratio and parent_id.">dy</span>
+                                    <span class="input-group-text all-domains-2" title="For the latitude-longitude projection for ARW, the latitude of the North Pole with respect to the computational latitude-longitude grid in which -90.0 degrees latitude is at the bottom of a global domain, 90.0 degrees latitude is at the top, and 180.0 degrees longitude is at the center.">pole_lat</span>
+                                    <span class="input-group-text all-domains-2" title="For the latitude-longitude projection for ARW, the longitude of the North Pole with respect to the computational lat/lon grid in which -90.0 degrees latitude is at the bottom of a global domain, 90.0 degrees latitude is at the top, and 180.0 degrees longitude is at the center.">pole_lon</span>
+                                </div>
+                                <input name="pole_lat" type="number" class="form-control" aria-describedby="basic-addon1" min="-180" max="180" step="0.001" value="90">
+                                <input name="pole_lon" type="number" class="form-control" aria-describedby="basic-addon1" min="-180" max="180" step="0.001" value="0">
+                                <div class="invalid-feedback">Select value between -180 and 180</div>
+                            </div>
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" title="A real value specifying the grid distance in the x-direction where the map scale factor is 1. For ARW, the grid distance is in meters for the 'polar', 'lambert', and 'mercator' projection, and in degrees longitude for the 'lat-lon' projection; for NMM, the grid distance is in degrees longitude.">dx</span>
+                                    <span class="input-group-text" title="A real value specifying the nominal grid distance in the y-direction where the map scale factor is 1. For ARW, the grid distance is in meters for the 'polar', 'lambert', and 'mercator' projection, and in degrees latitude for the 'lat-lon' projection; for NMM, the grid distance is in degrees latitude.">dy</span>
                                 </div>
                                 <input name="dx" type="number" class="form-control" aria-describedby="basic-addon1" required min="100">
                                 <input name="dy" type="number" class="form-control" aria-describedby="basic-addon1" required min="100">
@@ -168,7 +182,7 @@
                                     </div>
                                     <div class="input-group input-group-sm">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" style="width: 139px" title="The nesting ratio relative to the domain’s parent">parent_grid_ratio</span>
+                                            <span class="input-group-text" style="width: 139px" title="The nesting ratio relative to the domain's parent">parent_grid_ratio</span>
                                         </div>
                                         <input name="parent_grid_ratio" type="number" class="form-control" required min="1" max="10" />
                                         <div data-val-for="parent_grid_ratio" class="invalid-feedback">Select value between 1 and 10</div>
@@ -195,7 +209,7 @@
                                     </div>
                                     <div class="input-group input-group-sm">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1" style="width: 139px" title="A corresponding resolution or list of resolutions separated by + symbols of source data to be used when interpolating static terrestrial data to the nest’s grid.">geog_data_res</span>
+                                            <span class="input-group-text" id="basic-addon1" style="width: 139px" title="A corresponding resolution or list of resolutions separated by + symbols of source data to be used when interpolating static terrestrial data to the nest's grid.">geog_data_res</span>
                                         </div>
                                         <span class="d-inline-block form-control" data-name="geog_data_res"></span>
                                         <div class="input-group-append">

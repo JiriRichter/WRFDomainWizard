@@ -1,12 +1,48 @@
 import { SidebarWPSPanelGrid } from "./domain-wizard.sidebar.wps.panel.grid";
 import { WRFDomain } from "./leaflet/leaflet.wrf-domain";
 import { WRFDomainGrid } from "./leaflet/leaflet.wrf-grid";
+import { errorMessageBox } from "./domain-wizard.dialog.message-box";
 
 export class SidebarWPSPanel {
-    constructor(container) {
+    constructor(container, options) {
 
         // controls
-        var self = this, initializedForDomain = false, domain, form, containerGrids, headerGrids, buttonUpdate, buttonStanLonMinus, buttonStanLonPlus, buttonRatioDivide2, buttonRatioDivide3, buttonRatioMultiply2, buttonRatioMultiply3, buttonAddMOAD, buttonRemoveMOAD, selectMapProj, inputRefLat, inputRefLon, inputTrueLat1, inputTrueLat2, inputStandLon, inputDX, inputDY, localStorageKey = 'wrf_domain_wizard_wps_panel';
+        var self = this, 
+            initializedForDomain = false,
+            domain,
+            form,
+            containerGrids,
+            headerGrids,
+            buttonUpdate,
+            buttonStanLonMinus,
+            buttonStanLonPlus,
+            buttonRatioDivide2,
+            buttonRatioDivide3,
+            buttonRatioMultiply2,
+            buttonRatioMultiply3,
+            buttonAddMOAD,
+            buttonRemoveMOAD,
+            selectMapProj,
+            inputRefLat,
+            inputRefLon,
+            inputTrueLat1,
+            inputTrueLat2,
+            inputStandLon,
+            inputDX,
+            inputDY,
+            inputPoleLat,
+            inputPoleLon,
+            localStorageKey = 'wrf_domain_wizard_wps_panel';
+
+        // defaul settings
+        this.options = {
+            minGridDistanceMeters: 100,
+            minGridDistanceDegrees: 0
+        };
+
+        if (options) {
+            this.options = Object.assign(this.options, options);
+        }            
 
         form = $('form', container);
         containerGrids = $('#grids', form);
@@ -24,6 +60,8 @@ export class SidebarWPSPanel {
         inputStandLon = $('input[name="stand_lon"]', form);
         inputDX = $('input[name="dx"]', form);
         inputDY = $('input[name="dy"]', form);
+        inputPoleLat = $('input[name="pole_lat"]', form);
+        inputPoleLon = $('input[name="pole_lon"]', form);
 
         buttonStanLonMinus = $('#stan-lon-minus', form);
         buttonStanLonPlus = $('#stan-lon-plus', form);
@@ -45,7 +83,7 @@ export class SidebarWPSPanel {
         $('[title]', form).tooltip();
 
         // hide tooltip when button is clicked
-        $('button[title]', form).click(function () {
+        $('button[title]', form).on('click', function (e) {
             $(this).tooltip('hide');
         });
 
@@ -64,6 +102,8 @@ export class SidebarWPSPanel {
             domain.stand_lon = parseFloat(inputStandLon.val());
             domain.dx = parseInt(inputDX.val(), 10);
             domain.dy = parseInt(inputDY.val(), 10);
+            domain.pole_lat = parseFloat(inputPoleLat.val());
+            domain.pole_lon = parseFloat(inputPoleLon.val());
             domain.grid.gridPanel.setGridValues();
 
             domain.update();
@@ -107,6 +147,10 @@ export class SidebarWPSPanel {
         // function enables, disables and sets default values for fields
         // for selected projection
         function configFieldsForProjection() {
+
+            // hide pole_lat and pole_lon
+            inputPoleLat.parent().hide();
+
             switch (selectMapProj.val()) {
                 case 'lambert':
                     inputTrueLat2.val(domain.truelat2.toFixed(3));
@@ -115,6 +159,8 @@ export class SidebarWPSPanel {
                     inputStandLon.prop('disabled', false);
                     buttonStanLonPlus.prop('disabled', false);
                     buttonStanLonMinus.prop('disabled', false);
+                    inputDX.attr('min', self.options.minGridDistanceMeters);
+                    inputDY.attr('min', self.options.minGridDistanceMeters);
                     break;
                 case 'mercator':
                     inputTrueLat2.val('0');
@@ -123,16 +169,34 @@ export class SidebarWPSPanel {
                     inputStandLon.prop('disabled', true);
                     buttonStanLonPlus.prop('disabled', true);
                     buttonStanLonMinus.prop('disabled', true);
+                    inputDX.attr('min', self.options.minGridDistanceMeters);
+                    inputDY.attr('min', self.options.minGridDistanceMeters);
                     break;
                 case 'polar':
                     inputTrueLat2.val((domain.truelat1 < 0) ? '-90' : '90');
                     inputTrueLat2.prop('disabled', true);
+                    inputDX.attr('min', self.options.minGridDistanceMeters);
+                    inputDY.attr('min', self.options.minGridDistanceMeters);
                     break;
                 case 'lat-lon':
                     inputTrueLat2.val(domain.ref_lat.toFixed(3));
                     inputTrueLat2.prop('disabled', false);
+                    // hide pole_lat and pole_lon
+                    inputPoleLat.parent().show();
+
+                    // dx, dy in degrees so min should be 0
+                    inputDX.attr('min', self.options.minGridDistanceDegrees);
+                    inputDY.attr('min', self.options.minGridDistanceDegrees);
+
                     break;
             }
+        }
+
+        function updateSelectMapProjTitle() {
+            const title = selectMapProj.find('option:selected').data('title');
+            selectMapProj.attr('title', title);
+            selectMapProj.tooltip('dispose');
+            selectMapProj.tooltip();
         }
 
         // map projection dropdown change
@@ -141,7 +205,11 @@ export class SidebarWPSPanel {
                 configFieldsForProjection();
                 setGridValues();
             }
+            updateSelectMapProjTitle();
         });
+
+        // initialize map_proj select tooltip
+        updateSelectMapProjTitle();
 
         // stan_lon buttons
         // rotate domain clockwise or counter-clockwise by 5 degrees
@@ -274,6 +342,17 @@ export class SidebarWPSPanel {
             modifyDxDy(MulDivOp.MUL, 3);
         });
 
+        function setFieldValue(input, value, decimals) {
+
+            decimals = decimals || 3;
+
+            if (value) {
+                input.val(value.toFixed(3));
+            } else {
+                input.val(null);
+            }
+        }
+
         function setFieldValues() {
             // place domains info to floating panel
             selectMapProj.val(domain.map_proj);
@@ -285,6 +364,9 @@ export class SidebarWPSPanel {
             inputStandLon.val(domain.stand_lon.toFixed(3));
             inputDX.val(Math.trunc(domain.dx).toString());
             inputDY.val(Math.trunc(domain.dy).toString());
+
+            setFieldValue(inputPoleLat, domain.pole_lat);
+            setFieldValue(inputPoleLon, domain.pole_lon);
         }
 
         function setButtonRemoveMOADEnabled() {
@@ -293,7 +375,7 @@ export class SidebarWPSPanel {
 
         function initGridPanels() {
             domain.grid.gridPanel = new SidebarWPSPanelGrid(containerGrids, domain.grid, function (e) {
-                MessageBoxDialog.error('Error', e.error);
+                errorMessageBox('Error', e.error);
             });
 
             domain.grid.on('wps:addnest', setButtonRemoveMOADEnabled);
@@ -320,10 +402,13 @@ export class SidebarWPSPanel {
             domain = null;
             initializedForDomain = false;
             buttonUpdate.parent().hide();
+            // hide ref_lat and ref_lon
             inputRefLat.parent().hide();
             inputStandLon.parent().hide();
             inputTrueLat1.parent().hide();
             inputTrueLat2.parent().hide();
+            // hide pole_lat and pole_lon
+            inputPoleLat.parent().hide();
             headerGrids.hide();
 
             selectMapProj.val(localStorage.getItem(localStorageKey + 'map_proj') || 'lambert');

@@ -133,6 +133,11 @@ div#geog-data-res-dialog table.geog-categories > tbody > tr:last-child > td:last
 .wrf-domain-grid-corner.cursor-nwse-resize {
   cursor: nwse-resize;
 }
+.geogrid-corner-icon {
+  background-color: yellow;
+  border: 1px solid black;
+  border-radius: 100px;
+}
 .wrf-domain-grid-tooltip {
   padding: 0px;
   border: none;
@@ -228,10 +233,10 @@ div.leaflet-sidebar-pane#elevation-data div.elevation-data-overlays {
   padding-left: 10px;
 }
 div.leaflet-sidebar-pane#wps form span.all-domains {
-  width: 119px;
+  width: 139px;
 }
 div.leaflet-sidebar-pane#wps form span.all-domains-2 {
-  width: 60px;
+  width: 70px;
 }
 div.leaflet-sidebar-pane#wps form span[data-name="geog_data_res"] {
   text-overflow: ellipsis;

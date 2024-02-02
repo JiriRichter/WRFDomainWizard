@@ -2,234 +2,304 @@ import { SidebarWPSPanel } from "./domain-wizard.sidebar.wps.panel";
 import { WRFDomainGrid } from "./leaflet/leaflet.wrf-grid";
 import { WRFDomain } from "./leaflet/leaflet.wrf-domain";
 import { wpsSaveDialog } from "./domain-wizard.dialog.save";
+import { WPSNamelist } from "./utils/namelist.wps"
+import { errorMessageBox } from "./domain-wizard.dialog.message-box";
+import { geogridOutput } from "./utils/geogrid.output";
 
-export var SidebarWPS = function (map, sidebar) {
+export class SidebarWPS {
 
-    var container,
-        wpsNamelist,
-        domain,
-        wpsPanel,
-        dialogSave,
-        newDomainContext;
+    constructor(map, sidebar, options) {
 
-    var buttonNew,
-        buttonSave,
-        buttonOpen,
-        buttonReset,
-        inputFile;
+        this.map = map;
+        const self = this;
 
-    container = $('#wps', sidebar.getContainer());
-    wpsPanel = new SidebarWPSPanel($('#container-wps-form', container));
+        var container, wpsNamelist, domain, wpsPanel, newDomainContext;
 
-    buttonNew = $('button#button-wps-new', container);
-    buttonSave = $('button#button-wps-save', container);
-    buttonReset = $('button#reset-domain', container);
-    buttonOpen = $('button#button-wps-open', container);
-    inputFile = $('input#file-open', container);
+        var buttonNew, buttonSave, buttonOpen, buttonReset, inputFile;
 
-    // creates new WPS namelist object from existing data and
-    // draws domains
-    function createDomainFromNamelist(zoom) {
-        removeDomain();
-        domain = new WRFDomain(wpsNamelist);
-        domain.addTo(map);
+        // defaul settings
+        this.options = {
+            sampleBaseUrl: 'samples',
+            anyFilename: true
+        };
 
-        wpsPanel.show(domain);
-        domain.grid.select();
-
-        if (zoom) {
-            zoomToDomain();
+        if (options) {
+            this.options = Object.assign(this.options, options);
         }
-    }
 
-    function zoomToDomain() {
-        map.panTo(L.latLng(domain.ref_lat, domain.ref_lon));
-        map.fitBounds(domain.grid.getBounds(), {
-            paddingTopLeft: L.point(container.width() + container.offset().left, 0)
+        container = $('#wps', sidebar.getContainer());
+        wpsPanel = new SidebarWPSPanel($('#container-wps-form', container));
+
+        buttonNew = $('button#button-wps-new', container);
+        buttonSave = $('button#button-wps-save', container);
+        buttonReset = $('button#reset-domain', container);
+        buttonOpen = $('button#button-wps-open', container);
+        inputFile = $('input#file-open', container);
+
+        // creates new WPS namelist object from existing data and
+        // draws domains
+        function createDomainFromNamelist(zoom) {
+            removeDomain();
+            domain = new WRFDomain(wpsNamelist);
+            domain.addTo(map);
+
+            wpsPanel.show(domain);
+            domain.grid.select();
+
+            if (zoom) {
+                zoomToDomain();
+            }
+        }
+
+        function zoomToDomain() {
+            map.panTo(L.latLng(domain.ref_lat, domain.ref_lon));
+            map.fitBounds(domain.grid.getBounds(), {
+                paddingTopLeft: L.point(container.width() + container.offset().left, 0)
+            });
+        }
+
+        buttonReset.on('click', function (e) {
+            createDomainFromNamelist(false);
         });
-    }
 
-    buttonReset.click(function () {
-        createDomainFromNamelist(false);
-    });
+        buttonOpen.on('click', function (e) {
+            endNewDomain();
+            inputFile.click();
+        });
 
-    buttonOpen.click(function (e) {
-        endNewDomain();
-        inputFile.click();
-    });
+        buttonSave.on('click', (e) => {
+            wpsSaveDialog(domain).show();
+        });
 
-    buttonSave.click(function (e) {
-        wpsSaveDialog(domain).show();
-    });
+        inputFile.on('change', (e) => {
+            var reader, filename;
 
-    inputFile.on('change', function (e) {
-        var reader, filename;
+            if (!e.target.files || e.target.files.length == 0) {
+                return;
+            }
 
-        if (!e.target.files || e.target.files.length == 0) {
-            return;
+            if (this.options.anyFilename !== true && e.target.files[0].name != 'namelist.wps' && e.target.files[0].name != 'wrfsi.nl') {
+                errorMessageBox('File Open Error', 'Only files with the name "namelist.wps" or "wrfsi.nl" can be opened!');
+                return;
+            }
+
+            reader = new FileReader();
+            filename = e.target.files[0].name;
+
+            reader.onerror = function (e) {
+                errorMessageBox('File Open Error', 'Unable to read file!');
+            };
+
+            reader.onload = function (e) {
+                if (filename == 'wrfsi.nl') {
+                    wpsNamelist = WPSNamelist.converFromWRFSIString(e.target.result);
+                }
+                else {
+                    wpsNamelist = new WPSNamelist(e.target.result);
+                }
+                createDomainFromNamelist(true);
+            };
+            reader.readAsText(e.target.files[0]);
+            inputFile.val(null);
+        });
+
+        function removeDomain() {
+            if (domain) {
+                domain.remove();
+                domain = null;
+
+                if (self._geogridCornerMarkerGroups.length > 0) {
+                    self._geogridCornerMarkerGroups.forEach(group => {
+                        group.remove();
+                    });
+                }
+            }
         }
 
-        if (e.target.files[0].name != 'namelist.wps' && e.target.files[0].name != 'wrfsi.nl') {
-            MessageBoxDialog.error('File Open Error', 'Only files with the name "namelist.wps" or "wrfsi.nl" can be opened!');
-            return;
+        function initNewDomain() {
+            removeDomain();
+            buttonNew.prop('disabled', true);
+            map.on('mousedown', startNewDomain, this);
+            wpsPanel.showNewDomain();
         }
 
-        reader = new FileReader();
-        filename = e.target.files[0].name;
-
-        reader.onerror = function (e) {
-            MessageBoxDialog.error('File Open Error', 'Unable to read file!');
+        function startNewDomain(e) {
+            if (!wpsPanel.validateNewDomain()) {
+                return;
+            }
+            map.dragging.disable();
+            map.on('mousemove', drawNewDomain, this);
+            map.on('mouseup', endNewDomain, this);
+            map.on('mouseout', endNewDomain, this);
+            newDomainContext = {
+                startLatlng: e.latlng,
+                startMarker: L.marker(e.latlng, {
+                    icon: L.divIcon({ className: 'grid-corner-icon' })
+                }).addTo(map),
+                endMarker: L.marker(e.latlng, {
+                    icon: L.divIcon({ className: 'grid-corner-icon' })
+                }).addTo(map),
+                drawPolygon: null,
+                domainOnMap: false
+            };
+            domain = wpsPanel.createNewDomain();
         }
 
-        reader.onload = function (e) {
-            if (filename == 'wrfsi.nl') {
-                wpsNamelist = WPSNamelist.converFromWRFSIString(e.target.result);
+        function drawNewDomain(e) {
+            var bounds = L.latLngBounds(newDomainContext.startLatlng, e.latlng), center, e_we, e_sn;
+
+            if (newDomainContext.drawPolygon == null) {
+                newDomainContext.drawPolygon = L.polygon(
+                    [bounds.getSouthWest(), bounds.getSouthEast(), bounds.getNorthEast(), bounds.getNorthWest()],
+                    {
+                        stroke: true,
+                        color: '#3388ff',
+                        weight: 1,
+                        opacity: 1.0,
+                        dashArray: '3',
+                        fill: false
+                    }).addTo(map);
             }
             else {
-                wpsNamelist = new WPSNamelist(e.target.result);
+                newDomainContext.drawPolygon.setLatLngs([bounds.getSouthWest(), bounds.getSouthEast(), bounds.getNorthEast(), bounds.getNorthWest()]);
             }
-            createDomainFromNamelist(true);
-        };
-        reader.readAsText(event.target.files[0]);
-        inputFile.val(null);
-    });
 
-    function removeDomain() {
-        if (domain) {
-            domain.remove();
-            domain = null;
-        }
-    }
+            newDomainContext.endMarker.setLatLng(e.latlng);
+            center = bounds.getCenter();
 
-    function initNewDomain() {
-        removeDomain();
-        buttonNew.prop('disabled', true);
-        map.on('mousedown', startNewDomain, this);
-        wpsPanel.showNewDomain();
-    }
+            domain.ref_lat = center.lat;
+            domain.ref_lon = center.lng;
+            domain.truelat1 = domain.ref_lat;
+            domain.truelat2 = domain.ref_lat;
+            domain.stand_lon = domain.ref_lon;
 
-    function startNewDomain(e) {
-        if (!wpsPanel.validateNewDomain()) {
-            return;
-        }
-        map.dragging.disable();
-        map.on('mousemove', drawNewDomain, this);
-        map.on('mouseup', endNewDomain, this);
-        map.on('mouseout', endNewDomain, this);
-        newDomainContext = {
-            startLatlng: e.latlng,
-            startMarker: L.marker(e.latlng, {
-                icon: L.divIcon({ className: 'grid-corner-icon' })
-            }).addTo(map),
-            endMarker: L.marker(e.latlng, {
-                icon: L.divIcon({ className: 'grid-corner-icon' })
-            }).addTo(map),
-            drawPolygon: null,
-            domainOnMap: false
-        };
-        domain = wpsPanel.createNewDomain();
-    }
+            e_we = Math.round(map.distance(newDomainContext.startLatlng, [newDomainContext.startLatlng.lat, e.latlng.lng]) / domain.dx);
+            e_sn = Math.round(map.distance(newDomainContext.startLatlng, [e.latlng.lat, newDomainContext.startLatlng.lng]) / domain.dy);
 
-    function drawNewDomain(e) {
-        var bounds = L.latLngBounds(newDomainContext.startLatlng, e.latlng),
-            center,
-            e_we,
-            e_sn;
-
-        if (newDomainContext.drawPolygon == null) {
-            newDomainContext.drawPolygon = L.polygon(
-                [bounds.getSouthWest(), bounds.getSouthEast(), bounds.getNorthEast(), bounds.getNorthWest() ],
-                {
-                    stroke: true,
-                    color: '#3388ff',
-                    weight: 1,
-                    opacity: 1.0,
-                    dashArray: '3',
-                    fill: false
-                }).addTo(map);
-        }
-        else {
-            newDomainContext.drawPolygon.setLatLngs([bounds.getSouthWest(), bounds.getSouthEast(), bounds.getNorthEast(), bounds.getNorthWest()]);
+            if (e_we < WRFDomainGrid.minGridSize || e_sn < WRFDomainGrid.minGridSize) {
+                domain.remove();
+                wpsPanel.hide();
+                newDomainContext.domainOnMap = false;
+            }
+            else {
+                domain.grid.e_we = e_we;
+                domain.grid.e_sn = e_sn;
+                if (newDomainContext.domainOnMap) {
+                    domain.update();
+                }
+                else {
+                    domain.addTo(map);
+                    newDomainContext.domainOnMap = true;
+                    wpsPanel.show();
+                }
+            }
         }
 
-        newDomainContext.endMarker.setLatLng(e.latlng);
-        center = bounds.getCenter();
+        function endNewDomain(e) {
+            map.dragging.enable();
+            map.off('mousedown', startNewDomain, this);
+            map.off('mousemove', drawNewDomain, this);
+            map.off('mouseup', endNewDomain, this);
+            map.off('mouseout', endNewDomain, this);
+            buttonNew.prop('disabled', false);
 
-        domain.ref_lat = center.lat;
-        domain.ref_lon = center.lng;
-        domain.truelat1 = domain.ref_lat;
-        domain.truelat2 = domain.ref_lat;
-        domain.stand_lon = domain.ref_lon;
+            if (!newDomainContext) {
+                wpsPanel.hide();
+                return;
+            }
 
-        e_we = Math.round(map.distance(newDomainContext.startLatlng, [newDomainContext.startLatlng.lat, e.latlng.lng]) / domain.dx);
-        e_sn = Math.round(map.distance(newDomainContext.startLatlng, [e.latlng.lat, newDomainContext.startLatlng.lng]) / domain.dy);
+            if (newDomainContext.drawPolygon != null) {
+                newDomainContext.drawPolygon.remove();
+            }
+            newDomainContext.startMarker.remove();
+            newDomainContext.endMarker.remove();
 
-        if (e_we < WRFDomainGrid.minGridSize || e_sn < WRFDomainGrid.minGridSize) {
-            domain.remove();
-            wpsPanel.hide();
-            newDomainContext.domainOnMap = false;
-        }
-        else {
-            domain.grid.e_we = e_we;
-            domain.grid.e_sn = e_sn;
             if (newDomainContext.domainOnMap) {
-                domain.update();
+                wpsNamelist = domain.getWPSNamelist();
             }
             else {
-                domain.addTo(map);
-                newDomainContext.domainOnMap = true;
-                wpsPanel.show();
+                wpsNamelist = null;
+                domain = null;
             }
         }
-    }
 
-    function endNewDomain(e) {
-        map.dragging.enable();
-        map.off('mousedown', startNewDomain, this);
-        map.off('mousemove', drawNewDomain, this);
-        map.off('mouseup', endNewDomain, this);
-        map.off('mouseout', endNewDomain, this);
-        buttonNew.prop('disabled', false);
+        buttonNew.on('click', function (e) {
+            initNewDomain();
+        });
 
-        if (!newDomainContext) {
-            wpsPanel.hide();
-            return;
-        }
+        // a list of leaflet feature groups containing markers for sample geogrid outpput files
+        this._geogridCornerMarkerGroups = [];
 
-        if (newDomainContext.drawPolygon != null) {
-            newDomainContext.drawPolygon.remove();
-        }
-        newDomainContext.startMarker.remove();
-        newDomainContext.endMarker.remove();
-        
-        if (newDomainContext.domainOnMap) {
-            wpsNamelist = domain.getWPSNamelist();
-        }
-        else {
-            wpsNamelist = null;
-            domain = null;
+        if (location.hash) {
+            var sample = location.hash.substring(1), wpsNamelistUrl = `${this.options.sampleBaseUrl}/${sample}/namelist.wps`;
+
+            $.get(
+                wpsNamelistUrl, 
+                (data) => {
+                    wpsNamelist = new WPSNamelist(data);
+                    sidebar.open('wps');
+                    createDomainFromNamelist(true);
+                    this._addGeogridCorners(sample);
+                }, 'text')
+                .fail(() => {
+                    errorMessageBox("File Load Error", "Unable to load " + wpsNamelistUrl);
+                });
         }
     }
 
-    buttonNew.click(function (e) {
-        initNewDomain();
-    });
+    _addGeogridCorners(sample) {
+        this._addGeogridGridCorners(sample, 1);
+    }
 
-    if (location.hash) {
-        var region = location.hash.substr(1),
-            wpsNamelistUrl = 'wps/' + region + '/namelist.wps';
+    _addGeogridGridCorners(sample, grid) {
+        const url = `${this.options.sampleBaseUrl}/${sample}/geo_em.d${grid.toString().padStart(2, '0')}.nc.json`;
 
-        $.get(wpsNamelistUrl, function (data) {
-            //try {
-            wpsNamelist = new WPSNamelist(data);
-            sidebar.open('wps');
-            createDomainFromNamelist(true);
-            //}
-            //catch (error) {
-            //    MessageBoxDialog.error("Error", "Unable to load file " + wpsNamelistUrl + ". " + error.toString());
-            //}
-        }, 'text').fail(function () {
-            MessageBoxDialog.error("File Load Error", "Unable to load " + wpsNamelistUrl);
+        let jsonFound = false;
+
+        fetch(url)
+            .then(response => {
+                if (response.ok === true) {
+                    return response.json();
+                }
+                throw new Error(`Geogrid JSON file ${url} not found`);
+            })
+            .then(json => {
+                jsonFound = true;
+                const group = L.featureGroup([
+                    this._createGeogridCornerMarker(json, 'sw'),
+                    this._createGeogridCornerMarker(json, 'nw'),
+                    this._createGeogridCornerMarker(json, 'ne'),
+                    this._createGeogridCornerMarker(json, 'se')
+                ]);
+                group.addTo(this.map);
+                this._geogridCornerMarkerGroups.push(group);
+            })
+            .then(() => {
+                this._addGeogridGridCorners(sample, grid + 1);
+            })
+            .catch((error) => {
+                if (jsonFound === true) {
+                    console.error(error);
+                }
+                else {
+                    console.debug(error)
+                }
+            });
+
+        return jsonFound;
+    }
+
+    _createGeogridCornerMarker(json, location) {
+        return L.marker(L.latLng(
+            json.corner_lats[geogridOutput.cornerIndex.unstaggered[location]],
+            json.corner_lons[geogridOutput.cornerIndex.unstaggered[location]]
+        ),
+        {
+            icon: L.divIcon({ 
+                className: 'geogrid-corner-icon',
+                iconSize: 8
+            }),
+            zIndexOffset: 100
         });
     }
 }

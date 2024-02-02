@@ -9,7 +9,6 @@ import { elevationDataSRTMNASAV3 } from './leaflet/leaflet.elevation-data.srtm-n
 import { mouseCoordinates } from './leaflet/leaflet.control.mouse-coordinates';
 
 /**
- * Leaflet map helper object
  * @constructor
  */
 export class DomainWizard {
@@ -64,6 +63,7 @@ export class DomainWizard {
             closeButton: true,
             container: 'sidebar',
             position: 'left',
+            open: true
         }).addTo(map);
         
         $('div.sidebar').show();
@@ -79,6 +79,9 @@ export class DomainWizard {
         sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 1 arc second (~30m)', elevationDataSRTMNASAV3(`${settings.jsonBaseUrl}/srtm/nasa/SRTMGL1.003.json`, 1));
         sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 3 arc second (~90m)', elevationDataSRTMNASAV3(`${settings.jsonBaseUrl}/srtm/nasa/SRTMGL3.003.json`, 3));
         sidebar['elevation'].addElevationDataOverlay('ALOS World 3D - 30m (AW3D30)', elevationDataALOS(`${settings.jsonBaseUrl}/srtm/alos/AW3D30.json`));
+
+        // open default tab
+        sidebar.open('wps');
 
         //add zoom control
         L.control.zoom({

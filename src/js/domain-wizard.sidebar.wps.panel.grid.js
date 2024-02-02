@@ -69,7 +69,7 @@ export class SidebarWPSPanelGrid {
         });
 
         // hide tooltip when button is clicked
-        $('button[title]', gridContainer).click(function (e) {
+        $('button[title]', gridContainer).on('click', function (e) {
             $(this).tooltip('hide');
         });
 

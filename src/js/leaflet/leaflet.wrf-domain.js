@@ -1,4 +1,6 @@
-import { WPSNamelist } from "../util/wps.namelist";
+import { WrfProjections } from "../utils/constants";
+import { degreesToMeters } from "../utils/math";
+import { WPSNamelist } from "../utils/namelist.wps";
 import { WRFDomainGrid } from "./leaflet.wrf-grid"
 
  /**
@@ -28,6 +30,8 @@ import { WRFDomainGrid } from "./leaflet.wrf-grid"
     stand_lon: null,
     ref_lat: null,
     ref_lon: null,
+    pole_lat: null,
+    pole_lon: null,
     dx: null,
     dy: null,
 
@@ -138,10 +142,6 @@ import { WRFDomainGrid } from "./leaflet.wrf-grid"
         this._mainGrid.remove();
     },
 
-    _getProjection: function () {
-        return new WRFProjection(this.map_proj, this.ref_lat, this.ref_lon, this.truelat1, this.truelat2, this.stand_lon, this.dx, this.dy, this._mainGrid.e_we, this._mainGrid.e_sn);
-    },
-
     update: function () {
         this._centerMarker.setLatLng(L.latLng(this.ref_lat, this.ref_lon));
         this._mainGrid.update();
@@ -164,7 +164,7 @@ import { WRFDomainGrid } from "./leaflet.wrf-grid"
             this.stand_lon = wpsNamelist.geogrid.stand_lon;
             this.ref_lat = wpsNamelist.geogrid.ref_lat;
             this.ref_lon = wpsNamelist.geogrid.ref_lon;
-            this.dx = wpsNamelist.geogrid.dy;
+            this.dx = wpsNamelist.geogrid.dx;
             this.dy = wpsNamelist.geogrid.dy;
 
             this._mainGrid = new WRFDomainGrid(this, null, 1, wpsNamelist, this.options);
@@ -222,9 +222,23 @@ Object.defineProperties(WRFDomain.prototype, {
     // multiplicator to calculate resolution (pixels per grid point)
     'dxPixelsMul': {
         get() {
-            return this.dx / 156543.03392 / Math.cos(this.ref_lat * Math.PI / 180);
+            return this.dxInMeters / 156543.03392 / Math.cos(this.ref_lat * Math.PI / 180);
         }
     },
+    'dxInMeters': {
+        get() {
+            return this.map_proj === WrfProjections.latlon ? 
+                degreesToMeters(this.dx) : 
+                this.dx;
+        }
+    },
+    'dyInMeters': {
+        get() {
+            return this.map_proj === WrfProjections.latlon ? 
+                degreesToMeters(this.dy) : 
+                this.dy;
+        }
+    }
 });
 
 WRFDomain.prototype.addMainGrid = /** @this {WRFDomainGrid} */ function () {
@@ -258,7 +272,7 @@ WRFDomain.prototype.addMainGrid = /** @this {WRFDomainGrid} */ function () {
         truelat1_delta = this.truelat1 - this.ref_lat;
         truelat2_delta = this.truelat2 - this.ref_lat;
 
-        center = this._mainGrid.projection.corners_ij_to_latlon((this._mainGrid.e_we - 1) / 2, (this._mainGrid.e_sn - 1) / 2);
+        center = this._mainGrid.projection.unstaggered_ij_to_latlon((this._mainGrid.e_we - 1) / 2, (this._mainGrid.e_sn - 1) / 2);
         this.ref_lat = center[0];
         this.ref_lon = center[1];
         this.stand_lon = this.ref_lon + stand_lon_delta;
@@ -311,7 +325,7 @@ WRFDomain.prototype.removeMainGrid = /** @this {WRFDomainGrid} */ function () {
     stand_lon_delta = this._mainGrid.domain.stand_lon - this._mainGrid.domain.ref_lon;
     truelat1_delta = this._mainGrid.domain.truelat1 - this._mainGrid.domain.ref_lat;
     truelat2_delta = this._mainGrid.domain.truelat2 - this._mainGrid.domain.ref_lat;
-    center = this._mainGrid.nests[0].projection.corners_ij_to_latlon((this._mainGrid.nests[0].e_we - 1) / 2, (this._mainGrid.nests[0].e_sn - 1) / 2);
+    center = this._mainGrid.nests[0].projection.unstaggered_ij_to_latlon((this._mainGrid.nests[0].e_we - 1) / 2, (this._mainGrid.nests[0].e_sn - 1) / 2);
 
     this.ref_lat = center[0];
     this.ref_lon = center[1];

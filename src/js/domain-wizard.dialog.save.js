@@ -21,12 +21,12 @@ export class WPSSaveDialog {
         buttonCopy = $('button#button-copy', dialogFooter);
         buttonDownload = $('button#button-download', dialogFooter);
 
-        buttonCopy.click(function (e) {
+        buttonCopy.on('click', function (e) {
             wpsContent.select();
             document.execCommand("Copy");
         });
 
-        buttonDownload.click(function (e) {
+        buttonDownload.on('click', function (e) {
             var blob = new Blob([wpsContent.val()], { type: "text/plain;charset=utf-8" });
             saveAs(blob, "namelist.wps", true);
         });

@@ -1,10 +1,7 @@
-import { WPSNamelist } from "../util/wps.namelist";
-import { WRFProjection } from "../util/wrf.projection";
-import { nearestIntToZero } from "../util/util.math";
+import { WPSNamelist } from "../utils/namelist.wps";
+import { nearestIntToZero } from "../utils/math";
+import { Geogrid } from "../utils/geogrid";
 
-/**
- * @constructor
- */
 export var WRFDomainGrid = L.Polygon.extend({
 
     statics: {
@@ -40,7 +37,7 @@ export var WRFDomainGrid = L.Polygon.extend({
     // grid id
     id: null,
 
-    // grid parameters
+    // WPS grid parameters
     parent_grid_ratio:  1,
     i_parent_start:  1,
     j_parent_start:  1,
@@ -76,100 +73,36 @@ export var WRFDomainGrid = L.Polygon.extend({
 
     nests: null,
 
-    _projection: null,
+    geogrid: null,
 
-    _getProjection: function () {
-        if (this.parent == null) {
-            return new WRFProjection(
-                this.domain.map_proj,
-                this.domain.ref_lat,
-                this.domain.ref_lon,
-                this.domain.truelat1,
-                this.domain.truelat2,
-                this.domain.stand_lon,
-                this.domain.dx,
-                this.domain.dy,
-                this.e_we,
-                this.e_sn
-            );
-        }
-        // create projection object adapted to the nest grid
-        else {
-            let projection,
-                dx, dy,
-                e_we, e_sn,
-                i_parent_start,
-                j_parent_start,
-                parent_grid_ratio = 1,
-                grid = this,
-                i_offset = 0,
-                j_offset = 0;
-
-            while (grid.parent != null) {
-                parent_grid_ratio *= grid.parent_grid_ratio;
-                i_offset += (grid.i_parent_start - 1) * parent_grid_ratio;
-                j_offset += (grid.j_parent_start - 1) * parent_grid_ratio;
-                grid = grid.parent;
-            }
-
-            // create new projection for grid
-            dx = this.domain.dx / parent_grid_ratio;
-            dy = this.domain.dy / parent_grid_ratio;
-            e_we = (this.domain.grid.e_we - 1) * parent_grid_ratio + 1;
-            e_sn = (this.domain.grid.e_sn - 1) * parent_grid_ratio + 1;
-
-            projection = new WRFProjection(
-                this.domain.map_proj,
-                this.domain.ref_lat,
-                this.domain.ref_lon,
-                this.domain.truelat1,
-                this.domain.truelat2,
-                this.domain.stand_lon,
-                dx,
-                dy,
-                e_we,
-                e_sn);
-
-            projection.corners_offset_i += i_offset * dx;
-            projection.corners_offset_j += j_offset * dy;
-
-            return projection;
-        }
+    _initGeogrid: function () {
+        return new Geogrid(
+            this.id,
+            {
+                map_proj: this.domain.map_proj,
+                ref_lat: this.domain.ref_lat,
+                ref_lon: this.domain.ref_lon,
+                truelat1: this.domain.truelat1,
+                truelat2: this.domain.truelat2,
+                stand_lon: this.domain.stand_lon,
+                dx: this.domain.dx,
+                dy: this.domain.dy,
+                e_we: this.e_we,
+                e_sn: this.e_sn,
+                parent_grid_ratio: this.parent_grid_ratio,
+                i_parent_start: this.i_parent_start,
+                j_parent_start: this.j_parent_start
+            }, 
+            this.parent?.geogrid);
     },
 
-    // function return grid polygon path
-    _getPolygonPath: function () {
-        var i, j,
-            path = [],
-            step = 5;
-
-        path.push(this._corners.sw);
-        for (i = step; i < (this.e_we - 1 - step); i += step) {
-            path.push(this._projection.corners_ij_to_latlon(i, 0));
-        }
-        path.push(this._corners.se);
-        for (j = step; j < (this.e_sn - 1 - step); j += step) {
-            path.push(this._projection.corners_ij_to_latlon(this.e_we - 1, j));
-        }
-        path.push(this._corners.ne);
-        for (i = this.e_we - 1 - step; i > step; i -= step) {
-            path.push(this._projection.corners_ij_to_latlon(i, this.e_sn - 1));
-        }
-        path.push(this._corners.nw);
-        for (j = this.e_sn - 1 - step; j > step; j -= step) {
-            path.push(this._projection.corners_ij_to_latlon(0, j));
-        }
-        path.push(this._corners.sw);
-        return path;
-    },
-
-    _getCorners: function () {
+    _initCorners: function () {
         return {
-            sw: L.latLng(this._projection.corners_ij_to_latlon(0, 0)),
-            se: L.latLng(this._projection.corners_ij_to_latlon(this.e_we - 1, 0)),
-            ne: L.latLng(this._projection.corners_ij_to_latlon(this.e_we - 1, this.e_sn - 1)),
-            nw: L.latLng(this._projection.corners_ij_to_latlon(0, this.e_sn - 1))
-        };
+            sw: L.latLng(this.geogrid.corners.sw),
+            se: L.latLng(this.geogrid.corners.se),
+            ne: L.latLng(this.geogrid.corners.ne),
+            nw: L.latLng(this.geogrid.corners.nw)
+        };  
     },
 
     // on map zoomeend handler
@@ -187,7 +120,7 @@ export var WRFDomainGrid = L.Polygon.extend({
             tooltip,
             element;
         content += '<tbody>';
-        var ij = this._projection.latlon_to_corners_ij(latlng.lat, latlng.lng);
+        var ij = this.geogrid.latlon_to_unstaggered_ij(latlng.lat, latlng.lng);
         content += '<tr><td>i,j</td><td>' + Math.ceil(ij[0]) + ', ' + Math.ceil(ij[1]) + '</td></tr>';
         content += '<tr><td>lat,lon</td><td>' + latlng.lat.toFixed(2) + ', ' + latlng.lng.toFixed(2) + '</td></tr>';
         content += '</tbody>';
@@ -359,7 +292,7 @@ export var WRFDomainGrid = L.Polygon.extend({
 
 
         // get absolute change in ij coordinates
-        var ij = this._projection.latlon_to_corners_ij(e.latlng.lat, e.latlng.lng);
+        var ij = this.geogrid.latlon_to_unstaggered_ij(e.latlng.lat, e.latlng.lng);
         var delta_i = nearestIntToZero(ij[0]);
         var delta_j = nearestIntToZero(ij[1]);
 
@@ -476,7 +409,7 @@ export var WRFDomainGrid = L.Polygon.extend({
                 center_j = (e_sn - 1) / 2;
             }
 
-            center = this._projection.corners_ij_to_latlon(center_i, center_j);
+            center = this.geogrid.unstaggered_ij_to_latlon(center_i, center_j);
             this.domain.ref_lat = center[0];
             this.domain.ref_lon = center[1];
             //this.domain.stand_lon = this.domain.ref_lon + this._resizeContext.stand_lon_delta;
@@ -553,7 +486,7 @@ export var WRFDomainGrid = L.Polygon.extend({
             truelat1_delta: this.domain.truelat1 - this.domain.ref_lat,
             truelat2_delta: this.domain.truelat2 - this.domain.ref_lat,
             startLatLng: e.latlng,
-            startIJ: this._projection.latlon_to_corners_ij(e.latlng.lat, e.latlng.lng),
+            startIJ: this.geogrid.latlon_to_unstaggered_ij(e.latlng.lat, e.latlng.lng),
             delta_i: 0,
             delta_j: 0,
             max_delta_i: this.i_delta_end - WRFDomainGrid.minNestGridPoints,
@@ -591,7 +524,7 @@ export var WRFDomainGrid = L.Polygon.extend({
             this.domain.update();
         }
         else {
-            var ij = this._projection.latlon_to_corners_ij(e.latlng.lat, e.latlng.lng);
+            var ij = this.geogrid.latlon_to_unstaggered_ij(e.latlng.lat, e.latlng.lng);
             this._dragContext.delta_i += (ij[0] - this._dragContext.startIJ[0]) / this.parent_grid_ratio;
             this._dragContext.delta_j += (ij[1] - this._dragContext.startIJ[1]) / this.parent_grid_ratio;
 
@@ -604,7 +537,7 @@ export var WRFDomainGrid = L.Polygon.extend({
             this.i_parent_start = this._dragContext.i_parent_start + parent_delta_i;
             this.j_parent_start = this._dragContext.j_parent_start + parent_delta_j;
             this.update();
-            this._dragContext.startIJ = this._projection.latlon_to_corners_ij(e.latlng.lat, e.latlng.lng);
+            this._dragContext.startIJ = this.geogrid.latlon_to_unstaggered_ij(e.latlng.lat, e.latlng.lng);
         }
     },
 
@@ -613,9 +546,9 @@ export var WRFDomainGrid = L.Polygon.extend({
 
         this._gridLinesLayer = this._createGridLinesPane();
         L.Polygon.prototype.onAdd.call(this, map);
-        this._projection = this._getProjection();
-        this._corners = this._getCorners();
-        this.setLatLngs(this._getPolygonPath());
+        this.geogrid = this._initGeogrid();
+        this._corners = this._initCorners();
+        this.setLatLngs(this.geogrid.polygonPath);
 
         // create grid corner markers
         // visible only when grid is selected
@@ -669,9 +602,9 @@ export var WRFDomainGrid = L.Polygon.extend({
 
     getBounds: function () {
         if (!this._corners || !this._projection) {
-            this._projection = this._getProjection();
-            this._corners = this._getCorners();
-            this.setLatLngs(this._getPolygonPath());
+            this.geogrid = this._initGeogrid();
+            this._corners = this._initCorners();
+            this.setLatLngs(this.geogrid.polygonPath);
         }
         return L.Polygon.prototype.getBounds.call(this);
     },
@@ -753,9 +686,9 @@ export var WRFDomainGrid = L.Polygon.extend({
     },
 
     update: function () {
-        this._projection = this._getProjection();
-        this._corners = this._getCorners();
-        this.setLatLngs(this._getPolygonPath());
+        this.geogrid = this._initGeogrid();
+        this._corners = this._initCorners();
+        this.setLatLngs(this.geogrid.polygonPath);
 
         this._cornerMarkers.sw.setLatLng(this._corners.sw);
         this._cornerMarkers.se.setLatLng(this._corners.se);
@@ -971,10 +904,10 @@ WRFDomainGrid.prototype._getGridLinesBounds = /** @this {WRFDomainGrid} */ funct
     var bounds = this._map.getBounds();
     var boundsSW = bounds.getSouthWest();
     var boundsNE = bounds.getNorthEast();
-    var ijSW = this._projection.latlon_to_corners_ij(boundsSW.lat, boundsSW.lng);
-    var ijNE = this._projection.latlon_to_corners_ij(boundsNE.lat, boundsNE.lng);
-    var ijSE = this._projection.latlon_to_corners_ij(boundsSW.lat, boundsNE.lng);
-    var ijNW = this._projection.latlon_to_corners_ij(boundsNE.lat, boundsSW.lng);
+    var ijSW = this.geogrid.latlon_to_unstaggered_ij(boundsSW.lat, boundsSW.lng);
+    var ijNE = this.geogrid.latlon_to_unstaggered_ij(boundsNE.lat, boundsNE.lng);
+    var ijSE = this.geogrid.latlon_to_unstaggered_ij(boundsSW.lat, boundsNE.lng);
+    var ijNW = this.geogrid.latlon_to_unstaggered_ij(boundsNE.lat, boundsSW.lng);
 
     return {
         iLinesStart: Math.max(0, Math.min(Math.floor(ijSW[0]), Math.floor(ijNW[0]), this.e_we - 1)),
@@ -1043,7 +976,7 @@ WRFDomainGrid.prototype._updateGridLines = /** @this {WRFDomainGrid} */ function
                     path = [];
 
                     for (j = this._gridLinesBounds.jLinesStart; j <= this._gridLinesBounds.jLinesEnd; j++) {
-                        latLng = this._projection.corners_ij_to_latlon(i, j);
+                        latLng = this.geogrid.unstaggered_ij_to_latlon(i, j);
                         path.push(latLng);
 
                         if (i == gridLinesBounds.iLinesStart) {
@@ -1072,7 +1005,7 @@ WRFDomainGrid.prototype._updateGridLines = /** @this {WRFDomainGrid} */ function
                 for (j = gridLinesBounds.jLinesStart; j < this._gridLinesBounds.jLinesStart; j++) {
                     path = [];
                     for (i = this._gridLinesBounds.iLinesStart; i <= this._gridLinesBounds.iLinesEnd; i++) {
-                        latLng = this._projection.corners_ij_to_latlon(i, j);
+                        latLng = this.geogrid.unstaggered_ij_to_latlon(i, j);
                         path.push(latLng);
                         if (j == gridLinesBounds.jLinesStart) {
                             iPaths[i - this._gridLinesBounds.iLinesStart] = new Array();
@@ -1096,7 +1029,7 @@ WRFDomainGrid.prototype._updateGridLines = /** @this {WRFDomainGrid} */ function
                 for (i = this._gridLinesBounds.iLinesEnd + 1; i <= gridLinesBounds.iLinesEnd; i++) {
                     path = [];
                     for (j = this._gridLinesBounds.jLinesStart; j <= this._gridLinesBounds.jLinesEnd; j++) {
-                        latLng = this._projection.corners_ij_to_latlon(i, j);
+                        latLng = this.geogrid.unstaggered_ij_to_latlon(i, j);
                         path.push(latLng);
                         this._jGridLines[j - this._gridLinesBounds.jLinesStart].addLatLng(latLng);
                     }
@@ -1110,7 +1043,7 @@ WRFDomainGrid.prototype._updateGridLines = /** @this {WRFDomainGrid} */ function
                 for (j = this._gridLinesBounds.jLinesEnd + 1; j <= gridLinesBounds.jLinesEnd; j++) {
                     path = [];
                     for (i = this._gridLinesBounds.iLinesStart; i <= this._gridLinesBounds.iLinesEnd; i++) {
-                        latLng = this._projection.corners_ij_to_latlon(i, j);
+                        latLng = this.geogrid.unstaggered_ij_to_latlon(i, j);
                         path.push(latLng);
                         this._iGridLines[i - this._gridLinesBounds.iLinesStart].addLatLng(latLng);
                     }
@@ -1143,7 +1076,7 @@ WRFDomainGrid.prototype._drawGridLines = function (gridLinesBounds) {
             path = [];
 
             for (j = this._gridLinesBounds.jLinesStart; j <= this._gridLinesBounds.jLinesEnd; j++) {
-                latLng = this._projection.corners_ij_to_latlon(i, j);
+                latLng = this.geogrid.unstaggered_ij_to_latlon(i, j);
                 path.push(latLng);
 
                 if (i == this._gridLinesBounds.iLinesStart) {

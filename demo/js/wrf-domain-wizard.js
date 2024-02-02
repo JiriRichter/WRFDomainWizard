@@ -40,6 +40,20 @@
     });
     return Constructor;
   }
+  function _defineProperty(obj, key, value) {
+    key = _toPropertyKey(key);
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+    return obj;
+  }
 
   var SidebarElevationData = /*#__PURE__*/_createClass(function SidebarElevationData(map, sidebar) {
     _classCallCheck(this, SidebarElevationData);
@@ -109,6 +123,43 @@
     return new SidebarSettings(map, sidebar);
   }
 
+  var MessageBoxDialog = /*#__PURE__*/function () {
+    function MessageBoxDialog() {
+      _classCallCheck(this, MessageBoxDialog);
+      this.container = $('div.modal#message-box-dialog');
+      this.dialogBody = $('div.modal-body', this.container);
+      this.dialogTitle = $('div.modal-header h5.modal-title', this.container);
+    }
+    _createClass(MessageBoxDialog, [{
+      key: "show",
+      value: function show(title, message, type) {
+        this.dialogTitle.empty();
+        if (type === MessageBoxDialog.types.error) {
+          this.dialogTitle.html('<i class="fas fa-exclamation-circle text-danger"></i>');
+        }
+        if (type === MessageBoxDialog.types.info) {
+          this.dialogTitle.html('<i class="fas fa-info-circle text-info"></i>');
+        }
+        if (type === MessageBoxDialog.types.warning) {
+          this.dialogTitle.html('<i class="fas fa-exclamation-triangle text-warning"></i>');
+        }
+        this.dialogTitle.append(title);
+        this.dialogBody.text(message);
+        this.container.modal();
+      }
+    }]);
+    return MessageBoxDialog;
+  }();
+  _defineProperty(MessageBoxDialog, "types", {
+    error: 0,
+    info: 1,
+    warning: 2
+  });
+  var messageBoxDialog = new MessageBoxDialog();
+  function errorMessageBox(title, message) {
+    messageBoxDialog.show(title, message, MessageBoxDialog.types.error);
+  }
+
   var SidebarWaypoints = function SidebarWaypoints(map, sidebar) {
     var container,
       buttonAdd,
@@ -126,14 +177,14 @@
       var id = 'waypoints-layer-' + layerCount,
         checkboxHtml;
       if (layers[filename] !== undefined) {
-        MessageBoxDialog.error('File Open Error', 'File name ' + filename + ' already loaded');
+        errorMessageBox('File Open Error', 'File name ' + filename + ' already loaded');
         return;
       }
       try {
         layers[filename] = L.waypoints(L.Waypoints.parse(data)).addTo(map);
         map.fitBounds(layers[filename].getBounds());
       } catch (e) {
-        MessageBoxDialog.error('File Open Error', 'Unable to parse file ' + filename + ': ' + e);
+        errorMessageBox('File Open Error', 'Unable to parse file ' + filename + ': ' + e);
         return;
       }
       layerCount++;
@@ -150,10 +201,10 @@
         }
       });
     }
-    buttonAdd.click(function (e) {
+    buttonAdd.on('click', function (e) {
       inputFile.click();
     });
-    buttonRemoveAll.click(function (e) {
+    buttonRemoveAll.on('click', function (e) {
       object.keys(layers).forEach(function (filename) {
         layers[filename].remove();
       });
@@ -166,18 +217,18 @@
         return;
       }
       if (!e.target.files[0].name.endsWith('.wpt') && !e.target.files[0].name.endsWith('.cup') && !e.target.files[0].name.endsWith('.gpx')) {
-        MessageBoxDialog.error('File Open Error', 'Only files with extensions .wpt, .cup and .gpx are allowed!');
+        errorMessageBox('File Open Error', 'Only files with extensions .wpt, .cup and .gpx are allowed!');
         return;
       }
       reader = new FileReader();
       filename = e.target.files[0].name;
       reader.onerror = function (e) {
-        MessageBoxDialog.error('File Open Error', 'Unable to read file!');
+        errorMessageBox('File Open Error', 'Unable to read file!');
       };
       reader.onload = function (e) {
         addWaypoints(filename, e.target.result);
       };
-      reader.readAsText(event.target.files[0]);
+      reader.readAsText(e.target.files[0]);
       inputFile.val(null);
     });
   };
@@ -200,7 +251,7 @@
   var Namelist = /*#__PURE__*/function () {
     function Namelist(data) {
       _classCallCheck(this, Namelist);
-      var tokens = this.parse(data),
+      var tokens = this._parse(data),
         current_group = null,
         current_prop = null,
         i,
@@ -229,10 +280,11 @@
         }
       }
     }
+
     // parse namelist data to tokens
     _createClass(Namelist, [{
-      key: "parse",
-      value: function parse(data) {
+      key: "_parse",
+      value: function _parse(data) {
         var tokens = [];
         function addElement(pos, name, value) {
           var index = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -553,31 +605,125 @@
     return Namelist;
   }();
 
-  /**
-   * @constructor
-   */
-  var WPSNamelist$1 = /*#__PURE__*/function () {
+  var WPSNamelist = /*#__PURE__*/function () {
     function WPSNamelist(obj) {
       _classCallCheck(this, WPSNamelist);
       var ns;
-      this.share = {};
-      this.share.wrf_core = 'ARW';
-      this.share.interval_seconds = 10800;
-      this.share.io_form_geogrid = 2;
-      this.share.debug_level = 0;
-      this.geogrid = {};
-      this.geogrid.geog_data_path = '/home/wrf/geog';
-      this.geogrid.opt_geogrid_tbl_path = '/home/wrf/RUN.TABLES';
-      this.ungrib = {};
-      this.ungrib.out_format = 'WPS';
-      this.ungrib.prefix = 'UNGRIB';
-      this.metgrid = {};
-      this.metgrid.fg_name = 'UNGRIB';
-      this.metgrid.io_form_metgrid = 2;
-      this.metgrid.opt_metgrid_tbl_path = '/home/wrf/RUN.TABLES';
+
+      // https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html#wps-namelist-variables
+
+      this.share = {
+        wrf_core: 'ARW',
+        // A character string set to either ARW or NMM that tells the WPS which dynamical core the input data are being prepared for
+        max_dom: 1,
+        // An integer specifying the total number of domains (nests), including the parent domain, in the simulation
+        start_year: null,
+        // A list of MAX_DOM 4-digit integers specifying the starting UTC year of the simulation for each nest
+        start_month: null,
+        //A list of MAX_DOM 2-digit integers specifying the starting UTC month of the simulation for each nest
+        start_day: null,
+        // A list of MAX_DOM 2-digit integers specifying the starting UTC day of the simulation for each nest
+        start_hour: null,
+        // A list of MAX_DOM 2-digit integers specifying the starting UTC hour of the simulation for each nest
+        end_year: null,
+        //A list of MAX_DOM 4-digit integers specifying the ending UTC year of the simulation for each nest
+        end_month: null,
+        //A list of MAX_DOM 2-digit integers specifying the ending UTC month of the simulation for each nest
+        end_day: null,
+        //A list of MAX_DOM 2-digit integers specifying the ending UTC day of the simulation for each nest
+        end_hour: null,
+        //A list of MAX_DOM 2-digit integers specifying the ending UTC hour of the simulation for each nest
+        start_date: null,
+        //A list of MAX_DOM character strings of the form 'YYYY-MM-DD_HH:mm:ss' specifying the starting UTC date of the simulation for each nest. The start_date variable is an alternate to specifying start_year, start_month, start_day, and start_hour, and if both methods are used for specifying the starting time, the start_date variable will take precedence
+        end_date: null,
+        //A list of MAX_DOM character strings of the form 'YYYY-MM-DD_HH:mm:ss' specifying the ending UTC date of the simulation for each nest. The end_date variable is an alternate to specifying end_year, end_month, end_day, and end_hour, and if both methods are used for specifying the ending time, the end_date variable will take precedence
+        interval_seconds: null,
+        //The integer number of seconds between time-varying meteorological input files
+        active_grid: true,
+        //A list of MAX_DOM logical values specifying, for each grid, whether that grid should be processed by geogrid and metgrid
+        io_form_geogrid: 2,
+        //(NetCDF) The WRF I/O API format that the domain files created by the geogrid program will be written in. Possible options are: 1 for binary; 2 for NetCDF; 3 for GRIB1. When option 1 is given, domain files will have a suffix of .int; when option 2 is given, domain files will have a suffix of .nc; when option 3 is given, domain files will have a suffix of .gr1
+        output_from_geogrid: null,
+        //A character string giving the path, either relative or absolute, to the location where output files from geogrid should be written to and read from. Default is the current working directory
+        debug_level: 0 //An integer value indicating the extent to which different types of messages should be sent to standard output. When debug_level is set to 0, only generally useful messages and warning messages will be written to standard output. When debug_level is greater than 100, informational messages that provide further runtime details are also written to standard output. Debugging messages and messages specifically intended for log files are never written to standard output, but are always written to the log files
+      };
+      this.geogrid = {
+        parent_id: 1,
+        //A list of MAX_DOM integers specifying, for each nest, the domain number of the nest's parent; for the coarsest domain, this variable should be set to 1
+        parent_grid_ratio: null,
+        //A list of MAX_DOM integers specifying, for each nest, the nesting ratio relative to the domain's parent
+        i_parent_start: null,
+        //A list of MAX_DOM integers specifying, for each nest, the x-coordinate of the lower-left corner of the nest in the parent unstaggered grid. For the coarsest domain, a value of 1 should be specified            
+        j_parent_start: null,
+        //A list of MAX_DOM integers specifying, for each nest, the y-coordinate of the lower-left corner of the nest in the parent unstaggered grid. For the coarsest domain, a value of 1 should be specified
+        s_we: 1,
+        //A list of MAX_DOM integers which should all be set to 1
+        e_we: null,
+        //A list of MAX_DOM integers specifying, for each nest, the nest's full west-east dimension. For nested domains, e_we must be one greater than an integer multiple of the nest's parent_grid_ratio (i.e., e_we = n*parent_grid_ratio+1 for some positive integer n)
+        s_sn: 1,
+        //A list of MAX_DOM integers which should all be set to 1
+        e_sn: null,
+        //A list of MAX_DOM integers specifying, for each nest, the nest's full south-north dimension. For nested domains, e_sn must be one greater than an integer multiple of the nest's parent_grid_ratio (i.e., e_sn = n*parent_grid_ratio+1 for some positive integer n)
+        geog_data_res: 'default',
+        //A list of MAX_DOM character strings specifying, for each nest, a corresponding resolution or list of resolutions separated by + symbols of source data to be used when interpolating static terrestrial data to the nest's grid. For each nest, this string should contain a resolution matching a string preceding a colon in a rel_path or abs_path specification (see the description of GEOGRID.TBL options) in the GEOGRID.TBL file for each field. If a resolution in the string does not match any such string in a rel_path or abs_path specification for a field in GEOGRID.TBL, a default resolution of data for that field, if one is specified, will be used. If multiple resolutions match, the first resolution to match a string in a rel_path or abs_path specification in the GEOGRID.TBL file will be used
+        dx: null,
+        //A real value specifying the grid distance in the x-direction where the map scale factor is 1. For ARW, the grid distance is in meters for the 'polar', 'lambert', and 'mercator' projection, and in degrees longitude for the 'lat-lon' projection; for NMM, the grid distance is in degrees longitude. Grid distances for nests are determined recursively based on values specified for parent_grid_ratio and parent_id
+        dy: null,
+        //A real value specifying the nominal grid distance in the y-direction where the map scale factor is 1. For ARW, the grid distance is in meters for the 'polar', 'lambert', and 'mercator' projection, and in degrees latitude for the 'lat-lon' projection; for NMM, the grid distance is in degrees latitude. Grid distances for nests are determined recursively based on values specified for parent_grid_ratio and parent_id
+        map_proj: 'lambert',
+        //A character string specifying the projection of the simulation domain. For ARW, accepted projections are 'lambert', 'polar', 'mercator', and 'lat-lon'; for NMM, a projection of 'rotated_ll' must be specified
+        ref_lat: null,
+        //A real value specifying the latitude part of a (latitude, longitude) location whose (i,j) location in the simulation domain is known. For ARW, ref_lat gives the latitude of the center-point of the coarse domain by default (i.e., when ref_x and ref_y are not specified). For NMM, ref_lat always gives the latitude to which the origin is rotated
+        ref_lon: null,
+        //A real value specifying the longitude part of a (latitude, longitude) location whose (i, j) location in the simulation domain is known. For ARW, ref_lon gives the longitude of the center-point of the coarse domain by default (i.e., when ref_x and ref_y are not specified). For NMM, ref_lon always gives the longitude to which the origin is rotated. For both ARW and NMM, west longitudes are negative, and the value of ref_lon should be in the range [-180, 180]
+        ref_x: null,
+        // default: (((E_WE-1.)+1.)/2.) = (E_WE/2.), A real value specifying the i part of an (i, j) location whose (latitude, longitude) location in the simulation domain is known. The (i, j) location is always given with respect to the mass-staggered grid, whose dimensions are one less than the dimensions of the unstaggered grid
+        ref_y: null,
+        // default: (((E_SN-1.)+1.)/2.) = (E_SN/2.), A real value specifying the j part of an (i, j) location whose (latitude, longitude) location in the simulation domain is known. The (i, j) location is always given with respect to the mass-staggered grid, whose dimensions are one less than the dimensions of the unstaggered grid
+        truelat1: null,
+        // A real value specifying, for ARW, the first true latitude for the Lambert conformal projection, or the only true latitude for the Mercator and polar stereographic projections. For NMM, truelat1 is ignored
+        truelat2: null,
+        // A real value specifying, for ARW, the second true latitude for the Lambert conformal conic projection. For all other projections, truelat2 is ignored
+        stand_lon: null,
+        // A real value specifying, for ARW, the longitude that is parallel with the y-axis in the Lambert conformal and polar stereographic projections. For the regular latitude-longitude projection, this value gives the rotation about the earth's geographic poles. For NMM, stand_lon is ignored
+        pole_lat: 90,
+        //For the latitude-longitude projection for ARW, the latitude of the North Pole with respect to the computational latitude-longitude grid in which -90.0 degrees latitude is at the bottom of a global domain, 90.0 degrees latitude is at the top, and 180.0 degrees longitude is at the center
+        pole_lon: 0,
+        //For the latitude-longitude projection for ARW, the longitude of the North Pole with respect to the computational lat/lon grid in which -90.0 degrees latitude is at the bottom of a global domain, 90.0 degrees latitude is at the top, and 180.0 degrees longitude is at the center
+        geog_data_path: null,
+        //A character string giving the path, either relative or absolute, to the directory where the geographical data directories may be found. This path is the one to which rel_path specifications in the GEOGRID.TBL file are given in relation to
+        opt_geogrid_tbl_path: './geogrid/' //A character string giving the path, either relative or absolute, to the GEOGRID.TBL file. The path should not contain the actual file name, as GEOGRID.TBL is assumed, but should only give the path where this file is located        
+      };
+      this.ungrib = {
+        out_format: 'WPS',
+        //A character string set either to 'WPS', 'SI', or 'MM5'. If set to 'MM5', ungrib will write output in the format of the MM5 pregrid program; if set to 'SI', ungrib will write output in the format of grib_prep.exe; if set to 'WPS', ungrib will write data in the WPS intermediate format
+        prefix: 'FILE',
+        //A character string that will be used as the prefix for intermediate-format files created by ungrib; here, prefix refers to the string PREFIX in the filename PREFIX:YYYY-MM-DD_HH of an intermediate file. The prefix may contain path information, either relative or absolute, in which case the intermediate files will be written in the directory specified. This option may be useful to avoid renaming intermediate files if ungrib is to be run on multiple sources of GRIB data
+        add_lvls: false,
+        //A logical that determines whether ungrib will attemp to vertically interpolate to an additional set of vertical levels specified using the NEW_PLVL and INTERP_TYPE namelist options
+        interp_type: 0,
+        //An integer value specifying the method that ungrib will use when vertically interpolating to new levels. A value of 0 causes ungrib to interpolate linearly in pressure, and a value of 1 causes ungrib to interpolate linearly in log pressure
+        new_plvl: null,
+        //An array of real values that specify the additional vertical levels, given in Pa, to which the ungrib program will attempt to interpolate when ADD_LVLS is true. The set of new levels can be specified explicitly, or, if the levels are evenly spaced in pressure, exactly three values can be specified: the starting pressure, the ending pressure, and the pressure increment. When a starting pressure, ending pressure, and increment are specified, the pressure increment must be a negative number to signal to the ungrib program that this value is not a target pressure level, but rather, an increment to be used between the first and second values
+        pmin: 100 //A real value specifying the minimum pressure level, in Pa, to be processed from GRIB data. This option applies only to isobaric data sets            
+      };
+      this.metgrid = {
+        fg_name: null,
+        //A list of character strings specifying the path and prefix of ungribbed data files. The path may be relative or absolute, and the prefix should contain all characters of the filenames up to, but not including, the colon preceding the date. When more than one fg_name is specified, and the same field is found in two or more input sources, the data in the last encountered source will take priority over all preceding sources for that field
+        constants_name: null,
+        //A list of character strings specifying the path and full filename of ungribbed data files which are time-invariant. The path may be relative or absolute, and the filename should be the complete filename; since the data are assumed to be time-invariant, no date will be appended to the specified filename
+        io_form_metgrid: 2,
+        //The WRF I/O API format that the output created by the metgrid program will be written in. Possible options are: 1 for binary; 2 for NetCDF; 3 for GRIB1. When option 1 is given, output files will have a suffix of .int; when option 2 is given, output files will have a suffix of .nc; when option 3 is given, output files will have a suffix of .gr1
+        opt_output_from_metgrid_path: null,
+        //Default current working directory (i.e., ./ ), A character string giving the path, either relative or absolute, to the location where output files from metgrid should be written to
+        opt_metgrid_tbl_path: './metgrid',
+        //A character string giving the path, either relative or absolute, to the METGRID.TBL file; the path should not contain the actual file name, as METGRID.TBL is assumed, but should only give the path where this file is located
+        process_only_bdy: 0 //An integer specifying the number of boundary rows and columns to be processed by metgrid for time periods after the initial time; for the initial time, metgrid will always interpolate to every grid point. Setting this option to the intended value of spec_bdy_width in the WRF namelist.input will speed up processing in metgrid, but it should not be set if interpolated data are needed in the domain interior. If this option is set to zero, metgrid will horizontally interpolate meteorological data to every grid point in the model domains. This option is only available for ARW            
+      };
       if (typeof obj === 'string') {
         ns = new Namelist(obj);
         if ('hgridspec' in ns) {
+          // Format used prior WRF version 3
           this._createWRFSI(ns);
         } else {
           this._create(ns);
@@ -587,56 +733,38 @@
     _createClass(WPSNamelist, [{
       key: "_create",
       value: function _create(ns) {
-        this.share.wrf_core = ns['share']['wrf_core'];
-        this.share.max_dom = ns['share']['max_dom'];
-        this.share.start_date = ns['share']['start_date'];
-        this.share.end_date = ns['share']['end_date'];
-        this.share.interval_seconds = ns['share']['interval_seconds'];
-        if (this.share.io_form_geogrid) {
-          this.share.io_form_geogrid = ns['share']['io_form_geogrid'];
+        if ('share' in ns) {
+          Object.assign(this.share, ns['share']);
+          WPSNamelist._convertToArray(this.geogrid, 'start_year');
+          WPSNamelist._convertToArray(this.geogrid, 'start_month');
+          WPSNamelist._convertToArray(this.geogrid, 'start_day');
+          WPSNamelist._convertToArray(this.geogrid, 'start_hour');
+          WPSNamelist._convertToArray(this.geogrid, 'end_year');
+          WPSNamelist._convertToArray(this.geogrid, 'end_month');
+          WPSNamelist._convertToArray(this.geogrid, 'end_day');
+          WPSNamelist._convertToArray(this.geogrid, 'end_hour');
+          WPSNamelist._convertToArray(this.geogrid, 'start_date');
+          WPSNamelist._convertToArray(this.geogrid, 'end_date');
+          WPSNamelist._convertToArray(this.geogrid, 'active_grid');
         }
-        if (this.share.debug_level) {
-          this.share.debug_level = ns['share']['debug_level'];
+        if ('geogrid' in ns) {
+          Object.assign(this.geogrid, ns['geogrid']);
+          WPSNamelist._convertToArray(this.geogrid, 'parent_id');
+          WPSNamelist._convertToArray(this.geogrid, 'parent_grid_ratio');
+          WPSNamelist._convertToArray(this.geogrid, 'i_parent_start');
+          WPSNamelist._convertToArray(this.geogrid, 'J_parent_start');
+          WPSNamelist._convertToArray(this.geogrid, 's_we');
+          WPSNamelist._convertToArray(this.geogrid, 'e_we');
+          WPSNamelist._convertToArray(this.geogrid, 's_sn');
+          WPSNamelist._convertToArray(this.geogrid, 'e_sn');
+          WPSNamelist._convertToArray(this.geogrid, 'geog_data_res');
+          WPSNamelist._convertToArray(this.geogrid, 'e_we');
         }
-
-        /*
-        1. PARENT_ID :  A list of MAX_DOM integers specifying, for each nest, the domain number of the nest�s parent; for the coarsest domain, this variable should be set to 1. Default value is 1.
-        2. PARENT_GRID_RATIO : A list of MAX_DOM integers specifying, for each nest, the nesting ratio relative to the domain�s parent. No default value.
-        3. I_PARENT_START : A list of MAX_DOM integers specifying, for each nest, the x-coordinate of the lower-left corner of the nest in the parent unstaggered grid. For the coarsest domain, a value of 1 should be specified. No default value.
-        4. J_PARENT_START : A list of MAX_DOM integers specifying, for each nest, the y-coordinate of the lower-left corner of the nest in the parent unstaggered grid. For the coarsest domain, a value of 1 should be specified. No default value.
-        5. S_WE : A list of MAX_DOM integers which should all be set to 1. Default value is 1.
-        6. E_WE : A list of MAX_DOM integers specifying, for each nest, the nest�s full west-east dimension. For nested domains, e_we must be one greater than an integer multiple of the nest's parent_grid_ratio (i.e., e_we = n*parent_grid_ratio+1 for some positive integer n). No default value.
-        7. S_SN : A list of MAX_DOM integers which should all be set to 1. Default value is 1.
-        8. E_SN : A list of MAX_DOM integers specifying, for each nest, the nest�s full south-north dimension. For nested domains, e_sn must be one greater than an integer multiple of the nest's parent_grid_ratio (i.e., e_sn = n*parent_grid_ratio+1 for some positive integer n). No default value.
-        9. GEOG_DATA_RES : A list of MAX_DOM character strings specifying, for each nest, a corresponding resolution or list of resolutions separated by + symbols of source data to be used when interpolating static terrestrial data to the nest�s grid. For each nest, this string should contain a resolution matching a string preceding a colon in a rel_path or abs_path specification (see the description of GEOGRID.TBL options) in the GEOGRID.TBL file for each field. If a resolution in the string does not match any such string in a rel_path or abs_path specification for a field in GEOGRID.TBL, a default resolution of data for that field, if one is specified, will be used. If multiple resolutions match, the first resolution to match a string in a rel_path or abs_path specification in the GEOGRID.TBL file will be used. Default value is 'default'.
-          */
-        this.geogrid.parent_id = [].concat(ns['geogrid']['parent_id']);
-        this.geogrid.parent_grid_ratio = [].concat(ns['geogrid']['parent_grid_ratio']);
-        this.geogrid.i_parent_start = [].concat(ns['geogrid']['i_parent_start']);
-        this.geogrid.j_parent_start = [].concat(ns['geogrid']['j_parent_start']);
-        this.geogrid.e_we = [].concat(ns['geogrid']['e_we']);
-        this.geogrid.e_sn = [].concat(ns['geogrid']['e_sn']);
-        this.geogrid.geog_data_res = [].concat(ns['geogrid']['geog_data_res']);
-        this.geogrid.dx = ns['geogrid']['dx'];
-        this.geogrid.dy = ns['geogrid']['dy'];
-        this.geogrid.map_proj = ns['geogrid']['map_proj'];
-        this.geogrid.ref_lat = ns['geogrid']['ref_lat'];
-        this.geogrid.ref_lon = ns['geogrid']['ref_lon'];
-        this.geogrid.truelat1 = ns['geogrid']['truelat1'];
-        this.geogrid.truelat2 = ns['geogrid']['truelat2'];
-        this.geogrid.stand_lon = ns['geogrid']['stand_lon'];
-        if (ns['geogrid']['geog_data_path']) {
-          this.geogrid.geog_data_path = ns['geogrid']['geog_data_path'];
+        if ('ungrib' in ns) {
+          Object.assign(this.ungrib, ns['ungrib']);
         }
-        if (ns['geogrid']['opt_geogrid_tbl_path']) {
-          this.geogrid.opt_geogrid_tbl_path = ns['geogrid']['opt_geogrid_tbl_path'];
-        }
-        this.ungrib.out_format = ns['ungrib']['out_format'];
-        this.ungrib.prefix = ns['ungrib']['prefix'];
-        this.metgrid.fg_name = ns['metgrid']['fg_name'];
-        this.metgrid.io_form_metgrid = ns['metgrid']['io_form_metgrid'];
-        if (ns['metgrid']['opt_metgrid_tbl_path']) {
-          this.metgrid.opt_metgrid_tbl_path = ns['metgrid']['opt_metgrid_tbl_path'];
+        if ('metgrid' in ns) {
+          Object.assign(this.metgrid, ns['metgrid']);
         }
       }
     }, {
@@ -699,44 +827,13 @@
         this.metgrid.opt_metgrid_tbl_path = '/home/wrf';
       }
     }, {
-      key: "toString",
-      value: function toString() {
-        if (!Number.isInteger) {
-          Number.isInteger = function isInteger(nVal) {
-            return typeof nVal === "number" && isFinite(nVal) && nVal > -9007199254740992 && nVal < 9007199254740992 && Math.floor(nVal) === nVal;
-          };
-        }
-        function valueToString(val) {
-          if (Array.isArray(val)) {
-            var strVal = valueToString(val[0]);
-            for (var i = 1; i < val.length; i++) {
-              strVal += ', ' + valueToString(val[i]);
-            }
-            return strVal;
-          } else if (typeof val == "string") {
-            return "'" + val + "'";
-          } else if (typeof val == "boolean") {
-            return val ? '.true.' : '.false.';
-          } else if (!Number.isInteger(val)) {
-            return val.toFixed(3);
-          }
-          return val.toString();
-        }
-        function wpsSectionToString(section, properties, values) {
-          var content = '&' + section + '\n';
-          for (var i = 0; i < properties.length; i++) {
-            content += ' ' + properties[i].padEnd(20) + ' = ' + valueToString(values[i]) + '\n';
-          }
-          return content + '/\n\n';
-        }
-        function getDateString(d) {
-          return d.getFullYear().toString() + '-' + d.getMonth().toString().padStart(2, '0') + '-' + d.getDay().toString().padStart(2, '0');
-        }
-        var content = '';
+      key: "_setDefaults",
+      value: function _setDefaults() {
+        // set default values
         if (!this.share.start_date || !this.share.end_date) {
           var now = new Date();
-          var start_date = getDateString(now) + '_03:00:00';
-          var end_date = getDateString(now) + '_18:00:00';
+          var start_date = WPSNamelist._formarDate(now) + '_03:00:00';
+          var end_date = WPSNamelist._formarDate(now) + '_18:00:00';
           this.share.start_date = [];
           this.share.end_date = [];
           while (this.share.start_date.length < this.share.max_dom) {
@@ -744,15 +841,103 @@
             this.share.end_date.push(end_date);
           }
         }
-        content += wpsSectionToString('share', ['wrf_core', 'max_dom', 'start_date', 'end_date', 'interval_seconds', 'io_form_geogrid', 'debug_level'], [this.share.wrf_core, this.share.max_dom, this.share.start_date, this.share.end_date, this.share.interval_seconds, this.share.io_form_geogrid, this.share.debug_level]);
-        content += wpsSectionToString('geogrid', ['parent_id', 'parent_grid_ratio', 'i_parent_start', 'j_parent_start', 'e_we', 'e_sn', 'geog_data_res', 'dx', 'dy', 'map_proj', 'ref_lat', 'ref_lon', 'truelat1', 'truelat2', 'stand_lon', 'geog_data_path', 'opt_geogrid_tbl_path'], [this.geogrid.parent_id, this.geogrid.parent_grid_ratio, this.geogrid.i_parent_start, this.geogrid.j_parent_start, this.geogrid.e_we, this.geogrid.e_sn, this.geogrid.geog_data_res, this.geogrid.dx, this.geogrid.dy, this.geogrid.map_proj, this.geogrid.ref_lat, this.geogrid.ref_lon, this.geogrid.truelat1, this.geogrid.truelat2, this.geogrid.stand_lon, this.geogrid.geog_data_path, this.geogrid.opt_geogrid_tbl_path]);
-        content += wpsSectionToString('ungrib', ['out_format', 'prefix'], [this.ungrib.out_format, this.ungrib.prefix]);
-        content += wpsSectionToString('metgrid', ['fg_name', 'io_form_metgrid', 'opt_metgrid_tbl_path'], [this.metgrid.fg_name, this.metgrid.io_form_metgrid, this.metgrid.opt_metgrid_tbl_path]);
+        if (this.share.interval_seconds === null) {
+          // 6 hours
+          this.share.interval_seconds = 6 * 60 * 60;
+        }
+        if (this.share.debug_level === null) {
+          this.share.debug_level = 0;
+        }
+        if (this.geogrid.geog_data_path === null) {
+          this.geogrid.geog_data_path = 'geog';
+        }
+        if (this.geogrid.opt_geogrid_tbl_path === null) {
+          this.geogrid.opt_geogrid_tbl_path = 'geogrid';
+        }
+        if (this.metgrid.fg_name === null) {
+          this.metgrid.fg_name = 'FILE';
+        }
+      }
+    }, {
+      key: "toString",
+      value: function toString() {
+        this._setDefaults();
+        var content = '';
+        content += WPSNamelist._formatSection('share', ['wrf_core', 'max_dom', 'start_date', 'end_date', 'interval_seconds', 'io_form_geogrid', 'debug_level'], [this.share.wrf_core, this.share.max_dom, this.share.start_date, this.share.end_date, this.share.interval_seconds, this.share.io_form_geogrid, this.share.debug_level]);
+        content += WPSNamelist._formatSection('geogrid', ['parent_id', 'parent_grid_ratio', 'i_parent_start', 'j_parent_start', 'e_we', 'e_sn', 'geog_data_res', 'dx', 'dy', 'map_proj', 'ref_lat', 'ref_lon', 'truelat1', 'truelat2', 'stand_lon', 'geog_data_path', 'opt_geogrid_tbl_path'], [this.geogrid.parent_id, this.geogrid.parent_grid_ratio, this.geogrid.i_parent_start, this.geogrid.j_parent_start, this.geogrid.e_we, this.geogrid.e_sn, this.geogrid.geog_data_res, this.geogrid.dx, this.geogrid.dy, this.geogrid.map_proj, this.geogrid.ref_lat, this.geogrid.ref_lon, this.geogrid.truelat1, this.geogrid.truelat2, this.geogrid.stand_lon, this.geogrid.geog_data_path, this.geogrid.opt_geogrid_tbl_path]);
+        content += WPSNamelist._formatSection('ungrib', ['out_format', 'prefix'], [this.ungrib.out_format, this.ungrib.prefix]);
+        content += WPSNamelist._formatSection('metgrid', ['fg_name', 'io_form_metgrid', 'opt_metgrid_tbl_path'], [this.metgrid.fg_name, this.metgrid.io_form_metgrid, this.metgrid.opt_metgrid_tbl_path]);
         return content;
+      }
+    }], [{
+      key: "_convertToArray",
+      value: function _convertToArray(section, paramName) {
+        if (section[paramName] && !Array.isArray(section[paramName])) {
+          section[paramName] = [].concat(section[paramName]);
+        }
+      }
+    }, {
+      key: "_isInteger",
+      value: function _isInteger(val) {
+        return typeof val === "number" && isFinite(val) && val > -9007199254740992 && val < 9007199254740992 && Math.floor(val) === val;
+      }
+    }, {
+      key: "_formatValue",
+      value: function _formatValue(val) {
+        if (Array.isArray(val)) {
+          var strVal = WPSNamelist._formatValue(val[0]);
+          for (var i = 1; i < val.length; i++) {
+            strVal += ', ' + WPSNamelist._formatValue(val[i]);
+          }
+          return strVal;
+        } else if (typeof val == "string") {
+          return "'" + val + "'";
+        } else if (typeof val == "boolean") {
+          return val ? '.true.' : '.false.';
+        } else if (!WPSNamelist._isInteger(val)) {
+          return val.toFixed(3);
+        }
+        return val.toString();
+      }
+    }, {
+      key: "_formarDate",
+      value: function _formarDate(d) {
+        return d.getFullYear().toString() + '-' + d.getMonth().toString().padStart(2, '0') + '-' + d.getDay().toString().padStart(2, '0');
+      }
+    }, {
+      key: "_formatSection",
+      value: function _formatSection(section, properties, values) {
+        var content = '&' + section + '\n';
+        for (var i = 0; i < properties.length; i++) {
+          if (values[i] === null) {
+            throw new Error("Property value ".concat(properties[i], " is not set"));
+          } else if (typeof values[i] === 'undefined') {
+            throw new Error("Property ".concat(properties[i], " is not defined"));
+          } else {
+            content += ' ' + properties[i].padEnd(20) + ' = ' + WPSNamelist._formatValue(values[i]) + '\n';
+          }
+        }
+        return content + '/\n\n';
       }
     }]);
     return WPSNamelist;
   }();
+
+  var EarthRadius = 6370000;
+  var WrfProjections = {
+    lambert: 'lambert',
+    mercator: 'mercator',
+    polar: 'polar',
+    latlon: 'lat-lon',
+    rotatedlatlon: 'rotated_ll'
+  };
+
+  function nearestIntToZero(num) {
+    return num < 0 ? Math.ceil(num) : Math.floor(num);
+  }
+  function degreesToMeters(d) {
+    return d * EarthRadius * Math.PI * 2.0 / 360.0;
+  }
 
   function globals(defs) {
     defs('EPSG:4326', "+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees");
@@ -8116,113 +8301,352 @@
   proj4.version = '__VERSION__';
   includedProjections(proj4);
 
-  /**
-   * @constructor
-   */
-  var WRFProjection$1 = /*#__PURE__*/function () {
-    function WRFProjection(map_proj, ref_lat, ref_lon, truelat1, truelat2, stand_lon, dx, dy, e_we, e_sn) {
-      _classCallCheck(this, WRFProjection);
-      if (map_proj == 'lambert') {
-        // Lambert Conformal Conic used by WRF
-        this.domain_proj = '+units=m +proj=lcc' + ' +lat_1=' + truelat1 + ' +lat_2=' + truelat2 + ' +lat_0=' + ref_lat + ' +lon_0=' + stand_lon + ' +a=' + WRFProjection.radius + ' +b=' + WRFProjection.radius + ' +towgs84=0,0,0 +no_defs=True';
-      } else if (map_proj == 'mercator') {
-        // Mercator
-        this.domain_proj = '+units=m +proj=merc' + ' +lat_ts=' + truelat1 + ' +lon_0=' + stand_lon + ' +a=' + WRFProjection.radius + ' +b=' + WRFProjection.radius + ' +towgs84=0,0,0 +no_defs=True';
+  // PROJ4 strings based on https://github.com/NCAR/wrf-python/blob/develop/src/wrf/projection.py
+  var WrfProjection = /*#__PURE__*/function () {
+    function WrfProjection(params) {
+      _classCallCheck(this, WrfProjection);
+      this._params = Object.assign({
+        map_proj: null,
+        ref_lat: null,
+        ref_lon: null,
+        truelat1: null,
+        truelat2: null,
+        stand_lon: null,
+        dx: null,
+        dy: null,
+        e_we: null,
+        e_sn: null
+      }, params);
+
+      // Lambert Conformal Conic
+      if (this._params.map_proj === WrfProjections.lambert) {
+        this._proj4 = '+units=m' + ' +proj=lcc' + ' +lat_1=' + this._params.truelat1 + ' +lat_2=' + this._params.truelat2 + ' +lat_0=' + this._params.ref_lat + ' +lon_0=' + this._params.stand_lon + ' +a=' + EarthRadius + ' +b=' + EarthRadius + ' +towgs84=0,0,0' + ' +no_defs=True';
       }
-      /*
-      else if (map_proj == 'polar') {
+
+      // Mercator
+      else if (this._params.map_proj === WrfProjections.mercator) {
+        this._proj4 = '+units=m' + ' +proj=merc' + ' +lat_ts=' + this._params.truelat1 + ' +lon_0=' + this._params.stand_lon + ' +a=' + EarthRadius + ' +b=' + EarthRadius + ' +towgs84=0,0,0' + ' +no_defs=True' + ' +nadgrids=null';
+      }
+
       // Polar stereographic
-      this.domain_proj = '+units=m +proj=stere'
-          + ' +lat_0=' + ((truelat1 < 0) ? -90 : 90)
-          + ' +lon_0=' + stand_lon
-          + ' +lat_ts=' + truelat1
-          + ' +a=' + WRFProjection.radius
-          + ' +b=' + WRFProjection.radius;
-          //+ ' +towgs84=0,0,0 +no_defs=True';
+      else if (this._params.map_proj === WrfProjections.polar) {
+        var hemi = this._params.truelat1 < 0 ? -90 : 90;
+        var lat_ts = this._params.truelat1;
+        this._proj4 = '+units=m' + ' +proj=stere' + ' +lat_0=' + hemi + ' +lon_0=' + this._params.stand_lon + ' +lat_ts=' + lat_ts + ' +a=' + EarthRadius + ' +b=' + EarthRadius;
       }
-      else if (map_proj == 'lat-lon') {
+
       // Regular latitude-longitude, or cylindrical equidistant
-      this.domain_proj = '+units=m +proj=eqc'
-          + ' +lon_0=' + stand_lon
-          + ' +a=' + WRFProjection.radius
-          + ' +b=' + WRFProjection.radius
-          + ' +towgs84=0,0,0 +no_defs=True';
-      }
-      */else {
-        throw "Unsupported projection " + map_proj;
+      else if (this._params.map_proj === WrfProjections.latlon) {
+        this._proj4 = '+units=m' + ' +proj=eqc' + ' +lon_0=' + this._params.stand_lon + ' +a=' + EarthRadius + ' +b=' + EarthRadius + ' +nadgrids=null' + ' +towgs84=0,0,0' + ' +no_defs=True';
       }
 
-      // mass grid starts from center of SW grid cell - point 0, 0
-      var mass_grid_size_i = (e_we - 2) * dx;
-      var mass_grid_size_j = (e_sn - 2) * dy;
+      // Rotated latitude-longitude, or cylindrical equidistant
+      // else if (this._params.map_proj === WrfProjections.rotated_ll) {
+      //     
 
-      // corners grid starts from SW corner - point 0, 0
-      var corners_grid_size_i = (e_we - 1) * dx;
-      var corners_grid_size_j = (e_sn - 1) * dy;
-      var grid_center = proj4(WRFProjection.latlon_sphere, this.domain_proj, [ref_lon, ref_lat]);
-      this.mass_offset_i = grid_center[0] - mass_grid_size_i * 0.5;
-      this.mass_offset_j = grid_center[1] - mass_grid_size_j * 0.5;
-      this.corners_offset_i = grid_center[0] - corners_grid_size_i * 0.5;
-      this.corners_offset_j = grid_center[1] - corners_grid_size_j * 0.5;
-      this.dx = dx;
-      this.dy = dy;
+      //     // Need to determine hemisphere, typically pole_lon is 0 for southern
+      //     // hemisphere, 180 for northern hemisphere.
+      //     let north = true;
+      //     if (this._wps.pole_lon !== null) {
+      //         if (this._wps.pole_lon == 0){
+      //             north = false;
+      //         }
+      //         else if (this._wps.pole_lon != 180) {
+      //             if (this._wps.ref_lat < 0.0) {
+      //                 north = false;
+      //             }
+      //         }
+      //     }
+      //     else {
+      //         if (this._wps.ref_lat < 0.0) {
+      //             north = false;
+      //         }
+      //     }
+
+      //     const bm_cart_pole_lat = ;
+      //     const cart_pole_lon = ;
+
+      //     this._proj4 = '+proj=ob_tran'
+      //         + ' +o_proj=latlon'
+      //         + ' +a=' + EarthRadius
+      //         + ' +b=' + EarthRadius
+      //         + ' +to_meter=' // + math.radians(1)
+      //         + ' +o_lon_p=' + 180.0 - this._wps.pole_lon
+      //         + ' +o_lat_p=' + 180.0 - bm_cart_pole_lat
+      //         + ' +lon_0=' + 180.0 + cart_pole_lon;
+      // }
+      else {
+        throw "Unsupported projection " + this._wps.map_proj;
+      }
     }
-
-    //Convert mass grid coordinates to its nest grid coordinates
-    _createClass(WRFProjection, [{
-      key: "to_child_mass_ij",
-      value: function to_child_mass_ij(i, j, grid) {
-        var delta = (grid.parent_grid_ratio - 1) / 2;
-        return [(i - grid.i_parent_start + 1.) * grid.parent_grid_ratio + delta, (j - grid.j_parent_start + 1.) * grid.parent_grid_ratio + delta];
+    _createClass(WrfProjection, [{
+      key: "latlon_to_ij",
+      value: function latlon_to_ij(lat, lon) {
+        if (isNaN(lat) || isNaN(lon)) {
+          throw new Error('Invalid lat-lon coordinates');
+        }
+        return proj4(WrfProjection._wrf_proj, this._proj4, [lon, lat]);
       }
-
-      //Convert nest grid coordinates to its parent grid coordinates
     }, {
-      key: "to_parent_mass_ij",
-      value: function to_parent_mass_ij(i, j, i_parent_start, j_parent_start, parent_grid_ratio) {
-        var delta = (parent_grid_ratio - 1) / 2;
-        return [(i - delta) / parent_grid_ratio + i_parent_start - 1, (j - delta) / parent_grid_ratio + j_parent_start - 1];
-      }
-
-      // Convert latitude and longitude into mass grid coordinates.
-    }, {
-      key: "latlon_to_mass_ij",
-      value: function latlon_to_mass_ij(lat, lon) {
-        var ij = proj4(WRFProjection.latlon_sphere, this.domain_proj, [lon, lat]);
-        ij[0] = (ij[0] - this.mass_offset_i) / this.dx;
-        ij[1] = (ij[1] - this.mass_offset_j) / this.dy;
-        return ij;
-      }
-
-      //Convert mass grid coordinates to latitude and longitude
-    }, {
-      key: "mass_ij_to_latlon",
-      value: function mass_ij_to_latlon(i, j) {
-        var lonlat = proj4(this.domain_proj, WRFProjection.latlon_sphere, [i * this.dx + this.mass_offset_i, j * this.dy + this.mass_offset_j]);
+      key: "ij_to_latlon",
+      value: function ij_to_latlon(i, j) {
+        if (isNaN(i) || isNaN(j)) {
+          throw new Error('Invalid IJ coordinates');
+        }
+        var lonlat = proj4(this._proj4, WrfProjection._wrf_proj, [i, j]);
         return [lonlat[1], lonlat[0]];
       }
+    }]);
+    return WrfProjection;
+  }();
+  _defineProperty(WrfProjection, "earth_radius", 6370000);
+  // Spherical latlon used by WRF
+  // see https://fabienmaussion.info/2018/01/06/wrf-projection/
+  _defineProperty(WrfProjection, "_wrf_proj", '+units=m +proj=longlat +a=' + EarthRadius + ' +b=' + EarthRadius + '  +towgs84=0,0,0 +no_defs=True');
 
-      //Converts grid corners coordinates to its child grid coordinates
+  var Geogrid = /*#__PURE__*/function () {
+    function Geogrid(id, wps, parent) {
+      _classCallCheck(this, Geogrid);
+      this._wps = Object.assign({
+        map_proj: null,
+        ref_lat: null,
+        ref_lon: null,
+        truelat1: null,
+        truelat2: null,
+        stand_lon: null,
+        dx: null,
+        dy: null,
+        s_we: 1,
+        s_sn: 1,
+        e_we: null,
+        e_sn: null,
+        parent_grid_ratio: null,
+        i_parent_start: null,
+        j_parent_start: null
+      }, wps);
+      if (parent) {
+        this.parent = parent;
+        if (this._wps.parent_grid_ratio === null) {
+          throw new Error('parent_grid_ratio must be specified for nested grids');
+        }
+        if (this._wps.i_parent_start === null) {
+          throw new Error('i_parent_start must be specified for nested grids');
+        }
+        if (this._wps.j_parent_start === null) {
+          throw new Error('j_parent_start must be specified for nested grids');
+        }
+      } else {
+        this.parent = null;
+      }
+      if (typeof id === 'Number') {
+        this.id = "d".concat(id.toString().padStart('0', 2));
+      } else {
+        this.id = id.toString();
+      }
+      this._initialize();
+    }
+    _createClass(Geogrid, [{
+      key: "wps",
+      get: function get() {
+        return this._wps;
+      }
     }, {
-      key: "to_child_corners_ij",
-      value: function to_child_corners_ij(i, j, i_parent_start, j_parent_start, parent_grid_ratio) {
-        return [(i - i_parent_start + 1) * parent_grid_ratio, (j - j_parent_start + 1) * parent_grid_ratio];
+      key: "projection",
+      get: function get() {
+        return this._projection;
+      }
+    }, {
+      key: "corners",
+      get: function get() {
+        return this._corners;
+      }
+    }, {
+      key: "parent_grid_ratio",
+      get: function get() {
+        return this._wps.parent_grid_ratio;
+      }
+    }, {
+      key: "i_parent_start",
+      get: function get() {
+        return this._wps.i_parent_start;
+      }
+    }, {
+      key: "j_parent_start",
+      get: function get() {
+        return this._wps.j_parent_start;
+      }
+    }, {
+      key: "e_we",
+      get: function get() {
+        return this._wps.e_we;
+      }
+    }, {
+      key: "e_sn",
+      get: function get() {
+        return this._wps.e_sn;
+      }
+    }, {
+      key: "polygonPath",
+      get: function get() {
+        if (!this._polygonPath) {
+          this._polygonPath = this._initPolygonPath();
+        }
+        return this._polygonPath;
+      }
+    }, {
+      key: "_initialize",
+      value: function _initialize() {
+        this._proj_ref_lat = this._wps.ref_lat;
+        this._proj_ref_lon = this._wps.ref_lon;
+        this._proj_truelat1 = this._wps.truelat1;
+        this._proj_truelat2 = this._wps.truelat2;
+        this._proj_stand_lon = this._wps.stand_lon;
+        this._proj_dx = this._wps.dx;
+        this._proj_dy = this._wps.dy;
+        this._proj_e_we = this._wps.e_we;
+        this._proj_e_sn = this._wps.e_sn;
+
+        // i,j start on a grid with nets's DX,DY
+        var i_moad_start = 0,
+          j_moad_start = 0;
+        var nest = this.parent !== null;
+        console.debug("Initializing grid ".concat(this.id));
+        console.debug(' WPS:');
+        if (this._wps.map_proj === WrfProjections.latlon) {
+          console.debug("  dx: ".concat(this._wps.dx, " deg"));
+          console.debug("  dy: ".concat(this._wps.dy, " deg"));
+        } else {
+          console.debug("  dx: ".concat(this._proj_dx, "m"));
+          console.debug("  dy: ".concat(this._proj_dy, "m"));
+        }
+        console.debug("  e_sn: ".concat(this._wps.e_sn));
+        console.debug("  e_we: ".concat(this._wps.e_we));
+
+        // conver DX,DY from degrees to meters
+        if (this._wps.map_proj === WrfProjections.latlon) {
+          // If no dx,dy specified, assume global grid
+          if (isNaN(this._wps.dx) && isNaN(this._wps.dy)) {
+            var dlondeg = 360 / (this._wps.e_we - this._wps.s_we);
+            var dlatdeg = 180 / (this._wps.e_sn - this._wps.s_sn);
+            this._proj_ref_lon = this._wps.stand_lon + dlondeg / 2;
+            this._proj_ref_lat = -90. + dlatdeg / 2;
+            this._proj_dx = EarthRadius * Math.PI * 2.0 / (this._wps.e_we - this._wps.s_we);
+            this._proj_dy = EarthRadius * Math.PI / (this._wps.e_sn - this._wps.s_sn);
+          } else {
+            this._proj_dx = degreesToMeters(this._wps.dx);
+            this._proj_dy = degreesToMeters(this._wps.dy);
+            if (this._wps.ref_lat === null && this._wps.ref_lon === null) {
+              throw new Error('For lat-lon projection, if dx/dy are specified, a regional domain is assumed, and a ref_lat,ref_lon must also be specified');
+            }
+          }
+          console.debug("  dx: ".concat(this._proj_dx, "m"));
+          console.debug("  dy: ".concat(this._proj_dy, "m"));
+        }
+        if (nest) {
+          console.debug(' Nest:');
+          console.debug("  parent_grid_ratio: ".concat(this.parent_grid_ratio));
+          console.debug("  i_parent_start: ".concat(this.i_parent_start));
+          console.debug("  j_parent_start: ".concat(this.j_parent_start));
+          var
+            // grid ratio to MOAD grid
+            moad_grid_ratio = 1,
+            // temp grid holder
+            grid = this;
+
+          // grid point to MOAD after existing the while loop
+          while (grid.parent != null) {
+            moad_grid_ratio *= grid.parent_grid_ratio;
+            i_moad_start += (grid.i_parent_start - 1) * moad_grid_ratio;
+            j_moad_start += (grid.j_parent_start - 1) * moad_grid_ratio;
+            grid = grid.parent;
+          }
+          console.debug("  moad_grid_ratio: ".concat(moad_grid_ratio));
+          console.debug("  i_moad_start: ".concat(i_moad_start));
+          console.debug("  j_moad_start: ".concat(j_moad_start));
+
+          // set projection to cover whole MOAD grid
+          this._proj_dx = this._proj_dx / moad_grid_ratio;
+          this._proj_dy = this._proj_dy / moad_grid_ratio;
+          this._proj_e_we = (grid.e_we - 1) * moad_grid_ratio + 1;
+          this._proj_e_sn = (grid.e_sn - 1) * moad_grid_ratio + 1;
+          console.debug("  dx: ".concat(this._proj_dx, "m"));
+          console.debug("  dy: ".concat(this._proj_dy, "m"));
+          console.debug("  e_sn: ".concat(this._proj_e_sn));
+          console.debug("  e_we: ".concat(this._proj_e_we));
+        }
+        this._projection = new WrfProjection({
+          map_proj: this._wps.map_proj,
+          ref_lat: this._proj_ref_lat,
+          ref_lon: this._proj_ref_lon,
+          truelat1: this._proj_truelat1,
+          truelat2: this._proj_truelat2,
+          stand_lon: this._proj_stand_lon,
+          dx: this._proj_dx,
+          dy: this._proj_dy,
+          e_we: this._proj_e_we,
+          e_sn: this._proj_e_sn
+        });
+
+        // mass grid starts from center of SW grid cell - point 0, 0
+        var mass_grid_size_i = (this._proj_e_we - 2) * this._proj_dx;
+        var mass_grid_size_j = (this._proj_e_sn - 2) * this._proj_dy;
+
+        // corners grid starts from SW corner - point 0, 0
+        var unstaggered_grid_size_i = (this._proj_e_we - 1) * this._proj_dx;
+        var unstaggered_grid_size_j = (this._proj_e_sn - 1) * this._proj_dy;
+        console.debug("  unstaggered_grid_size_i: ".concat(unstaggered_grid_size_i, "m"));
+        console.debug("  unstaggered_grid_size_j: ".concat(unstaggered_grid_size_j, "m"));
+        var grid_center_ij = this._projection.latlon_to_ij(this._proj_ref_lat, this._proj_ref_lon);
+        console.debug("  grid_center_ij: [".concat(grid_center_ij[0], ", ").concat(grid_center_ij[1], "]"));
+        this._mass_offset_i = grid_center_ij[0] - mass_grid_size_i * 0.5;
+        this._mass_offset_j = grid_center_ij[1] - mass_grid_size_j * 0.5;
+        this._unstaggered_offset_i = grid_center_ij[0] - unstaggered_grid_size_i * 0.5 + i_moad_start * this._proj_dx;
+        this._unstaggered_offset_j = grid_center_ij[1] - unstaggered_grid_size_j * 0.5 + j_moad_start * this._proj_dy;
+        console.debug("  unstaggered_offset_i: ".concat(this._unstaggered_offset_i, "m"));
+        console.debug("  unstaggered_offset_j: ".concat(this._unstaggered_offset_j, "m"));
+        this._corners = {
+          sw: this.unstaggered_ij_to_latlon(0, 0),
+          se: this.unstaggered_ij_to_latlon(this._wps.e_we - 1, 0),
+          ne: this.unstaggered_ij_to_latlon(this._wps.e_we - 1, this._wps.e_sn - 1),
+          nw: this.unstaggered_ij_to_latlon(0, this._wps.e_sn - 1)
+        };
       }
 
-      //Converts grid corners coordinates to its parent grid coordinates
+      // function return grid polygon path
     }, {
-      key: "to_parent_corners_ij",
-      value: function to_parent_corners_ij(i, j, i_parent_start, j_parent_start, parent_grid_ratio) {
-        return [i / parent_grid_ratio + i_parent_start - 1, j / parent_grid_ratio + j_parent_start - 1];
+      key: "_initPolygonPath",
+      value: function _initPolygonPath() {
+        var i,
+          j,
+          path = [],
+          step = 5;
+        path.push(this._corners.sw);
+        for (i = step; i < this._wps.e_we - 1 - step; i += step) {
+          path.push(this.unstaggered_ij_to_latlon(i, 0));
+        }
+        path.push(this._corners.se);
+        for (j = step; j < this._wps.e_sn - 1 - step; j += step) {
+          path.push(this.unstaggered_ij_to_latlon(this._wps.e_we - 1, j));
+        }
+        path.push(this._corners.ne);
+        for (i = this._wps.e_we - 1 - step; i > step; i -= step) {
+          path.push(this.unstaggered_ij_to_latlon(i, this._wps.e_sn - 1));
+        }
+        path.push(this._corners.nw);
+        for (j = this._wps.e_sn - 1 - step; j > step; j -= step) {
+          path.push(this.unstaggered_ij_to_latlon(0, j));
+        }
+        path.push(this._corners.sw);
+        return path;
       }
 
       //Convert latitude and longitude into grid corners coordinates
     }, {
-      key: "latlon_to_corners_ij",
-      value: function latlon_to_corners_ij(lat, lon) {
-        var ij = proj4(WRFProjection.latlon_sphere, this.domain_proj, [lon, lat]);
-        ij[0] = (ij[0] - this.corners_offset_i) / this.dx;
-        ij[1] = (ij[1] - this.corners_offset_j) / this.dy;
+      key: "latlon_to_unstaggered_ij",
+      value: function latlon_to_unstaggered_ij(lat, lon) {
+        var ij = this._projection.latlon_to_ij(lat, lon);
+        ij[0] = (ij[0] - this._unstaggered_offset_i) / this._proj_dx;
+        ij[1] = (ij[1] - this._unstaggered_offset_j) / this._proj_dy;
         return ij;
       }
 
@@ -8230,26 +8654,15 @@
       // (0, 0) is the SW corner
       // NE corner is(e_we - 1, e_sn - 1)
     }, {
-      key: "corners_ij_to_latlon",
-      value: function corners_ij_to_latlon(i, j) {
+      key: "unstaggered_ij_to_latlon",
+      value: function unstaggered_ij_to_latlon(i, j) {
         // transform coordinates to lat, lon
-        var lonlat = proj4(this.domain_proj, WRFProjection.latlon_sphere, [i * this.dx + this.corners_offset_i, j * this.dy + this.corners_offset_j]);
-        return [lonlat[1], lonlat[0]];
+        return this._projection.ij_to_latlon(i * this._proj_dx + this._unstaggered_offset_i, j * this._proj_dy + this._unstaggered_offset_j);
       }
     }]);
-    return WRFProjection;
+    return Geogrid;
   }();
-  WRFProjection$1.radius = 6370000;
-  // Spherical latlon used by WRF
-  WRFProjection$1.latlon_sphere = '+units=m +proj=longlat +a=' + WRFProjection$1.radius + ' +b=' + WRFProjection$1.radius + '  +towgs84=0,0,0 +no_defs=True';
 
-  function nearestIntToZero(num) {
-    return num < 0 ? Math.ceil(num) : Math.floor(num);
-  }
-
-  /**
-   * @constructor
-   */
   var WRFDomainGrid = L.Polygon.extend({
     statics: {
       // min grid points a nest domain should be
@@ -8287,7 +8700,7 @@
     parent: null,
     // grid id
     id: null,
-    // grid parameters
+    // WPS grid parameters
     parent_grid_ratio: 1,
     i_parent_start: 1,
     j_parent_start: 1,
@@ -8317,71 +8730,31 @@
     // grid state
     _isSelected: false,
     nests: null,
-    _projection: null,
-    _getProjection: function _getProjection() {
-      if (this.parent == null) {
-        return new WRFProjection$1(this.domain.map_proj, this.domain.ref_lat, this.domain.ref_lon, this.domain.truelat1, this.domain.truelat2, this.domain.stand_lon, this.domain.dx, this.domain.dy, this.e_we, this.e_sn);
-      }
-      // create projection object adapted to the nest grid
-      else {
-        var projection,
-          dx,
-          dy,
-          e_we,
-          e_sn,
-          parent_grid_ratio = 1,
-          grid = this,
-          i_offset = 0,
-          j_offset = 0;
-        while (grid.parent != null) {
-          parent_grid_ratio *= grid.parent_grid_ratio;
-          i_offset += (grid.i_parent_start - 1) * parent_grid_ratio;
-          j_offset += (grid.j_parent_start - 1) * parent_grid_ratio;
-          grid = grid.parent;
-        }
-
-        // create new projection for grid
-        dx = this.domain.dx / parent_grid_ratio;
-        dy = this.domain.dy / parent_grid_ratio;
-        e_we = (this.domain.grid.e_we - 1) * parent_grid_ratio + 1;
-        e_sn = (this.domain.grid.e_sn - 1) * parent_grid_ratio + 1;
-        projection = new WRFProjection$1(this.domain.map_proj, this.domain.ref_lat, this.domain.ref_lon, this.domain.truelat1, this.domain.truelat2, this.domain.stand_lon, dx, dy, e_we, e_sn);
-        projection.corners_offset_i += i_offset * dx;
-        projection.corners_offset_j += j_offset * dy;
-        return projection;
-      }
+    geogrid: null,
+    _initGeogrid: function _initGeogrid() {
+      var _this$parent;
+      return new Geogrid(this.id, {
+        map_proj: this.domain.map_proj,
+        ref_lat: this.domain.ref_lat,
+        ref_lon: this.domain.ref_lon,
+        truelat1: this.domain.truelat1,
+        truelat2: this.domain.truelat2,
+        stand_lon: this.domain.stand_lon,
+        dx: this.domain.dx,
+        dy: this.domain.dy,
+        e_we: this.e_we,
+        e_sn: this.e_sn,
+        parent_grid_ratio: this.parent_grid_ratio,
+        i_parent_start: this.i_parent_start,
+        j_parent_start: this.j_parent_start
+      }, (_this$parent = this.parent) === null || _this$parent === void 0 ? void 0 : _this$parent.geogrid);
     },
-    // function return grid polygon path
-    _getPolygonPath: function _getPolygonPath() {
-      var i,
-        j,
-        path = [],
-        step = 5;
-      path.push(this._corners.sw);
-      for (i = step; i < this.e_we - 1 - step; i += step) {
-        path.push(this._projection.corners_ij_to_latlon(i, 0));
-      }
-      path.push(this._corners.se);
-      for (j = step; j < this.e_sn - 1 - step; j += step) {
-        path.push(this._projection.corners_ij_to_latlon(this.e_we - 1, j));
-      }
-      path.push(this._corners.ne);
-      for (i = this.e_we - 1 - step; i > step; i -= step) {
-        path.push(this._projection.corners_ij_to_latlon(i, this.e_sn - 1));
-      }
-      path.push(this._corners.nw);
-      for (j = this.e_sn - 1 - step; j > step; j -= step) {
-        path.push(this._projection.corners_ij_to_latlon(0, j));
-      }
-      path.push(this._corners.sw);
-      return path;
-    },
-    _getCorners: function _getCorners() {
+    _initCorners: function _initCorners() {
       return {
-        sw: L.latLng(this._projection.corners_ij_to_latlon(0, 0)),
-        se: L.latLng(this._projection.corners_ij_to_latlon(this.e_we - 1, 0)),
-        ne: L.latLng(this._projection.corners_ij_to_latlon(this.e_we - 1, this.e_sn - 1)),
-        nw: L.latLng(this._projection.corners_ij_to_latlon(0, this.e_sn - 1))
+        sw: L.latLng(this.geogrid.corners.sw),
+        se: L.latLng(this.geogrid.corners.se),
+        ne: L.latLng(this.geogrid.corners.ne),
+        nw: L.latLng(this.geogrid.corners.nw)
       };
     },
     // on map zoomeend handler
@@ -8396,7 +8769,7 @@
     _getTooltipContent: function _getTooltipContent(latlng) {
       var content = '<table><thead><tr><th>' + this.name + '</th><th></th></tr></thead>';
       content += '<tbody>';
-      var ij = this._projection.latlon_to_corners_ij(latlng.lat, latlng.lng);
+      var ij = this.geogrid.latlon_to_unstaggered_ij(latlng.lat, latlng.lng);
       content += '<tr><td>i,j</td><td>' + Math.ceil(ij[0]) + ', ' + Math.ceil(ij[1]) + '</td></tr>';
       content += '<tr><td>lat,lon</td><td>' + latlng.lat.toFixed(2) + ', ' + latlng.lng.toFixed(2) + '</td></tr>';
       content += '</tbody>';
@@ -8535,7 +8908,7 @@
       }
 
       // get absolute change in ij coordinates
-      var ij = this._projection.latlon_to_corners_ij(e.latlng.lat, e.latlng.lng);
+      var ij = this.geogrid.latlon_to_unstaggered_ij(e.latlng.lat, e.latlng.lng);
       var delta_i = nearestIntToZero(ij[0]);
       var delta_j = nearestIntToZero(ij[1]);
 
@@ -8629,7 +9002,7 @@
           e_sn = Math.max(this.e_sn + delta_j, this._resizeContext.mine_sn);
           center_j = (e_sn - 1) / 2;
         }
-        center = this._projection.corners_ij_to_latlon(center_i, center_j);
+        center = this.geogrid.unstaggered_ij_to_latlon(center_i, center_j);
         this.domain.ref_lat = center[0];
         this.domain.ref_lon = center[1];
         //this.domain.stand_lon = this.domain.ref_lon + this._resizeContext.stand_lon_delta;
@@ -8698,7 +9071,7 @@
         truelat1_delta: this.domain.truelat1 - this.domain.ref_lat,
         truelat2_delta: this.domain.truelat2 - this.domain.ref_lat,
         startLatLng: e.latlng,
-        startIJ: this._projection.latlon_to_corners_ij(e.latlng.lat, e.latlng.lng),
+        startIJ: this.geogrid.latlon_to_unstaggered_ij(e.latlng.lat, e.latlng.lng),
         delta_i: 0,
         delta_j: 0,
         max_delta_i: this.i_delta_end - WRFDomainGrid.minNestGridPoints,
@@ -8731,7 +9104,7 @@
         this._dragContext.startLatLng = e.latlng;
         this.domain.update();
       } else {
-        var ij = this._projection.latlon_to_corners_ij(e.latlng.lat, e.latlng.lng);
+        var ij = this.geogrid.latlon_to_unstaggered_ij(e.latlng.lat, e.latlng.lng);
         this._dragContext.delta_i += (ij[0] - this._dragContext.startIJ[0]) / this.parent_grid_ratio;
         this._dragContext.delta_j += (ij[1] - this._dragContext.startIJ[1]) / this.parent_grid_ratio;
         var parent_delta_i = Math.min(nearestIntToZero(this._dragContext.delta_i), this._dragContext.max_delta_i);
@@ -8741,16 +9114,16 @@
         this.i_parent_start = this._dragContext.i_parent_start + parent_delta_i;
         this.j_parent_start = this._dragContext.j_parent_start + parent_delta_j;
         this.update();
-        this._dragContext.startIJ = this._projection.latlon_to_corners_ij(e.latlng.lat, e.latlng.lng);
+        this._dragContext.startIJ = this.geogrid.latlon_to_unstaggered_ij(e.latlng.lat, e.latlng.lng);
       }
     },
     // implements layer onAdd function
     onAdd: function onAdd(map) {
       this._gridLinesLayer = this._createGridLinesPane();
       L.Polygon.prototype.onAdd.call(this, map);
-      this._projection = this._getProjection();
-      this._corners = this._getCorners();
-      this.setLatLngs(this._getPolygonPath());
+      this.geogrid = this._initGeogrid();
+      this._corners = this._initCorners();
+      this.setLatLngs(this.geogrid.polygonPath);
 
       // create grid corner markers
       // visible only when grid is selected
@@ -8805,9 +9178,9 @@
     },
     getBounds: function getBounds() {
       if (!this._corners || !this._projection) {
-        this._projection = this._getProjection();
-        this._corners = this._getCorners();
-        this.setLatLngs(this._getPolygonPath());
+        this.geogrid = this._initGeogrid();
+        this._corners = this._initCorners();
+        this.setLatLngs(this.geogrid.polygonPath);
       }
       return L.Polygon.prototype.getBounds.call(this);
     },
@@ -8874,9 +9247,9 @@
       L.Polygon.prototype.initialize.call(this, []);
     },
     update: function update() {
-      this._projection = this._getProjection();
-      this._corners = this._getCorners();
-      this.setLatLngs(this._getPolygonPath());
+      this.geogrid = this._initGeogrid();
+      this._corners = this._initCorners();
+      this.setLatLngs(this.geogrid.polygonPath);
       this._cornerMarkers.sw.setLatLng(this._corners.sw);
       this._cornerMarkers.se.setLatLng(this._corners.se);
       this._cornerMarkers.ne.setLatLng(this._corners.ne);
@@ -9060,10 +9433,10 @@
     var bounds = this._map.getBounds();
     var boundsSW = bounds.getSouthWest();
     var boundsNE = bounds.getNorthEast();
-    var ijSW = this._projection.latlon_to_corners_ij(boundsSW.lat, boundsSW.lng);
-    var ijNE = this._projection.latlon_to_corners_ij(boundsNE.lat, boundsNE.lng);
-    var ijSE = this._projection.latlon_to_corners_ij(boundsSW.lat, boundsNE.lng);
-    var ijNW = this._projection.latlon_to_corners_ij(boundsNE.lat, boundsSW.lng);
+    var ijSW = this.geogrid.latlon_to_unstaggered_ij(boundsSW.lat, boundsSW.lng);
+    var ijNE = this.geogrid.latlon_to_unstaggered_ij(boundsNE.lat, boundsNE.lng);
+    var ijSE = this.geogrid.latlon_to_unstaggered_ij(boundsSW.lat, boundsNE.lng);
+    var ijNW = this.geogrid.latlon_to_unstaggered_ij(boundsNE.lat, boundsSW.lng);
     return {
       iLinesStart: Math.max(0, Math.min(Math.floor(ijSW[0]), Math.floor(ijNW[0]), this.e_we - 1)),
       jLinesStart: Math.max(0, Math.min(Math.floor(ijSW[1]), Math.floor(ijSE[1]), this.e_sn - 1)),
@@ -9115,7 +9488,7 @@
           for (i = gridLinesBounds.iLinesStart; i < this._gridLinesBounds.iLinesStart; i++) {
             path = [];
             for (j = this._gridLinesBounds.jLinesStart; j <= this._gridLinesBounds.jLinesEnd; j++) {
-              latLng = this._projection.corners_ij_to_latlon(i, j);
+              latLng = this.geogrid.unstaggered_ij_to_latlon(i, j);
               path.push(latLng);
               if (i == gridLinesBounds.iLinesStart) {
                 jPaths[j - this._gridLinesBounds.jLinesStart] = new Array();
@@ -9137,7 +9510,7 @@
           for (j = gridLinesBounds.jLinesStart; j < this._gridLinesBounds.jLinesStart; j++) {
             path = [];
             for (i = this._gridLinesBounds.iLinesStart; i <= this._gridLinesBounds.iLinesEnd; i++) {
-              latLng = this._projection.corners_ij_to_latlon(i, j);
+              latLng = this.geogrid.unstaggered_ij_to_latlon(i, j);
               path.push(latLng);
               if (j == gridLinesBounds.jLinesStart) {
                 iPaths[i - this._gridLinesBounds.iLinesStart] = new Array();
@@ -9157,7 +9530,7 @@
           for (i = this._gridLinesBounds.iLinesEnd + 1; i <= gridLinesBounds.iLinesEnd; i++) {
             path = [];
             for (j = this._gridLinesBounds.jLinesStart; j <= this._gridLinesBounds.jLinesEnd; j++) {
-              latLng = this._projection.corners_ij_to_latlon(i, j);
+              latLng = this.geogrid.unstaggered_ij_to_latlon(i, j);
               path.push(latLng);
               this._jGridLines[j - this._gridLinesBounds.jLinesStart].addLatLng(latLng);
             }
@@ -9170,7 +9543,7 @@
           for (j = this._gridLinesBounds.jLinesEnd + 1; j <= gridLinesBounds.jLinesEnd; j++) {
             path = [];
             for (i = this._gridLinesBounds.iLinesStart; i <= this._gridLinesBounds.iLinesEnd; i++) {
-              latLng = this._projection.corners_ij_to_latlon(i, j);
+              latLng = this.geogrid.unstaggered_ij_to_latlon(i, j);
               path.push(latLng);
               this._iGridLines[i - this._gridLinesBounds.iLinesStart].addLatLng(latLng);
             }
@@ -9196,7 +9569,7 @@
         // init path for i line
         path = [];
         for (j = this._gridLinesBounds.jLinesStart; j <= this._gridLinesBounds.jLinesEnd; j++) {
-          latLng = this._projection.corners_ij_to_latlon(i, j);
+          latLng = this.geogrid.unstaggered_ij_to_latlon(i, j);
           path.push(latLng);
           if (i == this._gridLinesBounds.iLinesStart) {
             // init path for j line
@@ -9250,7 +9623,7 @@
       key: "Dialog",
       value: function Dialog() {
         var self = this,
-          jsonUrl = 'json/geog.json',
+          jsonUrl = 'demo/json/geog.json',
           json,
           versionData,
           container,
@@ -9531,7 +9904,7 @@
     });
 
     // hide tooltip when button is clicked
-    $('button[title]', gridContainer).click(function (e) {
+    $('button[title]', gridContainer).on('click', function (e) {
       $(this).tooltip('hide');
     });
 
@@ -9739,6 +10112,8 @@
     stand_lon: null,
     ref_lat: null,
     ref_lon: null,
+    pole_lat: null,
+    pole_lon: null,
     dx: null,
     dy: null,
     // domain center marker
@@ -9829,9 +10204,6 @@
       this._map.off('click', this._onMapClick, this);
       this._mainGrid.remove();
     },
-    _getProjection: function _getProjection() {
-      return new WRFProjection(this.map_proj, this.ref_lat, this.ref_lon, this.truelat1, this.truelat2, this.stand_lon, this.dx, this.dy, this._mainGrid.e_we, this._mainGrid.e_sn);
-    },
     update: function update() {
       this._centerMarker.setLatLng(L.latLng(this.ref_lat, this.ref_lon));
       this._mainGrid.update();
@@ -9851,13 +10223,13 @@
         this.stand_lon = wpsNamelist.geogrid.stand_lon;
         this.ref_lat = wpsNamelist.geogrid.ref_lat;
         this.ref_lon = wpsNamelist.geogrid.ref_lon;
-        this.dx = wpsNamelist.geogrid.dy;
+        this.dx = wpsNamelist.geogrid.dx;
         this.dy = wpsNamelist.geogrid.dy;
         this._mainGrid = new WRFDomainGrid(this, null, 1, wpsNamelist, this.options);
       }
     },
     getWPSNamelist: function getWPSNamelist() {
-      var wpsNamelist = new WPSNamelist$1();
+      var wpsNamelist = new WPSNamelist();
       wpsNamelist.share.max_dom = this.max_dom;
       wpsNamelist.geogrid.map_proj = this.map_proj;
       wpsNamelist.geogrid.truelat1 = this.truelat1;
@@ -9904,7 +10276,17 @@
     // multiplicator to calculate resolution (pixels per grid point)
     'dxPixelsMul': {
       get: function get() {
-        return this.dx / 156543.03392 / Math.cos(this.ref_lat * Math.PI / 180);
+        return this.dxInMeters / 156543.03392 / Math.cos(this.ref_lat * Math.PI / 180);
+      }
+    },
+    'dxInMeters': {
+      get: function get() {
+        return this.map_proj === WrfProjections.latlon ? degreesToMeters(this.dx) : this.dx;
+      }
+    },
+    'dyInMeters': {
+      get: function get() {
+        return this.map_proj === WrfProjections.latlon ? degreesToMeters(this.dy) : this.dy;
       }
     }
   });
@@ -9932,7 +10314,7 @@
       stand_lon_delta = this.stand_lon - this.ref_lon;
       truelat1_delta = this.truelat1 - this.ref_lat;
       truelat2_delta = this.truelat2 - this.ref_lat;
-      center = this._mainGrid.projection.corners_ij_to_latlon((this._mainGrid.e_we - 1) / 2, (this._mainGrid.e_sn - 1) / 2);
+      center = this._mainGrid.projection.unstaggered_ij_to_latlon((this._mainGrid.e_we - 1) / 2, (this._mainGrid.e_sn - 1) / 2);
       this.ref_lat = center[0];
       this.ref_lon = center[1];
       this.stand_lon = this.ref_lon + stand_lon_delta;
@@ -9975,7 +10357,7 @@
     stand_lon_delta = this._mainGrid.domain.stand_lon - this._mainGrid.domain.ref_lon;
     truelat1_delta = this._mainGrid.domain.truelat1 - this._mainGrid.domain.ref_lat;
     truelat2_delta = this._mainGrid.domain.truelat2 - this._mainGrid.domain.ref_lat;
-    center = this._mainGrid.nests[0].projection.corners_ij_to_latlon((this._mainGrid.nests[0].e_we - 1) / 2, (this._mainGrid.nests[0].e_sn - 1) / 2);
+    center = this._mainGrid.nests[0].projection.unstaggered_ij_to_latlon((this._mainGrid.nests[0].e_we - 1) / 2, (this._mainGrid.nests[0].e_sn - 1) / 2);
     this.ref_lat = center[0];
     this.ref_lon = center[1];
     this.stand_lon = this.ref_lon + stand_lon_delta;
@@ -9993,7 +10375,7 @@
     this._mainGrid.addTo(this._map);
   };
 
-  var SidebarWPSPanel = /*#__PURE__*/_createClass(function SidebarWPSPanel(container) {
+  var SidebarWPSPanel = /*#__PURE__*/_createClass(function SidebarWPSPanel(container, options) {
     _classCallCheck(this, SidebarWPSPanel);
     // controls
     var self = this,
@@ -10019,7 +10401,18 @@
       inputStandLon,
       inputDX,
       inputDY,
+      inputPoleLat,
+      inputPoleLon,
       localStorageKey = 'wrf_domain_wizard_wps_panel';
+
+    // defaul settings
+    this.options = {
+      minGridDistanceMeters: 100,
+      minGridDistanceDegrees: 0
+    };
+    if (options) {
+      this.options = Object.assign(this.options, options);
+    }
     form = $('form', container);
     containerGrids = $('#grids', form);
     headerGrids = $('div#grids-header', form);
@@ -10034,6 +10427,8 @@
     inputStandLon = $('input[name="stand_lon"]', form);
     inputDX = $('input[name="dx"]', form);
     inputDY = $('input[name="dy"]', form);
+    inputPoleLat = $('input[name="pole_lat"]', form);
+    inputPoleLon = $('input[name="pole_lon"]', form);
     buttonStanLonMinus = $('#stan-lon-minus', form);
     buttonStanLonPlus = $('#stan-lon-plus', form);
     buttonRatioDivide2 = $('#div-2', form);
@@ -10051,7 +10446,7 @@
     $('[title]', form).tooltip();
 
     // hide tooltip when button is clicked
-    $('button[title]', form).click(function () {
+    $('button[title]', form).on('click', function (e) {
       $(this).tooltip('hide');
     });
     function setGridsContainerHeight() {
@@ -10067,6 +10462,8 @@
       domain.stand_lon = parseFloat(inputStandLon.val());
       domain.dx = parseInt(inputDX.val(), 10);
       domain.dy = parseInt(inputDY.val(), 10);
+      domain.pole_lat = parseFloat(inputPoleLat.val());
+      domain.pole_lon = parseFloat(inputPoleLon.val());
       domain.grid.gridPanel.setGridValues();
       domain.update();
     }
@@ -10106,6 +10503,8 @@
     // function enables, disables and sets default values for fields
     // for selected projection
     function configFieldsForProjection() {
+      // hide pole_lat and pole_lon
+      inputPoleLat.parent().hide();
       switch (selectMapProj.val()) {
         case 'lambert':
           inputTrueLat2.val(domain.truelat2.toFixed(3));
@@ -10114,6 +10513,8 @@
           inputStandLon.prop('disabled', false);
           buttonStanLonPlus.prop('disabled', false);
           buttonStanLonMinus.prop('disabled', false);
+          inputDX.attr('min', self.options.minGridDistanceMeters);
+          inputDY.attr('min', self.options.minGridDistanceMeters);
           break;
         case 'mercator':
           inputTrueLat2.val('0');
@@ -10122,16 +10523,32 @@
           inputStandLon.prop('disabled', true);
           buttonStanLonPlus.prop('disabled', true);
           buttonStanLonMinus.prop('disabled', true);
+          inputDX.attr('min', self.options.minGridDistanceMeters);
+          inputDY.attr('min', self.options.minGridDistanceMeters);
           break;
         case 'polar':
           inputTrueLat2.val(domain.truelat1 < 0 ? '-90' : '90');
           inputTrueLat2.prop('disabled', true);
+          inputDX.attr('min', self.options.minGridDistanceMeters);
+          inputDY.attr('min', self.options.minGridDistanceMeters);
           break;
         case 'lat-lon':
           inputTrueLat2.val(domain.ref_lat.toFixed(3));
           inputTrueLat2.prop('disabled', false);
+          // hide pole_lat and pole_lon
+          inputPoleLat.parent().show();
+
+          // dx, dy in degrees so min should be 0
+          inputDX.attr('min', self.options.minGridDistanceDegrees);
+          inputDY.attr('min', self.options.minGridDistanceDegrees);
           break;
       }
+    }
+    function updateSelectMapProjTitle() {
+      var title = selectMapProj.find('option:selected').data('title');
+      selectMapProj.attr('title', title);
+      selectMapProj.tooltip('dispose');
+      selectMapProj.tooltip();
     }
 
     // map projection dropdown change
@@ -10140,7 +10557,11 @@
         configFieldsForProjection();
         setGridValues();
       }
+      updateSelectMapProjTitle();
     });
+
+    // initialize map_proj select tooltip
+    updateSelectMapProjTitle();
 
     // stan_lon buttons
     // rotate domain clockwise or counter-clockwise by 5 degrees
@@ -10249,6 +10670,13 @@
     buttonRatioMultiply3.on('click', function () {
       modifyDxDy(MulDivOp.MUL, 3);
     });
+    function setFieldValue(input, value, decimals) {
+      if (value) {
+        input.val(value.toFixed(3));
+      } else {
+        input.val(null);
+      }
+    }
     function setFieldValues() {
       // place domains info to floating panel
       selectMapProj.val(domain.map_proj);
@@ -10259,13 +10687,15 @@
       inputStandLon.val(domain.stand_lon.toFixed(3));
       inputDX.val(Math.trunc(domain.dx).toString());
       inputDY.val(Math.trunc(domain.dy).toString());
+      setFieldValue(inputPoleLat, domain.pole_lat);
+      setFieldValue(inputPoleLon, domain.pole_lon);
     }
     function setButtonRemoveMOADEnabled() {
       buttonRemoveMOAD.prop('disabled', domain.grid.nests.length != 1);
     }
     function initGridPanels() {
       domain.grid.gridPanel = new SidebarWPSPanelGrid(containerGrids, domain.grid, function (e) {
-        MessageBoxDialog.error('Error', e.error);
+        errorMessageBox('Error', e.error);
       });
       domain.grid.on('wps:addnest', setButtonRemoveMOADEnabled);
       domain.grid.on('wps:removenest', setButtonRemoveMOADEnabled);
@@ -10288,10 +10718,13 @@
       domain = null;
       initializedForDomain = false;
       buttonUpdate.parent().hide();
+      // hide ref_lat and ref_lon
       inputRefLat.parent().hide();
       inputStandLon.parent().hide();
       inputTrueLat1.parent().hide();
       inputTrueLat2.parent().hide();
+      // hide pole_lat and pole_lon
+      inputPoleLat.parent().hide();
       headerGrids.hide();
       selectMapProj.val(localStorage.getItem(localStorageKey + 'map_proj') || 'lambert');
       inputDX.val(localStorage.getItem(localStorageKey + 'dx') || 12000);
@@ -10356,11 +10789,11 @@
         wpsContent = $('textarea', dialogBody);
         buttonCopy = $('button#button-copy', dialogFooter);
         buttonDownload = $('button#button-download', dialogFooter);
-        buttonCopy.click(function (e) {
+        buttonCopy.on('click', function (e) {
           wpsContent.select();
           document.execCommand("Copy");
         });
-        buttonDownload.click(function (e) {
+        buttonDownload.on('click', function (e) {
           var blob = new Blob([wpsContent.val()], {
             type: "text/plain;charset=utf-8"
           });
@@ -10378,192 +10811,287 @@
     return new WPSSaveDialog(domain);
   }
 
-  var SidebarWPS = function SidebarWPS(map, sidebar) {
-    var container, wpsNamelist, domain, wpsPanel, newDomainContext;
-    var buttonNew, buttonSave, buttonOpen, buttonReset, inputFile;
-    container = $('#wps', sidebar.getContainer());
-    wpsPanel = new SidebarWPSPanel($('#container-wps-form', container));
-    buttonNew = $('button#button-wps-new', container);
-    buttonSave = $('button#button-wps-save', container);
-    buttonReset = $('button#reset-domain', container);
-    buttonOpen = $('button#button-wps-open', container);
-    inputFile = $('input#file-open', container);
+  // https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html#wps-output-fields
 
-    // creates new WPS namelist object from existing data and
-    // draws domains
-    function createDomainFromNamelist(zoom) {
-      removeDomain();
-      domain = new WRFDomain(wpsNamelist);
-      domain.addTo(map);
-      wpsPanel.show(domain);
-      domain.grid.select();
-      if (zoom) {
-        zoomToDomain();
+  var geogridOutput = {
+    cornerIndex: {
+      mass: {
+        sw: 0,
+        nw: 1,
+        ne: 2,
+        se: 3
+      },
+      u: {
+        sw: 4,
+        nw: 5,
+        ne: 6,
+        se: 7
+      },
+      v: {
+        sw: 8,
+        nw: 9,
+        ne: 10,
+        se: 11
+      },
+      unstaggered: {
+        sw: 12,
+        nw: 13,
+        ne: 14,
+        se: 15
       }
-    }
-    function zoomToDomain() {
-      map.panTo(L.latLng(domain.ref_lat, domain.ref_lon));
-      map.fitBounds(domain.grid.getBounds(), {
-        paddingTopLeft: L.point(container.width() + container.offset().left, 0)
-      });
-    }
-    buttonReset.click(function () {
-      createDomainFromNamelist(false);
-    });
-    buttonOpen.click(function (e) {
-      endNewDomain();
-      inputFile.click();
-    });
-    buttonSave.click(function (e) {
-      wpsSaveDialog(domain).show();
-    });
-    inputFile.on('change', function (e) {
-      var reader, filename;
-      if (!e.target.files || e.target.files.length == 0) {
-        return;
-      }
-      if (e.target.files[0].name != 'namelist.wps' && e.target.files[0].name != 'wrfsi.nl') {
-        MessageBoxDialog.error('File Open Error', 'Only files with the name "namelist.wps" or "wrfsi.nl" can be opened!');
-        return;
-      }
-      reader = new FileReader();
-      filename = e.target.files[0].name;
-      reader.onerror = function (e) {
-        MessageBoxDialog.error('File Open Error', 'Unable to read file!');
-      };
-      reader.onload = function (e) {
-        if (filename == 'wrfsi.nl') {
-          wpsNamelist = WPSNamelist.converFromWRFSIString(e.target.result);
-        } else {
-          wpsNamelist = new WPSNamelist(e.target.result);
-        }
-        createDomainFromNamelist(true);
-      };
-      reader.readAsText(event.target.files[0]);
-      inputFile.val(null);
-    });
-    function removeDomain() {
-      if (domain) {
-        domain.remove();
-        domain = null;
-      }
-    }
-    function initNewDomain() {
-      removeDomain();
-      buttonNew.prop('disabled', true);
-      map.on('mousedown', startNewDomain, this);
-      wpsPanel.showNewDomain();
-    }
-    function startNewDomain(e) {
-      if (!wpsPanel.validateNewDomain()) {
-        return;
-      }
-      map.dragging.disable();
-      map.on('mousemove', drawNewDomain, this);
-      map.on('mouseup', endNewDomain, this);
-      map.on('mouseout', endNewDomain, this);
-      newDomainContext = {
-        startLatlng: e.latlng,
-        startMarker: L.marker(e.latlng, {
-          icon: L.divIcon({
-            className: 'grid-corner-icon'
-          })
-        }).addTo(map),
-        endMarker: L.marker(e.latlng, {
-          icon: L.divIcon({
-            className: 'grid-corner-icon'
-          })
-        }).addTo(map),
-        drawPolygon: null,
-        domainOnMap: false
-      };
-      domain = wpsPanel.createNewDomain();
-    }
-    function drawNewDomain(e) {
-      var bounds = L.latLngBounds(newDomainContext.startLatlng, e.latlng),
-        center,
-        e_we,
-        e_sn;
-      if (newDomainContext.drawPolygon == null) {
-        newDomainContext.drawPolygon = L.polygon([bounds.getSouthWest(), bounds.getSouthEast(), bounds.getNorthEast(), bounds.getNorthWest()], {
-          stroke: true,
-          color: '#3388ff',
-          weight: 1,
-          opacity: 1.0,
-          dashArray: '3',
-          fill: false
-        }).addTo(map);
-      } else {
-        newDomainContext.drawPolygon.setLatLngs([bounds.getSouthWest(), bounds.getSouthEast(), bounds.getNorthEast(), bounds.getNorthWest()]);
-      }
-      newDomainContext.endMarker.setLatLng(e.latlng);
-      center = bounds.getCenter();
-      domain.ref_lat = center.lat;
-      domain.ref_lon = center.lng;
-      domain.truelat1 = domain.ref_lat;
-      domain.truelat2 = domain.ref_lat;
-      domain.stand_lon = domain.ref_lon;
-      e_we = Math.round(map.distance(newDomainContext.startLatlng, [newDomainContext.startLatlng.lat, e.latlng.lng]) / domain.dx);
-      e_sn = Math.round(map.distance(newDomainContext.startLatlng, [e.latlng.lat, newDomainContext.startLatlng.lng]) / domain.dy);
-      if (e_we < WRFDomainGrid.minGridSize || e_sn < WRFDomainGrid.minGridSize) {
-        domain.remove();
-        wpsPanel.hide();
-        newDomainContext.domainOnMap = false;
-      } else {
-        domain.grid.e_we = e_we;
-        domain.grid.e_sn = e_sn;
-        if (newDomainContext.domainOnMap) {
-          domain.update();
-        } else {
-          domain.addTo(map);
-          newDomainContext.domainOnMap = true;
-          wpsPanel.show();
-        }
-      }
-    }
-    function endNewDomain(e) {
-      map.dragging.enable();
-      map.off('mousedown', startNewDomain, this);
-      map.off('mousemove', drawNewDomain, this);
-      map.off('mouseup', endNewDomain, this);
-      map.off('mouseout', endNewDomain, this);
-      buttonNew.prop('disabled', false);
-      if (!newDomainContext) {
-        wpsPanel.hide();
-        return;
-      }
-      if (newDomainContext.drawPolygon != null) {
-        newDomainContext.drawPolygon.remove();
-      }
-      newDomainContext.startMarker.remove();
-      newDomainContext.endMarker.remove();
-      if (newDomainContext.domainOnMap) {
-        wpsNamelist = domain.getWPSNamelist();
-      } else {
-        wpsNamelist = null;
-        domain = null;
-      }
-    }
-    buttonNew.click(function (e) {
-      initNewDomain();
-    });
-    if (location.hash) {
-      var region = location.hash.substr(1),
-        wpsNamelistUrl = 'wps/' + region + '/namelist.wps';
-      $.get(wpsNamelistUrl, function (data) {
-        //try {
-        wpsNamelist = new WPSNamelist(data);
-        sidebar.open('wps');
-        createDomainFromNamelist(true);
-        //}
-        //catch (error) {
-        //    MessageBoxDialog.error("Error", "Unable to load file " + wpsNamelistUrl + ". " + error.toString());
-        //}
-      }, 'text').fail(function () {
-        MessageBoxDialog.error("File Load Error", "Unable to load " + wpsNamelistUrl);
-      });
     }
   };
+
+  var SidebarWPS = /*#__PURE__*/function () {
+    function SidebarWPS(map, sidebar, options) {
+      var _this = this;
+      _classCallCheck(this, SidebarWPS);
+      this.map = map;
+      var self = this;
+      var container, wpsNamelist, domain, wpsPanel, newDomainContext;
+      var buttonNew, buttonSave, buttonOpen, buttonReset, inputFile;
+
+      // defaul settings
+      this.options = {
+        sampleBaseUrl: 'samples',
+        anyFilename: true
+      };
+      if (options) {
+        this.options = Object.assign(this.options, options);
+      }
+      container = $('#wps', sidebar.getContainer());
+      wpsPanel = new SidebarWPSPanel($('#container-wps-form', container));
+      buttonNew = $('button#button-wps-new', container);
+      buttonSave = $('button#button-wps-save', container);
+      buttonReset = $('button#reset-domain', container);
+      buttonOpen = $('button#button-wps-open', container);
+      inputFile = $('input#file-open', container);
+
+      // creates new WPS namelist object from existing data and
+      // draws domains
+      function createDomainFromNamelist(zoom) {
+        removeDomain();
+        domain = new WRFDomain(wpsNamelist);
+        domain.addTo(map);
+        wpsPanel.show(domain);
+        domain.grid.select();
+        if (zoom) {
+          zoomToDomain();
+        }
+      }
+      function zoomToDomain() {
+        map.panTo(L.latLng(domain.ref_lat, domain.ref_lon));
+        map.fitBounds(domain.grid.getBounds(), {
+          paddingTopLeft: L.point(container.width() + container.offset().left, 0)
+        });
+      }
+      buttonReset.on('click', function (e) {
+        createDomainFromNamelist(false);
+      });
+      buttonOpen.on('click', function (e) {
+        endNewDomain();
+        inputFile.click();
+      });
+      buttonSave.on('click', function (e) {
+        wpsSaveDialog(domain).show();
+      });
+      inputFile.on('change', function (e) {
+        var reader, filename;
+        if (!e.target.files || e.target.files.length == 0) {
+          return;
+        }
+        if (_this.options.anyFilename !== true && e.target.files[0].name != 'namelist.wps' && e.target.files[0].name != 'wrfsi.nl') {
+          errorMessageBox('File Open Error', 'Only files with the name "namelist.wps" or "wrfsi.nl" can be opened!');
+          return;
+        }
+        reader = new FileReader();
+        filename = e.target.files[0].name;
+        reader.onerror = function (e) {
+          errorMessageBox('File Open Error', 'Unable to read file!');
+        };
+        reader.onload = function (e) {
+          if (filename == 'wrfsi.nl') {
+            wpsNamelist = WPSNamelist.converFromWRFSIString(e.target.result);
+          } else {
+            wpsNamelist = new WPSNamelist(e.target.result);
+          }
+          createDomainFromNamelist(true);
+        };
+        reader.readAsText(e.target.files[0]);
+        inputFile.val(null);
+      });
+      function removeDomain() {
+        if (domain) {
+          domain.remove();
+          domain = null;
+          if (self._geogridCornerMarkerGroups.length > 0) {
+            self._geogridCornerMarkerGroups.forEach(function (group) {
+              group.remove();
+            });
+          }
+        }
+      }
+      function initNewDomain() {
+        removeDomain();
+        buttonNew.prop('disabled', true);
+        map.on('mousedown', startNewDomain, this);
+        wpsPanel.showNewDomain();
+      }
+      function startNewDomain(e) {
+        if (!wpsPanel.validateNewDomain()) {
+          return;
+        }
+        map.dragging.disable();
+        map.on('mousemove', drawNewDomain, this);
+        map.on('mouseup', endNewDomain, this);
+        map.on('mouseout', endNewDomain, this);
+        newDomainContext = {
+          startLatlng: e.latlng,
+          startMarker: L.marker(e.latlng, {
+            icon: L.divIcon({
+              className: 'grid-corner-icon'
+            })
+          }).addTo(map),
+          endMarker: L.marker(e.latlng, {
+            icon: L.divIcon({
+              className: 'grid-corner-icon'
+            })
+          }).addTo(map),
+          drawPolygon: null,
+          domainOnMap: false
+        };
+        domain = wpsPanel.createNewDomain();
+      }
+      function drawNewDomain(e) {
+        var bounds = L.latLngBounds(newDomainContext.startLatlng, e.latlng),
+          center,
+          e_we,
+          e_sn;
+        if (newDomainContext.drawPolygon == null) {
+          newDomainContext.drawPolygon = L.polygon([bounds.getSouthWest(), bounds.getSouthEast(), bounds.getNorthEast(), bounds.getNorthWest()], {
+            stroke: true,
+            color: '#3388ff',
+            weight: 1,
+            opacity: 1.0,
+            dashArray: '3',
+            fill: false
+          }).addTo(map);
+        } else {
+          newDomainContext.drawPolygon.setLatLngs([bounds.getSouthWest(), bounds.getSouthEast(), bounds.getNorthEast(), bounds.getNorthWest()]);
+        }
+        newDomainContext.endMarker.setLatLng(e.latlng);
+        center = bounds.getCenter();
+        domain.ref_lat = center.lat;
+        domain.ref_lon = center.lng;
+        domain.truelat1 = domain.ref_lat;
+        domain.truelat2 = domain.ref_lat;
+        domain.stand_lon = domain.ref_lon;
+        e_we = Math.round(map.distance(newDomainContext.startLatlng, [newDomainContext.startLatlng.lat, e.latlng.lng]) / domain.dx);
+        e_sn = Math.round(map.distance(newDomainContext.startLatlng, [e.latlng.lat, newDomainContext.startLatlng.lng]) / domain.dy);
+        if (e_we < WRFDomainGrid.minGridSize || e_sn < WRFDomainGrid.minGridSize) {
+          domain.remove();
+          wpsPanel.hide();
+          newDomainContext.domainOnMap = false;
+        } else {
+          domain.grid.e_we = e_we;
+          domain.grid.e_sn = e_sn;
+          if (newDomainContext.domainOnMap) {
+            domain.update();
+          } else {
+            domain.addTo(map);
+            newDomainContext.domainOnMap = true;
+            wpsPanel.show();
+          }
+        }
+      }
+      function endNewDomain(e) {
+        map.dragging.enable();
+        map.off('mousedown', startNewDomain, this);
+        map.off('mousemove', drawNewDomain, this);
+        map.off('mouseup', endNewDomain, this);
+        map.off('mouseout', endNewDomain, this);
+        buttonNew.prop('disabled', false);
+        if (!newDomainContext) {
+          wpsPanel.hide();
+          return;
+        }
+        if (newDomainContext.drawPolygon != null) {
+          newDomainContext.drawPolygon.remove();
+        }
+        newDomainContext.startMarker.remove();
+        newDomainContext.endMarker.remove();
+        if (newDomainContext.domainOnMap) {
+          wpsNamelist = domain.getWPSNamelist();
+        } else {
+          wpsNamelist = null;
+          domain = null;
+        }
+      }
+      buttonNew.on('click', function (e) {
+        initNewDomain();
+      });
+
+      // a list of leaflet feature groups containing markers for sample geogrid outpput files
+      this._geogridCornerMarkerGroups = [];
+      if (location.hash) {
+        var sample = location.hash.substring(1),
+          wpsNamelistUrl = "".concat(this.options.sampleBaseUrl, "/").concat(sample, "/namelist.wps");
+        $.get(wpsNamelistUrl, function (data) {
+          wpsNamelist = new WPSNamelist(data);
+          sidebar.open('wps');
+          createDomainFromNamelist(true);
+          _this._addGeogridCorners(sample);
+        }, 'text').fail(function () {
+          errorMessageBox("File Load Error", "Unable to load " + wpsNamelistUrl);
+        });
+      }
+    }
+    _createClass(SidebarWPS, [{
+      key: "_addGeogridCorners",
+      value: function _addGeogridCorners(sample) {
+        this._addGeogridGridCorners(sample, 1);
+      }
+    }, {
+      key: "_addGeogridGridCorners",
+      value: function _addGeogridGridCorners(sample, grid) {
+        var _this2 = this;
+        var url = "".concat(this.options.sampleBaseUrl, "/").concat(sample, "/geo_em.d").concat(grid.toString().padStart(2, '0'), ".nc.json");
+        var jsonFound = false;
+        fetch(url).then(function (response) {
+          if (response.ok === true) {
+            return response.json();
+          }
+          throw new Error("Geogrid JSON file ".concat(url, " not found"));
+        }).then(function (json) {
+          jsonFound = true;
+          var group = L.featureGroup([_this2._createGeogridCornerMarker(json, 'sw'), _this2._createGeogridCornerMarker(json, 'nw'), _this2._createGeogridCornerMarker(json, 'ne'), _this2._createGeogridCornerMarker(json, 'se')]);
+          group.addTo(_this2.map);
+          _this2._geogridCornerMarkerGroups.push(group);
+        }).then(function () {
+          _this2._addGeogridGridCorners(sample, grid + 1);
+        }).catch(function (error) {
+          if (jsonFound === true) {
+            console.error(error);
+          } else {
+            console.debug(error);
+          }
+        });
+        return jsonFound;
+      }
+    }, {
+      key: "_createGeogridCornerMarker",
+      value: function _createGeogridCornerMarker(json, location) {
+        return L.marker(L.latLng(json.corner_lats[geogridOutput.cornerIndex.unstaggered[location]], json.corner_lons[geogridOutput.cornerIndex.unstaggered[location]]), {
+          icon: L.divIcon({
+            className: 'geogrid-corner-icon',
+            iconSize: 8
+          }),
+          zIndexOffset: 100
+        });
+      }
+    }]);
+    return SidebarWPS;
+  }();
   function sidebarWPS(map, sidebar) {
     return new SidebarWPS(map, sidebar);
   }
@@ -10920,7 +11448,6 @@
   }
 
   /**
-   * Leaflet map helper object
    * @constructor
    */
   var DomainWizard = /*#__PURE__*/_createClass(function DomainWizard(options) {
@@ -10965,7 +11492,8 @@
       autopan: false,
       closeButton: true,
       container: 'sidebar',
-      position: 'left'
+      position: 'left',
+      open: true
     }).addTo(map);
     $('div.sidebar').show();
 
@@ -10979,6 +11507,9 @@
     sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 1 arc second (~30m)', elevationDataSRTMNASAV3("".concat(settings.jsonBaseUrl, "/srtm/nasa/SRTMGL1.003.json"), 1));
     sidebar['elevation'].addElevationDataOverlay('SRTM NASA v3, 3 arc second (~90m)', elevationDataSRTMNASAV3("".concat(settings.jsonBaseUrl, "/srtm/nasa/SRTMGL3.003.json"), 3));
     sidebar['elevation'].addElevationDataOverlay('ALOS World 3D - 30m (AW3D30)', elevationDataALOS("".concat(settings.jsonBaseUrl, "/srtm/alos/AW3D30.json")));
+
+    // open default tab
+    sidebar.open('wps');
 
     //add zoom control
     L.control.zoom({

@@ -13,7 +13,12 @@
 export class Namelist {
     constructor(data) {
 
-        var tokens = this.parse(data), current_group = null, current_prop = null, current_value = null, i, name, value;
+        var tokens = this._parse(data), 
+            current_group = null,
+            current_prop = null,
+            i,
+            name,
+            value;
 
         for (i = 0; i < tokens.length; i++) {
             name = tokens[i].name;
@@ -44,8 +49,9 @@ export class Namelist {
             }
         }
     }
+
     // parse namelist data to tokens
-    parse(data) {
+    _parse(data) {
         var tokens = [];
 
         function addElement(pos, name, value, index = null) {
@@ -117,7 +123,6 @@ export class Namelist {
                 }
             }
 
-
             // [2] SINGLE OR DOUBLE QUOTATION MARK
             // (2-1) a character constant
             else if (cur.match(/['"]/)) {
@@ -135,7 +140,6 @@ export class Namelist {
                 }
             }
 
-
             // [3] SLASH
             // (3-1) the end of a group
             else if (cur.match(/\//)) {
@@ -149,7 +153,6 @@ export class Namelist {
                 i++;
                 prev = "group_end";
             }
-
 
             // [4] DOLLAR MARK OR AMPERSAND
             // (4-1) the start or the end of a group
@@ -176,8 +179,6 @@ export class Namelist {
                     break;
                 }
             }
-
-
 
             // [5] PERIOD
             // (5-1) a logical constant
@@ -206,11 +207,6 @@ export class Namelist {
                     }
                 }
             }
-
-
-
-
-
 
             // [6] ALPHABET OR UNDERSCORE
             // (6-1) an object
@@ -278,7 +274,6 @@ export class Namelist {
                 }
             }
 
-
             // [7] LEFT PARENTHESIS
             // (7-1) the start of a complex number
             else if (cur.match(/\(/)) {
@@ -296,7 +291,6 @@ export class Namelist {
                 }
             }
 
-
             // [8] RIGHT PARENTHESIS
             // (8-1) the end of a complex number
             else if (cur.match(/\)/)) {
@@ -313,8 +307,6 @@ export class Namelist {
                     break;
                 }
             }
-
-
 
             // [9] PLUS OR MINUS SIGN
             // (9-1) a real constant
@@ -343,10 +335,6 @@ export class Namelist {
                     }
                 }
             }
-
-
-
-
 
             // [10] DECIMAL
             // (10-1) a nondelimited character constant
@@ -397,7 +385,6 @@ export class Namelist {
                     }
                 }
             }
-
 
             // [11] BLANK OR CONSECUTIVE COMMAS
             // (11-1) null

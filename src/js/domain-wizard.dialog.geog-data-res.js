@@ -15,7 +15,7 @@ export class GeogDataResDialog {
 
     static Dialog() {
 
-        var self = this, jsonUrl = 'json/geog.json', json, versionData, container, dialogHeader, dialogBody, dialogFooter, table, selectVersion, inputGeogDataRes, buttonSave, buttonReset;
+        var self = this, jsonUrl = 'demo/json/geog.json', json, versionData, container, dialogHeader, dialogBody, dialogFooter, table, selectVersion, inputGeogDataRes, buttonSave, buttonReset;
 
         container = $('div.modal#geog-data-res-dialog');
         dialogHeader = $('div.modal-header', container);

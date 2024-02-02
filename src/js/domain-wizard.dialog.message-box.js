@@ -1,35 +1,38 @@
-export class MessageBoxDialog {
+class MessageBoxDialog {
     constructor() {
+        this.container = $('div.modal#message-box-dialog');
+        this.dialogBody = $('div.modal-body', this.container);
+        this.dialogTitle = $('div.modal-header h5.modal-title', this.container);
+   }
 
-        var container, dialogBody, dialogTitle;
+   static types = {
+    error: 0,
+    info: 1,
+    warning: 2
+   }
 
-        container = $('div.modal#message-box-dialog');
-        dialogBody = $('div.modal-body', container);
-        dialogTitle = $('div.modal-header h5.modal-title', container);
+   show(title, message, type) {
+        this.dialogTitle.empty();
+        if (type === MessageBoxDialog.types.error) {
+            this.dialogTitle.html('<i class="fas fa-exclamation-circle text-danger"></i>');
+        }
+        if (type === MessageBoxDialog.types.info) {
+            this.dialogTitle.html('<i class="fas fa-info-circle text-info"></i>');
+        }
+        if (type === MessageBoxDialog.types.warning) {
+            this.dialogTitle.html('<i class="fas fa-exclamation-triangle text-warning"></i>');
+        }
 
-        this.show = function (title, message, type) {
-            dialogTitle.empty();
-            if (type === 'error') {
-                dialogTitle.html('<i class="fas fa-exclamation-circle text-danger"></i>');
-            }
-            if (type === 'info') {
-                dialogTitle.html('<i class="fas fa-info-circle text-info"></i>');
-            }
-            if (type === 'warning') {
-                dialogTitle.html('<i class="fas fa-exclamation-triangle text-warning"></i>');
-            }
+        this.dialogTitle.append(title);
 
-            dialogTitle.append(title);
-
-            dialogBody.text(message);
-            container.modal();
-        };
-
-        return this;
+        this.dialogBody.text(message);
+        this.container.modal();
     }
-    static error(title, message) {
-        var dialog = new MessageBoxDialog();
-        dialog.show(title, message, 'error');
-    }
+}
+
+const messageBoxDialog = new MessageBoxDialog()
+
+export function errorMessageBox(title, message) {
+    messageBoxDialog.show(title, message, MessageBoxDialog.types.error);
 }
 
