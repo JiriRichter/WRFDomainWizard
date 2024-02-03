@@ -14,13 +14,14 @@
     "watch-js": "rollup --config rollup.config.mjs --watch",
     "watch-less": "npm run grunt watch",
     "dev": "npm run build && concurrently \"npm:watch-js\" \"npm:watch-less\" \"npm:serve\"",
-    "check-env": "dotenv -- cross-var echo \"$API_KEY\"",
-    "deploy": "dotenv -- powershell ./.ps/deploy.ps1"
+    "check-env": "dotenv -- cross-var echo \"$SWA_CLI_DEPLOYMENT_TOKEN\"",
+    "deploy": "dotenv -- npx @azure/static-web-apps-cli deploy ./build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@azure/static-web-apps-cli": "^1.1.6",
     "@babel/core": "^7.21.8",
     "@babel/preset-env": "^7.21.5",
     "@rollup/plugin-babel": "^6.0.3",

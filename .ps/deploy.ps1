@@ -1,1 +1,0 @@
-az storage blob upload-batch -d `$web -s build --connection-string ""$env:AZURE_STORAGE_CONNECTION_STRING"" --overwrite
