@@ -16,13 +16,13 @@ export class DomainWizard {
     constructor(options) {
 
         // default options
-        const defaults = /** @dict */ {
+        const defaults = {
             div: null,
-            jsonBaseUrl: null
+            jsonBaseUrl: 'json'
         }
 
         // current settings
-        const settings = /** @dict */ $.extend({}, defaults, options);
+        const settings = Object.assign({}, defaults, options);
 
         if (!settings['div'] || !settings['div'].length || settings['div'].length != 1) {
             throw "invalid div option";
@@ -69,7 +69,11 @@ export class DomainWizard {
         $('div.sidebar').show();
 
         // initialize sidebar pane controls
-        sidebar['wps'] = sidebarWPS(map, sidebar);
+        sidebar['wps'] = sidebarWPS(map, sidebar, {
+            jsonBaseUrl: settings.jsonBaseUrl,
+            sampleBaseUrl: settings.sampleBaseUrl
+        });
+
         sidebar['settings'] = sidebarSettings(map, sidebar);
         sidebar['waypoints'] = sidebarWaypoints(map, sidebar);
 

@@ -374,9 +374,13 @@ export class SidebarWPSPanel {
         }
 
         function initGridPanels() {
-            domain.grid.gridPanel = new SidebarWPSPanelGrid(containerGrids, domain.grid, function (e) {
-                errorMessageBox('Error', e.error);
-            });
+            domain.grid.gridPanel = new SidebarWPSPanelGrid(
+                containerGrids, 
+                domain.grid,
+                function (e) {
+                    errorMessageBox('Error', e.error);
+                },
+                self.options);
 
             domain.grid.on('wps:addnest', setButtonRemoveMOADEnabled);
             domain.grid.on('wps:removenest', setButtonRemoveMOADEnabled);

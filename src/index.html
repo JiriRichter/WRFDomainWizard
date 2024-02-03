@@ -10,13 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
-    <link rel="stylesheet" href="demo/lib/bootstrap.min.css" />
-    <link rel="stylesheet" href="demo/lib/leaflet.css" />
-    <link rel="stylesheet" href="demo/lib/all.min.css" />
-    <link rel="stylesheet" href="demo/lib/leaflet-sidebar.min.css" />
-    <link rel="stylesheet" href="demo/css/wrf-domain-wizard.css?{{timestamp}}" />
+    <link rel="stylesheet" href="{{baseUrl}}/lib/bootstrap.min.css" />
+    <link rel="stylesheet" href="{{baseUrl}}/lib/leaflet.css" />
+    <link rel="stylesheet" href="{{baseUrl}}/lib/all.min.css" />
+    <link rel="stylesheet" href="{{baseUrl}}/lib/leaflet-sidebar.min.css" />
+    <link rel="stylesheet" href="{{baseUrl}}/css/wrf-domain-wizard.css?{{timestamp}}" />
 
-    <link rel="icon" href="demo/img/globe_32x32.png" />
+    <link rel="icon" href="{{baseUrl}}/img/globe_32x32.png" />
 </head>
 <body>
 
@@ -346,23 +346,24 @@
     </div>
 
 
-    <script src="demo/lib/jquery.min.js"></script>
-    <script src="demo/lib/bootstrap.bundle.min.js"></script>
+    <script src="{{baseUrl}}/lib/jquery.min.js"></script>
+    <script src="{{baseUrl}}/lib/bootstrap.bundle.min.js"></script>
     <script src="https://spin.js.org/spin.umd.js"></script>
-    <script src="demo/lib/immediate.min.js"></script>
-    <script src="demo/lib/proj4.js"></script>
-    <script src="demo/lib/leaflet.js"></script>
-    <script src="demo/lib/leaflet.spin.min.js"></script>
-    <script src="demo/lib/leaflet-sidebar.min.js"></script>
-    <script src="demo/lib/leaflet-providers.js"></script>
-    <script src="demo/lib/Blob.js"></script>
-    <script src="demo/lib/FileSaver.min.js"></script>
+    <script src="{{baseUrl}}/lib/immediate.min.js"></script>
+    <script src="{{baseUrl}}/lib/proj4.js"></script>
+    <script src="{{baseUrl}}/lib/leaflet.js"></script>
+    <script src="{{baseUrl}}/lib/leaflet.spin.min.js"></script>
+    <script src="{{baseUrl}}/lib/leaflet-sidebar.min.js"></script>
+    <script src="{{baseUrl}}/lib/leaflet-providers.js"></script>
+    <script src="{{baseUrl}}/lib/Blob.js"></script>
+    <script src="{{baseUrl}}/lib/FileSaver.min.js"></script>
 
-    <script src="demo/js/wrf-domain-wizard.js"></script>
+    <script src="{{baseUrl}}/js/wrf-domain-wizard.js"></script>
     <script>
         var wizard = new WRF.DomainWizard({
-            'div': $('div#map'),
-            'jsonBaseUrl': 'demo/json'
+            div: $('div#map'),
+            jsonBaseUrl: '{{baseUrl}}/json',
+            sampleBaseUrl: '{{baseUrl}}/samples'
         });
     </script>
 </body>

@@ -1,21 +1,29 @@
 export class GeogDataResDialog {
-    
-    constructor(geog_data_res, saveHandler) {
-        if (GeogDataResDialog.dialog === undefined) {
-            GeogDataResDialog.dialog = new GeogDataResDialog.Dialog();
-        }
 
-        this.show = function () {
-            GeogDataResDialog.dialog.show(geog_data_res, saveHandler);
-            return this;
+    constructor(options) {
+
+        // defaul settings
+        this.options = {
+            jsonBaseUrl: 'json'
         };
 
-        return this;
-    }
+        if (options) {
+            this.options = Object.assign(this.options, options);
+        }                
 
-    static Dialog() {
-
-        var self = this, jsonUrl = 'demo/json/geog.json', json, versionData, container, dialogHeader, dialogBody, dialogFooter, table, selectVersion, inputGeogDataRes, buttonSave, buttonReset;
+        var self = this,
+            jsonUrl = `${this.options.jsonBaseUrl}/geog.json`,
+            json,
+            versionData,
+            container,
+            dialogHeader,
+            dialogBody,
+            dialogFooter,
+            table,
+            selectVersion,
+            inputGeogDataRes,
+            buttonSave,
+            buttonReset;
 
         container = $('div.modal#geog-data-res-dialog');
         dialogHeader = $('div.modal-header', container);
@@ -31,10 +39,6 @@ export class GeogDataResDialog {
 
         buttonSave = $('button#button-geog-save', dialogFooter);
         buttonReset = $('button#button-geog-reset', dialogFooter);
-
-        function createCategoryOption(id, dirname) {
-            //return $('<option data-dirname="' + dirname + '" value="' + id + '">' + id + '</option>');
-        }
 
         function initGeogCategories() {
 
@@ -138,6 +142,22 @@ export class GeogDataResDialog {
             }
         }
 
+        this.show = function(geog_data_res, saveHandler) {
+            this.saveHandler = saveHandler;
+            if (!geog_data_res) {
+                geog_data_res = 'default';
+            }
+            this.geog_data_res = geog_data_res;
+            inputGeogDataRes.val(geog_data_res);
+            if (json === undefined) {
+                init();
+            }
+            else {
+                initGeogCategories();
+            }
+            container.modal();
+        };        
+
         function init() {
 
             $.getJSON(jsonUrl, function (data) {
@@ -191,27 +211,5 @@ export class GeogDataResDialog {
                 self.saveHandler.call(this, e);
             }
         });
-
-        this.show = function (geog_data_res, saveHandler) {
-            this.saveHandler = saveHandler;
-            if (!geog_data_res) {
-                geog_data_res = 'default';
-            }
-            this.geog_data_res = geog_data_res;
-            inputGeogDataRes.val(geog_data_res);
-            if (json === undefined) {
-                init();
-            }
-            else {
-                initGeogCategories();
-            }
-            container.modal();
-        };
     }
 }
-
-export function geogDataResDialog(geog_data_res, saveHandler) {
-    return new GeogDataResDialog(geog_data_res, saveHandler);
-}
-
-

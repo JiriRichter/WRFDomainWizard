@@ -1,10 +1,44 @@
 import { WRFDomainGrid } from "./leaflet/leaflet.wrf-grid";
-import { geogDataResDialog } from './domain-wizard.dialog.geog-data-res'
+import { GeogDataResDialog } from './domain-wizard.dialog.geog-data-res'
 
 export class SidebarWPSPanelGrid {
-    constructor(container, grid, errorHandler) {
 
-        var self = this, domain = grid.domain, gridContainer, buttonRemoveNest, buttonAddNest, buttonGeogDataResEdit, labelGridName, inputParentGridRatio, inputIParentStart, inputJParentStart, inputEWE, inputESN, inputGeogDataRes, iSelected, tableCornerSW, tableCornerSE, tableCornerNE, tableCornerNW;
+    static _geogDataResDialog = null;
+
+    constructor(container, grid, errorHandler, options) {
+
+        var self = this, 
+            domain = grid.domain,
+            gridContainer,
+            buttonRemoveNest,
+            buttonAddNest,
+            buttonGeogDataResEdit,
+            labelGridName,
+            inputParentGridRatio,
+            inputIParentStart,
+            inputJParentStart,
+            inputEWE,
+            inputESN,
+            inputGeogDataRes,
+            iSelected,
+            tableCornerSW,
+            tableCornerSE,
+            tableCornerNE,
+            tableCornerNW;
+
+        // defaul settings
+        this.options = {
+            minGridDistanceMeters: 100,
+            minGridDistanceDegrees: 0
+        };
+
+        if (options) {
+            this.options = Object.assign(this.options, options);
+        }        
+
+        if (SidebarWPSPanelGrid._geogDataResDialog === null) {
+            SidebarWPSPanelGrid._geogDataResDialog = new GeogDataResDialog(options);
+        }
 
         if (SidebarWPSPanelGrid.Template == null) {
             SidebarWPSPanelGrid.Template = $('#grid_template', container).html();
@@ -38,11 +72,11 @@ export class SidebarWPSPanelGrid {
         });
 
         buttonGeogDataResEdit.on('click', function (e) {
-            geogDataResDialog(grid.geog_data_res, function (e) {
+            SidebarWPSPanelGrid._geogDataResDialog.show(grid.geog_data_res, function (e) {
                 grid.geog_data_res = e.geog_data_res;
                 inputGeogDataRes.text(e.geog_data_res);
                 inputGeogDataRes.attr('title', e.geog_data_res);
-            }).show();
+            });
         });
 
         grid.on('wps:remove', function (e) {

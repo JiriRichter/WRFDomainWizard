@@ -20,15 +20,15 @@ export class SidebarWPS {
         // defaul settings
         this.options = {
             sampleBaseUrl: 'samples',
-            anyFilename: true
+            allowAnyFilename: true
         };
 
         if (options) {
-            this.options = Object.assign(this.options, options);
+            this.options = Object.assign({}, this.options, options);
         }
 
         container = $('#wps', sidebar.getContainer());
-        wpsPanel = new SidebarWPSPanel($('#container-wps-form', container));
+        wpsPanel = new SidebarWPSPanel($('#container-wps-form', container), this.options);
 
         buttonNew = $('button#button-wps-new', container);
         buttonSave = $('button#button-wps-save', container);
@@ -78,7 +78,7 @@ export class SidebarWPS {
                 return;
             }
 
-            if (this.options.anyFilename !== true && e.target.files[0].name != 'namelist.wps' && e.target.files[0].name != 'wrfsi.nl') {
+            if (this.options.allowAnyFilename !== true && e.target.files[0].name != 'namelist.wps' && e.target.files[0].name != 'wrfsi.nl') {
                 errorMessageBox('File Open Error', 'Only files with the name "namelist.wps" or "wrfsi.nl" can be opened!');
                 return;
             }
@@ -304,6 +304,6 @@ export class SidebarWPS {
     }
 }
 
-export function sidebarWPS(map, sidebar) {
-    return new SidebarWPS(map, sidebar);
+export function sidebarWPS(map, sidebar, options) {
+    return new SidebarWPS(map, sidebar, options);
 }

@@ -4,7 +4,7 @@ module.exports = function(grunt) {
 
     timestamp: new Date().getTime(),
 
-    targetFolder: "demo",
+    targetFolder: "build",
 
     clean: [
       '<%= targetFolder %>'
@@ -88,19 +88,45 @@ module.exports = function(grunt) {
           '@fortawesome/fontawesome-free/webfonts/*.*',
         ],
         dest: '<%= targetFolder %>/webfonts',
+      },
+      samples: {
+        expand: true,
+        src: [
+          'samples/**/*.wps',
+          'samples/**/*.json'
+        ],
+        dest: '<%= targetFolder %>/',
       }
     },
 
     replace: {
-      html: {
-        src: ['src/demo.html'],
+      github: {
+        src: ['src/index.html'],
         // index.html must be placed to root folder for GitHub Pages to work
         dest: './index.html',             
         replacements: [{
           from: '{{timestamp}}',
           to: '<%= timestamp %>'
+        },
+        {
+          from: '{{baseUrl}}',
+          to: 'build'
+        }]
+      },
+      build: {
+        src: ['src/index.html'],
+        // index.html must be placed to root folder for GitHub Pages to work
+        dest: 'build/index.html',             
+        replacements: [{
+          from: '{{timestamp}}',
+          to: '<%= timestamp %>'
+        },
+        {
+          from: '{{baseUrl}}',
+          to: ''
         }]
       }
+
     },
 
     less: {

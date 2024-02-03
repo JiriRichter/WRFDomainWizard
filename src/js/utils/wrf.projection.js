@@ -4,8 +4,6 @@ import { EarthRadius, WrfProjections } from './constants';
 // PROJ4 strings based on https://github.com/NCAR/wrf-python/blob/develop/src/wrf/projection.py
 export class WrfProjection {
 
-    static earth_radius = 6370000;
-
     // Spherical latlon used by WRF
     // see https://fabienmaussion.info/2018/01/06/wrf-projection/
     static _wrf_proj = '+units=m +proj=longlat +a=' + EarthRadius + ' +b=' + EarthRadius + '  +towgs84=0,0,0 +no_defs=True';
