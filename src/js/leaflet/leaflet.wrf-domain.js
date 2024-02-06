@@ -79,12 +79,33 @@ import { WRFDomainGrid } from "./leaflet.wrf-grid"
     _onCenterMarkerDrag: function (e) {
         this.ref_lat = e.latlng.lat;
         this.ref_lon = e.latlng.lng;
-
-        this.stand_lon = this.ref_lon + this._dragContext.stand_lon_delta;
-        this.truelat1 = this.ref_lat + this._dragContext.truelat1_delta;
-        this.truelat2 = this.ref_lat + this._dragContext.truelat2_delta;
-
+        this.drag(this._dragContext);
         this.update();
+    },
+
+    drag(dragContext) {
+        switch(this.map_proj) {
+
+            case WrfProjections.lambert:
+                this.stand_lon = this.ref_lon + dragContext.stand_lon - dragContext.ref_lon;
+                this.truelat1 = this.ref_lat + dragContext.truelat1 - dragContext.ref_lat;
+                this.truelat2 = this.ref_lat + dragContext.truelat2 - dragContext.ref_lat;
+                break;
+
+            case WrfProjections.mercator:
+                this.stand_lon = 0;
+                this.truelat1 = this.ref_lat + dragContext.truelat1 - dragContext.ref_lat;
+                break;
+
+            case WrfProjections.polar:
+                this.stand_lon = this.ref_lon + dragContext.stand_lon - dragContext.ref_lon;
+                this.truelat1 = this.ref_lat + dragContext.truelat1 - dragContext.ref_lat;
+                break;
+
+            case WrfProjections.latlon:
+                this._setDefaultProjValues();
+                break;
+        }
     },
 
     _onMapClick: function (e) {
@@ -110,9 +131,13 @@ import { WRFDomainGrid } from "./leaflet.wrf-grid"
         if (this.options['editable']) {
             this._centerMarker.on('dragstart', function (event) {
                 this._dragContext = {
-                    stand_lon_delta: this.stand_lon - this.ref_lon,
-                    truelat1_delta: this.truelat1 - this.ref_lat,
-                    truelat2_delta: this.truelat2 - this.ref_lat
+                    ref_lat: this.ref_lat,
+                    ref_lon: this.ref_lon,
+                    truelat1: this.truelat1,
+                    truelat2: this.truelat2,
+                    stand_lon: this.stand_lon,
+                    pole_lat: this.pole_lat,
+                    pole_lon: this.pole_lon
                 };
 
                 this._mainGrid.unbindTooltip();
@@ -142,10 +167,58 @@ import { WRFDomainGrid } from "./leaflet.wrf-grid"
         this._mainGrid.remove();
     },
 
+    // re-draw domain
     update: function () {
         this._centerMarker.setLatLng(L.latLng(this.ref_lat, this.ref_lon));
         this._mainGrid.update();
         this.fire('wps:change');
+    },
+
+    _setDefaultProjValues: function() {
+
+        switch (this.map_proj) {
+            case WrfProjections.lambert:
+                this.truelat1 = this.ref_lat;
+                this.truelat2 = this.ref_lat;
+                this.stand_lon = this.ref_lon;
+                break;
+
+            case WrfProjections.mercator:
+                this.truelat1 = this.ref_lat;
+                this.stand_lon = 0;
+                break;
+
+            case WrfProjections.polar:
+                this.truelat1 = this.ref_lat;
+                this.stand_lon = this.ref_lon;
+                break;
+                
+            case WrfProjections.latlon:
+                // southern hemisphere
+                if (this.ref_lat < 0) {
+                    this.pole_lat = 90.0 + this.ref_lat;
+                    this.pole_lon = 0;
+                    this.stand_lon = 180 - this.ref_lon;
+                }
+                // northern hemisphere
+                else {
+                    this.pole_lat = 90.0 - this.ref_lat;
+                    this.pole_lon = 180;
+                    this.stand_lon = - this.ref_lon;
+                }
+                break;
+                
+            default:
+            break;
+        }        
+    },
+
+    setDefaultValues: function(ref_lat, ref_lon) {
+
+        this.ref_lat = ref_lat;
+        this.ref_lon = ref_lon;
+
+        this._setDefaultProjValues();
     },
 
     /**
@@ -166,6 +239,10 @@ import { WRFDomainGrid } from "./leaflet.wrf-grid"
             this.ref_lon = wpsNamelist.geogrid.ref_lon;
             this.dx = wpsNamelist.geogrid.dx;
             this.dy = wpsNamelist.geogrid.dy;
+            this.pole_lat = wpsNamelist.geogrid.pole_lat;
+            this.pole_lon = wpsNamelist.geogrid.pole_lon;
+            this.ref_x = wpsNamelist.geogrid.ref_x;
+            this.ref_y = wpsNamelist.geogrid.ref_y;
 
             this._mainGrid = new WRFDomainGrid(this, null, 1, wpsNamelist, this.options);
         }
@@ -175,13 +252,40 @@ import { WRFDomainGrid } from "./leaflet.wrf-grid"
         var wpsNamelist = new WPSNamelist();
         wpsNamelist.share.max_dom = this.max_dom;
         wpsNamelist.geogrid.map_proj = this.map_proj;
-        wpsNamelist.geogrid.truelat1 = this.truelat1;
-        wpsNamelist.geogrid.truelat2 = this.truelat2;
-        wpsNamelist.geogrid.stand_lon = this.stand_lon;
-        wpsNamelist.geogrid.ref_lat = this.ref_lat;
-        wpsNamelist.geogrid.ref_lon = this.ref_lon;
         wpsNamelist.geogrid.dx = this.dx;
         wpsNamelist.geogrid.dy = this.dy;
+
+        wpsNamelist.geogrid.ref_lat = this.ref_lat;
+        wpsNamelist.geogrid.ref_lon = this.ref_lon;
+
+        //wpsNamelist.geogrid.ref_x = this.ref_x;
+        //wpsNamelist.geogrid.ref_y = this.ref_y;
+
+        switch (this.map_proj) {
+            case WrfProjections.lambert:
+                wpsNamelist.geogrid.truelat1 = this.truelat1;
+                wpsNamelist.geogrid.truelat2 = this.truelat2;
+                wpsNamelist.geogrid.stand_lon = this.stand_lon;
+                break;
+
+            case WrfProjections.mercator:
+                wpsNamelist.geogrid.truelat1 = this.truelat1;
+                break;
+
+            case WrfProjections.polar:
+                wpsNamelist.geogrid.truelat1 = this.truelat1;
+                wpsNamelist.geogrid.stand_lon = this.stand_lon;
+                break;
+
+            case WrfProjections.latlon:
+                wpsNamelist.geogrid.pole_lat = this.pole_lat;
+                wpsNamelist.geogrid.pole_lon = this.pole_lon;
+                wpsNamelist.geogrid.stand_lon = this.stand_lon;
+                break;
+                    
+            default:
+                break;
+        }
 
         wpsNamelist.geogrid.parent_id = [];
         wpsNamelist.geogrid.parent_grid_ratio = [];

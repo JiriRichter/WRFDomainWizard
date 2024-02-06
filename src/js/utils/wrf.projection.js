@@ -24,100 +24,69 @@ export class WrfProjection {
         },
         params);
 
-        // Lambert Conformal Conic
-        if (this._params.map_proj === WrfProjections.lambert) {
+        switch (this._params.map_proj) {
 
-            this._proj4 = '+units=m'
-                + ' +proj=lcc'
-                + ' +lat_1=' + this._params.truelat1
-                + ' +lat_2=' + this._params.truelat2
-                + ' +lat_0=' + this._params.ref_lat
-                + ' +lon_0=' + this._params.stand_lon
-                + ' +a=' + EarthRadius
-                + ' +b=' + EarthRadius
-                + ' +towgs84=0,0,0'
-                + ' +no_defs=True';
-        }
+            // Lambert Conformal Conic
+            case WrfProjections.lambert:
+                this._proj4 = '+units=m'
+                    + ' +proj=lcc'
+                    + ' +lat_1=' + this._params.truelat1
+                    + ' +lat_2=' + this._params.truelat2
+                    + ' +lat_0=' + this._params.ref_lat
+                    + ' +lon_0=' + this._params.stand_lon
+                    + ' +a=' + EarthRadius
+                    + ' +b=' + EarthRadius
+                    + ' +towgs84=0,0,0'
+                    + ' +no_defs=True';
+                break;
 
-        // Mercator
-        else if (this._params.map_proj === WrfProjections.mercator) {
+            // Mercator
+            case WrfProjections.mercator:
+                this._proj4 = '+units=m'
+                    + ' +proj=merc'
+                    + ' +lat_ts=' + this._params.truelat1
+                    + ' +lon_0=' + this._params.stand_lon
+                    + ' +a=' + EarthRadius
+                    + ' +b=' + EarthRadius
+                    + ' +towgs84=0,0,0'
+                    + ' +no_defs=True'
+                    + ' +nadgrids=null';
+                break;
 
-            this._proj4 = '+units=m'
-                + ' +proj=merc'
-                + ' +lat_ts=' + this._params.truelat1
-                + ' +lon_0=' + this._params.stand_lon
-                + ' +a=' + EarthRadius
-                + ' +b=' + EarthRadius
-                + ' +towgs84=0,0,0'
-                + ' +no_defs=True'
-                + ' +nadgrids=null';
-        }
+            // Polar stereographic
+            case WrfProjections.polar: {
 
-        // Polar stereographic
-        else if (this._params.map_proj === WrfProjections.polar) {
+                const hemi = (this._params.truelat1 < 0) ? -90 : 90;
+                const lat_ts = this._params.truelat1;
 
-            const hemi = (this._params.truelat1 < 0) ? -90 : 90;
-            const lat_ts = this._params.truelat1;
+                this._proj4 = '+units=m'
+                    + ' +proj=stere'
+                    + ' +lat_0=' + hemi
+                    + ' +lon_0=' + this._params.stand_lon
+                    + ' +lat_ts=' + lat_ts
+                    + ' +a=' + EarthRadius
+                    + ' +b=' + EarthRadius;
 
-            this._proj4 = '+units=m'
-                + ' +proj=stere'
-                + ' +lat_0=' + hemi
-                + ' +lon_0=' + this._params.stand_lon
-                + ' +lat_ts=' + lat_ts
-                + ' +a=' + EarthRadius
-                + ' +b=' + EarthRadius;
-        }
+                break;
+            }
 
-        // Regular latitude-longitude, or cylindrical equidistant
-        else if (this._params.map_proj === WrfProjections.latlon) {
+            // Regular latitude-longitude, or cylindrical equidistant
+            case WrfProjections.latlon: {
 
-            this._proj4 = '+units=m'
-                + ' +proj=eqc'
-                + ' +lon_0=' + this._params.stand_lon
-                + ' +a=' + EarthRadius
-                + ' +b=' + EarthRadius
-                + ' +nadgrids=null'
-                + ' +towgs84=0,0,0'
-                + ' +no_defs=True';
-        }
+                this._proj4 = '+units=m'
+                    + ' +proj=eqc'
+                    + ' +lon_0=' + this._params.stand_lon
+                    + ' +a=' + EarthRadius
+                    + ' +b=' + EarthRadius
+                    + ' +nadgrids=null'
+                    + ' +towgs84=0,0,0'
+                    + ' +no_defs=True';
 
-        // Rotated latitude-longitude, or cylindrical equidistant
-        // else if (this._params.map_proj === WrfProjections.rotated_ll) {
-        //     
+                break;
+            }
 
-        //     // Need to determine hemisphere, typically pole_lon is 0 for southern
-        //     // hemisphere, 180 for northern hemisphere.
-        //     let north = true;
-        //     if (this._wps.pole_lon !== null) {
-        //         if (this._wps.pole_lon == 0){
-        //             north = false;
-        //         }
-        //         else if (this._wps.pole_lon != 180) {
-        //             if (this._wps.ref_lat < 0.0) {
-        //                 north = false;
-        //             }
-        //         }
-        //     }
-        //     else {
-        //         if (this._wps.ref_lat < 0.0) {
-        //             north = false;
-        //         }
-        //     }
-    
-        //     const bm_cart_pole_lat = ;
-        //     const cart_pole_lon = ;
-
-        //     this._proj4 = '+proj=ob_tran'
-        //         + ' +o_proj=latlon'
-        //         + ' +a=' + EarthRadius
-        //         + ' +b=' + EarthRadius
-        //         + ' +to_meter=' // + math.radians(1)
-        //         + ' +o_lon_p=' + 180.0 - this._wps.pole_lon
-        //         + ' +o_lat_p=' + 180.0 - bm_cart_pole_lat
-        //         + ' +lon_0=' + 180.0 + cart_pole_lon;
-        // }
-        else {
-            throw ("Unsupported projection " + this._wps.map_proj);
+            default:
+                throw ("Unsupported projection " + this._wps.map_proj);
         }
     }
 

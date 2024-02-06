@@ -15,7 +15,7 @@
     "watch-less": "npm run grunt watch",
     "dev": "npm run build && concurrently \"npm:watch-js\" \"npm:watch-less\" \"npm:serve\"",
     "check-env": "dotenv -- cross-var echo \"$SWA_CLI_DEPLOYMENT_TOKEN\"",
-    "deploy": "dotenv -- npx @azure/static-web-apps-cli deploy ./build"
+    "deploy": "dotenv -- npx @azure/static-web-apps-cli deploy ./build --env production"
   },
   "keywords": [],
   "author": "",

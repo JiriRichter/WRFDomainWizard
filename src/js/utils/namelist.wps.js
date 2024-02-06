@@ -237,8 +237,8 @@ export class WPSNamelist {
         for (var i = 0; i < properties.length; i++) {
 
             if (values[i] === null) {
-                throw new Error(`Property value ${properties[i]} is not set`);
-                
+                // property not set - continue
+                continue;                
             }
             else if (typeof(values[i]) === 'undefined') {
                 throw new Error(`Property ${properties[i]} is not defined`);
@@ -315,6 +315,8 @@ export class WPSNamelist {
                 'ref_lon',
                 'truelat1',
                 'truelat2',
+                'pole_lat',
+                'pole_lon',
                 'stand_lon',
                 'geog_data_path',
                 'opt_geogrid_tbl_path'
@@ -334,6 +336,8 @@ export class WPSNamelist {
                 this.geogrid.ref_lon,
                 this.geogrid.truelat1,
                 this.geogrid.truelat2,
+                this.geogrid.pole_lat,
+                this.geogrid.pole_lon,
                 this.geogrid.stand_lon,
                 this.geogrid.geog_data_path,
                 this.geogrid.opt_geogrid_tbl_path

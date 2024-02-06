@@ -13,6 +13,10 @@ export class Geogrid {
             truelat1: null, 
             truelat2: null,
             stand_lon: null,
+            pole_lat: null,
+            pole_lon: null,
+            ref_x: null,
+            ref_y: null,
             dx: null,
             dy: null,
             s_we: 1,
@@ -89,6 +93,13 @@ export class Geogrid {
 
         console.debug(`Initializing grid ${this.id}`);
         console.debug(' WPS:');
+        console.debug(`  ref_lat: ${this._wps.ref_lat}`);
+        console.debug(`  ref_lon: ${this._wps.ref_lon}`);
+        console.debug(`  truelat1: ${this._wps.truelat1}`);
+        console.debug(`  truelat2: ${this._wps.truelat2}`);
+        console.debug(`  stand_lon: ${this._wps.stand_lon}`);
+        console.debug(`  pole_lat: ${this._wps.pole_lat}`);
+        console.debug(`  pole_lon: ${this._wps.pole_lon}`);
         if (this._wps.map_proj === WrfProjections.latlon) {
             console.debug(`  dx: ${this._wps.dx} deg`);
             console.debug(`  dy: ${this._wps.dy} deg`);

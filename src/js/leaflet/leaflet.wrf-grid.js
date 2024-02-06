@@ -1,6 +1,7 @@
 import { WPSNamelist } from "../utils/namelist.wps";
 import { nearestIntToZero } from "../utils/math";
 import { Geogrid } from "../utils/geogrid";
+import { WrfProjections } from "../utils/constants";
 
 export var WRFDomainGrid = L.Polygon.extend({
 
@@ -482,9 +483,11 @@ export var WRFDomainGrid = L.Polygon.extend({
         // save start location
         this._dragContext = {
             dragStarted: false,
-            stand_lon_delta: this.domain.stand_lon - this.domain.ref_lon,
-            truelat1_delta: this.domain.truelat1 - this.domain.ref_lat,
-            truelat2_delta: this.domain.truelat2 - this.domain.ref_lat,
+            ref_lat: this.domain.ref_lat,
+            ref_lon: this.domain.ref_lon,
+            stand_lon: this.domain.stand_lon,
+            truelat1: this.domain.truelat1,
+            truelat2: this.domain.truelat2,
             startLatLng: e.latlng,
             startIJ: this.geogrid.latlon_to_unstaggered_ij(e.latlng.lat, e.latlng.lng),
             delta_i: 0,
@@ -514,12 +517,13 @@ export var WRFDomainGrid = L.Polygon.extend({
         }
 
         if (this.parent == null) {
-            // for 1st domain only move ref point
+            // for MOAD move ref point by drag distance
             this.domain.ref_lat = e.latlng.lat - this._dragContext.startLatLng.lat + this.domain.ref_lat;
             this.domain.ref_lon = e.latlng.lng - this._dragContext.startLatLng.lng + this.domain.ref_lon;
-            this.domain.stand_lon = this.domain.ref_lon + this._dragContext.stand_lon_delta;
-            this.domain.truelat1 = this.domain.ref_lat + this._dragContext.truelat1_delta;
-            this.domain.truelat2 = this.domain.ref_lat + this._dragContext.truelat2_delta;
+
+            // adjust projection parameters
+            this.domain.drag(this._dragContext);
+
             this._dragContext.startLatLng = e.latlng;
             this.domain.update();
         }
@@ -685,6 +689,7 @@ export var WRFDomainGrid = L.Polygon.extend({
         L.Polygon.prototype.initialize.call(this, []);
     },
 
+    // re-draw grid
     update: function () {
         this.geogrid = this._initGeogrid();
         this._corners = this._initCorners();

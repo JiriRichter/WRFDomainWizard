@@ -2,6 +2,8 @@ import { SidebarWPSPanelGrid } from "./domain-wizard.sidebar.wps.panel.grid";
 import { WRFDomain } from "./leaflet/leaflet.wrf-domain";
 import { WRFDomainGrid } from "./leaflet/leaflet.wrf-grid";
 import { errorMessageBox } from "./domain-wizard.dialog.message-box";
+import { WrfProjections } from "./utils/constants";
+import { degreesToMeters } from "./utils/math";
 
 export class SidebarWPSPanel {
     constructor(container, options) {
@@ -53,6 +55,8 @@ export class SidebarWPSPanel {
         buttonRemoveMOAD = $('button[data-action="remove-moad"]', form);
 
         selectMapProj = $('select[name="map_proj"]', form);
+        disableMapProjectionSelect();
+
         inputRefLat = $('input[name="ref_lat"]', form);
         inputRefLon = $('input[name="ref_lon"]', form);
         inputTrueLat1 = $('input[name="truelat1"]', form);
@@ -100,10 +104,18 @@ export class SidebarWPSPanel {
             domain.truelat1 = parseFloat(inputTrueLat1.val());
             domain.truelat2 = parseFloat(inputTrueLat2.val());
             domain.stand_lon = parseFloat(inputStandLon.val());
-            domain.dx = parseInt(inputDX.val(), 10);
-            domain.dy = parseInt(inputDY.val(), 10);
             domain.pole_lat = parseFloat(inputPoleLat.val());
             domain.pole_lon = parseFloat(inputPoleLon.val());
+
+            if (domain.map_proj === WrfProjections.latlon) {
+                domain.dx = parseFloat(inputDX.val());
+                domain.dy = parseFloat(inputDY.val());
+            }
+            else {
+                domain.dx = parseInt(inputDX.val(), 10);
+                domain.dy = parseInt(inputDY.val(), 10);
+            }
+
             domain.grid.gridPanel.setGridValues();
 
             domain.update();
@@ -144,54 +156,107 @@ export class SidebarWPSPanel {
             setGridValues();
         });
 
-        // function enables, disables and sets default values for fields
+        function inputToMeters(input) {
+            input.attr('min', self.options.minGridDistanceMeters);
+            input.attr('step', 1);
+        }
+
+        function inputToDegrees(input) {
+            input.attr('min', 0);
+            input.attr('step', 0.001);
+        }
+
+        function showInput(input, enabled) {
+            input.parent().show();
+
+            if (enabled === true) {
+                enableInput(input);
+            }
+            else {
+                disableInput(input);
+            }
+        }
+
+        function hideInput(input) {
+            input.parent().hide();
+        }
+
+        function enableInput(input) {
+            input.prop('disabled', false);
+        }
+
+        function disableInput(input) {
+            input.prop('disabled', true);
+        }
+
+        function showStandLon(enabled) {
+            showInput(inputStandLon, enabled);
+            if (enabled === true) {
+                buttonStanLonPlus.prop('disabled', false);
+                buttonStanLonMinus.prop('disabled', false);
+            }
+            else {
+                buttonStanLonPlus.prop('disabled', true);
+                buttonStanLonMinus.prop('disabled', true);
+            }
+        }
+
+        function showPoleLatLon(enabled) {
+            showInput(inputPoleLat);
+
+            if (enabled === true) {
+                enableInput(inputPoleLat);
+                enableInput(inputPoleLon);
+            }
+            else {
+                disableInput(inputPoleLat);
+                disableInput(inputPoleLon);
+            }
+        }
+
+        // function enables/disables and sets default values for fields
         // for selected projection
         function configFieldsForProjection() {
 
-            // hide pole_lat and pole_lon
-            inputPoleLat.parent().hide();
+            showInput(inputRefLat, true);
+            hideInput(inputTrueLat1);
+            hideInput(inputTrueLat2);
+            hideInput(inputStandLon);
+            hideInput(inputPoleLat);
 
             switch (selectMapProj.val()) {
                 case 'lambert':
-                    inputTrueLat2.val(domain.truelat2.toFixed(3));
-                    inputTrueLat2.prop('disabled', false);
-                    inputStandLon.val(domain.stand_lon.toFixed(3));
-                    inputStandLon.prop('disabled', false);
-                    buttonStanLonPlus.prop('disabled', false);
-                    buttonStanLonMinus.prop('disabled', false);
-                    inputDX.attr('min', self.options.minGridDistanceMeters);
-                    inputDY.attr('min', self.options.minGridDistanceMeters);
+                    // true_lat1
+                    showInput(inputTrueLat1, true);
+                    showInput(inputTrueLat2, true);
+                    showStandLon(true);
+                    inputToMeters(inputDX);
+                    inputToMeters(inputDY);
                     break;
                 case 'mercator':
-                    inputTrueLat2.val('0');
-                    inputTrueLat2.prop('disabled', true);
-                    inputStandLon.val('0');
-                    inputStandLon.prop('disabled', true);
-                    buttonStanLonPlus.prop('disabled', true);
-                    buttonStanLonMinus.prop('disabled', true);
-                    inputDX.attr('min', self.options.minGridDistanceMeters);
-                    inputDY.attr('min', self.options.minGridDistanceMeters);
+                    showInput(inputTrueLat1, true);
+                    showStandLon(false);
+                    inputToMeters(inputDX);
+                    inputToMeters(inputDY);
                     break;
                 case 'polar':
-                    inputTrueLat2.val((domain.truelat1 < 0) ? '-90' : '90');
-                    inputTrueLat2.prop('disabled', true);
-                    inputDX.attr('min', self.options.minGridDistanceMeters);
-                    inputDY.attr('min', self.options.minGridDistanceMeters);
+                    showInput(inputTrueLat1, true);
+                    showStandLon(true);
+                    inputToMeters(inputDX);
+                    inputToMeters(inputDY);
                     break;
                 case 'lat-lon':
-                    inputTrueLat2.val(domain.ref_lat.toFixed(3));
-                    inputTrueLat2.prop('disabled', false);
-                    // hide pole_lat and pole_lon
-                    inputPoleLat.parent().show();
+                    showStandLon(true, formatFloat(domain.stand_lon));
+                    showPoleLatLon(false);
 
-                    // dx, dy in degrees so min should be 0
-                    inputDX.attr('min', self.options.minGridDistanceDegrees);
-                    inputDY.attr('min', self.options.minGridDistanceDegrees);
-
+                    // dx, dy in degrees
+                    inputToDegrees(inputDX);
+                    inputToDegrees(inputDY);
                     break;
             }
         }
 
+        // updates the tooltip on the map projection field
         function updateSelectMapProjTitle() {
             const title = selectMapProj.find('option:selected').data('title');
             selectMapProj.attr('title', title);
@@ -204,6 +269,8 @@ export class SidebarWPSPanel {
             if (domain != null) {
                 configFieldsForProjection();
                 setGridValues();
+            } else {
+                initializeDxDyFields(selectMapProj.val());
             }
             updateSelectMapProjTitle();
         });
@@ -246,18 +313,55 @@ export class SidebarWPSPanel {
             }
         };
 
+        function setDxDyFieldValues(map_proj, dx, dy) {
+            if (map_proj === WrfProjections.latlon) {
+                inputDX.val(formatFloat(dx));
+                inputDY.val(formatFloat(dy));
+            }
+            else {
+                inputDX.val(Math.round(dx));
+                inputDY.val(Math.round(dy));
+            }
+        }
+
+        // handles multiplication/division of DX and DY via a button
         function modifyDxDy(op, factor) {
 
-            if (op == MulDivOp.DIV && ((inputDX.val() < 100) || (inputDY.val() < 100))) {
+            const map_proj = selectMapProj.val();
+
+            let minDistance,
+                newDx, newDy,
+                currentDx, currentDy;
+
+            if (map_proj === WrfProjections.latlon) {
+                currentDx = parseFloat(inputDX.val());
+                currentDy = parseFloat(inputDY.val());
+                minDistance = Math.min(degreesToMeters(currentDx), degreesToMeters(currentDy));
+            } else {
+                currentDx = parseInt(inputDX.val());
+                currentDy = parseInt(inputDY.val());
+                minDistance = Math.min(currentDx, currentDy);
+            }
+
+            if (isNaN(currentDx) || isNaN(currentDy)){
+                return;
+            }
+            
+            // DX or DY have reached allowed minimum
+            if (op == MulDivOp.DIV && minDistance < 100) {
                 return;
             }
 
+            newDx = mulDiv(currentDx, op, factor);
+            newDy = mulDiv(currentDy, op, factor);
+
+            // when no domain is present on map, simply update DX/DY and exit
             if (domain == null) {
-                inputDX.val(Math.round(mulDiv(parseInt(inputDX.val(), 10), op, factor)));
-                inputDY.val(Math.round(mulDiv(parseInt(inputDY.val(), 10), op, factor)));
+                setDxDyFieldValues(map_proj, newDx, newDy);
                 return;
             }
 
+            // reverse operation will be applied to e_we and e_sn to preserve the domain area
             var reverseOp = (op == MulDivOp.DIV) ? MulDivOp.MUL : MulDivOp.DIV;
 
             // set new settings
@@ -301,14 +405,15 @@ export class SidebarWPSPanel {
                 return update;
             }
 
-            var tmpDomain = new WRFDomain();
+            var tmpDomain = createEmptyDomain();
             tmpDomain.createMainGrid();
 
             if (calculateGridValues(domain.grid, tmpDomain.grid)) {
-                domain.dx = Math.round(mulDiv(parseInt(inputDX.val(), 10), op, factor));
-                domain.dy = Math.round(mulDiv(parseInt(inputDY.val(), 10), op, factor));
-                inputDX.val(domain.dx.toString());
-                inputDY.val(domain.dy.toString());
+
+                domain.dx = newDx;
+                domain.dy = newDy;
+
+                setDxDyFieldValues(map_proj, newDx, newDy);
 
                 function copyGridValues(grid, tmpGrid) {
                     grid.i_parent_start = tmpGrid.i_parent_start;
@@ -342,31 +447,32 @@ export class SidebarWPSPanel {
             modifyDxDy(MulDivOp.MUL, 3);
         });
 
-        function setFieldValue(input, value, decimals) {
-
+        function formatFloat(value, decimals) {
             decimals = decimals || 3;
+            return value.toFixed(decimals);
+        }
 
-            if (value) {
-                input.val(value.toFixed(3));
+        function setFloatFieldValue(input, value, decimals) {
+            if (value != null) {
+                input.val(formatFloat(value, decimals));
             } else {
                 input.val(null);
             }
         }
 
         function setFieldValues() {
-            // place domains info to floating panel
             selectMapProj.val(domain.map_proj);
 
-            inputRefLat.val(domain.ref_lat.toFixed(3));
-            inputRefLon.val(domain.ref_lon.toFixed(3));
-            inputTrueLat1.val(domain.truelat1.toFixed(3));
-            inputTrueLat2.val(domain.truelat2.toFixed(3));
-            inputStandLon.val(domain.stand_lon.toFixed(3));
-            inputDX.val(Math.trunc(domain.dx).toString());
-            inputDY.val(Math.trunc(domain.dy).toString());
+            setFloatFieldValue(inputRefLat, domain.ref_lat);
+            setFloatFieldValue(inputRefLon, domain.ref_lon);
+            setFloatFieldValue(inputTrueLat1, domain.truelat1);
+            setFloatFieldValue(inputTrueLat2, domain.truelat2);
+            setFloatFieldValue(inputStandLon, domain.stand_lon);
 
-            setFieldValue(inputPoleLat, domain.pole_lat);
-            setFieldValue(inputPoleLon, domain.pole_lon);
+            setDxDyFieldValues(domain.map_proj, domain.dx, domain.dy);
+
+            setFloatFieldValue(inputPoleLat, domain.pole_lat);
+            setFloatFieldValue(inputPoleLon, domain.pole_lon);
         }
 
         function setButtonRemoveMOADEnabled() {
@@ -397,27 +503,64 @@ export class SidebarWPSPanel {
                 initGridPanels();
             });
 
+            disableMapProjectionSelect();
             setFieldValues();
             configFieldsForProjection();
             initializedForDomain = true;
         }
 
+        function enableMapProjectionSelect() {
+            selectMapProj.removeAttr('disabled');            
+        }
+
+        function disableMapProjectionSelect() {
+            selectMapProj.attr('disabled', 'disabled');            
+        }
+
+        // configures DX/DY for selected projection and sets the default value
+        function initializeDxDyFields(map_proj) {
+            if (map_proj === WrfProjections.latlon) {
+                inputToDegrees(inputDX);
+                inputToDegrees(inputDY);
+                inputDX.val(localStorage.getItem(localStorageKey + 'dx.lat-lon') || 0.1);
+                inputDY.val(localStorage.getItem(localStorageKey + 'dy.lat-lon') || 0.1);
+            }
+            else {
+                inputToMeters(inputDX);
+                inputToMeters(inputDY);
+                inputDX.val(localStorage.getItem(localStorageKey + 'dx') || 12000);
+                inputDY.val(localStorage.getItem(localStorageKey + 'dy') || 12000);
+            }
+        }
+
+        function createEmptyDomain() {
+            const newDomain = new WRFDomain();
+            newDomain.map_proj = selectMapProj.val();
+            return newDomain;
+        }
+
+        // hide all fields 
+        // called when a user clicks New domain button
         this.showNewDomain = function () {
             domain = null;
             initializedForDomain = false;
             buttonUpdate.parent().hide();
-            // hide ref_lat and ref_lon
-            inputRefLat.parent().hide();
-            inputStandLon.parent().hide();
-            inputTrueLat1.parent().hide();
-            inputTrueLat2.parent().hide();
-            // hide pole_lat and pole_lon
-            inputPoleLat.parent().hide();
+
+            // hide all projection fields
+            hideInput(inputRefLat);
+            hideInput(inputStandLon);
+            hideInput(inputTrueLat1);
+            hideInput(inputTrueLat2);
+            hideInput(inputPoleLat);
+
             headerGrids.hide();
 
-            selectMapProj.val(localStorage.getItem(localStorageKey + 'map_proj') || 'lambert');
-            inputDX.val(localStorage.getItem(localStorageKey + 'dx') || 12000);
-            inputDY.val(localStorage.getItem(localStorageKey + 'dy') || 12000);
+            // enable map proj
+            enableMapProjectionSelect();
+
+            var map_proj = localStorage.getItem(localStorageKey + 'map_proj') || 'lambert';
+            selectMapProj.val(map_proj);
+            initializeDxDyFields(map_proj);
 
             container.show();
             setGridsContainerHeight();
@@ -430,14 +573,27 @@ export class SidebarWPSPanel {
         };
 
         this.createNewDomain = function () {
-            domain = new WRFDomain();
-            domain.map_proj = selectMapProj.val();
-            domain.dx = parseInt(inputDX.val(), 10);
-            domain.dy = parseInt(inputDY.val(), 10);
+
+            disableMapProjectionSelect();
+
+            domain = createEmptyDomain();
 
             localStorage.setItem(localStorageKey + 'map_proj', domain.map_proj);
-            localStorage.setItem(localStorageKey + 'dx', domain.dx);
-            localStorage.setItem(localStorageKey + 'dy', domain.dy);
+
+            if (domain.map_proj === WrfProjections.latlon) {
+                domain.dx = parseFloat(inputDX.val());
+                domain.dy = parseFloat(inputDY.val());
+                localStorage.setItem(localStorageKey + 'dx.lat-lon', domain.dx);
+                localStorage.setItem(localStorageKey + 'dy.lat-lon', domain.dy);
+
+                domain.pole_lat = 90;
+                domain.pole_lon = 0;
+            } else {
+                domain.dx = parseInt(inputDX.val(), 10);
+                domain.dy = parseInt(inputDY.val(), 10);
+                localStorage.setItem(localStorageKey + 'dx', domain.dx);
+                localStorage.setItem(localStorageKey + 'dy', domain.dy);
+            }
 
             domain.createMainGrid();
             return domain;
@@ -454,10 +610,6 @@ export class SidebarWPSPanel {
             }
 
             buttonUpdate.parent().show();
-            inputRefLat.parent().show();
-            inputStandLon.parent().show();
-            inputTrueLat1.parent().show();
-            inputTrueLat2.parent().show();
             headerGrids.show();
 
             container.show();

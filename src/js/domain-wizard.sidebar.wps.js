@@ -1,10 +1,11 @@
 import { SidebarWPSPanel } from "./domain-wizard.sidebar.wps.panel";
 import { WRFDomainGrid } from "./leaflet/leaflet.wrf-grid";
 import { WRFDomain } from "./leaflet/leaflet.wrf-domain";
-import { wpsSaveDialog } from "./domain-wizard.dialog.save";
+import { WPSSaveDialog } from "./domain-wizard.dialog.save";
 import { WPSNamelist } from "./utils/namelist.wps"
 import { errorMessageBox } from "./domain-wizard.dialog.message-box";
 import { geogridOutput } from "./utils/geogrid.output";
+import { WrfProjections } from "./utils/constants";
 
 export class SidebarWPS {
 
@@ -67,8 +68,9 @@ export class SidebarWPS {
             inputFile.click();
         });
 
+        const wpsSaveDialog = new WPSSaveDialog();
         buttonSave.on('click', (e) => {
-            wpsSaveDialog(domain).show();
+            wpsSaveDialog.show(domain);
         });
 
         inputFile.on('change', (e) => {
@@ -107,6 +109,7 @@ export class SidebarWPS {
             if (domain) {
                 domain.remove();
                 domain = null;
+                newDomainContext = null;
 
                 if (self._geogridCornerMarkerGroups.length > 0) {
                     self._geogridCornerMarkerGroups.forEach(group => {
@@ -116,6 +119,8 @@ export class SidebarWPS {
             }
         }
 
+        // setup panel and map to start drawinf a new domain
+        // called when user click New button
         function initNewDomain() {
             removeDomain();
             buttonNew.prop('disabled', true);
@@ -123,6 +128,7 @@ export class SidebarWPS {
             wpsPanel.showNewDomain();
         }
 
+        // called when user starts drag operation to draw a new domain
         function startNewDomain(e) {
             if (!wpsPanel.validateNewDomain()) {
                 return;
@@ -167,14 +173,10 @@ export class SidebarWPS {
             newDomainContext.endMarker.setLatLng(e.latlng);
             center = bounds.getCenter();
 
-            domain.ref_lat = center.lat;
-            domain.ref_lon = center.lng;
-            domain.truelat1 = domain.ref_lat;
-            domain.truelat2 = domain.ref_lat;
-            domain.stand_lon = domain.ref_lon;
-
-            e_we = Math.round(map.distance(newDomainContext.startLatlng, [newDomainContext.startLatlng.lat, e.latlng.lng]) / domain.dx);
-            e_sn = Math.round(map.distance(newDomainContext.startLatlng, [e.latlng.lat, newDomainContext.startLatlng.lng]) / domain.dy);
+            domain.setDefaultValues(center.lat, center.lng);
+            
+            e_we = Math.round(map.distance(newDomainContext.startLatlng, [newDomainContext.startLatlng.lat, e.latlng.lng]) / domain.dxInMeters);
+            e_sn = Math.round(map.distance(newDomainContext.startLatlng, [e.latlng.lat, newDomainContext.startLatlng.lng]) / domain.dyInMeters);
 
             if (e_we < WRFDomainGrid.minGridSize || e_sn < WRFDomainGrid.minGridSize) {
                 domain.remove();

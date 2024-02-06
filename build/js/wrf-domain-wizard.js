@@ -864,7 +864,7 @@
         this._setDefaults();
         var content = '';
         content += WPSNamelist._formatSection('share', ['wrf_core', 'max_dom', 'start_date', 'end_date', 'interval_seconds', 'io_form_geogrid', 'debug_level'], [this.share.wrf_core, this.share.max_dom, this.share.start_date, this.share.end_date, this.share.interval_seconds, this.share.io_form_geogrid, this.share.debug_level]);
-        content += WPSNamelist._formatSection('geogrid', ['parent_id', 'parent_grid_ratio', 'i_parent_start', 'j_parent_start', 'e_we', 'e_sn', 'geog_data_res', 'dx', 'dy', 'map_proj', 'ref_lat', 'ref_lon', 'truelat1', 'truelat2', 'stand_lon', 'geog_data_path', 'opt_geogrid_tbl_path'], [this.geogrid.parent_id, this.geogrid.parent_grid_ratio, this.geogrid.i_parent_start, this.geogrid.j_parent_start, this.geogrid.e_we, this.geogrid.e_sn, this.geogrid.geog_data_res, this.geogrid.dx, this.geogrid.dy, this.geogrid.map_proj, this.geogrid.ref_lat, this.geogrid.ref_lon, this.geogrid.truelat1, this.geogrid.truelat2, this.geogrid.stand_lon, this.geogrid.geog_data_path, this.geogrid.opt_geogrid_tbl_path]);
+        content += WPSNamelist._formatSection('geogrid', ['parent_id', 'parent_grid_ratio', 'i_parent_start', 'j_parent_start', 'e_we', 'e_sn', 'geog_data_res', 'dx', 'dy', 'map_proj', 'ref_lat', 'ref_lon', 'truelat1', 'truelat2', 'pole_lat', 'pole_lon', 'stand_lon', 'geog_data_path', 'opt_geogrid_tbl_path'], [this.geogrid.parent_id, this.geogrid.parent_grid_ratio, this.geogrid.i_parent_start, this.geogrid.j_parent_start, this.geogrid.e_we, this.geogrid.e_sn, this.geogrid.geog_data_res, this.geogrid.dx, this.geogrid.dy, this.geogrid.map_proj, this.geogrid.ref_lat, this.geogrid.ref_lon, this.geogrid.truelat1, this.geogrid.truelat2, this.geogrid.pole_lat, this.geogrid.pole_lon, this.geogrid.stand_lon, this.geogrid.geog_data_path, this.geogrid.opt_geogrid_tbl_path]);
         content += WPSNamelist._formatSection('ungrib', ['out_format', 'prefix'], [this.ungrib.out_format, this.ungrib.prefix]);
         content += WPSNamelist._formatSection('metgrid', ['fg_name', 'io_form_metgrid', 'opt_metgrid_tbl_path'], [this.metgrid.fg_name, this.metgrid.io_form_metgrid, this.metgrid.opt_metgrid_tbl_path]);
         return content;
@@ -910,7 +910,8 @@
         var content = '&' + section + '\n';
         for (var i = 0; i < properties.length; i++) {
           if (values[i] === null) {
-            throw new Error("Property value ".concat(properties[i], " is not set"));
+            // property not set - continue
+            continue;
           } else if (typeof values[i] === 'undefined') {
             throw new Error("Property ".concat(properties[i], " is not defined"));
           } else {
@@ -8317,66 +8318,34 @@
         e_we: null,
         e_sn: null
       }, params);
+      switch (this._params.map_proj) {
+        // Lambert Conformal Conic
+        case WrfProjections.lambert:
+          this._proj4 = '+units=m' + ' +proj=lcc' + ' +lat_1=' + this._params.truelat1 + ' +lat_2=' + this._params.truelat2 + ' +lat_0=' + this._params.ref_lat + ' +lon_0=' + this._params.stand_lon + ' +a=' + EarthRadius + ' +b=' + EarthRadius + ' +towgs84=0,0,0' + ' +no_defs=True';
+          break;
 
-      // Lambert Conformal Conic
-      if (this._params.map_proj === WrfProjections.lambert) {
-        this._proj4 = '+units=m' + ' +proj=lcc' + ' +lat_1=' + this._params.truelat1 + ' +lat_2=' + this._params.truelat2 + ' +lat_0=' + this._params.ref_lat + ' +lon_0=' + this._params.stand_lon + ' +a=' + EarthRadius + ' +b=' + EarthRadius + ' +towgs84=0,0,0' + ' +no_defs=True';
-      }
+        // Mercator
+        case WrfProjections.mercator:
+          this._proj4 = '+units=m' + ' +proj=merc' + ' +lat_ts=' + this._params.truelat1 + ' +lon_0=' + this._params.stand_lon + ' +a=' + EarthRadius + ' +b=' + EarthRadius + ' +towgs84=0,0,0' + ' +no_defs=True' + ' +nadgrids=null';
+          break;
 
-      // Mercator
-      else if (this._params.map_proj === WrfProjections.mercator) {
-        this._proj4 = '+units=m' + ' +proj=merc' + ' +lat_ts=' + this._params.truelat1 + ' +lon_0=' + this._params.stand_lon + ' +a=' + EarthRadius + ' +b=' + EarthRadius + ' +towgs84=0,0,0' + ' +no_defs=True' + ' +nadgrids=null';
-      }
+        // Polar stereographic
+        case WrfProjections.polar:
+          {
+            var hemi = this._params.truelat1 < 0 ? -90 : 90;
+            var lat_ts = this._params.truelat1;
+            this._proj4 = '+units=m' + ' +proj=stere' + ' +lat_0=' + hemi + ' +lon_0=' + this._params.stand_lon + ' +lat_ts=' + lat_ts + ' +a=' + EarthRadius + ' +b=' + EarthRadius;
+            break;
+          }
 
-      // Polar stereographic
-      else if (this._params.map_proj === WrfProjections.polar) {
-        var hemi = this._params.truelat1 < 0 ? -90 : 90;
-        var lat_ts = this._params.truelat1;
-        this._proj4 = '+units=m' + ' +proj=stere' + ' +lat_0=' + hemi + ' +lon_0=' + this._params.stand_lon + ' +lat_ts=' + lat_ts + ' +a=' + EarthRadius + ' +b=' + EarthRadius;
-      }
-
-      // Regular latitude-longitude, or cylindrical equidistant
-      else if (this._params.map_proj === WrfProjections.latlon) {
-        this._proj4 = '+units=m' + ' +proj=eqc' + ' +lon_0=' + this._params.stand_lon + ' +a=' + EarthRadius + ' +b=' + EarthRadius + ' +nadgrids=null' + ' +towgs84=0,0,0' + ' +no_defs=True';
-      }
-
-      // Rotated latitude-longitude, or cylindrical equidistant
-      // else if (this._params.map_proj === WrfProjections.rotated_ll) {
-      //     
-
-      //     // Need to determine hemisphere, typically pole_lon is 0 for southern
-      //     // hemisphere, 180 for northern hemisphere.
-      //     let north = true;
-      //     if (this._wps.pole_lon !== null) {
-      //         if (this._wps.pole_lon == 0){
-      //             north = false;
-      //         }
-      //         else if (this._wps.pole_lon != 180) {
-      //             if (this._wps.ref_lat < 0.0) {
-      //                 north = false;
-      //             }
-      //         }
-      //     }
-      //     else {
-      //         if (this._wps.ref_lat < 0.0) {
-      //             north = false;
-      //         }
-      //     }
-
-      //     const bm_cart_pole_lat = ;
-      //     const cart_pole_lon = ;
-
-      //     this._proj4 = '+proj=ob_tran'
-      //         + ' +o_proj=latlon'
-      //         + ' +a=' + EarthRadius
-      //         + ' +b=' + EarthRadius
-      //         + ' +to_meter=' // + math.radians(1)
-      //         + ' +o_lon_p=' + 180.0 - this._wps.pole_lon
-      //         + ' +o_lat_p=' + 180.0 - bm_cart_pole_lat
-      //         + ' +lon_0=' + 180.0 + cart_pole_lon;
-      // }
-      else {
-        throw "Unsupported projection " + this._wps.map_proj;
+        // Regular latitude-longitude, or cylindrical equidistant
+        case WrfProjections.latlon:
+          {
+            this._proj4 = '+units=m' + ' +proj=eqc' + ' +lon_0=' + this._params.stand_lon + ' +a=' + EarthRadius + ' +b=' + EarthRadius + ' +nadgrids=null' + ' +towgs84=0,0,0' + ' +no_defs=True';
+            break;
+          }
+        default:
+          throw "Unsupported projection " + this._wps.map_proj;
       }
     }
     _createClass(WrfProjection, [{
@@ -8413,6 +8382,10 @@
         truelat1: null,
         truelat2: null,
         stand_lon: null,
+        pole_lat: null,
+        pole_lon: null,
+        ref_x: null,
+        ref_y: null,
         dx: null,
         dy: null,
         s_we: 1,
@@ -8511,6 +8484,13 @@
         var nest = this.parent !== null;
         console.debug("Initializing grid ".concat(this.id));
         console.debug(' WPS:');
+        console.debug("  ref_lat: ".concat(this._wps.ref_lat));
+        console.debug("  ref_lon: ".concat(this._wps.ref_lon));
+        console.debug("  truelat1: ".concat(this._wps.truelat1));
+        console.debug("  truelat2: ".concat(this._wps.truelat2));
+        console.debug("  stand_lon: ".concat(this._wps.stand_lon));
+        console.debug("  pole_lat: ".concat(this._wps.pole_lat));
+        console.debug("  pole_lon: ".concat(this._wps.pole_lon));
         if (this._wps.map_proj === WrfProjections.latlon) {
           console.debug("  dx: ".concat(this._wps.dx, " deg"));
           console.debug("  dy: ".concat(this._wps.dy, " deg"));
@@ -9066,9 +9046,11 @@
       // save start location
       this._dragContext = {
         dragStarted: false,
-        stand_lon_delta: this.domain.stand_lon - this.domain.ref_lon,
-        truelat1_delta: this.domain.truelat1 - this.domain.ref_lat,
-        truelat2_delta: this.domain.truelat2 - this.domain.ref_lat,
+        ref_lat: this.domain.ref_lat,
+        ref_lon: this.domain.ref_lon,
+        stand_lon: this.domain.stand_lon,
+        truelat1: this.domain.truelat1,
+        truelat2: this.domain.truelat2,
         startLatLng: e.latlng,
         startIJ: this.geogrid.latlon_to_unstaggered_ij(e.latlng.lat, e.latlng.lng),
         delta_i: 0,
@@ -9094,12 +9076,12 @@
         }
       }
       if (this.parent == null) {
-        // for 1st domain only move ref point
+        // for MOAD move ref point by drag distance
         this.domain.ref_lat = e.latlng.lat - this._dragContext.startLatLng.lat + this.domain.ref_lat;
         this.domain.ref_lon = e.latlng.lng - this._dragContext.startLatLng.lng + this.domain.ref_lon;
-        this.domain.stand_lon = this.domain.ref_lon + this._dragContext.stand_lon_delta;
-        this.domain.truelat1 = this.domain.ref_lat + this._dragContext.truelat1_delta;
-        this.domain.truelat2 = this.domain.ref_lat + this._dragContext.truelat2_delta;
+
+        // adjust projection parameters
+        this.domain.drag(this._dragContext);
         this._dragContext.startLatLng = e.latlng;
         this.domain.update();
       } else {
@@ -9245,6 +9227,7 @@
       }
       L.Polygon.prototype.initialize.call(this, []);
     },
+    // re-draw grid
     update: function update() {
       this.geogrid = this._initGeogrid();
       this._corners = this._initCorners();
@@ -10153,10 +10136,28 @@
     _onCenterMarkerDrag: function _onCenterMarkerDrag(e) {
       this.ref_lat = e.latlng.lat;
       this.ref_lon = e.latlng.lng;
-      this.stand_lon = this.ref_lon + this._dragContext.stand_lon_delta;
-      this.truelat1 = this.ref_lat + this._dragContext.truelat1_delta;
-      this.truelat2 = this.ref_lat + this._dragContext.truelat2_delta;
+      this.drag(this._dragContext);
       this.update();
+    },
+    drag: function drag(dragContext) {
+      switch (this.map_proj) {
+        case WrfProjections.lambert:
+          this.stand_lon = this.ref_lon + dragContext.stand_lon - dragContext.ref_lon;
+          this.truelat1 = this.ref_lat + dragContext.truelat1 - dragContext.ref_lat;
+          this.truelat2 = this.ref_lat + dragContext.truelat2 - dragContext.ref_lat;
+          break;
+        case WrfProjections.mercator:
+          this.stand_lon = 0;
+          this.truelat1 = this.ref_lat + dragContext.truelat1 - dragContext.ref_lat;
+          break;
+        case WrfProjections.polar:
+          this.stand_lon = this.ref_lon + dragContext.stand_lon - dragContext.ref_lon;
+          this.truelat1 = this.ref_lat + dragContext.truelat1 - dragContext.ref_lat;
+          break;
+        case WrfProjections.latlon:
+          this._setDefaultProjValues();
+          break;
+      }
     },
     _onMapClick: function _onMapClick(e) {
       if (this._map.getContainer() == e.originalEvent.target && this._selectedGrid) {
@@ -10176,9 +10177,13 @@
       if (this.options['editable']) {
         this._centerMarker.on('dragstart', function (event) {
           this._dragContext = {
-            stand_lon_delta: this.stand_lon - this.ref_lon,
-            truelat1_delta: this.truelat1 - this.ref_lat,
-            truelat2_delta: this.truelat2 - this.ref_lat
+            ref_lat: this.ref_lat,
+            ref_lon: this.ref_lon,
+            truelat1: this.truelat1,
+            truelat2: this.truelat2,
+            stand_lon: this.stand_lon,
+            pole_lat: this.pole_lat,
+            pole_lon: this.pole_lon
           };
           this._mainGrid.unbindTooltip();
           if (this._selectedGrid) {
@@ -10204,10 +10209,47 @@
       this._map.off('click', this._onMapClick, this);
       this._mainGrid.remove();
     },
+    // re-draw domain
     update: function update() {
       this._centerMarker.setLatLng(L.latLng(this.ref_lat, this.ref_lon));
       this._mainGrid.update();
       this.fire('wps:change');
+    },
+    _setDefaultProjValues: function _setDefaultProjValues() {
+      switch (this.map_proj) {
+        case WrfProjections.lambert:
+          this.truelat1 = this.ref_lat;
+          this.truelat2 = this.ref_lat;
+          this.stand_lon = this.ref_lon;
+          break;
+        case WrfProjections.mercator:
+          this.truelat1 = this.ref_lat;
+          this.stand_lon = 0;
+          break;
+        case WrfProjections.polar:
+          this.truelat1 = this.ref_lat;
+          this.stand_lon = this.ref_lon;
+          break;
+        case WrfProjections.latlon:
+          // southern hemisphere
+          if (this.ref_lat < 0) {
+            this.pole_lat = 90.0 + this.ref_lat;
+            this.pole_lon = 0;
+            this.stand_lon = 180 - this.ref_lon;
+          }
+          // northern hemisphere
+          else {
+            this.pole_lat = 90.0 - this.ref_lat;
+            this.pole_lon = 180;
+            this.stand_lon = -this.ref_lon;
+          }
+          break;
+      }
+    },
+    setDefaultValues: function setDefaultValues(ref_lat, ref_lon) {
+      this.ref_lat = ref_lat;
+      this.ref_lon = ref_lon;
+      this._setDefaultProjValues();
     },
     /**
      * 
@@ -10225,6 +10267,10 @@
         this.ref_lon = wpsNamelist.geogrid.ref_lon;
         this.dx = wpsNamelist.geogrid.dx;
         this.dy = wpsNamelist.geogrid.dy;
+        this.pole_lat = wpsNamelist.geogrid.pole_lat;
+        this.pole_lon = wpsNamelist.geogrid.pole_lon;
+        this.ref_x = wpsNamelist.geogrid.ref_x;
+        this.ref_y = wpsNamelist.geogrid.ref_y;
         this._mainGrid = new WRFDomainGrid(this, null, 1, wpsNamelist, this.options);
       }
     },
@@ -10232,13 +10278,33 @@
       var wpsNamelist = new WPSNamelist();
       wpsNamelist.share.max_dom = this.max_dom;
       wpsNamelist.geogrid.map_proj = this.map_proj;
-      wpsNamelist.geogrid.truelat1 = this.truelat1;
-      wpsNamelist.geogrid.truelat2 = this.truelat2;
-      wpsNamelist.geogrid.stand_lon = this.stand_lon;
-      wpsNamelist.geogrid.ref_lat = this.ref_lat;
-      wpsNamelist.geogrid.ref_lon = this.ref_lon;
       wpsNamelist.geogrid.dx = this.dx;
       wpsNamelist.geogrid.dy = this.dy;
+      wpsNamelist.geogrid.ref_lat = this.ref_lat;
+      wpsNamelist.geogrid.ref_lon = this.ref_lon;
+
+      //wpsNamelist.geogrid.ref_x = this.ref_x;
+      //wpsNamelist.geogrid.ref_y = this.ref_y;
+
+      switch (this.map_proj) {
+        case WrfProjections.lambert:
+          wpsNamelist.geogrid.truelat1 = this.truelat1;
+          wpsNamelist.geogrid.truelat2 = this.truelat2;
+          wpsNamelist.geogrid.stand_lon = this.stand_lon;
+          break;
+        case WrfProjections.mercator:
+          wpsNamelist.geogrid.truelat1 = this.truelat1;
+          break;
+        case WrfProjections.polar:
+          wpsNamelist.geogrid.truelat1 = this.truelat1;
+          wpsNamelist.geogrid.stand_lon = this.stand_lon;
+          break;
+        case WrfProjections.latlon:
+          wpsNamelist.geogrid.pole_lat = this.pole_lat;
+          wpsNamelist.geogrid.pole_lon = this.pole_lon;
+          wpsNamelist.geogrid.stand_lon = this.stand_lon;
+          break;
+      }
       wpsNamelist.geogrid.parent_id = [];
       wpsNamelist.geogrid.parent_grid_ratio = [];
       wpsNamelist.geogrid.i_parent_start = [];
@@ -10420,6 +10486,7 @@
     buttonAddMOAD = $('button[data-action="add-moad"]', form);
     buttonRemoveMOAD = $('button[data-action="remove-moad"]', form);
     selectMapProj = $('select[name="map_proj"]', form);
+    disableMapProjectionSelect();
     inputRefLat = $('input[name="ref_lat"]', form);
     inputRefLon = $('input[name="ref_lon"]', form);
     inputTrueLat1 = $('input[name="truelat1"]', form);
@@ -10460,10 +10527,15 @@
       domain.truelat1 = parseFloat(inputTrueLat1.val());
       domain.truelat2 = parseFloat(inputTrueLat2.val());
       domain.stand_lon = parseFloat(inputStandLon.val());
-      domain.dx = parseInt(inputDX.val(), 10);
-      domain.dy = parseInt(inputDY.val(), 10);
       domain.pole_lat = parseFloat(inputPoleLat.val());
       domain.pole_lon = parseFloat(inputPoleLon.val());
+      if (domain.map_proj === WrfProjections.latlon) {
+        domain.dx = parseFloat(inputDX.val());
+        domain.dy = parseFloat(inputDY.val());
+      } else {
+        domain.dx = parseInt(inputDX.val(), 10);
+        domain.dy = parseInt(inputDY.val(), 10);
+      }
       domain.grid.gridPanel.setGridValues();
       domain.update();
     }
@@ -10499,51 +10571,93 @@
       }
       setGridValues();
     });
+    function inputToMeters(input) {
+      input.attr('min', self.options.minGridDistanceMeters);
+      input.attr('step', 1);
+    }
+    function inputToDegrees(input) {
+      input.attr('min', 0);
+      input.attr('step', 0.001);
+    }
+    function showInput(input, enabled) {
+      input.parent().show();
+      if (enabled === true) {
+        enableInput(input);
+      } else {
+        disableInput(input);
+      }
+    }
+    function hideInput(input) {
+      input.parent().hide();
+    }
+    function enableInput(input) {
+      input.prop('disabled', false);
+    }
+    function disableInput(input) {
+      input.prop('disabled', true);
+    }
+    function showStandLon(enabled) {
+      showInput(inputStandLon, enabled);
+      if (enabled === true) {
+        buttonStanLonPlus.prop('disabled', false);
+        buttonStanLonMinus.prop('disabled', false);
+      } else {
+        buttonStanLonPlus.prop('disabled', true);
+        buttonStanLonMinus.prop('disabled', true);
+      }
+    }
+    function showPoleLatLon(enabled) {
+      showInput(inputPoleLat);
+      if (enabled === true) {
+        enableInput(inputPoleLat);
+        enableInput(inputPoleLon);
+      } else {
+        disableInput(inputPoleLat);
+        disableInput(inputPoleLon);
+      }
+    }
 
-    // function enables, disables and sets default values for fields
+    // function enables/disables and sets default values for fields
     // for selected projection
     function configFieldsForProjection() {
-      // hide pole_lat and pole_lon
-      inputPoleLat.parent().hide();
+      showInput(inputRefLat, true);
+      hideInput(inputTrueLat1);
+      hideInput(inputTrueLat2);
+      hideInput(inputStandLon);
+      hideInput(inputPoleLat);
       switch (selectMapProj.val()) {
         case 'lambert':
-          inputTrueLat2.val(domain.truelat2.toFixed(3));
-          inputTrueLat2.prop('disabled', false);
-          inputStandLon.val(domain.stand_lon.toFixed(3));
-          inputStandLon.prop('disabled', false);
-          buttonStanLonPlus.prop('disabled', false);
-          buttonStanLonMinus.prop('disabled', false);
-          inputDX.attr('min', self.options.minGridDistanceMeters);
-          inputDY.attr('min', self.options.minGridDistanceMeters);
+          // true_lat1
+          showInput(inputTrueLat1, true);
+          showInput(inputTrueLat2, true);
+          showStandLon(true);
+          inputToMeters(inputDX);
+          inputToMeters(inputDY);
           break;
         case 'mercator':
-          inputTrueLat2.val('0');
-          inputTrueLat2.prop('disabled', true);
-          inputStandLon.val('0');
-          inputStandLon.prop('disabled', true);
-          buttonStanLonPlus.prop('disabled', true);
-          buttonStanLonMinus.prop('disabled', true);
-          inputDX.attr('min', self.options.minGridDistanceMeters);
-          inputDY.attr('min', self.options.minGridDistanceMeters);
+          showInput(inputTrueLat1, true);
+          showStandLon(false);
+          inputToMeters(inputDX);
+          inputToMeters(inputDY);
           break;
         case 'polar':
-          inputTrueLat2.val(domain.truelat1 < 0 ? '-90' : '90');
-          inputTrueLat2.prop('disabled', true);
-          inputDX.attr('min', self.options.minGridDistanceMeters);
-          inputDY.attr('min', self.options.minGridDistanceMeters);
+          showInput(inputTrueLat1, true);
+          showStandLon(true);
+          inputToMeters(inputDX);
+          inputToMeters(inputDY);
           break;
         case 'lat-lon':
-          inputTrueLat2.val(domain.ref_lat.toFixed(3));
-          inputTrueLat2.prop('disabled', false);
-          // hide pole_lat and pole_lon
-          inputPoleLat.parent().show();
+          showStandLon(true, formatFloat(domain.stand_lon));
+          showPoleLatLon(false);
 
-          // dx, dy in degrees so min should be 0
-          inputDX.attr('min', self.options.minGridDistanceDegrees);
-          inputDY.attr('min', self.options.minGridDistanceDegrees);
+          // dx, dy in degrees
+          inputToDegrees(inputDX);
+          inputToDegrees(inputDY);
           break;
       }
     }
+
+    // updates the tooltip on the map projection field
     function updateSelectMapProjTitle() {
       var title = selectMapProj.find('option:selected').data('title');
       selectMapProj.attr('title', title);
@@ -10556,6 +10670,8 @@
       if (domain != null) {
         configFieldsForProjection();
         setGridValues();
+      } else {
+        initializeDxDyFields(selectMapProj.val());
       }
       updateSelectMapProjTitle();
     });
@@ -10593,15 +10709,47 @@
         return num * factor;
       }
     }
+    function setDxDyFieldValues(map_proj, dx, dy) {
+      if (map_proj === WrfProjections.latlon) {
+        inputDX.val(formatFloat(dx));
+        inputDY.val(formatFloat(dy));
+      } else {
+        inputDX.val(Math.round(dx));
+        inputDY.val(Math.round(dy));
+      }
+    }
+
+    // handles multiplication/division of DX and DY via a button
     function modifyDxDy(op, factor) {
-      if (op == MulDivOp.DIV && (inputDX.val() < 100 || inputDY.val() < 100)) {
+      var map_proj = selectMapProj.val();
+      var minDistance, newDx, newDy, currentDx, currentDy;
+      if (map_proj === WrfProjections.latlon) {
+        currentDx = parseFloat(inputDX.val());
+        currentDy = parseFloat(inputDY.val());
+        minDistance = Math.min(degreesToMeters(currentDx), degreesToMeters(currentDy));
+      } else {
+        currentDx = parseInt(inputDX.val());
+        currentDy = parseInt(inputDY.val());
+        minDistance = Math.min(currentDx, currentDy);
+      }
+      if (isNaN(currentDx) || isNaN(currentDy)) {
         return;
       }
+
+      // DX or DY have reached allowed minimum
+      if (op == MulDivOp.DIV && minDistance < 100) {
+        return;
+      }
+      newDx = mulDiv(currentDx, op, factor);
+      newDy = mulDiv(currentDy, op, factor);
+
+      // when no domain is present on map, simply update DX/DY and exit
       if (domain == null) {
-        inputDX.val(Math.round(mulDiv(parseInt(inputDX.val(), 10), op, factor)));
-        inputDY.val(Math.round(mulDiv(parseInt(inputDY.val(), 10), op, factor)));
+        setDxDyFieldValues(map_proj, newDx, newDy);
         return;
       }
+
+      // reverse operation will be applied to e_we and e_sn to preserve the domain area
       var reverseOp = op == MulDivOp.DIV ? MulDivOp.MUL : MulDivOp.DIV;
 
       // set new settings
@@ -10636,7 +10784,7 @@
         }
         return update;
       }
-      var tmpDomain = new WRFDomain();
+      var tmpDomain = createEmptyDomain();
       tmpDomain.createMainGrid();
       if (calculateGridValues(domain.grid, tmpDomain.grid)) {
         var copyGridValues = function copyGridValues(grid, tmpGrid) {
@@ -10648,10 +10796,9 @@
             copyGridValues(grid.nests[i], tmpGrid.nests[i]);
           }
         };
-        domain.dx = Math.round(mulDiv(parseInt(inputDX.val(), 10), op, factor));
-        domain.dy = Math.round(mulDiv(parseInt(inputDY.val(), 10), op, factor));
-        inputDX.val(domain.dx.toString());
-        inputDY.val(domain.dy.toString());
+        domain.dx = newDx;
+        domain.dy = newDy;
+        setDxDyFieldValues(map_proj, newDx, newDy);
         copyGridValues(domain.grid, tmpDomain.grid);
         domain.update();
       }
@@ -10670,25 +10817,27 @@
     buttonRatioMultiply3.on('click', function () {
       modifyDxDy(MulDivOp.MUL, 3);
     });
-    function setFieldValue(input, value, decimals) {
-      if (value) {
-        input.val(value.toFixed(3));
+    function formatFloat(value, decimals) {
+      decimals = decimals || 3;
+      return value.toFixed(decimals);
+    }
+    function setFloatFieldValue(input, value, decimals) {
+      if (value != null) {
+        input.val(formatFloat(value, decimals));
       } else {
         input.val(null);
       }
     }
     function setFieldValues() {
-      // place domains info to floating panel
       selectMapProj.val(domain.map_proj);
-      inputRefLat.val(domain.ref_lat.toFixed(3));
-      inputRefLon.val(domain.ref_lon.toFixed(3));
-      inputTrueLat1.val(domain.truelat1.toFixed(3));
-      inputTrueLat2.val(domain.truelat2.toFixed(3));
-      inputStandLon.val(domain.stand_lon.toFixed(3));
-      inputDX.val(Math.trunc(domain.dx).toString());
-      inputDY.val(Math.trunc(domain.dy).toString());
-      setFieldValue(inputPoleLat, domain.pole_lat);
-      setFieldValue(inputPoleLon, domain.pole_lon);
+      setFloatFieldValue(inputRefLat, domain.ref_lat);
+      setFloatFieldValue(inputRefLon, domain.ref_lon);
+      setFloatFieldValue(inputTrueLat1, domain.truelat1);
+      setFloatFieldValue(inputTrueLat2, domain.truelat2);
+      setFloatFieldValue(inputStandLon, domain.stand_lon);
+      setDxDyFieldValues(domain.map_proj, domain.dx, domain.dy);
+      setFloatFieldValue(inputPoleLat, domain.pole_lat);
+      setFloatFieldValue(inputPoleLon, domain.pole_lon);
     }
     function setButtonRemoveMOADEnabled() {
       buttonRemoveMOAD.prop('disabled', domain.grid.nests.length != 1);
@@ -10710,25 +10859,58 @@
       domain.on('add', function () {
         initGridPanels();
       });
+      disableMapProjectionSelect();
       setFieldValues();
       configFieldsForProjection();
       initializedForDomain = true;
     }
+    function enableMapProjectionSelect() {
+      selectMapProj.removeAttr('disabled');
+    }
+    function disableMapProjectionSelect() {
+      selectMapProj.attr('disabled', 'disabled');
+    }
+
+    // configures DX/DY for selected projection and sets the default value
+    function initializeDxDyFields(map_proj) {
+      if (map_proj === WrfProjections.latlon) {
+        inputToDegrees(inputDX);
+        inputToDegrees(inputDY);
+        inputDX.val(localStorage.getItem(localStorageKey + 'dx.lat-lon') || 0.1);
+        inputDY.val(localStorage.getItem(localStorageKey + 'dy.lat-lon') || 0.1);
+      } else {
+        inputToMeters(inputDX);
+        inputToMeters(inputDY);
+        inputDX.val(localStorage.getItem(localStorageKey + 'dx') || 12000);
+        inputDY.val(localStorage.getItem(localStorageKey + 'dy') || 12000);
+      }
+    }
+    function createEmptyDomain() {
+      var newDomain = new WRFDomain();
+      newDomain.map_proj = selectMapProj.val();
+      return newDomain;
+    }
+
+    // hide all fields 
+    // called when a user clicks New domain button
     this.showNewDomain = function () {
       domain = null;
       initializedForDomain = false;
       buttonUpdate.parent().hide();
-      // hide ref_lat and ref_lon
-      inputRefLat.parent().hide();
-      inputStandLon.parent().hide();
-      inputTrueLat1.parent().hide();
-      inputTrueLat2.parent().hide();
-      // hide pole_lat and pole_lon
-      inputPoleLat.parent().hide();
+
+      // hide all projection fields
+      hideInput(inputRefLat);
+      hideInput(inputStandLon);
+      hideInput(inputTrueLat1);
+      hideInput(inputTrueLat2);
+      hideInput(inputPoleLat);
       headerGrids.hide();
-      selectMapProj.val(localStorage.getItem(localStorageKey + 'map_proj') || 'lambert');
-      inputDX.val(localStorage.getItem(localStorageKey + 'dx') || 12000);
-      inputDY.val(localStorage.getItem(localStorageKey + 'dy') || 12000);
+
+      // enable map proj
+      enableMapProjectionSelect();
+      var map_proj = localStorage.getItem(localStorageKey + 'map_proj') || 'lambert';
+      selectMapProj.val(map_proj);
+      initializeDxDyFields(map_proj);
       container.show();
       setGridsContainerHeight();
     };
@@ -10736,13 +10918,22 @@
       return selectMapProj[0].checkValidity() && inputDX[0].checkValidity() && inputDY[0].checkValidity();
     };
     this.createNewDomain = function () {
-      domain = new WRFDomain();
-      domain.map_proj = selectMapProj.val();
-      domain.dx = parseInt(inputDX.val(), 10);
-      domain.dy = parseInt(inputDY.val(), 10);
+      disableMapProjectionSelect();
+      domain = createEmptyDomain();
       localStorage.setItem(localStorageKey + 'map_proj', domain.map_proj);
-      localStorage.setItem(localStorageKey + 'dx', domain.dx);
-      localStorage.setItem(localStorageKey + 'dy', domain.dy);
+      if (domain.map_proj === WrfProjections.latlon) {
+        domain.dx = parseFloat(inputDX.val());
+        domain.dy = parseFloat(inputDY.val());
+        localStorage.setItem(localStorageKey + 'dx.lat-lon', domain.dx);
+        localStorage.setItem(localStorageKey + 'dy.lat-lon', domain.dy);
+        domain.pole_lat = 90;
+        domain.pole_lon = 0;
+      } else {
+        domain.dx = parseInt(inputDX.val(), 10);
+        domain.dy = parseInt(inputDY.val(), 10);
+        localStorage.setItem(localStorageKey + 'dx', domain.dx);
+        localStorage.setItem(localStorageKey + 'dy', domain.dy);
+      }
       domain.createMainGrid();
       return domain;
     };
@@ -10755,10 +10946,6 @@
         initDomain();
       }
       buttonUpdate.parent().show();
-      inputRefLat.parent().show();
-      inputStandLon.parent().show();
-      inputTrueLat1.parent().show();
-      inputTrueLat2.parent().show();
       headerGrids.show();
       container.show();
       setGridsContainerHeight();
@@ -10769,47 +10956,36 @@
   });
 
   var WPSSaveDialog = /*#__PURE__*/function () {
-    function WPSSaveDialog(domain) {
+    function WPSSaveDialog() {
+      var _this = this;
       _classCallCheck(this, WPSSaveDialog);
-      if (WPSSaveDialog.dialog === undefined) {
-        WPSSaveDialog.dialog = new WPSSaveDialog.Dialog();
-      }
-      this.show = function () {
-        WPSSaveDialog.dialog.show(domain);
-      };
-      return this;
+      this._container = $('div.modal#wps-save-dialog');
+      var dialogBody = $('div.modal-body', this._container);
+      var dialogFooter = $('div.modal-footer', this._container);
+      var buttonCopy = $('button#button-copy', dialogFooter);
+      var buttonDownload = $('button#button-download', dialogFooter);
+      this._wpsContent = $('textarea', dialogBody);
+      buttonCopy.on('click', function (e) {
+        navigator.clipboard.writeText(_this._wpsContent.text());
+      });
+      buttonDownload.on('click', function (e) {
+        var blob = new Blob([_this._wpsContent.val()], {
+          type: "text/plain;charset=utf-8"
+        });
+        saveAs(blob, "namelist.wps", {
+          autoBom: true
+        });
+      });
     }
-    _createClass(WPSSaveDialog, null, [{
-      key: "Dialog",
-      value: function Dialog() {
-        var container, dialogBody, dialogFooter, wpsContent, buttonCopy, buttonDownload;
-        container = $('div.modal#wps-save-dialog');
-        dialogBody = $('div.modal-body', container);
-        dialogFooter = $('div.modal-footer', container);
-        wpsContent = $('textarea', dialogBody);
-        buttonCopy = $('button#button-copy', dialogFooter);
-        buttonDownload = $('button#button-download', dialogFooter);
-        buttonCopy.on('click', function (e) {
-          wpsContent.select();
-          document.execCommand("Copy");
-        });
-        buttonDownload.on('click', function (e) {
-          var blob = new Blob([wpsContent.val()], {
-            type: "text/plain;charset=utf-8"
-          });
-          saveAs(blob, "namelist.wps", true);
-        });
-        this.show = function (domain) {
-          wpsContent.text(domain.getWPSNamelist().toString());
-          container.modal();
-        };
+    _createClass(WPSSaveDialog, [{
+      key: "show",
+      value: function show(domain) {
+        this._wpsContent.text(domain.getWPSNamelist().toString());
+        this._container.modal();
       }
     }]);
     return WPSSaveDialog;
   }();
-  function wpsSaveDialog(domain) {
-    return new WPSSaveDialog(domain);
-  }
 
   // https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html#wps-output-fields
 
@@ -10892,8 +11068,9 @@
         endNewDomain();
         inputFile.click();
       });
+      var wpsSaveDialog = new WPSSaveDialog();
       buttonSave.on('click', function (e) {
-        wpsSaveDialog(domain).show();
+        wpsSaveDialog.show(domain);
       });
       inputFile.on('change', function (e) {
         var reader, filename;
@@ -10924,6 +11101,7 @@
         if (domain) {
           domain.remove();
           domain = null;
+          newDomainContext = null;
           if (self._geogridCornerMarkerGroups.length > 0) {
             self._geogridCornerMarkerGroups.forEach(function (group) {
               group.remove();
@@ -10931,12 +11109,17 @@
           }
         }
       }
+
+      // setup panel and map to start drawinf a new domain
+      // called when user click New button
       function initNewDomain() {
         removeDomain();
         buttonNew.prop('disabled', true);
         map.on('mousedown', startNewDomain, this);
         wpsPanel.showNewDomain();
       }
+
+      // called when user starts drag operation to draw a new domain
       function startNewDomain(e) {
         if (!wpsPanel.validateNewDomain()) {
           return;
@@ -10981,13 +11164,9 @@
         }
         newDomainContext.endMarker.setLatLng(e.latlng);
         center = bounds.getCenter();
-        domain.ref_lat = center.lat;
-        domain.ref_lon = center.lng;
-        domain.truelat1 = domain.ref_lat;
-        domain.truelat2 = domain.ref_lat;
-        domain.stand_lon = domain.ref_lon;
-        e_we = Math.round(map.distance(newDomainContext.startLatlng, [newDomainContext.startLatlng.lat, e.latlng.lng]) / domain.dx);
-        e_sn = Math.round(map.distance(newDomainContext.startLatlng, [e.latlng.lat, newDomainContext.startLatlng.lng]) / domain.dy);
+        domain.setDefaultValues(center.lat, center.lng);
+        e_we = Math.round(map.distance(newDomainContext.startLatlng, [newDomainContext.startLatlng.lat, e.latlng.lng]) / domain.dxInMeters);
+        e_sn = Math.round(map.distance(newDomainContext.startLatlng, [e.latlng.lat, newDomainContext.startLatlng.lng]) / domain.dyInMeters);
         if (e_we < WRFDomainGrid.minGridSize || e_sn < WRFDomainGrid.minGridSize) {
           domain.remove();
           wpsPanel.hide();

@@ -1,44 +1,27 @@
 export class WPSSaveDialog {
-    constructor(domain) {
+    constructor() {
 
-        if (WPSSaveDialog.dialog === undefined) {
-            WPSSaveDialog.dialog = new WPSSaveDialog.Dialog();
-        }
+        this._container = $('div.modal#wps-save-dialog');
 
-        this.show = function () {
-            WPSSaveDialog.dialog.show(domain);
-        };
+        const dialogBody = $('div.modal-body', this._container);
+        const dialogFooter = $('div.modal-footer', this._container);
+        const buttonCopy = $('button#button-copy', dialogFooter);
+        const buttonDownload = $('button#button-download', dialogFooter);
 
-        return this;
-    }
-    static Dialog() {
-        var container, dialogBody, dialogFooter, wpsContent, buttonCopy, buttonDownload;
+        this._wpsContent = $('textarea', dialogBody);
 
-        container = $('div.modal#wps-save-dialog');
-        dialogBody = $('div.modal-body', container);
-        dialogFooter = $('div.modal-footer', container);
-        wpsContent = $('textarea', dialogBody);
-        buttonCopy = $('button#button-copy', dialogFooter);
-        buttonDownload = $('button#button-download', dialogFooter);
-
-        buttonCopy.on('click', function (e) {
-            wpsContent.select();
-            document.execCommand("Copy");
+        buttonCopy.on('click', (e) => {
+            navigator.clipboard.writeText(this._wpsContent.text());
         });
 
-        buttonDownload.on('click', function (e) {
-            var blob = new Blob([wpsContent.val()], { type: "text/plain;charset=utf-8" });
-            saveAs(blob, "namelist.wps", true);
+        buttonDownload.on('click', (e) => {
+            const blob = new Blob([this._wpsContent.val()], { type: "text/plain;charset=utf-8" });
+            saveAs(blob, "namelist.wps", { autoBom: true });
         });
-
-        this.show = function (domain) {
-            wpsContent.text(domain.getWPSNamelist().toString());
-            container.modal();
-        };
     }
-}
 
-export function wpsSaveDialog(domain) {
-    return new WPSSaveDialog(domain);
+    show(domain) {
+        this._wpsContent.text(domain.getWPSNamelist().toString());
+        this._container.modal();
+    };
 }
-
