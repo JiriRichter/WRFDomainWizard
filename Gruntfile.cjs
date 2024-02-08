@@ -64,7 +64,10 @@ module.exports = function(grunt) {
           '@fortawesome/fontawesome-free/css/all.min.css',
 
           // https://www.npmjs.com/package/leaflet-providers
-          'leaflet-providers/leaflet-providers.js'
+          'leaflet-providers/leaflet-providers.js',
+
+          // https://www.npmjs.com/package/html-to-image
+          'html-to-image/dist/html-to-image.js'
         ],
         dest: '<%= targetFolder %>/lib',
       },

@@ -6,6 +6,7 @@ import { WPSNamelist } from "./utils/namelist.wps"
 import { errorMessageBox } from "./domain-wizard.dialog.message-box";
 import { geogridOutput } from "./utils/geogrid.output";
 import { WrfProjections } from "./utils/constants";
+import { saveAs } from "file-saver";
 
 export class SidebarWPS {
 
@@ -14,14 +15,24 @@ export class SidebarWPS {
         this.map = map;
         const self = this;
 
-        var container, wpsNamelist, domain, wpsPanel, newDomainContext;
+        var container, 
+            wpsNamelist,
+            domain,
+            wpsPanel,
+            newDomainContext;
 
-        var buttonNew, buttonSave, buttonOpen, buttonReset, inputFile;
+        var buttonNew,
+            buttonSave,
+            buttonOpen,
+            buttonReset,
+            inputFile,
+            captureImageDialog;
 
         // defaul settings
         this.options = {
             sampleBaseUrl: 'samples',
-            allowAnyFilename: true
+            allowAnyFilename: true,
+            autoImageView: false
         };
 
         if (options) {
@@ -35,7 +46,10 @@ export class SidebarWPS {
         buttonSave = $('button#button-wps-save', container);
         buttonReset = $('button#reset-domain', container);
         buttonOpen = $('button#button-wps-open', container);
+        const buttonSavePng = $('button#save-png', container);
         inputFile = $('input#file-open', container);
+
+        captureImageDialog = $('#capture-image-dialog');
 
         // creates new WPS namelist object from existing data and
         // draws domains
@@ -52,10 +66,18 @@ export class SidebarWPS {
             }
         }
 
+        function getMapPadding() {
+            const mapContainer = map.getContainer();
+            return L.point(mapContainer.offsetWidth * 0.01, mapContainer.offsetHeight * 0.01);
+        }
+
         function zoomToDomain() {
-            map.panTo(L.latLng(domain.ref_lat, domain.ref_lon));
+
+            const padding = getMapPadding();
+
             map.fitBounds(domain.grid.getBounds(), {
-                paddingTopLeft: L.point(container.width() + container.offset().left, 0)
+                paddingTopLeft: L.point(container.width() + container.offset().left, padding.x),
+                paddingBottomRight: L.point(padding.x, padding.y)
             });
         }
 
@@ -103,6 +125,50 @@ export class SidebarWPS {
             };
             reader.readAsText(e.target.files[0]);
             inputFile.val(null);
+        });
+
+        buttonSavePng.on('click', (e) => {
+
+            if (domain === null) {
+                return;
+            }
+
+            captureImageDialog.modal('show');
+            const div = map.getContainer();
+
+            const mapCenter = map.getCenter();
+            const mapZoom = map.getZoom();
+
+            // hide map controls
+            const mapControls = div.getElementsByClassName('leaflet-control');
+            const visibleControls = [];
+            for(let i = 0; i < mapControls.length; i++) {
+                if (mapControls[i].hidden === false) {
+                    visibleControls.push(mapControls[i]);
+                    mapControls[i].hidden = true;
+                }
+            }
+
+            if (this.options.autoImageView === true) {
+                map.fitBounds(domain.grid.getBounds(), {
+                    padding: getMapPadding()
+                });
+            }
+
+            htmlToImage.toBlob(div)
+                .then((blob) => {
+                    saveAs(blob, "domains.png")
+                })
+                .catch(function (error) {
+                    errorMessageBox('Create Image', 'Error creating an image');
+                })
+                .finally(() => {
+                    visibleControls.forEach(x => x.hidden = false);
+                    if (this.options.autoImageView === true) {
+                        map.setView(mapCenter, mapZoom);
+                    }
+                    captureImageDialog.modal('hide');
+                });
         });
 
         function removeDomain() {

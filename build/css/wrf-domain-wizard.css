@@ -10,9 +10,6 @@ div.modal div.modal-footer {
   background-color: #f8f9fa;
   padding: 10px;
 }
-div.modal i {
-  padding-right: 5px;
-}
 div#wps-save-dialog textarea {
   height: 70vh;
   font-family: 'Courier New';

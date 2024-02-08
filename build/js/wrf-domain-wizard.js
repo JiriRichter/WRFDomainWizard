@@ -11018,6 +11018,18 @@
     }
   };
 
+  var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+  var FileSaver_min = {exports: {}};
+
+  (function (module, exports) {
+  	(function(a,b){b();})(commonjsGlobal,function(){function b(a,b){return "undefined"==typeof b?b={autoBom:!1}:"object"!=typeof b&&(console.warn("Deprecated: Expected third argument to be a object"),b={autoBom:!b}),b.autoBom&&/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(a.type)?new Blob(["\uFEFF",a],{type:a.type}):a}function c(a,b,c){var d=new XMLHttpRequest;d.open("GET",a),d.responseType="blob",d.onload=function(){g(d.response,b,c);},d.onerror=function(){console.error("could not download file");},d.send();}function d(a){var b=new XMLHttpRequest;b.open("HEAD",a,!1);try{b.send();}catch(a){}return 200<=b.status&&299>=b.status}function e(a){try{a.dispatchEvent(new MouseEvent("click"));}catch(c){var b=document.createEvent("MouseEvents");b.initMouseEvent("click",!0,!0,window,0,0,0,80,20,!1,!1,!1,!1,0,null),a.dispatchEvent(b);}}var f="object"==typeof window&&window.window===window?window:"object"==typeof self&&self.self===self?self:"object"==typeof commonjsGlobal&&commonjsGlobal.global===commonjsGlobal?commonjsGlobal:void 0,a=f.navigator&&/Macintosh/.test(navigator.userAgent)&&/AppleWebKit/.test(navigator.userAgent)&&!/Safari/.test(navigator.userAgent),g=f.saveAs||("object"!=typeof window||window!==f?function(){}:"download"in HTMLAnchorElement.prototype&&!a?function(b,g,h){var i=f.URL||f.webkitURL,j=document.createElement("a");g=g||b.name||"download",j.download=g,j.rel="noopener","string"==typeof b?(j.href=b,j.origin===location.origin?e(j):d(j.href)?c(b,g,h):e(j,j.target="_blank")):(j.href=i.createObjectURL(b),setTimeout(function(){i.revokeObjectURL(j.href);},4E4),setTimeout(function(){e(j);},0));}:"msSaveOrOpenBlob"in navigator?function(f,g,h){if(g=g||f.name||"download","string"!=typeof f)navigator.msSaveOrOpenBlob(b(f,h),g);else if(d(f))c(f,g,h);else {var i=document.createElement("a");i.href=f,i.target="_blank",setTimeout(function(){e(i);});}}:function(b,d,e,g){if(g=g||open("","_blank"),g&&(g.document.title=g.document.body.innerText="downloading..."),"string"==typeof b)return c(b,d,e);var h="application/octet-stream"===b.type,i=/constructor/i.test(f.HTMLElement)||f.safari,j=/CriOS\/[\d]+/.test(navigator.userAgent);if((j||h&&i||a)&&"undefined"!=typeof FileReader){var k=new FileReader;k.onloadend=function(){var a=k.result;a=j?a:a.replace(/^data:[^;]*;/,"data:attachment/file;"),g?g.location.href=a:location=a,g=null;},k.readAsDataURL(b);}else {var l=f.URL||f.webkitURL,m=l.createObjectURL(b);g?g.location=m:location.href=m,g=null,setTimeout(function(){l.revokeObjectURL(m);},4E4);}});f.saveAs=g.saveAs=g,(module.exports=g);});
+
+  	
+  } (FileSaver_min));
+
+  var FileSaver_minExports = FileSaver_min.exports;
+
   var SidebarWPS = /*#__PURE__*/function () {
     function SidebarWPS(map, sidebar, options) {
       var _this = this;
@@ -11025,12 +11037,13 @@
       this.map = map;
       var self = this;
       var container, wpsNamelist, domain, wpsPanel, newDomainContext;
-      var buttonNew, buttonSave, buttonOpen, buttonReset, inputFile;
+      var buttonNew, buttonSave, buttonOpen, buttonReset, inputFile, captureImageDialog;
 
       // defaul settings
       this.options = {
         sampleBaseUrl: 'samples',
-        allowAnyFilename: true
+        allowAnyFilename: true,
+        autoImageView: false
       };
       if (options) {
         this.options = Object.assign({}, this.options, options);
@@ -11041,7 +11054,9 @@
       buttonSave = $('button#button-wps-save', container);
       buttonReset = $('button#reset-domain', container);
       buttonOpen = $('button#button-wps-open', container);
+      var buttonSavePng = $('button#save-png', container);
       inputFile = $('input#file-open', container);
+      captureImageDialog = $('#capture-image-dialog');
 
       // creates new WPS namelist object from existing data and
       // draws domains
@@ -11055,10 +11070,15 @@
           zoomToDomain();
         }
       }
+      function getMapPadding() {
+        var mapContainer = map.getContainer();
+        return L.point(mapContainer.offsetWidth * 0.01, mapContainer.offsetHeight * 0.01);
+      }
       function zoomToDomain() {
-        map.panTo(L.latLng(domain.ref_lat, domain.ref_lon));
+        var padding = getMapPadding();
         map.fitBounds(domain.grid.getBounds(), {
-          paddingTopLeft: L.point(container.width() + container.offset().left, 0)
+          paddingTopLeft: L.point(container.width() + container.offset().left, padding.x),
+          paddingBottomRight: L.point(padding.x, padding.y)
         });
       }
       buttonReset.on('click', function (e) {
@@ -11096,6 +11116,43 @@
         };
         reader.readAsText(e.target.files[0]);
         inputFile.val(null);
+      });
+      buttonSavePng.on('click', function (e) {
+        if (domain === null) {
+          return;
+        }
+        captureImageDialog.modal('show');
+        var div = map.getContainer();
+        var mapCenter = map.getCenter();
+        var mapZoom = map.getZoom();
+
+        // hide map controls
+        var mapControls = div.getElementsByClassName('leaflet-control');
+        var visibleControls = [];
+        for (var i = 0; i < mapControls.length; i++) {
+          if (mapControls[i].hidden === false) {
+            visibleControls.push(mapControls[i]);
+            mapControls[i].hidden = true;
+          }
+        }
+        if (_this.options.autoImageView === true) {
+          map.fitBounds(domain.grid.getBounds(), {
+            padding: getMapPadding()
+          });
+        }
+        htmlToImage.toBlob(div).then(function (blob) {
+          FileSaver_minExports.saveAs(blob, "domains.png");
+        }).catch(function (error) {
+          errorMessageBox('Create Image', 'Error creating an image');
+        }).finally(function () {
+          visibleControls.forEach(function (x) {
+            return x.hidden = false;
+          });
+          if (_this.options.autoImageView === true) {
+            map.setView(mapCenter, mapZoom);
+          }
+          captureImageDialog.modal('hide');
+        });
       });
       function removeDomain() {
         if (domain) {
