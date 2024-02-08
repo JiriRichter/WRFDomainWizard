@@ -243,6 +243,7 @@
                                 <button id="update-domain" type="button" class="btn btn-primary btn-sm">Update</button>
                                 <button type="button" class="btn btn-sm btn-primary" id="button-wps-save"><i class="fas fa-save mr-1"></i>Save</button>
                                 <button id="reset-domain" type="button" class="btn btn-secondary btn-sm">Reset</button>
+                                <button id="save-png" type="button" class="btn btn-info btn-sm" title="Capture an image of current map view"><i class="fas fa-camera"></i></button>
                             </div>
                         </form>
                     </div>
@@ -345,6 +346,15 @@
         </div>
     </div>
 
+    <div id="capture-image-dialog" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body d-flex">
+                    <div class="m-auto">Capturing image <i class="fas fa-spinner fa-spin"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="{{baseUrl}}/lib/jquery.min.js"></script>
     <script src="{{baseUrl}}/lib/bootstrap.bundle.min.js"></script>
@@ -357,6 +367,7 @@
     <script src="{{baseUrl}}/lib/leaflet-providers.js"></script>
     <script src="{{baseUrl}}/lib/Blob.js"></script>
     <script src="{{baseUrl}}/lib/FileSaver.min.js"></script>
+    <script src="{{baseUrl}}/lib/html-to-image.js"></script>
 
     <script src="{{baseUrl}}/js/wrf-domain-wizard.js"></script>
     <script>
