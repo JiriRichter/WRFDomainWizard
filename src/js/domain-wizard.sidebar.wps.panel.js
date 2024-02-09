@@ -166,31 +166,32 @@ export class SidebarWPSPanel {
             input.attr('step', 0.001);
         }
 
-        function showInput(input, enabled) {
-            input.parent().show();
+        function showInputGroup(input, enabled) {
+            const inputParent = input.parent();
+            inputParent.show();
 
-            if (enabled === true) {
-                enableInput(input);
-            }
-            else {
-                disableInput(input);
-            }
+            inputParent.find('input').each((i, element) => {
+                if (enabled === true) {
+                    element.required = true;
+                    element.disabled = false;
+                }
+                else {
+                    element.required = false;
+                    element.disabled = true;
+                }
+            });
         }
 
-        function hideInput(input) {
-            input.parent().hide();
-        }
-
-        function enableInput(input) {
-            input.prop('disabled', false);
-        }
-
-        function disableInput(input) {
-            input.prop('disabled', true);
+        function hideInputGroup(input) {
+            const inputParent = input.parent();
+            inputParent.hide();
+            inputParent.find('input').each((i, element) => {
+                element.required = false;
+            });
         }
 
         function showStandLon(enabled) {
-            showInput(inputStandLon, enabled);
+            showInputGroup(inputStandLon, enabled);
             if (enabled === true) {
                 buttonStanLonPlus.prop('disabled', false);
                 buttonStanLonMinus.prop('disabled', false);
@@ -202,15 +203,15 @@ export class SidebarWPSPanel {
         }
 
         function showPoleLatLon(enabled) {
-            showInput(inputPoleLat);
+            showInputGroup(inputPoleLat);
 
             if (enabled === true) {
-                enableInput(inputPoleLat);
-                enableInput(inputPoleLon);
+                inputPoleLat[0].disabled = false;
+                inputPoleLon[0].disabled = false;
             }
             else {
-                disableInput(inputPoleLat);
-                disableInput(inputPoleLon);
+                inputPoleLat[0].disabled = true;
+                inputPoleLon[0].disabled = true;
             }
         }
 
@@ -218,29 +219,29 @@ export class SidebarWPSPanel {
         // for selected projection
         function configFieldsForProjection() {
 
-            showInput(inputRefLat, true);
-            hideInput(inputTrueLat1);
-            hideInput(inputTrueLat2);
-            hideInput(inputStandLon);
-            hideInput(inputPoleLat);
+            showInputGroup(inputRefLat, true);
+            hideInputGroup(inputTrueLat1);
+            hideInputGroup(inputTrueLat2);
+            hideInputGroup(inputStandLon);
+            hideInputGroup(inputPoleLat);
 
             switch (selectMapProj.val()) {
                 case 'lambert':
                     // true_lat1
-                    showInput(inputTrueLat1, true);
-                    showInput(inputTrueLat2, true);
+                    showInputGroup(inputTrueLat1, true);
+                    showInputGroup(inputTrueLat2, true);
                     showStandLon(true);
                     inputToMeters(inputDX);
                     inputToMeters(inputDY);
                     break;
                 case 'mercator':
-                    showInput(inputTrueLat1, true);
+                    showInputGroup(inputTrueLat1, true);
                     showStandLon(false);
                     inputToMeters(inputDX);
                     inputToMeters(inputDY);
                     break;
                 case 'polar':
-                    showInput(inputTrueLat1, true);
+                    showInputGroup(inputTrueLat1, true);
                     showStandLon(true);
                     inputToMeters(inputDX);
                     inputToMeters(inputDY);
@@ -547,11 +548,11 @@ export class SidebarWPSPanel {
             buttonUpdate.parent().hide();
 
             // hide all projection fields
-            hideInput(inputRefLat);
-            hideInput(inputStandLon);
-            hideInput(inputTrueLat1);
-            hideInput(inputTrueLat2);
-            hideInput(inputPoleLat);
+            hideInputGroup(inputRefLat);
+            hideInputGroup(inputStandLon);
+            hideInputGroup(inputTrueLat1);
+            hideInputGroup(inputTrueLat2);
+            hideInputGroup(inputPoleLat);
 
             headerGrids.hide();
 
