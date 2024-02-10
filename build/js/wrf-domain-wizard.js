@@ -9801,6 +9801,7 @@
   });
 
   var SidebarWPSPanelGrid = /*#__PURE__*/_createClass(function SidebarWPSPanelGrid(container, grid, errorHandler, options) {
+    var _this = this;
     _classCallCheck(this, SidebarWPSPanelGrid);
     var self = this;
       grid.domain;
@@ -9954,23 +9955,40 @@
       tableCornerNW.text(grid.corners.nw.lat.toFixed(3) + ', ' + grid.corners.nw.lng.toFixed(3));
       self.validate();
     }
+
+    // the value of e_we and e_sn must be adjusted to comply with constrains
+    inputParentGridRatio.on('change', function (e) {
+      var parent_grid_ratio = parseInt(inputParentGridRatio.val());
+      if (isNaN(parent_grid_ratio)) {
+        // value is not a valid number
+        return;
+      }
+      var n_we = (grid.e_we - 1) / grid.parent_grid_ratio;
+      var n_sn = (grid.e_sn - 1) / grid.parent_grid_ratio;
+      setFieldConstraints();
+      inputEWE.val(n_we * parent_grid_ratio + 1);
+      inputESN.val(n_sn * parent_grid_ratio + 1);
+      _this.validate();
+    });
     function setFieldConstraints() {
       if (grid.id > 1) {
         var parent_grid_ratio = parseInt(inputParentGridRatio.val(), 10);
         var i_parent_start = parseInt(inputIParentStart.val(), 10);
         var j_parent_start = parseInt(inputJParentStart.val(), 10);
-        var parent_e_we = grid.parent.e_we;
-        var parent_e_sn = grid.parent.e_sn;
-        var max_e_we = Math.floor((parent_e_we - WRFDomainGrid.minNestGridPoints - i_parent_start) * parent_grid_ratio + 1);
-        var max_e_sn = Math.floor((parent_e_sn - WRFDomainGrid.minNestGridPoints - j_parent_start) * parent_grid_ratio + 1);
+        var min_e_we = WRFDomainGrid.minNestGridPoints * parent_grid_ratio + 1;
+        var min_e_sn = WRFDomainGrid.minNestGridPoints * parent_grid_ratio + 1;
+        var max_e_we = Math.floor((grid.parent.e_we - WRFDomainGrid.minNestGridPoints - i_parent_start) * parent_grid_ratio + 1);
+        var max_e_sn = Math.floor((grid.parent.e_sn - WRFDomainGrid.minNestGridPoints - j_parent_start) * parent_grid_ratio + 1);
+        inputEWE.prop('min', min_e_we);
+        inputESN.prop('min', min_e_sn);
         inputEWE.prop('max', max_e_we);
         inputESN.prop('max', max_e_sn);
         inputEWE.prop('step', parent_grid_ratio);
         inputESN.prop('step', parent_grid_ratio);
         inputIParentStart.prop('min', WRFDomainGrid.minNestGridPoints + 1);
         inputJParentStart.prop('min', WRFDomainGrid.minNestGridPoints + 1);
-        inputIParentStart.prop('max', parent_e_we - 2 * WRFDomainGrid.minNestGridPoints);
-        inputJParentStart.prop('max', parent_e_sn - 2 * WRFDomainGrid.minNestGridPoints);
+        inputIParentStart.prop('max', grid.parent.e_we - 2 * WRFDomainGrid.minNestGridPoints);
+        inputJParentStart.prop('max', grid.parent.e_sn - 2 * WRFDomainGrid.minNestGridPoints);
       }
     }
     function clearValidation() {
