@@ -1,7 +1,8 @@
 export var MouseCoordinates = L.Control.extend({
     options: {
         position: 'bottomleft',
-        precision: 4
+        precision: 4,
+        contextMenu: false
     },
 
     initialize: function (options) {
@@ -19,17 +20,19 @@ export var MouseCoordinates = L.Control.extend({
             self.setCoordinates(event.latlng);
         });
 
-        map.on('contextmenu', function (event) {
+        if (this.options.contextMenu === true) {
+            map.on('contextmenu', function (event) {
 
-            if (self.popup && self.popup.isOpen()) {
-                self.popup.remove();
-            }
+                if (self.popup && self.popup.isOpen()) {
+                    self.popup.remove();
+                }
 
-            self.popup = L.popup()
-                .setLatLng(event.latlng)
-                .setContent("lat/lon: " + event.latlng.lat.toFixed(self.options.precision) + ', ' + event.latlng.lng.toFixed(self.options.precision))
-                .openOn(map);
-        });
+                self.popup = L.popup()
+                    .setLatLng(event.latlng)
+                    .setContent("lat/lon: " + event.latlng.lat.toFixed(self.options.precision) + ', ' + event.latlng.lng.toFixed(self.options.precision))
+                    .openOn(map);
+            });
+        }
 
         self.setCoordinates(map.getCenter());
         return container;

@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="build/lib/leaflet.css" />
     <link rel="stylesheet" href="build/lib/all.min.css" />
     <link rel="stylesheet" href="build/lib/leaflet-sidebar.min.css" />
-    <link rel="stylesheet" href="build/css/wrf-domain-wizard.css?1707365109361" />
+    <link rel="stylesheet" href="build/css/wrf-domain-wizard.css?1708353046270" />
 
     <link rel="icon" href="build/img/globe_32x32.png" />
 </head>
@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="leaflet-sidebar-pane" id="wps">
-                    <h1 class="leaflet-sidebar-header">WPS<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+                    <h1 class="leaflet-sidebar-header">Domains<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
 
                     <div class="wps-top-buttons">
                         <button type="button" class="btn btn-sm btn-outline-secondary" id="button-wps-new"><i class="far fa-object-group"></i></i>New</button>
@@ -263,6 +263,23 @@
                     </div>
                 </div>
 
+                <div class="leaflet-sidebar-pane" id="settings">
+                    <h1 class="leaflet-sidebar-header">
+                        Settings
+                        <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+                    </h1>
+                    <div class="my-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="showGraticule">
+                            <label class="form-check-label" for="showGraticule">Show Graticule</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="showGeographicLines">
+                            <label class="form-check-label" for="showGeographicLines">Show Georaphic Lines</label>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -368,6 +385,7 @@
     <script src="build/lib/Blob.js"></script>
     <script src="build/lib/FileSaver.min.js"></script>
     <script src="build/lib/html-to-image.js"></script>
+    <script src="build/lib/leaflet.textpath.js"></script>
 
     <script src="build/js/wrf-domain-wizard.js"></script>
     <script>

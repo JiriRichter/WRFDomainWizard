@@ -67,7 +67,10 @@ module.exports = function(grunt) {
           'leaflet-providers/leaflet-providers.js',
 
           // https://www.npmjs.com/package/html-to-image
-          'html-to-image/dist/html-to-image.js'
+          'html-to-image/dist/html-to-image.js',
+
+          // https://github.com/makinacorpus/Leaflet.TextPath
+          'leaflet-textpath/leaflet.textpath.js'
         ],
         dest: '<%= targetFolder %>/lib',
       },

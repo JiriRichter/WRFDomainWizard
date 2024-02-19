@@ -28,15 +28,20 @@ export class DomainWizard {
             throw "invalid div option";
         }
 
+        const tileLayerOptions = {
+            noWrap: true,
+            bounds: L.latLngBounds([-90, -180], [90, 180])
+        };
+
         // create a list of base layer tile providers
         const persistentLayersControl = persistentLayers(
             {
-                "Esri World Topo": L.tileLayer.provider('Esri.WorldTopoMap'),
-                "Esri World Street": L.tileLayer.provider('Esri.WorldStreetMap'),
-                "Esri NatGeo": L.tileLayer.provider('Esri.NatGeoWorldMap'),
-                "Esri World Imagery": L.tileLayer.provider('Esri.WorldImagery'),
-                "Open Topo Map": L.tileLayer.provider('OpenTopoMap'),
-                "Open Street Map": L.tileLayer.provider('OpenStreetMap')
+                "Esri World Topo": L.tileLayer.provider('Esri.WorldTopoMap', tileLayerOptions),
+                "Esri World Street": L.tileLayer.provider('Esri.WorldStreetMap', tileLayerOptions),
+                "Esri NatGeo": L.tileLayer.provider('Esri.NatGeoWorldMap', tileLayerOptions),
+                "Esri World Imagery": L.tileLayer.provider('Esri.WorldImagery', tileLayerOptions),
+                "Open Topo Map": L.tileLayer.provider('OpenTopoMap', tileLayerOptions),
+                "Open Street Map": L.tileLayer.provider('OpenStreetMap', tileLayerOptions)
             },
             null,
             {
@@ -60,7 +65,7 @@ export class DomainWizard {
         // create sidebar control
         const sidebar = L.control.sidebar({
             autopan: false,
-            closeButton: true,
+            closeButton: false,
             container: 'sidebar',
             position: 'left',
             open: true
@@ -74,7 +79,13 @@ export class DomainWizard {
             sampleBaseUrl: settings.sampleBaseUrl
         });
 
-        sidebar['settings'] = sidebarSettings(map, sidebar);
+        sidebar['settings'] = sidebarSettings(
+            map,
+            sidebar,
+            {
+                jsonBaseUrl: settings.jsonBaseUrl
+            });
+
         sidebar['waypoints'] = sidebarWaypoints(map, sidebar);
 
         sidebar['elevation'] = sidebarElevationData(map, sidebar);
