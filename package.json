@@ -55,6 +55,7 @@
     "leaflet-providers": "^2.0.0",
     "leaflet-sidebar-v2": "^3.2.3",
     "leaflet-spin": "^1.1.2",
+    "leaflet-textpath": "^1.2.3",
     "proj4": "^2.9.0",
     "spin.js": "^4.1.1"
   }
