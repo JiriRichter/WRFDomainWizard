@@ -10132,6 +10132,7 @@
   });
 
   var SidebarWPSPanelGrid = /*#__PURE__*/_createClass(function SidebarWPSPanelGrid(container, grid, errorHandler, options) {
+    var _this = this;
     _classCallCheck(this, SidebarWPSPanelGrid);
     var self = this;
       grid.domain;
@@ -10285,23 +10286,40 @@
       tableCornerNW.text(grid.corners.nw.lat.toFixed(3) + ', ' + grid.corners.nw.lng.toFixed(3));
       self.validate();
     }
+
+    // the value of e_we and e_sn must be adjusted to comply with constrains
+    inputParentGridRatio.on('change', function (e) {
+      var parent_grid_ratio = parseInt(inputParentGridRatio.val());
+      if (isNaN(parent_grid_ratio)) {
+        // value is not a valid number
+        return;
+      }
+      var n_we = (grid.e_we - 1) / grid.parent_grid_ratio;
+      var n_sn = (grid.e_sn - 1) / grid.parent_grid_ratio;
+      setFieldConstraints();
+      inputEWE.val(n_we * parent_grid_ratio + 1);
+      inputESN.val(n_sn * parent_grid_ratio + 1);
+      _this.validate();
+    });
     function setFieldConstraints() {
       if (grid.id > 1) {
         var parent_grid_ratio = parseInt(inputParentGridRatio.val(), 10);
         var i_parent_start = parseInt(inputIParentStart.val(), 10);
         var j_parent_start = parseInt(inputJParentStart.val(), 10);
-        var parent_e_we = grid.parent.e_we;
-        var parent_e_sn = grid.parent.e_sn;
-        var max_e_we = Math.floor((parent_e_we - WRFDomainGrid.minNestGridPoints - i_parent_start) * parent_grid_ratio + 1);
-        var max_e_sn = Math.floor((parent_e_sn - WRFDomainGrid.minNestGridPoints - j_parent_start) * parent_grid_ratio + 1);
+        var min_e_we = WRFDomainGrid.minNestGridPoints * parent_grid_ratio + 1;
+        var min_e_sn = WRFDomainGrid.minNestGridPoints * parent_grid_ratio + 1;
+        var max_e_we = Math.floor((grid.parent.e_we - WRFDomainGrid.minNestGridPoints - i_parent_start) * parent_grid_ratio + 1);
+        var max_e_sn = Math.floor((grid.parent.e_sn - WRFDomainGrid.minNestGridPoints - j_parent_start) * parent_grid_ratio + 1);
+        inputEWE.prop('min', min_e_we);
+        inputESN.prop('min', min_e_sn);
         inputEWE.prop('max', max_e_we);
         inputESN.prop('max', max_e_sn);
         inputEWE.prop('step', parent_grid_ratio);
         inputESN.prop('step', parent_grid_ratio);
         inputIParentStart.prop('min', WRFDomainGrid.minNestGridPoints + 1);
         inputJParentStart.prop('min', WRFDomainGrid.minNestGridPoints + 1);
-        inputIParentStart.prop('max', parent_e_we - 2 * WRFDomainGrid.minNestGridPoints);
-        inputJParentStart.prop('max', parent_e_sn - 2 * WRFDomainGrid.minNestGridPoints);
+        inputIParentStart.prop('max', grid.parent.e_we - 2 * WRFDomainGrid.minNestGridPoints);
+        inputJParentStart.prop('max', grid.parent.e_sn - 2 * WRFDomainGrid.minNestGridPoints);
       }
     }
     function clearValidation() {
@@ -10910,25 +10928,28 @@
       input.attr('min', 0);
       input.attr('step', 0.001);
     }
-    function showInput(input, enabled) {
-      input.parent().show();
-      if (enabled === true) {
-        enableInput(input);
-      } else {
-        disableInput(input);
-      }
+    function showInputGroup(input, enabled) {
+      var inputParent = input.parent();
+      inputParent.show();
+      inputParent.find('input').each(function (i, element) {
+        if (enabled === true) {
+          element.required = true;
+          element.disabled = false;
+        } else {
+          element.required = false;
+          element.disabled = true;
+        }
+      });
     }
-    function hideInput(input) {
-      input.parent().hide();
-    }
-    function enableInput(input) {
-      input.prop('disabled', false);
-    }
-    function disableInput(input) {
-      input.prop('disabled', true);
+    function hideInputGroup(input) {
+      var inputParent = input.parent();
+      inputParent.hide();
+      inputParent.find('input').each(function (i, element) {
+        element.required = false;
+      });
     }
     function showStandLon(enabled) {
-      showInput(inputStandLon, enabled);
+      showInputGroup(inputStandLon, enabled);
       if (enabled === true) {
         buttonStanLonPlus.prop('disabled', false);
         buttonStanLonMinus.prop('disabled', false);
@@ -10938,41 +10959,41 @@
       }
     }
     function showPoleLatLon(enabled) {
-      showInput(inputPoleLat);
+      showInputGroup(inputPoleLat);
       if (enabled === true) {
-        enableInput(inputPoleLat);
-        enableInput(inputPoleLon);
+        inputPoleLat[0].disabled = false;
+        inputPoleLon[0].disabled = false;
       } else {
-        disableInput(inputPoleLat);
-        disableInput(inputPoleLon);
+        inputPoleLat[0].disabled = true;
+        inputPoleLon[0].disabled = true;
       }
     }
 
     // function enables/disables and sets default values for fields
     // for selected projection
     function configFieldsForProjection() {
-      showInput(inputRefLat, true);
-      hideInput(inputTrueLat1);
-      hideInput(inputTrueLat2);
-      hideInput(inputStandLon);
-      hideInput(inputPoleLat);
+      showInputGroup(inputRefLat, true);
+      hideInputGroup(inputTrueLat1);
+      hideInputGroup(inputTrueLat2);
+      hideInputGroup(inputStandLon);
+      hideInputGroup(inputPoleLat);
       switch (selectMapProj.val()) {
         case 'lambert':
           // true_lat1
-          showInput(inputTrueLat1, true);
-          showInput(inputTrueLat2, true);
+          showInputGroup(inputTrueLat1, true);
+          showInputGroup(inputTrueLat2, true);
           showStandLon(true);
           inputToMeters(inputDX);
           inputToMeters(inputDY);
           break;
         case 'mercator':
-          showInput(inputTrueLat1, true);
+          showInputGroup(inputTrueLat1, true);
           showStandLon(false);
           inputToMeters(inputDX);
           inputToMeters(inputDY);
           break;
         case 'polar':
-          showInput(inputTrueLat1, true);
+          showInputGroup(inputTrueLat1, true);
           showStandLon(true);
           inputToMeters(inputDX);
           inputToMeters(inputDY);
@@ -11230,11 +11251,11 @@
       buttonUpdate.parent().hide();
 
       // hide all projection fields
-      hideInput(inputRefLat);
-      hideInput(inputStandLon);
-      hideInput(inputTrueLat1);
-      hideInput(inputTrueLat2);
-      hideInput(inputPoleLat);
+      hideInputGroup(inputRefLat);
+      hideInputGroup(inputStandLon);
+      hideInputGroup(inputTrueLat1);
+      hideInputGroup(inputTrueLat2);
+      hideInputGroup(inputPoleLat);
       headerGrids.hide();
 
       // enable map proj
