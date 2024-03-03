@@ -229,65 +229,65 @@ div.leaflet-sidebar-pane#elevation-data div.elevation-data-overlays {
   overflow-y: auto;
   padding-left: 10px;
 }
-div.leaflet-sidebar-pane#wps form span.all-domains {
+div.leaflet-sidebar-pane#domains form span.all-domains {
   width: 139px;
 }
-div.leaflet-sidebar-pane#wps form span.all-domains-2 {
+div.leaflet-sidebar-pane#domains form span.all-domains-2 {
   width: 70px;
 }
-div.leaflet-sidebar-pane#wps form span[data-name="geog_data_res"] {
+div.leaflet-sidebar-pane#domains form span[data-name="geog_data_res"] {
   text-overflow: ellipsis;
   overflow: hidden;
   background-color: #e9ecef;
 }
-div.leaflet-sidebar-pane#wps form div.invalid-feedback {
+div.leaflet-sidebar-pane#domains form div.invalid-feedback {
   margin-top: 2px;
   margin-bottom: 2px;
 }
-div.leaflet-sidebar-pane#wps form div.invalid-feedback p {
+div.leaflet-sidebar-pane#domains form div.invalid-feedback p {
   margin-bottom: 2px;
 }
-div.leaflet-sidebar-pane#wps div.wps-top-buttons {
+div.leaflet-sidebar-pane#domains div.wps-top-buttons {
   padding-top: 5px;
   padding-bottom: 5px;
 }
-div.leaflet-sidebar-pane#wps div.wps-top-buttons button i {
+div.leaflet-sidebar-pane#domains div.wps-top-buttons button i {
   padding-right: 5px;
 }
-div.leaflet-sidebar-pane#wps div#grids {
+div.leaflet-sidebar-pane#domains div#grids {
   overflow-y: auto;
 }
-div.leaflet-sidebar-pane#wps div#grids i.fa-vector-square {
+div.leaflet-sidebar-pane#domains div#grids i.fa-vector-square {
   color: #dc3545;
 }
-div.leaflet-sidebar-pane#wps div.input-group {
+div.leaflet-sidebar-pane#domains div.input-group {
   margin-bottom: -1px;
 }
-div.leaflet-sidebar-pane#wps .input-group-append button.btn-light {
+div.leaflet-sidebar-pane#domains .input-group-append button.btn-light {
   border-color: #ced4da;
 }
-div.leaflet-sidebar-pane#wps .form-control.is-valid,
-div.leaflet-sidebar-pane#wps .was-validated .form-control:valid {
-  border-color: #ced4da;
-  background-image: none;
-  padding-right: 8px;
-}
-div.leaflet-sidebar-pane#wps .form-control.is-invalid,
-div.leaflet-sidebar-pane#wps .was-validated .form-control:invalid {
+div.leaflet-sidebar-pane#domains .form-control.is-valid,
+div.leaflet-sidebar-pane#domains .was-validated .form-control:valid {
   border-color: #ced4da;
   background-image: none;
   padding-right: 8px;
 }
-div.leaflet-sidebar-pane#wps .was-validated .form-control:valid:focus {
+div.leaflet-sidebar-pane#domains .form-control.is-invalid,
+div.leaflet-sidebar-pane#domains .was-validated .form-control:invalid {
+  border-color: #ced4da;
+  background-image: none;
+  padding-right: 8px;
+}
+div.leaflet-sidebar-pane#domains .was-validated .form-control:valid:focus {
   box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
 }
-div.leaflet-sidebar-pane#wps .form-control:focus {
+div.leaflet-sidebar-pane#domains .form-control:focus {
   box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
 }
-div.leaflet-sidebar-pane#wps input:invalid {
+div.leaflet-sidebar-pane#domains input:invalid {
   background-color: #ff8080;
 }
-div.leaflet-sidebar-pane#wps table.table-grid-corners {
+div.leaflet-sidebar-pane#domains table.table-grid-corners {
   width: 100%;
   border: 1px solid #ced4da;
   border-collapse: separate;
@@ -296,37 +296,37 @@ div.leaflet-sidebar-pane#wps table.table-grid-corners {
   font-size: 14px;
   color: #495057;
 }
-div.leaflet-sidebar-pane#wps table.table-grid-corners thead {
+div.leaflet-sidebar-pane#domains table.table-grid-corners thead {
   display: table-header-group;
   vertical-align: middle;
   border-color: inherit;
   border-collapse: separate;
 }
-div.leaflet-sidebar-pane#wps table.table-grid-corners thead tr th:nth-child(2),
-div.leaflet-sidebar-pane#wps table.table-grid-corners thead tr th:nth-child(3) {
+div.leaflet-sidebar-pane#domains table.table-grid-corners thead tr th:nth-child(2),
+div.leaflet-sidebar-pane#domains table.table-grid-corners thead tr th:nth-child(3) {
   font-weight: bold;
   text-align: center;
 }
-div.leaflet-sidebar-pane#wps table.table-grid-corners tr {
+div.leaflet-sidebar-pane#domains table.table-grid-corners tr {
   display: table-row;
   vertical-align: inherit;
   border-color: inherit;
 }
-div.leaflet-sidebar-pane#wps table.table-grid-corners tr td:first-child,
-div.leaflet-sidebar-pane#wps table.table-grid-corners tr th:first-child {
+div.leaflet-sidebar-pane#domains table.table-grid-corners tr td:first-child,
+div.leaflet-sidebar-pane#domains table.table-grid-corners tr th:first-child {
   width: 139px;
 }
-div.leaflet-sidebar-pane#wps table.table-grid-corners tbody tr:nth-child(1) > td:first-child,
-div.leaflet-sidebar-pane#wps table.table-grid-corners tbody tr:nth-child(2) > td:first-child {
+div.leaflet-sidebar-pane#domains table.table-grid-corners tbody tr:nth-child(1) > td:first-child,
+div.leaflet-sidebar-pane#domains table.table-grid-corners tbody tr:nth-child(2) > td:first-child {
   text-align: right;
   font-weight: bold;
 }
-div.leaflet-sidebar-pane#wps table.table-grid-corners tbody tr td:nth-child(2),
-div.leaflet-sidebar-pane#wps table.table-grid-corners tbody tr td:nth-child(3) {
+div.leaflet-sidebar-pane#domains table.table-grid-corners tbody tr td:nth-child(2),
+div.leaflet-sidebar-pane#domains table.table-grid-corners tbody tr td:nth-child(3) {
   background-color: #f8f9fa;
 }
-div.leaflet-sidebar-pane#wps table.table-grid-corners th,
-div.leaflet-sidebar-pane#wps table.table-grid-corners td {
+div.leaflet-sidebar-pane#domains table.table-grid-corners th,
+div.leaflet-sidebar-pane#domains table.table-grid-corners td {
   padding: 0.25rem 0.5rem;
   text-align: left;
   vertical-align: top;
@@ -334,32 +334,32 @@ div.leaflet-sidebar-pane#wps table.table-grid-corners td {
   background-color: #e9ecef;
   font-weight: normal;
 }
-div.leaflet-sidebar-pane#wps table.table-grid-corners td {
+div.leaflet-sidebar-pane#domains table.table-grid-corners td {
   border-top: 1px solid #ced4da;
 }
-div.leaflet-sidebar-pane#wps table.table-grid-corners tbody td:first-child {
+div.leaflet-sidebar-pane#domains table.table-grid-corners tbody td:first-child {
   border-top: none;
 }
-div.leaflet-sidebar-pane#wps table.table-grid-corners thead th:nth-child(2),
-div.leaflet-sidebar-pane#wps table.table-grid-corners thead th:nth-child(3) {
+div.leaflet-sidebar-pane#domains table.table-grid-corners thead th:nth-child(2),
+div.leaflet-sidebar-pane#domains table.table-grid-corners thead th:nth-child(3) {
   border-left: none;
 }
-div.leaflet-sidebar-pane#wps div#grids-header {
+div.leaflet-sidebar-pane#domains div#grids-header {
   margin-top: 5px;
 }
-div.leaflet-sidebar-pane#wps div#grids-header h5 {
+div.leaflet-sidebar-pane#domains div#grids-header h5 {
   margin-bottom: 2px;
 }
-div.leaflet-sidebar-pane#wps div#grids-header button {
+div.leaflet-sidebar-pane#domains div#grids-header button {
   padding: 2px 6px;
 }
-div.leaflet-sidebar-pane#wps div.container-grid {
+div.leaflet-sidebar-pane#domains div.container-grid {
   margin-bottom: 2px;
 }
-div.leaflet-sidebar-pane#wps div.container-grid div.grid-header label {
+div.leaflet-sidebar-pane#domains div.container-grid div.grid-header label {
   margin-bottom: 2px;
 }
-div.leaflet-sidebar-pane#wps div.container-grid div.grid-header button {
+div.leaflet-sidebar-pane#domains div.container-grid div.grid-header button {
   padding: 2px 6px;
 }
 .leaflet-container.cursor-crosshair {

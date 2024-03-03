@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="/lib/leaflet.css" />
     <link rel="stylesheet" href="/lib/all.min.css" />
     <link rel="stylesheet" href="/lib/leaflet-sidebar.min.css" />
-    <link rel="stylesheet" href="/css/wrf-domain-wizard.css?1709466813613" />
+    <link rel="stylesheet" href="/css/wrf-domain-wizard.css?1709471445266" />
 
     <link rel="icon" href="/img/globe_32x32.png" />
 </head>
@@ -26,20 +26,20 @@
             <!-- Nav tabs -->
             <div class="leaflet-sidebar-tabs">
                 <ul role="tablist"> <!-- top aligned tabs -->
-                    <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
-                    <li><a href="#wps" role="tab"><i class="fas fa-vector-square"></i></a></li>
-                    <li><a href="#elevation-data" role="tab"><i class="fas fa-satellite"></i></a></li>
-                    <li><a href="#waypoints" role="tab"><i class="fas fa-map-marker-alt"></i></a></li>
+                    <li title="WRF domains"><a href="#domains" role="tab"><i class="fas fa-vector-square"></i></a></li>
+                    <li title="Satellite elevation data overlay"><a href="#elevation-data" role="tab"><i class="fas fa-satellite"></i></a></li>
+                    <li title="Waypoint overlay"><a href="#waypoints" role="tab"><i class="fas fa-map-marker-alt"></i></a></li>
+                    <li title="Domain wizard settings"><a href="#settings" role="tab"><i class="fas fa-cog"></i></a></li>
+                    <li title="About domain wizard"><a href="#about" role="tab"><i class="fas fa-info-circle"></i></a></li>
                 </ul>
         
                 <ul role="tablist"> <!-- bottom aligned tabs -->
-                    <li><a href="#settings" role="tab"><i class="fas fa-cog"></i></a></li>
                 </ul>
             </div>
         
             <!-- Tab panes -->
             <div class="leaflet-sidebar-content">
-                <div class="leaflet-sidebar-pane" id="home">
+                <div class="leaflet-sidebar-pane" id="about">
                     <h1 class="leaflet-sidebar-header">
                         About
                         <div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
 
-                <div class="leaflet-sidebar-pane" id="wps">
+                <div class="leaflet-sidebar-pane" id="domains">
                     <h1 class="leaflet-sidebar-header">Domains<span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
 
                     <div class="wps-top-buttons">

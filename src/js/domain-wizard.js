@@ -71,10 +71,19 @@ export class DomainWizard {
             open: true
         }).addTo(map);
         
-        $('div.sidebar').show();
+        const sidebarTabs = $('ul[role="tablist"] li', sidebar.getContainer());
+
+        // activate tooltips on tab icons
+        sidebarTabs.tooltip();
+
+        sidebar.on('content', (e) => {
+            // close tooltips manually because when a tab panel is opened 
+            // any displayed tooltip remains opened
+            sidebarTabs.tooltip('hide');
+        })
 
         // initialize sidebar pane controls
-        sidebar['wps'] = sidebarWPS(map, sidebar, {
+        sidebar['domains'] = sidebarWPS(map, sidebar, {
             jsonBaseUrl: settings.jsonBaseUrl,
             sampleBaseUrl: settings.sampleBaseUrl
         });
@@ -96,7 +105,7 @@ export class DomainWizard {
         sidebar['elevation'].addElevationDataOverlay('ALOS World 3D - 30m (AW3D30)', elevationDataALOS(`${settings.jsonBaseUrl}/srtm/alos/AW3D30.json`));
 
         // open default tab
-        sidebar.open('wps');
+        sidebar.open('domains');
 
         //add zoom control
         L.control.zoom({

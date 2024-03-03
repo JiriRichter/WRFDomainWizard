@@ -1,14 +1,13 @@
-import { SidebarWPSPanel } from "./domain-wizard.sidebar.wps.panel";
+import { SidebarDomainsPanel } from "./domain-wizard.sidebar.wps.panel";
 import { WRFDomainGrid } from "./leaflet/leaflet.wrf-grid";
 import { WRFDomain } from "./leaflet/leaflet.wrf-domain";
 import { WPSSaveDialog } from "./domain-wizard.dialog.save";
 import { WPSNamelist } from "./utils/namelist.wps"
 import { errorMessageBox } from "./domain-wizard.dialog.message-box";
 import { geogridOutput } from "./utils/geogrid.output";
-import { WrfProjections } from "./utils/constants";
 import { saveAs } from "file-saver";
 
-export class SidebarWPS {
+export class SidebarDomains {
 
     constructor(map, sidebar, options) {
 
@@ -39,8 +38,8 @@ export class SidebarWPS {
             this.options = Object.assign({}, this.options, options);
         }
 
-        container = $('#wps', sidebar.getContainer());
-        wpsPanel = new SidebarWPSPanel($('#container-wps-form', container), this.options);
+        container = $('#domains', sidebar.getContainer());
+        wpsPanel = new SidebarDomainsPanel($('#container-wps-form', container), this.options);
 
         buttonNew = $('button#button-wps-new', container);
         buttonSave = $('button#button-wps-save', container);
@@ -305,7 +304,7 @@ export class SidebarWPS {
                 wpsNamelistUrl, 
                 (data) => {
                     wpsNamelist = new WPSNamelist(data);
-                    sidebar.open('wps');
+                    sidebar.open('domains');
                     createDomainFromNamelist(true);
                     this._addGeogridCorners(sample);
                 }, 'text')
@@ -373,5 +372,5 @@ export class SidebarWPS {
 }
 
 export function sidebarWPS(map, sidebar, options) {
-    return new SidebarWPS(map, sidebar, options);
+    return new SidebarDomains(map, sidebar, options);
 }
