@@ -8,14 +8,13 @@ export var SidebarSettings = L.Class.extend({
     _localStorageKey: '_wrf_domain_wizard_settings',
 
     _defaultOptions: {
-        jsonBaseUrl: 'json',
-        geographicLinesGeoJson: 'ne_110m_geographic_lines.json',
+        jsonBaseUrl: 'json'
     },
 
     _settings: {
         showGraticule: {
             id: 'showGraticule',
-            value: true,
+            value: false,
             dataType: 'boolean'
         },
         showGeographicLines : {
@@ -70,6 +69,7 @@ export var SidebarSettings = L.Class.extend({
         }
 
         const self = this;
+        this._settings['showGraticule'].value = false;
 
         this._controls['showGraticule'].addEventListener('click', (e) => {
             self.showGraticule(e.currentTarget.checked);
