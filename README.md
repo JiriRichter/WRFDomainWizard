@@ -1,12 +1,12 @@
 # WRF Domain Wizard 
 
-The WRF Domain Wizard is implemented as a client-side SPA (Single-page application) and can be used to define model domains for the (WRF Preprocessing System (WPS))[https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html]. WPS is a set of three programs whose collective role is to prepare input to the real program for real-data simulations. Each program reads parameters from a common namelist file - namelist.wps.
+The WRF Domain Wizard is implemented as a client-side SPA (Single-page application) and can be used to define model domains for the [WRF Preprocessing System (WPS)](https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html). WPS is a set of three programs whose collective role is to prepare input to the real program for real-data simulations. Each program reads parameters from a common namelist file - namelist.wps.
 
 [Official](https://wrfdomainwizard.net/)
 [Preview](https://jiririchter.github.io/WRFDomainWizard/)
 
 ## Limitation
-- The current version of the tool only helps with the definition of parameters for the (geogrid)[https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html#step1-define-model-domains-with-geogrid] section.
+- The current version of the tool only helps with the definition of parameters for the [geogrid](https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html#step1-define-model-domains-with-geogrid) section.
 - Support for NMM and the associated rotated lat-lon projection are not implemented
 - Support for ARW global lat-lon is not implemented
 
@@ -34,5 +34,5 @@ A sample namelist.wps file has been created for each major projection and the te
 
 ## Issue and Suggestions
 
-Please, report any issues or feaure requests using the project (Issues)[https://github.com/JiriRichter/WRFDomainWizard/issues].
+Please, report any issues or feaure requests using the project [Issues](https://github.com/JiriRichter/WRFDomainWizard/issues).
 
