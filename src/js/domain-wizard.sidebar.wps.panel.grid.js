@@ -1,7 +1,7 @@
 import { WRFDomainGrid } from "./leaflet/leaflet.wrf-grid";
 import { GeogDataResDialog } from './domain-wizard.dialog.geog-data-res'
 
-export class SidebarWPSPanelGrid {
+export class SidebarDomainsPanelGrid {
 
     static _geogDataResDialog = null;
 
@@ -36,16 +36,16 @@ export class SidebarWPSPanelGrid {
             this.options = Object.assign(this.options, options);
         }        
 
-        if (SidebarWPSPanelGrid._geogDataResDialog === null) {
-            SidebarWPSPanelGrid._geogDataResDialog = new GeogDataResDialog(options);
+        if (SidebarDomainsPanelGrid._geogDataResDialog === null) {
+            SidebarDomainsPanelGrid._geogDataResDialog = new GeogDataResDialog(options);
         }
 
-        if (SidebarWPSPanelGrid.Template == null) {
-            SidebarWPSPanelGrid.Template = $('#grid_template', container).html();
+        if (SidebarDomainsPanelGrid.Template == null) {
+            SidebarDomainsPanelGrid.Template = $('#grid_template', container).html();
             $('#grid_template', container).remove();
         }
 
-        gridContainer = $('<div class="container-grid"></div>').append(SidebarWPSPanelGrid.Template);
+        gridContainer = $('<div class="container-grid"></div>').append(SidebarDomainsPanelGrid.Template);
         buttonRemoveNest = $('button[data-action="remove-nest"]', gridContainer);
         buttonAddNest = $('button[data-action="add-nest"]', gridContainer);
         buttonGeogDataResEdit = $('button[data-action="geog-data-res-edit"]', gridContainer);
@@ -72,7 +72,7 @@ export class SidebarWPSPanelGrid {
         });
 
         buttonGeogDataResEdit.on('click', function (e) {
-            SidebarWPSPanelGrid._geogDataResDialog.show(grid.geog_data_res, function (e) {
+            SidebarDomainsPanelGrid._geogDataResDialog.show(grid.geog_data_res, function (e) {
                 grid.geog_data_res = e.geog_data_res;
                 inputGeogDataRes.text(e.geog_data_res);
                 inputGeogDataRes.attr('title', e.geog_data_res);
@@ -123,12 +123,12 @@ export class SidebarWPSPanelGrid {
             var nest = null;
             if (location.hostname === 'localhost') {
                 nest = grid.createNest();
-                nest.gridPanel = new SidebarWPSPanelGrid(container, nest, errorHandler);
+                nest.gridPanel = new SidebarDomainsPanelGrid(container, nest, errorHandler);
             }
             else {
                 try {
                     nest = grid.createNest();
-                    nest.gridPanel = new SidebarWPSPanelGrid(container, nest, errorHandler);
+                    nest.gridPanel = new SidebarDomainsPanelGrid(container, nest, errorHandler);
                 }
                 catch (error) {
                     reportError(error);
@@ -151,7 +151,7 @@ export class SidebarWPSPanelGrid {
         }
 
         for (var i = 0; i < grid.nests.length; i++) {
-            grid.nests[i].gridPanel = new SidebarWPSPanelGrid(container, grid.nests[i], errorHandler);
+            grid.nests[i].gridPanel = new SidebarDomainsPanelGrid(container, grid.nests[i], errorHandler);
         }
 
         function setGridName() {
@@ -344,4 +344,4 @@ export class SidebarWPSPanelGrid {
     }
 }
 
-SidebarWPSPanelGrid.Template = null;
+SidebarDomainsPanelGrid.Template = null;

@@ -1,11 +1,11 @@
-import { SidebarWPSPanelGrid } from "./domain-wizard.sidebar.wps.panel.grid";
+import { SidebarDomainsPanelGrid } from "./domain-wizard.sidebar.wps.panel.grid";
 import { WRFDomain } from "./leaflet/leaflet.wrf-domain";
 import { WRFDomainGrid } from "./leaflet/leaflet.wrf-grid";
 import { errorMessageBox } from "./domain-wizard.dialog.message-box";
 import { WrfProjections } from "./utils/constants";
 import { degreesToMeters } from "./utils/math";
 
-export class SidebarWPSPanel {
+export class SidebarDomainsPanel {
     constructor(container, options) {
 
         // controls
@@ -481,7 +481,7 @@ export class SidebarWPSPanel {
         }
 
         function initGridPanels() {
-            domain.grid.gridPanel = new SidebarWPSPanelGrid(
+            domain.grid.gridPanel = new SidebarDomainsPanelGrid(
                 containerGrids, 
                 domain.grid,
                 function (e) {

@@ -10131,9 +10131,9 @@
     });
   });
 
-  var SidebarWPSPanelGrid = /*#__PURE__*/_createClass(function SidebarWPSPanelGrid(container, grid, errorHandler, options) {
+  var SidebarDomainsPanelGrid = /*#__PURE__*/_createClass(function SidebarDomainsPanelGrid(container, grid, errorHandler, options) {
     var _this = this;
-    _classCallCheck(this, SidebarWPSPanelGrid);
+    _classCallCheck(this, SidebarDomainsPanelGrid);
     var self = this;
       grid.domain;
       var gridContainer,
@@ -10161,14 +10161,14 @@
     if (options) {
       this.options = Object.assign(this.options, options);
     }
-    if (SidebarWPSPanelGrid._geogDataResDialog === null) {
-      SidebarWPSPanelGrid._geogDataResDialog = new GeogDataResDialog(options);
+    if (SidebarDomainsPanelGrid._geogDataResDialog === null) {
+      SidebarDomainsPanelGrid._geogDataResDialog = new GeogDataResDialog(options);
     }
-    if (SidebarWPSPanelGrid.Template == null) {
-      SidebarWPSPanelGrid.Template = $('#grid_template', container).html();
+    if (SidebarDomainsPanelGrid.Template == null) {
+      SidebarDomainsPanelGrid.Template = $('#grid_template', container).html();
       $('#grid_template', container).remove();
     }
-    gridContainer = $('<div class="container-grid"></div>').append(SidebarWPSPanelGrid.Template);
+    gridContainer = $('<div class="container-grid"></div>').append(SidebarDomainsPanelGrid.Template);
     buttonRemoveNest = $('button[data-action="remove-nest"]', gridContainer);
     buttonAddNest = $('button[data-action="add-nest"]', gridContainer);
     buttonGeogDataResEdit = $('button[data-action="geog-data-res-edit"]', gridContainer);
@@ -10190,7 +10190,7 @@
       self.validate();
     });
     buttonGeogDataResEdit.on('click', function (e) {
-      SidebarWPSPanelGrid._geogDataResDialog.show(grid.geog_data_res, function (e) {
+      SidebarDomainsPanelGrid._geogDataResDialog.show(grid.geog_data_res, function (e) {
         grid.geog_data_res = e.geog_data_res;
         inputGeogDataRes.text(e.geog_data_res);
         inputGeogDataRes.attr('title', e.geog_data_res);
@@ -10239,11 +10239,11 @@
       var nest = null;
       if (location.hostname === 'localhost') {
         nest = grid.createNest();
-        nest.gridPanel = new SidebarWPSPanelGrid(container, nest, errorHandler);
+        nest.gridPanel = new SidebarDomainsPanelGrid(container, nest, errorHandler);
       } else {
         try {
           nest = grid.createNest();
-          nest.gridPanel = new SidebarWPSPanelGrid(container, nest, errorHandler);
+          nest.gridPanel = new SidebarDomainsPanelGrid(container, nest, errorHandler);
         } catch (error) {
           reportError(error);
         }
@@ -10262,7 +10262,7 @@
       inputJParentStart.removeAttr('required');
     }
     for (var i = 0; i < grid.nests.length; i++) {
-      grid.nests[i].gridPanel = new SidebarWPSPanelGrid(container, grid.nests[i], errorHandler);
+      grid.nests[i].gridPanel = new SidebarDomainsPanelGrid(container, grid.nests[i], errorHandler);
     }
     function setGridName() {
       if (grid.parent) {
@@ -10419,8 +10419,8 @@
       markSelected();
     }
   });
-  _defineProperty(SidebarWPSPanelGrid, "_geogDataResDialog", null);
-  SidebarWPSPanelGrid.Template = null;
+  _defineProperty(SidebarDomainsPanelGrid, "_geogDataResDialog", null);
+  SidebarDomainsPanelGrid.Template = null;
 
   /**
   * @constructor
@@ -10790,8 +10790,8 @@
     this._mainGrid.addTo(this._map);
   };
 
-  var SidebarWPSPanel = /*#__PURE__*/_createClass(function SidebarWPSPanel(container, options) {
-    _classCallCheck(this, SidebarWPSPanel);
+  var SidebarDomainsPanel = /*#__PURE__*/_createClass(function SidebarDomainsPanel(container, options) {
+    _classCallCheck(this, SidebarDomainsPanel);
     // controls
     var self = this,
       initializedForDomain = false,
@@ -11195,7 +11195,7 @@
       buttonRemoveMOAD.prop('disabled', domain.grid.nests.length != 1);
     }
     function initGridPanels() {
-      domain.grid.gridPanel = new SidebarWPSPanelGrid(containerGrids, domain.grid, function (e) {
+      domain.grid.gridPanel = new SidebarDomainsPanelGrid(containerGrids, domain.grid, function (e) {
         errorMessageBox('Error', e.error);
       }, self.options);
       domain.grid.on('wps:addnest', setButtonRemoveMOADEnabled);
@@ -11382,10 +11382,10 @@
 
   var FileSaver_minExports = FileSaver_min.exports;
 
-  var SidebarWPS = /*#__PURE__*/function () {
-    function SidebarWPS(map, sidebar, options) {
+  var SidebarDomains = /*#__PURE__*/function () {
+    function SidebarDomains(map, sidebar, options) {
       var _this = this;
-      _classCallCheck(this, SidebarWPS);
+      _classCallCheck(this, SidebarDomains);
       this.map = map;
       var self = this;
       var container, wpsNamelist, domain, wpsPanel, newDomainContext;
@@ -11400,8 +11400,8 @@
       if (options) {
         this.options = Object.assign({}, this.options, options);
       }
-      container = $('#wps', sidebar.getContainer());
-      wpsPanel = new SidebarWPSPanel($('#container-wps-form', container), this.options);
+      container = $('#domains', sidebar.getContainer());
+      wpsPanel = new SidebarDomainsPanel($('#container-wps-form', container), this.options);
       buttonNew = $('button#button-wps-new', container);
       buttonSave = $('button#button-wps-save', container);
       buttonReset = $('button#reset-domain', container);
@@ -11626,7 +11626,7 @@
           wpsNamelistUrl = "".concat(this.options.sampleBaseUrl, "/").concat(sample, "/namelist.wps");
         $.get(wpsNamelistUrl, function (data) {
           wpsNamelist = new WPSNamelist(data);
-          sidebar.open('wps');
+          sidebar.open('domains');
           createDomainFromNamelist(true);
           _this._addGeogridCorners(sample);
         }, 'text').fail(function () {
@@ -11634,7 +11634,7 @@
         });
       }
     }
-    _createClass(SidebarWPS, [{
+    _createClass(SidebarDomains, [{
       key: "_addGeogridCorners",
       value: function _addGeogridCorners(sample) {
         this._addGeogridGridCorners(sample, 1);
@@ -11678,10 +11678,10 @@
         });
       }
     }]);
-    return SidebarWPS;
+    return SidebarDomains;
   }();
   function sidebarWPS(map, sidebar, options) {
-    return new SidebarWPS(map, sidebar, options);
+    return new SidebarDomains(map, sidebar, options);
   }
 
   var PersistentLayers = L.Control.Layers.extend({
@@ -12090,10 +12090,18 @@
       position: 'left',
       open: true
     }).addTo(map);
-    $('div.sidebar').show();
+    var sidebarTabs = $('ul[role="tablist"] li', sidebar.getContainer());
+
+    // activate tooltips on tab icons
+    sidebarTabs.tooltip();
+    sidebar.on('content', function (e) {
+      // close tooltips manually because when a tab panel is opened 
+      // any displayed tooltip remains opened
+      sidebarTabs.tooltip('hide');
+    });
 
     // initialize sidebar pane controls
-    sidebar['wps'] = sidebarWPS(map, sidebar, {
+    sidebar['domains'] = sidebarWPS(map, sidebar, {
       jsonBaseUrl: settings.jsonBaseUrl,
       sampleBaseUrl: settings.sampleBaseUrl
     });
@@ -12109,7 +12117,7 @@
     sidebar['elevation'].addElevationDataOverlay('ALOS World 3D - 30m (AW3D30)', elevationDataALOS("".concat(settings.jsonBaseUrl, "/srtm/alos/AW3D30.json")));
 
     // open default tab
-    sidebar.open('wps');
+    sidebar.open('domains');
 
     //add zoom control
     L.control.zoom({
