@@ -45,7 +45,7 @@ export class WrfProjection {
                 this._proj4 = '+units=m'
                     + ' +proj=merc'
                     + ' +lat_ts=' + this._params.truelat1
-                    + ' +lon_0=' + this._params.stand_lon
+                    + ' +lon_0=' + (this._params.stand_lon ?? 0)
                     + ' +a=' + EarthRadius
                     + ' +b=' + EarthRadius
                     + ' +towgs84=0,0,0'

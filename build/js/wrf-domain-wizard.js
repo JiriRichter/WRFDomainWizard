@@ -8636,6 +8636,7 @@
   // PROJ4 strings based on https://github.com/NCAR/wrf-python/blob/develop/src/wrf/projection.py
   var WrfProjection = /*#__PURE__*/function () {
     function WrfProjection(params) {
+      var _this$_params$stand_l;
       _classCallCheck(this, WrfProjection);
       this._params = Object.assign({
         map_proj: null,
@@ -8657,7 +8658,7 @@
 
         // Mercator
         case WrfProjections.mercator:
-          this._proj4 = '+units=m' + ' +proj=merc' + ' +lat_ts=' + this._params.truelat1 + ' +lon_0=' + this._params.stand_lon + ' +a=' + EarthRadius + ' +b=' + EarthRadius + ' +towgs84=0,0,0' + ' +no_defs=True' + ' +nadgrids=null';
+          this._proj4 = '+units=m' + ' +proj=merc' + ' +lat_ts=' + this._params.truelat1 + ' +lon_0=' + ((_this$_params$stand_l = this._params.stand_lon) !== null && _this$_params$stand_l !== void 0 ? _this$_params$stand_l : 0) + ' +a=' + EarthRadius + ' +b=' + EarthRadius + ' +towgs84=0,0,0' + ' +no_defs=True' + ' +nadgrids=null';
           break;
 
         // Polar stereographic
