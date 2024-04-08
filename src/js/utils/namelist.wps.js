@@ -130,7 +130,7 @@ export class WPSNamelist {
     }
 
     _createWRFSI(ns) {
-        this.share.wrf_core = 'AWR';
+        this.share.wrf_core = 'ARW';
         this.share.max_dom = ns['hgridspec']['num_domains'];
         var now = new Date();
         var tomorrow = new Date(now);
