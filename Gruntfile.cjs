@@ -1,3 +1,5 @@
+const analyticsFile = 'analytics.txt';
+
 module.exports = function(grunt) {
 
   grunt.initConfig({
@@ -5,6 +7,8 @@ module.exports = function(grunt) {
     timestamp: new Date().getTime(),
 
     targetFolder: "build",
+
+    analytics: grunt.file.exists(analyticsFile) ? grunt.file.read(analyticsFile) : '',
 
     clean: [
       '<%= targetFolder %>'
@@ -117,6 +121,10 @@ module.exports = function(grunt) {
         {
           from: '{{baseUrl}}',
           to: 'build'
+        },
+        {
+          from: '{{analytics}}',
+          to: '<%= analytics %>'
         }]
       },
       build: {
@@ -130,6 +138,10 @@ module.exports = function(grunt) {
         {
           from: '{{baseUrl}}',
           to: ''
+        },
+        {
+          from: '{{analytics}}',
+          to: '<%= analytics %>'
         }]
       }
 
