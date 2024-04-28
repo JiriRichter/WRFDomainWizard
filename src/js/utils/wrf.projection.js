@@ -45,7 +45,7 @@ export class WrfProjection {
                 this._proj4 = '+units=m'
                     + ' +proj=merc'
                     + ' +lat_ts=' + this._params.truelat1
-                    + ' +lon_0=' + (this._params.stand_lon ?? 0)
+                    + ' +lon_0=' + this._getValue(this._params.stand_lon, 0)
                     + ' +a=' + EarthRadius
                     + ' +b=' + EarthRadius
                     + ' +towgs84=0,0,0'
@@ -88,6 +88,13 @@ export class WrfProjection {
             default:
                 throw ("Unsupported projection " + this._wps.map_proj);
         }
+    }
+
+    _getValue(value, defaultValue) {
+        if (isNaN(value) || value === null || value === undefined) {
+            return defaultValue;
+        }
+        return value;
     }
 
     latlon_to_ij(lat, lon) {
