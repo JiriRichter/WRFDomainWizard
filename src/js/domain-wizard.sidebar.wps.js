@@ -6,6 +6,7 @@ import { WPSNamelist } from "./utils/namelist.wps"
 import { errorMessageBox } from "./domain-wizard.dialog.message-box";
 import { geogridOutput } from "./utils/geogrid.output";
 import { saveAs } from "file-saver";
+import { NamelistInputDialog } from "./domain-wizard.dialog.namelist.input";
 
 export class SidebarDomains {
 
@@ -29,6 +30,7 @@ export class SidebarDomains {
 
         // defaul settings
         this.options = {
+            jsonBaseUrl: 'json',
             sampleBaseUrl: 'samples',
             allowAnyFilename: true,
             autoImageView: false
@@ -47,7 +49,7 @@ export class SidebarDomains {
         buttonOpen = $('button#button-wps-open', container);
         const buttonSavePng = $('button#save-png', container);
         inputFile = $('input#file-open', container);
-
+        
         captureImageDialog = $('#capture-image-dialog');
 
         // creates new WPS namelist object from existing data and
@@ -168,6 +170,15 @@ export class SidebarDomains {
                     }
                     captureImageDialog.modal('hide');
                 });
+        });
+
+        const buttonNamelistInput = container[0].querySelector('button#button-namelist-input');
+        const dialogNamelistInput = new NamelistInputDialog({
+            jsonBaseUrl: this.options.jsonBaseUrl
+        });
+
+        buttonNamelistInput.addEventListener('click', async() => {
+            await dialogNamelistInput.openNamelistWpsAsync(domain.getWPSNamelist());
         });
 
         function removeDomain() {

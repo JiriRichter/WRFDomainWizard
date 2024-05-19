@@ -1,0 +1,158 @@
+div.namelist-input-editor {
+    div.namelist-input-group {
+
+        div.namelist-input-group-header {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-top: 3px;
+            margin-bottom: 3px;
+
+            h5 {
+                margin-top: 0;
+                margin-bottom: 0;
+                margin-left: 5px;
+                margin-right: 0;
+                flex-grow: 1;
+            }
+
+            button {
+                outline: none !important;
+                box-shadow: none;
+                width: 30px;
+            };
+
+            button:hover {
+                border-color: #e1e1e1;
+            }
+        }
+
+        div.namelist-input-variables {
+
+            div.namelist-input-variable:hover {
+                background-color: aliceblue;
+
+                div.input-group {
+                    div.input-group-prepend {
+                        .input-group-text {
+                            font-weight: bold;
+                        }
+                    }
+
+                    input.form-control, select.form-control {
+                        font-weight: bold;
+                    }
+                }
+            }
+
+            div.namelist-input-variable.namelist-input-variable-readonly {
+
+                div.input-group {
+                    div.namelist-input-variable-mark {
+                        i {
+                            color: #e83e8c;
+                        }
+                    }
+                }
+            }            
+
+            div.namelist-input-variable.namelist-input-variable-unset {
+
+                div.input-group {
+                    div.input-group-prepend {
+                        .input-group-text {
+                            font-style:italic;
+                            color: #8794a1;
+                            background-color: #eff2f5;
+                        }
+                    }
+
+                    input.form-control, select.form-control {
+                        font-style:italic;
+                        color: #8794a1;
+                    }
+
+                    div.namelist-input-variable-mark {
+                        flex-grow: 0 !important;
+                        flex-shrink: 0 !important;
+
+                        i {
+                            display: none;
+                        }
+                    }
+                }
+            }
+
+            div.namelist-input-variable {
+                width: 100%;
+
+                div.input-group {
+
+                    flex-wrap: nowrap !important;
+
+                    div.input-group-prepend {
+                        .input-group-text {
+                            width: 200px;
+                            border-radius: 0;
+                            border-bottom: none;
+                        }
+                    }
+
+                    input.form-control, select.form-control {
+                        width: 200px;
+                        border-radius: 0;
+                        border-bottom: none;
+                        flex-grow: 0 !important;
+                        flex-shrink: 0 !important;
+                    }
+
+                    div.input-group-prepend.input-group-checkbox {
+                        width: 200px;
+                        flex-grow: 0 !important;
+                        flex-shrink: 0 !important;
+
+                        div.input-group-text {
+                            width: 100%;
+
+                            input[type="checkbox"] {
+                                width: 100%;
+                            }
+                        }
+                    }
+
+                    div.namelist-input-variable-description {
+                        font-size: .75rem;
+                        align-self: center;
+                        padding-left: 10px;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        white-space: nowrap;
+                    }
+
+                    div.namelist-input-variable-mark {
+                        width: 25px;
+                        align-self: center;
+                        text-align: center;
+                    }
+                }
+            }
+
+            div.namelist-input-variable:last-child {
+
+                div.input-group {
+
+                    div.input-group-prepend {
+                        span.input-group-text {
+                            border: 1px solid #ced4da;
+                        }
+                    }
+
+                    input.form-control, select.form-control {
+                        border: 1px solid #ced4da;
+                    }
+                }
+            }
+        }
+    }
+}

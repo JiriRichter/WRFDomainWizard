@@ -47,6 +47,7 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "blob-polyfill": "^7.0.20220408",
     "bootstrap": "^4.6.1",
+    "bootstrap-datetimepicker-npm": "^4.17.37-npm",
     "file-saver": "^2.0.5",
     "html-to-image": "^1.11.11",
     "immediate": "^3.3.0",
