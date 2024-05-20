@@ -10,6 +10,14 @@ export class NamelistInputEditor {
         maxEta: "max_eta"
     }
 
+    static variableTypes = {
+        integer: "integer",
+        logical: "logical",
+        real: "real",
+        character: "character",
+        selection: "selection"
+    }
+
     static _localStorageKey = '_wrf_domain_wizard_namelist_input'
 
     constructor(container, options) {
@@ -17,19 +25,27 @@ export class NamelistInputEditor {
         // defaul settings
         this.options = {
             jsonBaseUrl: 'json',
-            change: null
+            change: null,
+            floatDigits: 3
         };
 
         if (options) {
             this.options = Object.assign(this.options, options);
         }
-        
+
+        // editor container element
         this.container = container;
         
+        // variable definitions
         this.variables = null;
+
+        // read-only variable flags
         this.readOnly = {};
 
+        // namelist object
         this.namelist = null;
+        
+        // initialize variable group collapse state
         let value = localStorage.getItem(`${NamelistInputEditor._localStorageKey}_collapse`);
         if (value) {
             this.collapse = JSON.parse(value);
@@ -39,18 +55,25 @@ export class NamelistInputEditor {
         }
     }
 
+    // current max_dom value
     get max_dom() {
         return this.namelist.domains?.max_dom ?? 1;
     }
 
+    // initializes editor from namelist.wps object
     async openNamelistWpsAsync(namelistWps) {
         this.namelist = this.namelist ?? {}
 
         this._setReadOnlyNamelistValue('domains', 'max_dom', namelistWps.share.max_dom);
         this._setReadOnlyNamelistValue('domains', 'e_we', namelistWps.geogrid.e_we);
         this._setReadOnlyNamelistValue('domains', 'e_sn', namelistWps.geogrid.e_sn);
-        this._setReadOnlyNamelistValue('domains', 'dx', distanceToMeters(namelistWps.share.map_proj, namelistWps.geogrid.dx));
-        this._setReadOnlyNamelistValue('domains', 'dy', distanceToMeters(namelistWps.share.map_proj, namelistWps.geogrid.dy));
+        this._setReadOnlyNamelistValue('domains', 'dx', distanceToMeters(namelistWps.geogrid.map_proj, namelistWps.geogrid.dx));
+        this._setReadOnlyNamelistValue('domains', 'dy', distanceToMeters(namelistWps.geogrid.map_proj, namelistWps.geogrid.dy));
+        const grid_id = [];
+        for(let i = 1; i <= namelistWps.share.max_dom; i++) {
+            grid_id.push(i);
+        }
+        this._setReadOnlyNamelistValue('domains', 'grid_id', grid_id);
         this._setReadOnlyNamelistValue('domains', 'parent_id', namelistWps.geogrid.parent_id);
         this._setReadOnlyNamelistValue('domains', 'i_parent_start', namelistWps.geogrid.i_parent_start);
         this._setReadOnlyNamelistValue('domains', 'j_parent_start', namelistWps.geogrid.j_parent_start);
@@ -59,13 +82,13 @@ export class NamelistInputEditor {
         await this._initAsync();
     }
 
-    _setReadOnly
-
+    // open namelist object
     async openNamelistInputAsync(namelist) {
         this.namelist = namelist;
         await this._initAsync();
     }
 
+    // return RAW text representation of namelist data
     toRaw() {
         let raw = '';
 
@@ -95,39 +118,49 @@ export class NamelistInputEditor {
         return raw;
     }
 
+    // check whether variable namelist object value is set
     _isNamelistValueSet(group, variable) {
         return this.namelist[group] !== undefined
             && this.namelist[group][variable] !== undefined
             && this.namelist[group][variable] !== null;
     }
 
+    
+    // set variable namelist object value
     _setNamelistValue(group, variable, value) {
         this.namelist[group] = this.namelist[group] ?? {};
         this.namelist[group][variable] = value;
     }
 
+    // set namelist object value and flag variable as read-only
     _setReadOnlyNamelistValue(group, variable, value) {
         this._setNamelistValue(group, variable, value);
         this.readOnly[group] = this.readOnly[group] ?? {};
         this.readOnly[group][variable] = true;
     }
 
-    _isReadOnly(group, variable) {
-        return this.readOnly[group] !== undefined
-            && this.readOnly[group][variable] === true;
+    // returns true when when a variable is flagged as read-only
+    _isReadOnly(groupName, variableName) {
+        return this.readOnly[groupName] !== undefined
+            && this.readOnly[groupName][variableName] === true;
     }
 
+    // clear editor
     _empty() {
         while(this.container.firstChild && this.container.removeChild(this.container.firstChild));
     }
 
+    // initialize editor
     async _initAsync() {
 
+        // empty elements
         this._empty();
 
+        // construct variable definition object
         if (this.variables === null) {
             this.variables = {};
 
+            // load variable JSON files
             const selectValues = await this._loadJsonAsync('namelist.input.select.values.json');
             const userGuide = await this._loadJsonAsync('namelist.input.users.guide.json');
             const registry = await this._loadJsonAsync('namelist.input.registry.json');
@@ -172,6 +205,7 @@ export class NamelistInputEditor {
 
                     if (hasUserGuideEntry && userGuide[group][variable].entries !== entries) {
 
+                        // correct variable entries for known cases where user guide and WRF registry differ
                         switch(variable) {
                             // https://github.com/wrf-model/WRF/blob/master/test/em_real/namelist.input
                             case "dx":
@@ -218,30 +252,39 @@ export class NamelistInputEditor {
                     };
 
                     if (selectValues[variable] && selectValues[variable].values) {
+                        this.variables[group][variable].type = NamelistInputEditor.variableTypes.selection;
                         this.variables[group][variable]['values'] = selectValues[variable].values;
                     }
                 }
             }
         }
 
+        // correct default values
         this._setDefaultsValues();
+
+        // create editor fields
         this._initEditorFields();
     }
 
+    // load a JSON config file
     async _loadJsonAsync(filename) {
         const jsonUrl = `${this.options.jsonBaseUrl}/${filename}`;
         var response = await fetch(jsonUrl);
         return await response.json();
     }
 
+    // set default values for variables with missing or invalid default value in auto-generated JSON data
     _setDefaultsValues() {
+        // time_step default value not set in registry
         this._setDefaultValue("domains", "time_step", 60);
     }
 
+    // set variable definition default value
     _setDefaultValue(group, variable, defaultValue) {
         this.variables[group][variable].defaultValue = defaultValue;
     }
 
+    // create editor HTML
     _initEditorFields() {
 
         for(const [groupName, groupVariables] of Object.entries(this.variables)) {
@@ -251,15 +294,17 @@ export class NamelistInputEditor {
             this._initGroupVariables(groupName, groupVariables);
         };
 
-        $(this.container).find('span').tooltip();
+        $(this.container).find('*[title]').tooltip();
         this._storeCollapseState();
     }
 
+    // collapse icons
     static iconClass = {
         collapsed: 'fa-chevron-right',
         open: 'fa-chevron-down'
     }
 
+    // create group variables 
     _initGroupVariables(groupName, groupVariables) {
 
         const groupDiv = this._append(this.container, 'div');
@@ -301,10 +346,12 @@ export class NamelistInputEditor {
         this._appendGroupVariableFields(groupDiv, groupName, groupVariables);
     }
 
+    // capture variable group collapse state
     _storeCollapseState() {
         localStorage.setItem(`${NamelistInputEditor._localStorageKey}_collapse`, JSON.stringify(this.collapse));
     }
 
+    // create and append group variables
     _appendGroupVariableFields(groupDiv, groupName, groupVariables) {
         const variablesDiv = this._append(groupDiv, 'div');
         variablesDiv.classList.add('namelist-input-variables');
@@ -319,6 +366,7 @@ export class NamelistInputEditor {
         }
     }
 
+    // create and append variable input fields
     _appendVariableField(variablesDiv, groupName, variableName, variable) {
 
         console.debug(`Creating variable ${variableName} input`);
@@ -338,21 +386,22 @@ export class NamelistInputEditor {
 
         let html = '<div class="input-group input-group-sm">';
 
-        html += '<div class="namelist-input-variable-mark">';
+        html += '<div class="input-group-prepend">';
+
+        // erase button HTML
+        html += '<button class="btn btn-outline-secondary btn-namelist-input-erase" type="button"'
         if (readOnly === true) {
             variableDiv.classList.add('namelist-input-variable-readonly');
-            html += '<i class="fas fa-pencil-alt" title="read-only"></i>';
+            html += ' disabled';
         }
-        else {
-            html += '<i class="fas fa-pencil-alt"></i>';
-        }
-        html += '</div>';
+        html += '><i class="fas fa-eraser"></i></button>'
 
-        html += '<div class="input-group-prepend">';
+        // variable name HTML
         html += '<span class="input-group-text" id="inputGroup-sizing-sm">';
         html += htmlEncode(variableName);
         html += '</span></div>';
 
+        // variable input field(s) HTML
         switch (variable.entries) {
             case NamelistInputEditor.entries.maxDom:
     
@@ -379,6 +428,7 @@ export class NamelistInputEditor {
                 break;
         }        
 
+        // variable description HTML
         if (variable.description) {
             html += '<div class="namelist-input-variable-description">';
             html += htmlEncode(variable.description);
@@ -389,101 +439,205 @@ export class NamelistInputEditor {
 
         variableDiv.innerHTML = html;
 
+        if (readOnly === true) {
+            return;
+        }
+
+        // configure erase button click event handler
+        variableDiv.querySelector('button.btn-namelist-input-erase')
+            .addEventListener('click', (e) => {
+                const variableDiv = e.currentTarget.closest('div.namelist-input-variable');
+                const groupName = variableDiv.closest('div.namelist-input-group').dataset['group'];
+                const variableName = variableDiv.dataset['variable'];
+                variableDiv.classList.add('namelist-input-variable-unset');
+                this.namelist[groupName][variableName] = null;
+                this._setVariableFieldValue(groupName, variableName);
+                this._fireChange(groupName, variableName);
+            });
+
+        // configure variable input fields event listeners
         switch(variable.type) {
-            case 'logical':
-                variableDiv.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
-                    checkbox.addEventListener('change', (e) => {
-                        const variable = e.currentTarget.name;
-                        const variableDiv = document.querySelector(`div.namelist-input-variable[data-variable="${variable}"]`);
-                        const group = variableDiv.closest('div.namelist-input-group').dataset['group'];
-                        variableDiv.classList.remove('namelist-input-variable-unset');
-
-                        switch(this.variables[group][variable].entries) {
-                            case NamelistInputEditor.entries.single:
-                                this._setNamelistValue(group, variable, e.currentTarget.checked);
-                                break;
-                            case NamelistInputEditor.entries.maxDom:
-                                this._setNamelistValue(
-                                    group,
-                                    variable,
-                                    this._listVariableInputFields(group, variable).map(input => input.checked));
-                                break;
-                            }
-
-                        this._fireChange(group, variable);
-                        
-                    });
-                });
+            case NamelistInputEditor.variableTypes.selection:
+                this._addVariableFieldListeners(
+                    variableDiv,
+                    'select',
+                    variableName,
+                    'change',
+                    (select) => parseInt(select.value));
+                break;
+            case NamelistInputEditor.variableTypes.logical:
+                this._addVariableFieldListeners(
+                    variableDiv,
+                    'input',
+                    variableName,
+                    'change',
+                    (input) => input.checked);
                 break;
 
-            case 'integer':
-            case 'real':
-                
+            case NamelistInputEditor.variableTypes.integer:
+                this._addVariableFieldListeners(
+                    variableDiv,
+                    'input',
+                    variableName,
+                    'change',
+                    (input) => parseInt(input.value));
                 break;
 
-            case 'character':
-                
+            case NamelistInputEditor.variableTypes.real:
+                this._addVariableFieldListeners(
+                    variableDiv,
+                    'input',
+                    variableName,
+                    'change',
+                    (input) => parseFloat(input.value));
+                break;
+
+            case NamelistInputEditor.variableTypes.character:
+                this._addVariableFieldListeners(
+                    variableDiv,
+                    'input',
+                    variableName,
+                    'change',
+                    (input) => input.value);
                 break;
         }
     }
 
-    _fireChange(group, variable) {
+    // set variable input fields value from current namelist object
+    _setVariableFieldValue(groupName, variableName) {
+
+        const variable = this.variables[groupName][variableName];
+        const isSet = this._isNamelistValueSet(groupName, variableName);
+
+        switch (variable.entries) {
+            case NamelistInputEditor.entries.maxDom:
+    
+                for(let i = 0; i < this.max_dom; i++) {
+                    this._setInputFieldValue(
+                        variableName, 
+                        variable, 
+                        (isSet ? this.namelist[groupName][variableName][i] : variable.defaultValue),
+                        i);
+                }
+                break;
+
+            case NamelistInputEditor.entries.single:
+                this._setInputFieldValue(
+                    variableName, 
+                    variable, 
+                    (isSet ? this.namelist[groupName][variableName] : variable.defaultValue),
+                    null);
+                break;
+
+            case NamelistInputEditor.entries.maxEta:
+                break;
+        }    
+    }
+
+    // set variable input fields value
+    _setInputFieldValue(variableName, variable, value, index) {
+
+        const fieldId = this._getInputFieldId(variableName, index);
+
+        switch(variable.type) {
+            case NamelistInputEditor.variableTypes.selection:
+                document.querySelector(`select#${fieldId}`).value = value;
+                break;
+
+            case NamelistInputEditor.variableTypes.logical:
+                document.querySelector(`input#${fieldId}`).checked = value;
+                break;
+
+            case NamelistInputEditor.variableTypes.integer:
+            case NamelistInputEditor.variableTypes.real:
+            case NamelistInputEditor.variableTypes.character:
+                document.querySelector(`input#${fieldId}`).value = value;
+                break;
+        }
+    }
+
+    // configure event listeners for variable input fields
+    _addVariableFieldListeners(variableDiv, fieldTag, variableName, eventType, getFieldValue) {
+        variableDiv.querySelectorAll(`${fieldTag}[name="${variableName}"]`).forEach((field) => {
+            field.addEventListener(eventType, (e) => {
+                const variableName = e.currentTarget.name;
+                const variableDiv = document.querySelector(`div.namelist-input-variable[data-variable="${variableName}"]`);
+                const groupName = variableDiv.closest('div.namelist-input-group').dataset['group'];
+                variableDiv.classList.remove('namelist-input-variable-unset');
+
+                switch(this.variables[groupName][variableName].entries) {
+                    case NamelistInputEditor.entries.single:
+                        this._setNamelistValue(groupName, variableName, getFieldValue.call(this, e.currentTarget));
+                        break;
+                    case NamelistInputEditor.entries.maxDom:
+                        this._setNamelistValue(
+                            groupName,
+                            variableName,
+                            this._listVariableFields(groupName, variableName, fieldTag).map(input => getFieldValue.call(this, input)));
+                        break;
+                    }
+
+                this._fireChange(groupName, variableName);
+            });
+        });        
+    }
+
+    // fire change event
+    _fireChange(groupName, variableName) {
         if (typeof(this.options.change) === 'function') {
             this.options.change.call(this, {
-                group: group,
-                variable: variable
+                group: groupName,
+                variable: variableName
             });
         }
     }
 
-    _listVariableInputFields(group, variable) {
+    // select variable input fields and return them as an array
+    _listVariableFields(groupName, variableName, fieldTag) {
         const inputFields = [];
-        document.querySelectorAll(`div.namelist-input-group[data-group="${group}"] div.namelist-input-variable[data-variable="${variable}"] input[name=${variable}]`).forEach((input) => {
+        document.querySelectorAll(`div.namelist-input-group[data-group="${groupName}"] div.namelist-input-variable[data-variable="${variableName}"] ${fieldTag}[name=${variableName}]`).forEach((input) => {
             inputFields.push(input);
         });
         
         return inputFields;
     }
 
-    static _parseValue(val) {
-        if (val === null) {
-            return null;
+    // get variable input field ID
+    _getInputFieldId(variableName, index) {
+
+        if (index !== null) {
+            return `${variableName}_${index}`;
         }
-        return Namelist.parseValue(val);
+
+        return variableName;
     }
 
-    _getInputFieldHtml(name, variable, value, readOnly, index) {
+    // generate variable input field HTML
+    _getInputFieldHtml(variableName, variable, value, readOnly, index) {
 
         if (value === undefined || value === null){
-            throw new Error(`Variable ${name} value is not defined`);
+            throw new Error(`Variable ${variableName} value is not defined`);
         }
 
         let html = '';
 
-        let fieldId = htmlEncode(name);
-        let fieldName = htmlEncode(name);
-
-        if (index !== null) {
-            fieldId = fieldId + `_${index}`;
-        }
-
-        // select
-        if (variable['values'] !== undefined) {
-
-            html = html + `<select class="form-control" id="${fieldId}" name="${fieldName}"${(readOnly ? " readonly": "")}>`;
-            for (const [key, value] of Object.entries(variable['values'])) {
-                html = html + `<option value="${key}"`;
-                if (value !== null && key.toString() === value.toString()) {
-                    html = html + ' selected';
-                }
-                html = html + `>${key}: ${value}</option>`;
-            }
-            html = html + '<select/>';
-            return html;    
-        }
+        const fieldId = htmlEncode(this._getInputFieldId(variableName, index));
+        const fieldName = htmlEncode(variableName);
 
         switch(variable.type) {
-            case 'logical':
+            case NamelistInputEditor.variableTypes.selection:
+                html = html + `<select class="form-control" id="${fieldId}" name="${fieldName}"${(readOnly ? " readonly": "")} required>`;
+                for (const [key, value] of Object.entries(variable['values'])) {
+                    html = html + `<option value="${key}"`;
+                    if (value !== null && key.toString() === value.toString()) {
+                        html = html + ' selected';
+                    }
+                    html = html + `>${key}: ${value}</option>`;
+                }
+                html = html + '<select/>';
+                break;
+    
+            case NamelistInputEditor.variableTypes.logical:
                 html = html + '<div class="input-group-prepend input-group-checkbox"><div class="input-group-text">'
                 html = html + `<input class="" type="checkbox" id="${fieldId}" name="${fieldName}"`;
                 if (readOnly === true) {
@@ -496,17 +650,25 @@ export class NamelistInputEditor {
                 html = html + '</div></div>';
                 break;
 
-            case 'integer':
-            case 'real':
+            case NamelistInputEditor.variableTypes.integer:
                 html = html + `<input type="number" class="form-control" id="${fieldId}" name="${fieldName}"`;
-                html = html + ` value="${value}"`;
+                html = html + ` value="${parseInt(value)}"`;
                 if (readOnly === true) {
                     html = html + ' readonly';
                 }
-                html = html + '/>';
+                html = html + ' step="1" required/>';
+                break;
+        
+            case NamelistInputEditor.variableTypes.real:
+                html = html + `<input type="number" class="form-control" id="${fieldId}" name="${fieldName}"`;
+                html = html + ` value="${value.toFixed(this.options.floatDigits)}"`;
+                if (readOnly === true) {
+                    html = html + ' readonly';
+                }
+                html = html + ' step="0.001" required/>';
                 break;
 
-            case 'character':
+            case NamelistInputEditor.variableTypes.character:
                 html = html + `<input type="text" class="form-control form-control-sm" id="${fieldId}" name="${fieldName}"`;
                 if (value !== null) {
                     html = html + ` value="${htmlEncode(value)}"`;
@@ -514,7 +676,7 @@ export class NamelistInputEditor {
                 if (readOnly === true) {
                     html = html + ' readonly';
                 }
-                html = html + '/>';
+                html = html + ' required />';
                 break;
             default:
                 throw new Error(`Unknown variable data type ${variable.type}`);
@@ -523,6 +685,7 @@ export class NamelistInputEditor {
         return html;
     }
 
+    // creates and appends a new child HTML element to parent element
     _append(parent, tagName) {
         const element = document.createElement(tagName);
         parent.append(element);

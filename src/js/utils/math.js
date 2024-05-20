@@ -13,6 +13,15 @@ export function metersToDegrees(d) {
 }
 
 export function distanceToMeters(map_proj, distance) {
+
+    if (map_proj === undefined) {
+        throw new Error("Invalid map_proj argument");
+    }
+
+    if (isNaN(distance)) {
+        throw new Error("Invalid distance argument");
+    }
+
     return map_proj === WrfProjections.latlon ? 
         degreesToMeters(distance) : 
         distance;
