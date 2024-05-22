@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>WRF Namelist.Input Editor Test</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="WRF Namelist.Input Editor Test" />
+    <meta name="keywords" content="WRF,WPS,WRF Domain Wizard, namelist.input" />
+    <meta name="author" content="Jiri Richter" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="build/lib/bootstrap.min.css" />
+    <link rel="stylesheet" href="build/lib/all.min.css" />
+    <link rel="stylesheet" href="build/css/wrf-domain-wizard.css?1716407372912" />
+
+    <link rel="icon" href="build/img/globe_32x32.png" />
+</head>
+<body>
+
+    <div class="d-flex" style="height: 100%; width: 100%;">
+        <div id ="main" class="m-auto">
+
+            <div id="page-loader" class="loader-1" style="width: 100px; height: 100px; display: none;"></div>
+
+            <div id="github-examples" class="list-group" style="display: none;">
+                <div class="list-group-item list-group-item-primary d-flex flex-row">
+                    <div>EM_REAL Examples</div>
+                    <div class="ml-auto">
+                        <a href="https://github.com/wrf-model/WRF/tree/master/test/em_real" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="open-namelist" class="d-flex m-2">
+                <button type="button" id="button-open" class="btn btn-outline-secondary m-auto"><i class="far fa-folder-open"></i><span class="ml-2">Open namelist.input</span></button>
+                <input id="file-open" type="file" style="display: none;" />
+            </div>
+        </div>
+    </div>
+
+    <div id="namelist-input-dialog" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-fullscreen" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><span>namelist.input</span><a href="https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html" target="_blank" class="ml-3 text-muted"><i class="fas fa-external-link-alt"></i></a></h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link active" id="tab-namelist-input-editor" data-toggle="tab" data-target="#pane-namelist-input-editor" type="button" role="tab" aria-controls="pane-namelist-input-editor" aria-selected="true">Editor</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link" id="tab-namelist-input-raw" data-toggle="tab" data-target="#pane-namelist-input-raw" type="button" role="tab" aria-controls="pane-namelist-input-raw" aria-selected="false">Raw</button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="pane-namelist-input-editor" role="tabpanel" aria-labelledby="tab-namelist-input-editor">
+                            <div id="namelist-input-container" class="namelist-input-editor"></div>
+                        </div>
+                        <div class="tab-pane fade" id="pane-namelist-input-raw" role="namelist-input-raw" aria-labelledby="tab-namelist-input-raw">
+                            <textarea class="form-control font-namelist resize-none" readonly></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button id="button-save" type="button" class="btn btn-primary btn-sm"><i class="far fa-save"></i><span class="ml-1">Save</span></button>
+                    <button id="button-copy" type="button" class="btn btn-secondary btn-sm"><i class="fas fa-copy"></i><span class="ml-1">Copy</span></button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="build/lib/jquery.min.js"></script>
+    <script src="build/lib/bootstrap.bundle.min.js"></script>
+    <script src="https://spin.js.org/spin.umd.js"></script>
+    <script src="build/lib/immediate.min.js"></script>
+    <script src="build/lib/proj4.js"></script>
+    <script src="build/lib/leaflet.js"></script>
+    <script src="build/lib/leaflet.spin.min.js"></script>
+    <script src="build/lib/leaflet-sidebar.min.js"></script>
+    <script src="build/lib/leaflet-providers.js"></script>
+    <script src="build/lib/Blob.js"></script>
+    <script src="build/lib/FileSaver.min.js"></script>
+    <script src="build/lib/html-to-image.js"></script>
+    <script src="build/lib/leaflet.textpath.js"></script>
+
+    <script src="build/js/wrf-domain-wizard.js"></script>
+
+    <script type="module">
+
+        var page = new WRF.NamelistInputPage({
+            jsonBaseUrl: 'build/json'
+        });
+
+        await page.loadGitHubExamplesAsync();
+    </script>
+</body>
+</html>

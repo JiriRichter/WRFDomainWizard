@@ -87,30 +87,30 @@ export class WPSNamelist {
 
         if ('share' in ns) {
             Object.assign(this.share, ns['share']);
-            WPSNamelist._convertToArray(this.geogrid, 'start_year');
-            WPSNamelist._convertToArray(this.geogrid, 'start_month');
-            WPSNamelist._convertToArray(this.geogrid, 'start_day');
-            WPSNamelist._convertToArray(this.geogrid, 'start_hour');
-            WPSNamelist._convertToArray(this.geogrid, 'end_year');
-            WPSNamelist._convertToArray(this.geogrid, 'end_month');
-            WPSNamelist._convertToArray(this.geogrid, 'end_day');
-            WPSNamelist._convertToArray(this.geogrid, 'end_hour');
-            WPSNamelist._convertToArray(this.geogrid, 'start_date');
-            WPSNamelist._convertToArray(this.geogrid, 'end_date');
-            WPSNamelist._convertToArray(this.geogrid, 'active_grid');
+            Namelist.convertToArray(this.geogrid, 'start_year');
+            Namelist.convertToArray(this.geogrid, 'start_month');
+            Namelist.convertToArray(this.geogrid, 'start_day');
+            Namelist.convertToArray(this.geogrid, 'start_hour');
+            Namelist.convertToArray(this.geogrid, 'end_year');
+            Namelist.convertToArray(this.geogrid, 'end_month');
+            Namelist.convertToArray(this.geogrid, 'end_day');
+            Namelist.convertToArray(this.geogrid, 'end_hour');
+            Namelist.convertToArray(this.geogrid, 'start_date');
+            Namelist.convertToArray(this.geogrid, 'end_date');
+            Namelist.convertToArray(this.geogrid, 'active_grid');
         }
 
         if ('geogrid' in ns) {
             Object.assign(this.geogrid, ns['geogrid']);
-            WPSNamelist._convertToArray(this.geogrid, 'parent_id');
-            WPSNamelist._convertToArray(this.geogrid, 'parent_grid_ratio');
-            WPSNamelist._convertToArray(this.geogrid, 'i_parent_start');
-            WPSNamelist._convertToArray(this.geogrid, 'J_parent_start');
-            WPSNamelist._convertToArray(this.geogrid, 's_we');
-            WPSNamelist._convertToArray(this.geogrid, 'e_we');
-            WPSNamelist._convertToArray(this.geogrid, 's_sn');
-            WPSNamelist._convertToArray(this.geogrid, 'e_sn');
-            WPSNamelist._convertToArray(this.geogrid, 'geog_data_res');
+            Namelist.convertToArray(this.geogrid, 'parent_id');
+            Namelist.convertToArray(this.geogrid, 'parent_grid_ratio');
+            Namelist.convertToArray(this.geogrid, 'i_parent_start');
+            Namelist.convertToArray(this.geogrid, 'J_parent_start');
+            Namelist.convertToArray(this.geogrid, 's_we');
+            Namelist.convertToArray(this.geogrid, 'e_we');
+            Namelist.convertToArray(this.geogrid, 's_sn');
+            Namelist.convertToArray(this.geogrid, 'e_sn');
+            Namelist.convertToArray(this.geogrid, 'geog_data_res');
         }
 
         if ('ungrib' in ns) {
@@ -119,12 +119,6 @@ export class WPSNamelist {
 
         if ('metgrid' in ns) {
             Object.assign(this.metgrid, ns['metgrid']);
-        }
-    }
-
-    static _convertToArray(section, paramName) {
-        if (section[paramName] && !Array.isArray(section[paramName])) {
-            section[paramName] = [].concat(section[paramName]);
         }
     }
 

@@ -111,9 +111,9 @@ module.exports = function(grunt) {
 
     replace: {
       github: {
-        src: ['src/index.html'],
+        src: ['src/index.html', 'src/namelist.input.test.html'],
         // index.html must be placed to root folder for GitHub Pages to work
-        dest: './index.html',             
+        dest: './',             
         replacements: [{
           from: '{{timestamp}}',
           to: '<%= timestamp %>'
@@ -128,9 +128,8 @@ module.exports = function(grunt) {
         }]
       },
       build: {
-        src: ['src/index.html'],
-        // index.html must be placed to root folder for GitHub Pages to work
-        dest: 'build/index.html',             
+        src: ['src/index.html', 'src/namelist.input.test.html'],
+        dest: 'build/',             
         replacements: [{
           from: '{{timestamp}}',
           to: '<%= timestamp %>'
@@ -144,7 +143,6 @@ module.exports = function(grunt) {
           to: '<%= analytics %>'
         }]
       }
-
     },
 
     less: {

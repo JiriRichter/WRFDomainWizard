@@ -19,10 +19,25 @@ export class NamelistInputDialog {
                 options));
 
         this.namelistInputRawTextArea = this.body.querySelector('div#pane-namelist-input-raw textarea');
+
+        this.footer.querySelector('#button-copy').addEventListener('click', (e) => {
+            navigator.clipboard.writeText(this.namelistInpurEditor.toRaw());
+        });
+
+        this.footer.querySelector('#button-save').addEventListener('click', (e) => {
+            const blob = new Blob([this.namelistInpurEditor.toRaw()], { type: "text/plain;charset=utf-8" });
+            saveAs(blob, "namelist.input", { autoBom: true });
+        });
     }
 
     async openNamelistWpsAsync(namelistWps) {
         await this.namelistInpurEditor.openNamelistWpsAsync(namelistWps);
+        $(this.modal).modal('show');
+        this._updateRaw();
+    }
+
+    async openNamelistInputAsync(data) {
+        await this.namelistInpurEditor.openNamelistInputAsync(data);
         $(this.modal).modal('show');
         this._updateRaw();
     }

@@ -62,6 +62,10 @@ export class NamelistInputEditor {
 
     // initializes editor from namelist.wps object
     async openNamelistWpsAsync(namelistWps) {
+
+        // empty elements
+        this._empty();
+
         this.namelist = this.namelist ?? {}
 
         this._setReadOnlyNamelistValue('domains', 'max_dom', namelistWps.share.max_dom);
@@ -79,13 +83,92 @@ export class NamelistInputEditor {
         this._setReadOnlyNamelistValue('domains', 'j_parent_start', namelistWps.geogrid.j_parent_start);
         this._setReadOnlyNamelistValue('domains', 'parent_grid_ratio', namelistWps.geogrid.parent_grid_ratio);
 
-        await this._initAsync();
+        // initialize variable definitions
+        await this._initVariablesAsync();
+
+        // empty elements
+        this._empty();
+
+        // initialize editor fields
+        this._initEditorFields();
     }
 
     // open namelist object
-    async openNamelistInputAsync(namelist) {
+    async openNamelistInputAsync(data) {
+
+        this.namelistErrors = [];
+
+        // empty elements
+        this._empty();
+
+        // initialize variable definitions
+        await this._initVariablesAsync();
+
+        const namelist = new Namelist(data);
+
+        if (namelist.domains === undefined) {
+            this.namelistErrors.push("domains variable group not found in namelist");
+            return;
+        }
+
+        if (namelist.domains.max_dom === undefined) {
+            this.namelistErrors.push("variable 'max_dom' not found in namelist");
+            return;
+        }
+
+        const max_dom = parseInt(namelist.domains.max_dom);
+        if (isNaN(max_dom)) {
+            this.namelistErrors.push("variable 'max_dom' is not a valid integer");
+            return;
+        }
+
+        for(const groupName of Object.keys(namelist)) {
+
+            const group = this.variables[groupName];
+
+            if (group === undefined) {
+                this.namelistErrors.push(`Unknown variable group ${groupName}`);
+                continue;
+            }
+
+            for(const variableName of Object.keys(namelist[groupName])) {
+
+                const variable = group[variableName];
+
+                if (variable === undefined) {
+                    this.namelistErrors.push(`Unknown variable ${variableName} in group ${groupName}`);
+                    continue;
+                }
+
+                switch(variable.entries) {
+                    case NamelistInputEditor.entries.maxDom:
+                        Namelist.convertToArray(namelist[groupName], variableName);
+                        while (namelist[groupName][variableName].length < max_dom) {
+                            namelist[groupName][variableName].push(namelist[groupName][variableName][0]);
+                        }
+                        break;
+    
+                    case NamelistInputEditor.entries.maxEta:
+                        Namelist.convertToArray(namelist[groupName], variableName);
+                        break;
+
+                    case NamelistInputEditor.entries.single:
+                        if (Array.isArray(namelist[groupName][variableName])) {
+                            namelist[groupName][variableName] = namelist[groupName][variableName][0];
+                        }
+                        break;
+                }
+            }
+        }
+
         this.namelist = namelist;
-        await this._initAsync();
+
+        for(let error of this.namelistErrors) {
+            console.warn(error);
+        }
+
+        // initialize editor fields
+        this._initEditorFields();
     }
 
     // return RAW text representation of namelist data
@@ -150,13 +233,9 @@ export class NamelistInputEditor {
         while(this.container.firstChild && this.container.removeChild(this.container.firstChild));
     }
 
-    // initialize editor
-    async _initAsync() {
+    // construct variable definition object
+    async _initVariablesAsync() {
 
-        // empty elements
-        this._empty();
-
-        // construct variable definition object
         if (this.variables === null) {
             this.variables = {};
 
@@ -257,13 +336,12 @@ export class NamelistInputEditor {
                     }
                 }
             }
+
+            // set default values for variables with missing or invalid default value in auto-generated JSON data
+
+            // time_step default value not set in registry
+            this._setDefaultValue("domains", "time_step", 60);
         }
-
-        // correct default values
-        this._setDefaultsValues();
-
-        // create editor fields
-        this._initEditorFields();
     }
 
     // load a JSON config file
@@ -271,12 +349,6 @@ export class NamelistInputEditor {
         const jsonUrl = `${this.options.jsonBaseUrl}/${filename}`;
         var response = await fetch(jsonUrl);
         return await response.json();
-    }
-
-    // set default values for variables with missing or invalid default value in auto-generated JSON data
-    _setDefaultsValues() {
-        // time_step default value not set in registry
-        this._setDefaultValue("domains", "time_step", 60);
     }
 
     // set variable definition default value

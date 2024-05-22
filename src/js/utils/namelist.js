@@ -40,6 +40,10 @@ export class Namelist {
 
     constructor(data) {
 
+        if (!data) {
+            throw new Error("Invalid data");
+        }
+
         var tokens = Namelist._tokenize(data), 
             current_group = null,
             current_prop = null,
@@ -489,4 +493,10 @@ export class Namelist {
 
         return content + '/\n\n';
     };   
+
+    static convertToArray(section, paramName) {
+        if (section[paramName] != undefined && !Array.isArray(section[paramName])) {
+            section[paramName] = [].concat(section[paramName]);
+        }
+    }
 }

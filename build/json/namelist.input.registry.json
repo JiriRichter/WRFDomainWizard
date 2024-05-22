@@ -5,8 +5,8 @@
             "defaultValue": 0,
             "entries": "1",
             "comments": [
-                "run_days",
-                "NUMBER OF DAYS TO RUN"
+                "NUMBER OF DAYS TO RUN",
+                "run_days"
             ],
             "io": "irh",
             "sources": [
@@ -19,8 +19,8 @@
             "defaultValue": 0,
             "entries": "1",
             "comments": [
-                "NUMBER OF HOURS TO RUN",
-                "run_hours"
+                "run_hours",
+                "NUMBER OF HOURS TO RUN"
             ],
             "io": "irh",
             "sources": [
@@ -61,8 +61,8 @@
             "defaultValue": 1993,
             "entries": "max_domains",
             "comments": [
-                "start_year",
                 "YEARS",
+                "start_year",
                 "4 DIGIT YEAR OF START OF MODEL"
             ],
             "io": "irh",
@@ -76,9 +76,9 @@
             "defaultValue": 3,
             "entries": "max_domains",
             "comments": [
-                "start_month",
                 "2 DIGIT MONTH OF THE YEAR OF START OF MODEL, 1-12",
-                "MONTHS"
+                "MONTHS",
+                "start_month"
             ],
             "io": "irh",
             "sources": [
@@ -91,8 +91,8 @@
             "defaultValue": 13,
             "entries": "max_domains",
             "comments": [
-                "2 DIGIT DAY OF THE MONTH OF START OF MODEL, 1-31",
                 "start_day",
+                "2 DIGIT DAY OF THE MONTH OF START OF MODEL, 1-31",
                 "DAYS"
             ],
             "io": "irh",
@@ -106,9 +106,9 @@
             "defaultValue": 12,
             "entries": "max_domains",
             "comments": [
-                "2 DIGIT HOUR OF THE DAY OF START OF MODEL, 0-23",
+                "start_hour",
                 "HOURS",
-                "start_hour"
+                "2 DIGIT HOUR OF THE DAY OF START OF MODEL, 0-23"
             ],
             "io": "irh",
             "sources": [
@@ -121,8 +121,8 @@
             "defaultValue": 0,
             "entries": "max_domains",
             "comments": [
-                "2 DIGIT MINUTE OF THE HOUR OF START OF MODEL, 0-59",
                 "MINUTES",
+                "2 DIGIT MINUTE OF THE HOUR OF START OF MODEL, 0-59",
                 "start_minute"
             ],
             "io": "irh",
@@ -137,8 +137,8 @@
             "entries": "max_domains",
             "comments": [
                 "2 DIGIT SECOND OF THE MINUTE OF START OF MODEL, 0-59",
-                "SECONDS",
-                "start_second"
+                "start_second",
+                "SECONDS"
             ],
             "io": "irh",
             "sources": [
@@ -151,8 +151,8 @@
             "defaultValue": 1993,
             "entries": "max_domains",
             "comments": [
-                "YEARS",
                 "end_year",
+                "YEARS",
                 "4 DIGIT YEAR OF END OF MODEL"
             ],
             "io": "irh",
@@ -167,8 +167,8 @@
             "entries": "max_domains",
             "comments": [
                 "2 DIGIT MONTH OF THE YEAR OF END OF MODEL, 1-12",
-                "MONTHS",
-                "end_month"
+                "end_month",
+                "MONTHS"
             ],
             "io": "irh",
             "sources": [
@@ -181,9 +181,9 @@
             "defaultValue": 14,
             "entries": "max_domains",
             "comments": [
-                "2 DIGIT DAY OF THE MONTH OF END OF MODEL, 1-31",
                 "end_day",
-                "DAYS"
+                "DAYS",
+                "2 DIGIT DAY OF THE MONTH OF END OF MODEL, 1-31"
             ],
             "io": "irh",
             "sources": [
@@ -196,9 +196,9 @@
             "defaultValue": 12,
             "entries": "max_domains",
             "comments": [
-                "HOURS",
                 "end_hour",
-                "2 DIGIT HOUR OF THE DAY OF END OF MODEL, 0-23"
+                "2 DIGIT HOUR OF THE DAY OF END OF MODEL, 0-23",
+                "HOURS"
             ],
             "io": "irh",
             "sources": [
@@ -226,9 +226,9 @@
             "defaultValue": 0,
             "entries": "max_domains",
             "comments": [
-                "SECONDS",
                 "end_second",
-                "2 DIGIT SECOND OF THE MINUTE OF END OF MODEL, 0-59"
+                "2 DIGIT SECOND OF THE MINUTE OF END OF MODEL, 0-59",
+                "SECONDS"
             ],
             "io": "irh",
             "sources": [
@@ -241,9 +241,9 @@
             "defaultValue": 43200,
             "entries": "1",
             "comments": [
+                "interval_seconds",
                 "SECONDS",
-                "SECONDS BETWEEN ANALYSIS AND BOUNDARY PERIODS",
-                "interval_seconds"
+                "SECONDS BETWEEN ANALYSIS AND BOUNDARY PERIODS"
             ],
             "io": "irh",
             "sources": [
@@ -273,8 +273,8 @@
             "defaultValue": 0,
             "entries": "max_domains",
             "comments": [
-                "fine_input_stream",
-                "0 THROUGH 11, WHAT INPUT STREAM IS FINE GRID IC FROM"
+                "0 THROUGH 11, WHAT INPUT STREAM IS FINE GRID IC FROM",
+                "fine_input_stream"
             ],
             "io": "irh",
             "sources": [
@@ -309,7 +309,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "JULYR": {
+        "julyr": {
             "type": "integer",
             "defaultValue": 0,
             "entries": "max_domains",
@@ -322,7 +322,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "JULDAY": {
+        "julday": {
             "type": "integer",
             "defaultValue": 1,
             "entries": "max_domains",
@@ -335,7 +335,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "GMT": {
+        "gmt": {
             "type": "real",
             "defaultValue": 0.0,
             "entries": "max_domains",
@@ -1655,8 +1655,8 @@
             "defaultValue": 1,
             "entries": "1",
             "comments": [
-                "1=interp in pressure, 2=interp in LOG pressure",
-                "interp_type"
+                "interp_type",
+                "1=interp in pressure, 2=interp in LOG pressure"
             ],
             "io": "irh",
             "sources": [
@@ -1685,9 +1685,9 @@
             "defaultValue": 1,
             "entries": "1",
             "comments": [
+                "1=linear, 2=quadratic vertical interpolation, 9=cubic spline",
                 "lagrange_order",
-                "1=linear, 2=quadratic vertical interpolation",
-                "1=linear, 2=quadratic vertical interpolation, 9=cubic spline"
+                "1=linear, 2=quadratic vertical interpolation"
             ],
             "io": "irh",
             "sources": [
@@ -1703,8 +1703,8 @@
             "defaultValue": 0,
             "entries": "1",
             "comments": [
-                "number of eta levels forced to use sfc in vert interp",
-                "force_sfc_in_vinterp"
+                "force_sfc_in_vinterp",
+                "number of eta levels forced to use sfc in vert interp"
             ],
             "io": "irh",
             "sources": [
@@ -1720,9 +1720,9 @@
             "defaultValue": 500.0,
             "entries": "1",
             "comments": [
-                "Pa",
                 "zap_close_levels",
-                "delta p where level is removed in vert interp"
+                "delta p where level is removed in vert interp",
+                "Pa"
             ],
             "io": "irh",
             "sources": [
@@ -1735,9 +1735,9 @@
             "defaultValue": 200.0,
             "entries": "max_domains",
             "comments": [
+                "dx",
                 "METERS",
-                "X HORIZONTAL RESOLUTION",
-                "dx"
+                "X HORIZONTAL RESOLUTION"
             ],
             "io": "h",
             "sources": [
@@ -1750,9 +1750,9 @@
             "defaultValue": 200.0,
             "entries": "max_domains",
             "comments": [
+                "dy",
                 "METERS",
-                "Y HORIZONTAL RESOLUTION",
-                "dy"
+                "Y HORIZONTAL RESOLUTION"
             ],
             "io": "h",
             "sources": [
@@ -1935,8 +1935,8 @@
             "defaultValue": 2,
             "entries": "max_domains",
             "comments": [
-                "stencil_half_width",
                 "GRID POINTS",
+                "stencil_half_width",
                 "HORIZONTAL INTERPOLATION STENCIL HALF-WIDTH"
             ],
             "io": "h",
@@ -2041,8 +2041,8 @@
             "defaultValue": -1,
             "entries": "1",
             "comments": [
-                "nproc_x",
-                "-1 means not set"
+                "-1 means not set",
+                "nproc_x"
             ],
             "io": "-",
             "sources": [
@@ -2055,8 +2055,8 @@
             "defaultValue": -1,
             "entries": "1",
             "comments": [
-                "nproc_y",
-                "-1 means not set"
+                "-1 means not set",
+                "nproc_y"
             ],
             "io": "-",
             "sources": [
@@ -3312,7 +3312,7 @@
                 "Variable bl_pbl_physics existing default value 0 differs current default value of -1"
             ]
         },
-        "BLDT": {
+        "bldt": {
             "type": "real",
             "defaultValue": 0.0,
             "entries": "max_domains",
@@ -3341,7 +3341,7 @@
                 "Variable cu_physics existing default value 0 differs current default value of -1"
             ]
         },
-        "CUDT": {
+        "cudt": {
             "type": "real",
             "defaultValue": 0.0,
             "entries": "max_domains",
@@ -3354,7 +3354,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "GSMDT": {
+        "gsmdt": {
             "type": "real",
             "defaultValue": 0.0,
             "entries": "max_domains",
@@ -3367,7 +3367,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "ISFFLX": {
+        "isfflx": {
             "type": "integer",
             "defaultValue": 1,
             "entries": "1",
@@ -3394,7 +3394,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "IFSNOW": {
+        "ifsnow": {
             "type": "integer",
             "defaultValue": 1,
             "entries": "1",
@@ -3407,7 +3407,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "ICLOUD": {
+        "icloud": {
             "type": "integer",
             "defaultValue": 1,
             "entries": "1",
@@ -3425,9 +3425,9 @@
             "defaultValue": 1,
             "entries": "1",
             "comments": [
+                "1=static (fractional), 2=time dependent (dominant), 3=hybrid (not yet implemented)",
                 "1=static (fractional), 2=time dependent (dominant), 3=dominant cateogry from metgrid",
-                "surface_input_source",
-                "1=static (fractional), 2=time dependent (dominant), 3=hybrid (not yet implemented)"
+                "surface_input_source"
             ],
             "io": "irh",
             "sources": [
@@ -3565,9 +3565,9 @@
             "defaultValue": 0,
             "entries": "1",
             "comments": [
-                "flag",
+                "microphysics fields set to zero  0=no action taken, 1=all fields but Qv, 2=all fields including Qv",
                 "mp_zero_out",
-                "microphysics fields set to zero  0=no action taken, 1=all fields but Qv, 2=all fields including Qv"
+                "flag"
             ],
             "io": "-",
             "sources": [
@@ -3580,9 +3580,9 @@
             "defaultValue": 1e-08,
             "entries": "1",
             "comments": [
-                "kg/kg",
                 "mp_zero_out_thresh",
-                "minimum threshold for non-Qv moist fields, below are set to zero"
+                "minimum threshold for non-Qv moist fields, below are set to zero",
+                "kg/kg"
             ],
             "io": "-",
             "sources": [
@@ -3595,9 +3595,9 @@
             "defaultValue": 100.0,
             "entries": "1",
             "comments": [
+                "seaice_threshold",
                 "K",
-                "tsk below which which water points are set to sea ice for slab scheme",
-                "seaice_threshold"
+                "tsk below which which water points are set to sea ice for slab scheme"
             ],
             "io": "h",
             "sources": [
@@ -3610,8 +3610,8 @@
             "defaultValue": 0,
             "entries": "1",
             "comments": [
-                "sst_update",
-                "update sst from wrflowinp file  0=no, 1=yes"
+                "update sst from wrflowinp file  0=no, 1=yes",
+                "sst_update"
             ],
             "io": "h",
             "sources": [
@@ -3624,8 +3624,8 @@
             "defaultValue": 0,
             "entries": "1",
             "comments": [
-                "GFDL radiation co2 flag",
-                "co2tf"
+                "co2tf",
+                "GFDL radiation co2 flag"
             ],
             "io": "-",
             "sources": [
@@ -3896,7 +3896,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "CCNTY": {
+        "ccnty": {
             "type": "integer",
             "defaultValue": 2,
             "entries": "1",
@@ -5276,7 +5276,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "numBins": {
+        "numbins": {
             "type": "integer",
             "defaultValue": 1,
             "entries": "max_domains",
@@ -5288,7 +5288,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "thBinSize": {
+        "thbinsize": {
             "type": "real",
             "defaultValue": 1.0,
             "entries": "max_domains",
@@ -5300,7 +5300,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "rBinSize": {
+        "rbinsize": {
             "type": "real",
             "defaultValue": 1.0,
             "entries": "max_domains",
@@ -5312,7 +5312,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "minDeepFreq": {
+        "mindeepfreq": {
             "type": "real",
             "defaultValue": 1.0,
             "entries": "max_domains",
@@ -5324,7 +5324,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "minShallowFreq": {
+        "minshallowfreq": {
             "type": "real",
             "defaultValue": 1.0,
             "entries": "max_domains",
@@ -5466,7 +5466,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "OMDT": {
+        "omdt": {
             "type": "real",
             "defaultValue": 1.0,
             "entries": "1",
@@ -5744,7 +5744,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "bucket_J": {
+        "bucket_j": {
             "type": "real",
             "defaultValue": -1.0,
             "entries": "1",
@@ -6043,7 +6043,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "WTDDT": {
+        "wtddt": {
             "type": "real",
             "defaultValue": 30.0,
             "entries": "max_domains",
@@ -6105,7 +6105,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "HAILDT": {
+        "haildt": {
             "type": "real",
             "defaultValue": 0.0,
             "entries": "max_domains",
@@ -7052,8 +7052,8 @@
             "defaultValue": 0.0,
             "entries": "max_domains",
             "comments": [
-                "dimensionless",
-                "tke_drag_coefficient"
+                "tke_drag_coefficient",
+                "dimensionless"
             ],
             "io": "h",
             "sources": [
@@ -7106,8 +7106,8 @@
             "defaultValue": 100000.0,
             "entries": "1",
             "comments": [
-                "Pa",
                 "base_pres",
+                "Pa",
                 "Base state pressure - do not change (10^5 Pa), real only"
             ],
             "io": "h",
@@ -7122,8 +7122,8 @@
             "entries": "1",
             "comments": [
                 "Base state sea level temperature, real only",
-                "base_temp",
-                "K"
+                "K",
+                "base_temp"
             ],
             "io": "h",
             "sources": [
@@ -7136,8 +7136,8 @@
             "defaultValue": 50.0,
             "entries": "1",
             "comments": [
-                "K",
                 "base_lapse",
+                "K",
                 "Base state temperature difference between base pres and 1/e of atm depth - do not change, real only"
             ],
             "io": "h",
@@ -8116,9 +8116,9 @@
             "defaultValue": 1,
             "entries": "1",
             "comments": [
-                "real_data_init_type",
                 "PRE-PROCESSOR TYPES",
-                "REAL DATA INITIALIZATION OPTIONS: 1=SI, 2=MM5, 3=GENERIC"
+                "REAL DATA INITIALIZATION OPTIONS: 1=SI, 2=MM5, 3=GENERIC",
+                "real_data_init_type"
             ],
             "io": "irh",
             "sources": [
@@ -8205,8 +8205,8 @@
             "defaultValue": 255,
             "entries": "1",
             "comments": [
-                "background_proc_id",
-                "Background processing id for grib2"
+                "Background processing id for grib2",
+                "background_proc_id"
             ],
             "io": "rh",
             "sources": [
@@ -8233,8 +8233,8 @@
             "defaultValue": 255,
             "entries": "1",
             "comments": [
-                "production_status",
-                "Background processing id for grib2"
+                "Background processing id for grib2",
+                "production_status"
             ],
             "io": "rh",
             "sources": [
@@ -9016,7 +9016,7 @@
         }
     },
     "fdda": {
-        "FGDT": {
+        "fgdt": {
             "type": "real",
             "defaultValue": 0.0,
             "entries": "max_domains",
@@ -9028,7 +9028,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "FGDTZERO": {
+        "fgdtzero": {
             "type": "integer",
             "defaultValue": 0,
             "entries": "max_domains",
@@ -10860,7 +10860,7 @@
                 "Registry/Registry.EM_COMMON"
             ]
         },
-        "scm_soilT_force": {
+        "scm_soilt_force": {
             "type": "logical",
             "defaultValue": false,
             "entries": "1",
@@ -11917,7 +11917,7 @@
                 "Registry/registry.stoch"
             ]
         },
-        "ISEED_SKEBS": {
+        "iseed_skebs": {
             "type": "integer",
             "defaultValue": 811,
             "entries": "1",
@@ -12486,7 +12486,7 @@
                 "Registry/registry.var_chem"
             ]
         },
-        "BIOEMDT": {
+        "bioemdt": {
             "type": "real",
             "defaultValue": 0.0,
             "entries": "max_domains",
@@ -12498,7 +12498,7 @@
                 "Registry/registry.chem"
             ]
         },
-        "PHOTDT": {
+        "photdt": {
             "type": "real",
             "defaultValue": 0.0,
             "entries": "max_domains",
@@ -12510,7 +12510,7 @@
                 "Registry/registry.chem"
             ]
         },
-        "CHEMDT": {
+        "chemdt": {
             "type": "real",
             "defaultValue": 0.0,
             "entries": "max_domains",
@@ -12667,7 +12667,7 @@
                 "Registry/registry.chem"
             ]
         },
-        "CAM_MP_MAM_cpled": {
+        "cam_mp_mam_cpled": {
             "type": "logical",
             "defaultValue": true,
             "entries": "1",
@@ -13689,7 +13689,7 @@
                 "Registry/registry.chem"
             ]
         },
-        "N_IC": {
+        "n_ic": {
             "type": "real",
             "defaultValue": 500.0,
             "entries": "max_domains",
@@ -13703,7 +13703,7 @@
                 "Registry/registry.chem"
             ]
         },
-        "N_CG": {
+        "n_cg": {
             "type": "real",
             "defaultValue": 500.0,
             "entries": "max_domains",
@@ -22055,8 +22055,8 @@
             "defaultValue": 1,
             "entries": "1",
             "comments": [
-                "jcdfi_diag",
-                "JcDFI diag. on/off"
+                "JcDFI diag. on/off",
+                "jcdfi_diag"
             ],
             "io": "-",
             "sources": [
@@ -22069,8 +22069,8 @@
             "defaultValue": 10.0,
             "entries": "1",
             "comments": [
-                "Penalty parameter for JcDF",
-                "jcdfi_penalty"
+                "jcdfi_penalty",
+                "Penalty parameter for JcDF"
             ],
             "io": "-",
             "sources": [
@@ -22233,7 +22233,7 @@
                 "Registry/registry.wrfplus"
             ]
         },
-        "check_TL": {
+        "check_tl": {
             "type": "logical",
             "defaultValue": true,
             "entries": "1",
@@ -22245,7 +22245,7 @@
                 "Registry/registry.wrfplus"
             ]
         },
-        "check_AD": {
+        "check_ad": {
             "type": "logical",
             "defaultValue": true,
             "entries": "1",

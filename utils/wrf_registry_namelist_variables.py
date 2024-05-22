@@ -116,20 +116,20 @@ for item in git_trees["tree"]:
             continue
 
         # data type
-        type = values[1]
+        type = values[1].lower()
 
         # variable name
-        name = values[2]
+        name = values[2].lower()
         print("\t{0}".format(name))
 
         # how set
         how_set = values[3].split(",")
         if len(how_set) < 2 or how_set[0] != "namelist":
             continue
-        group = how_set[1]
+        group = how_set[1].lower()
 
         # number of entries
-        entries = values[4]
+        entries = values[4].lower()
 
         # default value
         str_default_value = values[5]
