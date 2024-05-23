@@ -28,21 +28,48 @@ export class NamelistInputDialog {
             const blob = new Blob([this.namelistInpurEditor.toRaw()], { type: "text/plain;charset=utf-8" });
             saveAs(blob, "namelist.input", { autoBom: true });
         });
+
+        this.tabErrors = document.getElementById('nav-item-namelist-input-errors');
     }
 
     async openNamelistWpsAsync(namelistWps) {
+        this._resetView();
         await this.namelistInpurEditor.openNamelistWpsAsync(namelistWps);
         $(this.modal).modal('show');
         this._updateRaw();
     }
 
     async openNamelistInputAsync(data) {
-        await this.namelistInpurEditor.openNamelistInputAsync(data);
+        this._resetView();
+        var result = await this.namelistInpurEditor.openNamelistInputAsync(data);
         $(this.modal).modal('show');
         this._updateRaw();
+        if (result.hasErrors) {
+            this._showErrors(result.errors);
+        }
+    }
+
+    _resetView() {
+        this.tabErrors.style['display'] = 'none';
+        $('#tab-namelist-input-editor').tab('show');
     }
 
     _updateRaw() {
         this.namelistInputRawTextArea.value = this.namelistInpurEditor.toRaw();
+    }
+
+    _showErrors(errors) {
+        this.tabErrors.style['display'] = null;
+        this.tabErrors.querySelector('button').innerHTML = `<span class="mr-1">Errors</span><span class="badge rounded-pill bg-danger text-white">${errors.length}</span>`;
+
+        const list = document.getElementById('pane-namelist-input-errors').querySelector('ul');
+        list.innerHTML = '';
+
+        errors.forEach((error) => {
+            const li = document.createElement('li');
+            li.classList.add('list-group-item');
+            li.innerHTML = `<i class="fas fa-exclamation-circle text-danger"></i><span class="ml-1">${error}</span>`;
+            list.append(li);
+        });
     }
 }

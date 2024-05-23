@@ -12061,13 +12061,11 @@
       key: "openNamelistInputAsync",
       value: function () {
         var _openNamelistInputAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data) {
-          var namelist, max_dom, _i, _Object$keys, groupName, group, _i2, _Object$keys2, variableName, variable, _iterator, _step, error;
+          var errors, namelist, max_dom, _i, _Object$keys, groupName, group, _i2, _Object$keys2, variableName, variable, _i3, _errors, error;
           return _regeneratorRuntime().wrap(function _callee2$(_context2) {
             while (1) switch (_context2.prev = _context2.next) {
               case 0:
-                this.namelistErrors = [];
-
-                // empty elements
+                errors = []; // empty elements
                 this._empty();
 
                 // initialize variable definitions
@@ -12079,14 +12077,14 @@
                   _context2.next = 8;
                   break;
                 }
-                this.namelistErrors.push("domains variable group not found in namelist");
+                result.errors.push("domains variable group not found in namelist");
                 return _context2.abrupt("return");
               case 8:
                 if (!(namelist.domains.max_dom === undefined)) {
                   _context2.next = 11;
                   break;
                 }
-                this.namelistErrors.push("variable 'max_dom' not found in namelist");
+                result.errors.push("variable 'max_dom' not found in namelist");
                 return _context2.abrupt("return");
               case 11:
                 max_dom = parseInt(namelist.domains.max_dom);
@@ -12094,7 +12092,7 @@
                   _context2.next = 15;
                   break;
                 }
-                this.namelistErrors.push("variable 'max_dom' is not a valid integer");
+                errors.push("variable 'max_dom' is not a valid integer");
                 return _context2.abrupt("return");
               case 15:
                 _i = 0, _Object$keys = Object.keys(namelist);
@@ -12109,7 +12107,7 @@
                   _context2.next = 22;
                   break;
                 }
-                this.namelistErrors.push("Unknown variable group ".concat(groupName));
+                errors.push("Unknown variable group ".concat(groupName));
                 return _context2.abrupt("continue", 42);
               case 22:
                 _i2 = 0, _Object$keys2 = Object.keys(namelist[groupName]);
@@ -12124,7 +12122,7 @@
                   _context2.next = 29;
                   break;
                 }
-                this.namelistErrors.push("Unknown variable ".concat(variableName, " in group ").concat(groupName));
+                errors.push("Unknown variable ".concat(variableName, " in group ").concat(groupName));
                 return _context2.abrupt("continue", 39);
               case 29:
                 _context2.t0 = variable.entries;
@@ -12154,20 +12152,17 @@
                 break;
               case 45:
                 this.namelist = namelist;
-                _iterator = _createForOfIteratorHelper(this.namelistErrors);
-                try {
-                  for (_iterator.s(); !(_step = _iterator.n()).done;) {
-                    error = _step.value;
-                    console.warn(error);
-                  }
-
-                  // initialize editor fields
-                } catch (err) {
-                  _iterator.e(err);
-                } finally {
-                  _iterator.f();
+                for (_i3 = 0, _errors = errors; _i3 < _errors.length; _i3++) {
+                  error = _errors[_i3];
+                  console.warn(error);
                 }
+
+                // initialize editor fields
                 this._initEditorFields();
+                return _context2.abrupt("return", {
+                  errors: errors.length > 0 ? errors : null,
+                  hasErrors: errors.length > 0
+                });
               case 49:
               case "end":
                 return _context2.stop();
@@ -12185,12 +12180,12 @@
         var _this = this;
         var raw = '';
         var _loop = function _loop() {
-          var _Object$entries$_i = _slicedToArray(_Object$entries[_i3], 2),
+          var _Object$entries$_i = _slicedToArray(_Object$entries[_i4], 2),
             groupName = _Object$entries$_i[0],
             groupVariables = _Object$entries$_i[1];
           var variableNames = [];
-          for (var _i4 = 0, _Object$keys3 = Object.keys(groupVariables); _i4 < _Object$keys3.length; _i4++) {
-            var name = _Object$keys3[_i4];
+          for (var _i5 = 0, _Object$keys3 = Object.keys(groupVariables); _i5 < _Object$keys3.length; _i5++) {
+            var name = _Object$keys3[_i5];
             if (_this._isNamelistValueSet(groupName, name) === true) {
               variableNames.push(name);
             }
@@ -12204,7 +12199,7 @@
           var groupContent = Namelist.formatSection(groupName, variableNames, values);
           raw = raw + groupContent;
         };
-        for (var _i3 = 0, _Object$entries = Object.entries(this.variables); _i3 < _Object$entries.length; _i3++) {
+        for (var _i4 = 0, _Object$entries = Object.entries(this.variables); _i4 < _Object$entries.length; _i4++) {
           if (_loop()) continue;
         }
         return raw;
@@ -12409,8 +12404,8 @@
     }, {
       key: "_initEditorFields",
       value: function _initEditorFields() {
-        for (var _i5 = 0, _Object$entries2 = Object.entries(this.variables); _i5 < _Object$entries2.length; _i5++) {
-          var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i5], 2),
+        for (var _i6 = 0, _Object$entries2 = Object.entries(this.variables); _i6 < _Object$entries2.length; _i6++) {
+          var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i6], 2),
             groupName = _Object$entries2$_i[0],
             groupVariables = _Object$entries2$_i[1];
           if (Object.keys(groupVariables).length === 0) {
@@ -12481,8 +12476,8 @@
           variablesDiv.classList.add('show');
         }
         variablesDiv.id = groupName;
-        for (var _i6 = 0, _Object$entries3 = Object.entries(groupVariables); _i6 < _Object$entries3.length; _i6++) {
-          var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i6], 2),
+        for (var _i7 = 0, _Object$entries3 = Object.entries(groupVariables); _i7 < _Object$entries3.length; _i7++) {
+          var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i7], 2),
             variableName = _Object$entries3$_i[0],
             variable = _Object$entries3$_i[1];
           this._appendVariableField(variablesDiv, groupName, variableName, variable);
@@ -12700,8 +12695,8 @@
         switch (variable.type) {
           case NamelistInputEditor.variableTypes.selection:
             html = html + "<select class=\"form-control\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"").concat(readOnly ? " readonly" : "", " required>");
-            for (var _i7 = 0, _Object$entries4 = Object.entries(variable['values']); _i7 < _Object$entries4.length; _i7++) {
-              var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i7], 2),
+            for (var _i8 = 0, _Object$entries4 = Object.entries(variable['values']); _i8 < _Object$entries4.length; _i8++) {
+              var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i8], 2),
                 key = _Object$entries4$_i[0],
                 _value = _Object$entries4$_i[1];
               html = html + "<option value=\"".concat(key, "\"");
@@ -12809,6 +12804,7 @@
           autoBom: true
         });
       });
+      this.tabErrors = document.getElementById('nav-item-namelist-input-errors');
     }
     return _createClass(NamelistInputDialog, [{
       key: "openNamelistWpsAsync",
@@ -12817,12 +12813,13 @@
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                this._resetView();
+                _context.next = 3;
                 return this.namelistInpurEditor.openNamelistWpsAsync(namelistWps);
-              case 2:
+              case 3:
                 $(this.modal).modal('show');
                 this._updateRaw();
-              case 4:
+              case 5:
               case "end":
                 return _context.stop();
             }
@@ -12837,15 +12834,21 @@
       key: "openNamelistInputAsync",
       value: function () {
         var _openNamelistInputAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data) {
+          var result;
           return _regeneratorRuntime().wrap(function _callee2$(_context2) {
             while (1) switch (_context2.prev = _context2.next) {
               case 0:
-                _context2.next = 2;
+                this._resetView();
+                _context2.next = 3;
                 return this.namelistInpurEditor.openNamelistInputAsync(data);
-              case 2:
+              case 3:
+                result = _context2.sent;
                 $(this.modal).modal('show');
                 this._updateRaw();
-              case 4:
+                if (result.hasErrors) {
+                  this._showErrors(result.errors);
+                }
+              case 7:
               case "end":
                 return _context2.stop();
             }
@@ -12857,9 +12860,29 @@
         return openNamelistInputAsync;
       }()
     }, {
+      key: "_resetView",
+      value: function _resetView() {
+        this.tabErrors.style['display'] = 'none';
+        $('#tab-namelist-input-editor').tab('show');
+      }
+    }, {
       key: "_updateRaw",
       value: function _updateRaw() {
         this.namelistInputRawTextArea.value = this.namelistInpurEditor.toRaw();
+      }
+    }, {
+      key: "_showErrors",
+      value: function _showErrors(errors) {
+        this.tabErrors.style['display'] = null;
+        this.tabErrors.querySelector('button').innerHTML = "<span class=\"mr-1\">Errors</span><span class=\"badge rounded-pill bg-danger text-white\">".concat(errors.length, "</span>");
+        var list = document.getElementById('pane-namelist-input-errors').querySelector('ul');
+        list.innerHTML = '';
+        errors.forEach(function (error) {
+          var li = document.createElement('li');
+          li.classList.add('list-group-item');
+          li.innerHTML = "<i class=\"fas fa-exclamation-circle text-danger\"></i><span class=\"ml-1\">".concat(error, "</span>");
+          list.append(li);
+        });
       }
     }]);
   }();
@@ -13656,13 +13679,21 @@
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
-                  _context.next = 2;
+                  _context.prev = 0;
+                  _context.next = 3;
                   return _this.dialog.openNamelistInputAsync(e.target.result);
-                case 2:
+                case 3:
+                  _context.next = 8;
+                  break;
+                case 5:
+                  _context.prev = 5;
+                  _context.t0 = _context["catch"](0);
+                  errorMessageBox("Error", "Error opening namelist.input file '".concat(e.target.files[0], "'."));
+                case 8:
                 case "end":
                   return _context.stop();
               }
-            }, _callee);
+            }, _callee, null, [[0, 5]]);
           }));
           return function (_x) {
             return _ref.apply(this, arguments);
@@ -13748,13 +13779,22 @@
                           content = blob['content'];
                           button.dataset['content'] = content;
                         case 12:
-                          _context2.next = 14;
+                          _context2.prev = 12;
+                          _context2.next = 15;
                           return _this2.dialog.openNamelistInputAsync(atob(content));
-                        case 14:
+                        case 15:
+                          _context2.next = 21;
+                          break;
+                        case 17:
+                          _context2.prev = 17;
+                          _context2.t0 = _context2["catch"](12);
+                          console.error(_context2.t0);
+                          errorMessageBox("Error", "Error opening example namelist.input file '".concat(button.dataset['path'], "'."));
+                        case 21:
                         case "end":
                           return _context2.stop();
                       }
-                    }, _callee2);
+                    }, _callee2, null, [[12, 17]]);
                   }));
                   return function (_x2) {
                     return _ref2.apply(this, arguments);

@@ -96,7 +96,7 @@ export class NamelistInputEditor {
     // open namelist object
     async openNamelistInputAsync(data) {
 
-        this.namelistErrors = [];
+        const errors = [];
 
         // empty elements
         this._empty();
@@ -107,18 +107,18 @@ export class NamelistInputEditor {
         const namelist = new Namelist(data);
 
         if (namelist.domains === undefined) {
-            this.namelistErrors.push("domains variable group not found in namelist");
+            result.errors.push("domains variable group not found in namelist");
             return;
         }
 
         if (namelist.domains.max_dom === undefined) {
-            this.namelistErrors.push("variable 'max_dom' not found in namelist");
+            result.errors.push("variable 'max_dom' not found in namelist");
             return;
         }
 
         const max_dom = parseInt(namelist.domains.max_dom);
         if (isNaN(max_dom)) {
-            this.namelistErrors.push("variable 'max_dom' is not a valid integer");
+            errors.push("variable 'max_dom' is not a valid integer");
             return;
         }
 
@@ -127,7 +127,7 @@ export class NamelistInputEditor {
             const group = this.variables[groupName];
 
             if (group === undefined) {
-                this.namelistErrors.push(`Unknown variable group ${groupName}`);
+                errors.push(`Unknown variable group ${groupName}`);
                 continue;
             }
 
@@ -136,7 +136,7 @@ export class NamelistInputEditor {
                 const variable = group[variableName];
 
                 if (variable === undefined) {
-                    this.namelistErrors.push(`Unknown variable ${variableName} in group ${groupName}`);
+                    errors.push(`Unknown variable ${variableName} in group ${groupName}`);
                     continue;
                 }
 
@@ -163,12 +163,17 @@ export class NamelistInputEditor {
 
         this.namelist = namelist;
 
-        for(let error of this.namelistErrors) {
+        for(let error of errors) {
             console.warn(error);
         }
 
         // initialize editor fields
         this._initEditorFields();
+
+        return {
+            errors: (errors.length > 0 ? errors : null),
+            hasErrors: errors.length > 0
+        };
     }
 
     // return RAW text representation of namelist data

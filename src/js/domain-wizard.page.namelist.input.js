@@ -1,4 +1,5 @@
 import { NamelistInputDialog } from "./domain-wizard.dialog.namelist.input";
+import { errorMessageBox } from "./domain-wizard.dialog.message-box"
 
 export class NamelistInputPage {
 
@@ -22,7 +23,13 @@ export class NamelistInputPage {
             const reader = new FileReader();
 
             reader.onload = async (e) => {
-                await this.dialog.openNamelistInputAsync(e.target.result);
+                try
+                {
+                    await this.dialog.openNamelistInputAsync(e.target.result);
+                }
+                catch(error) {
+                    errorMessageBox("Error", `Error opening namelist.input file '${e.target.files[0]}'.`)
+                }
             };
 
             reader.readAsText(e.target.files[0]);
@@ -80,7 +87,16 @@ export class NamelistInputPage {
                     content = blob['content'];
                     button.dataset['content'] = content;
                 }
-                await this.dialog.openNamelistInputAsync(atob(content));
+
+                try
+                {
+                    await this.dialog.openNamelistInputAsync(atob(content));
+                }
+                catch(error) {
+                    console.error(error);
+                    errorMessageBox("Error", `Error opening example namelist.input file '${button.dataset['path']}'.`);
+                }
+                
             });
         }        
 

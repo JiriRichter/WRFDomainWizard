@@ -9,6 +9,8 @@ module.exports = function(grunt) {
     targetFolder: "build",
 
     analytics: grunt.file.exists(analyticsFile) ? grunt.file.read(analyticsFile) : '',
+    dialogMessageBox: () => grunt.file.read('src/dialog.message-box.html'),
+    dialogNamelistInput: () => grunt.file.read('src/dialog.namelist-input.html'),
 
     clean: [
       '<%= targetFolder %>'
@@ -125,6 +127,14 @@ module.exports = function(grunt) {
         {
           from: '{{analytics}}',
           to: '<%= analytics %>'
+        },
+        {
+          from: '{{dialog.message-box}}',
+          to: '<%= dialogMessageBox() %>'
+        },
+        {
+          from: '{{dialog.namelist-input}}',
+          to: '<%= dialogNamelistInput() %>'
         }]
       },
       build: {
@@ -141,6 +151,14 @@ module.exports = function(grunt) {
         {
           from: '{{analytics}}',
           to: '<%= analytics %>'
+        },
+        {
+          from: '{{dialog.message-box}}',
+          to: '<%= dialogMessageBox() %>'
+        },
+        {
+          from: '{{dialog.namelist-input}}',
+          to: '<%= dialogNamelistInput() %>'
         }]
       }
     },

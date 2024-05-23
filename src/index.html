@@ -287,24 +287,7 @@
         </div>
     </div>
 
-    <div id="message-box-dialog" class="modal fade" role="dialog">
-        <div class="modal-dialog  modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p id="message-box-text"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{dialog.message-box}}
 
     <div id="geog-data-res-dialog" class="modal fade" role="dialog">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -376,42 +359,7 @@
         </div>
     </div>
 
-    <div id="namelist-input-dialog" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-fullscreen" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"><span>namelist.input</span><a href="https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html" target="_blank" class="ml-3 text-muted"><i class="fas fa-external-link-alt"></i></a></h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link active" id="tab-namelist-input-editor" data-toggle="tab" data-target="#pane-namelist-input-editor" type="button" role="tab" aria-controls="pane-namelist-input-editor" aria-selected="true">Editor</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                          <button class="nav-link" id="tab-namelist-input-raw" data-toggle="tab" data-target="#pane-namelist-input-raw" type="button" role="tab" aria-controls="pane-namelist-input-raw" aria-selected="false">Raw</button>
-                        </li>
-                    </ul>
-                    
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="pane-namelist-input-editor" role="tabpanel" aria-labelledby="tab-namelist-input-editor">
-                            <div id="namelist-input-container" class="namelist-input-editor"></div>
-                        </div>
-                        <div class="tab-pane fade" id="pane-namelist-input-raw" role="namelist-input-raw" aria-labelledby="tab-namelist-input-raw">
-                            <textarea class="form-control font-namelist resize-none" readonly></textarea>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button id="button-save" type="button" class="btn btn-primary btn-sm"><i class="far fa-save"></i><span class="ml-1">Save</span></button>
-                    <button id="button-copy" type="button" class="btn btn-secondary btn-sm"><i class="fas fa-copy"></i><span class="ml-1">Copy</span></button>
-                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{dialog.namelist-input}}
 
     <script src="{{baseUrl}}/lib/jquery.min.js"></script>
     <script src="{{baseUrl}}/lib/bootstrap.bundle.min.js"></script>
