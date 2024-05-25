@@ -63,6 +63,7 @@ export class NamelistInputPage {
 
             button.type = "button";
             button.dataset['path'] = item['path'];
+            button.dataset['file'] = item['path'].substring(item['path'].lastIndexOf('/') + 1).toLowerCase();
             button.dataset['url'] = item['url'];
             button.innerText = item['path'];
             
@@ -102,5 +103,12 @@ export class NamelistInputPage {
 
         this.githubExampleList.style['display'] = 'block';
         this.loader.style['display'] = 'none';
+
+        const file = location.hash?.toLowerCase();
+        if (file && file.startsWith("#namelist.")) {
+
+            const button = this.githubExampleList.querySelector(`button[data-file="${file.substring(1)}"]`);
+            button?.click();
+        }
     }
 }

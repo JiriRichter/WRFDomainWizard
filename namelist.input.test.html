@@ -11,7 +11,7 @@
 
     <link rel="stylesheet" href="build/lib/bootstrap.min.css" />
     <link rel="stylesheet" href="build/lib/all.min.css" />
-    <link rel="stylesheet" href="build/css/wrf-domain-wizard.css?1716489047123" />
+    <link rel="stylesheet" href="build/css/wrf-domain-wizard.css?1716649170674" />
 
     <link rel="icon" href="build/img/globe_32x32.png" />
 </head>
@@ -72,18 +72,21 @@
                       <button class="nav-link active" id="tab-namelist-input-editor" data-toggle="tab" data-target="#pane-namelist-input-editor" type="button" role="tab" aria-controls="pane-namelist-input-editor" aria-selected="true">Editor</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="tab-namelist-input-raw" data-toggle="tab" data-target="#pane-namelist-input-raw" type="button" role="tab" aria-controls="pane-namelist-input-raw" aria-selected="false">Raw</button>
+                        <button class="nav-link" id="tab-namelist-input-text" data-toggle="tab" data-target="#pane-namelist-input-text" type="button" role="tab" aria-controls="pane-namelist-input-text" aria-selected="false">Text</button>
                       </li>
-                    <li class="nav-item" role="presentation" id="nav-item-namelist-input-errors" style="display: none;">
+                    <li class="nav-item" role="presentation" style="display: none;">
                       <button class="nav-link" id="tab-namelist-input-errors" data-toggle="tab" data-target="#pane-namelist-input-errors" type="button" role="tab" aria-controls="pane-namelist-input-errors" aria-selected="false">Errors</button>
                     </li>
+                    <li class="nav-item" role="presentation" style="display: none;">
+                        <button class="nav-link" id="tab-namelist-input-original" data-toggle="tab" data-target="#pane-namelist-input-original" type="button" role="tab" aria-controls="pane-namelist-input-original" aria-selected="false">Original</button>
+                      </li>
                   </ul>
                 
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="pane-namelist-input-editor" role="tabpanel" aria-labelledby="tab-namelist-input-editor">
                         <div id="namelist-input-container" class="namelist-input-editor"></div>
                     </div>
-                    <div class="tab-pane fade" id="pane-namelist-input-raw" role="namelist-input-raw" aria-labelledby="tab-namelist-input-raw">
+                    <div class="tab-pane fade" id="pane-namelist-input-text" role="namelist-input-text" aria-labelledby="tab-namelist-input-text">
                         <textarea class="form-control font-namelist resize-none" readonly></textarea>
                     </div>
                     <div class="tab-pane fade" id="pane-namelist-input-errors" role="namelist-input-errors" aria-labelledby="tab-namelist-input-errors">
@@ -94,10 +97,34 @@
                             </li>
                           </ul>
                     </div>
+                    <div class="tab-pane fade" id="pane-namelist-input-original" role="namelist-input-original" aria-labelledby="tab-namelist-input-original">
+                        <textarea class="form-control font-namelist resize-none" readonly></textarea>
+                    </div>
                 </div>
 
             </div>
             <div class="modal-footer">
+
+                <div class="dropdown">
+                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdown-view" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      View
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdown-view">
+                        <h6 class="dropdown-header">Groups</h6>
+                        <a id="view-group-collapse-all" class="dropdown-item" href="#">Collapse All</a>
+                        <a id="view-group-expand-all" class="dropdown-item" href="#">Expand All</a>
+                        <a id="view-group-show-all" class="dropdown-item" href="#">Show All</a>
+                        <a id="view-group-hide-unset" class="dropdown-item" href="#">Hide Unset</a>
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Variables</h6>
+                        <a id="view-variables-show-all" class="dropdown-item" href="#">Show All</a>
+                        <a id="view-variables-hide-undet" class="dropdown-item" href="#">Hide Unset</a>
+                        <div class="dropdown-divider"></div>
+                        <a id="view-show-all" class="dropdown-item" href="#">Show All</a>
+                        <a id="view-compact" class="dropdown-item" href="#">Compact View</a>
+                    </div>
+                </div>
+
                 <button id="button-save" type="button" class="btn btn-primary btn-sm"><i class="far fa-save"></i><span class="ml-1">Save</span></button>
                 <button id="button-copy" type="button" class="btn btn-secondary btn-sm"><i class="fas fa-copy"></i><span class="ml-1">Copy</span></button>
                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>

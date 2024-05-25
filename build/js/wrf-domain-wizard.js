@@ -11989,15 +11989,20 @@
       // read-only variable flags
       this.readOnly = {};
 
+      // variable group user guide links
+      this.userGuideLinks = {};
+
       // namelist object
       this.namelist = null;
 
-      // initialize variable group collapse state
-      var value = localStorage.getItem("".concat(NamelistInputEditor._localStorageKey, "_collapse"));
+      // initialize editor view state
+      var value = localStorage.getItem("".concat(NamelistInputEditor._localStorageKey, "_view"));
       if (value) {
-        this.collapse = JSON.parse(value);
+        this.view = JSON.parse(value);
       } else {
-        this.collapse = {};
+        this.view = {
+          groups: {}
+        };
       }
     }
 
@@ -12173,12 +12178,12 @@
           return _openNamelistInputAsync.apply(this, arguments);
         }
         return openNamelistInputAsync;
-      }() // return RAW text representation of namelist data
+      }() // return raw text representation of namelist data
     }, {
-      key: "toRaw",
-      value: function toRaw() {
+      key: "toText",
+      value: function toText() {
         var _this = this;
-        var raw = '';
+        var text = '';
         var _loop = function _loop() {
           var _Object$entries$_i = _slicedToArray(_Object$entries[_i4], 2),
             groupName = _Object$entries$_i[0],
@@ -12197,12 +12202,51 @@
             return _this.namelist[groupName][name];
           });
           var groupContent = Namelist.formatSection(groupName, variableNames, values);
-          raw = raw + groupContent;
+          text = text + groupContent;
         };
         for (var _i4 = 0, _Object$entries = Object.entries(this.variables); _i4 < _Object$entries.length; _i4++) {
           if (_loop()) continue;
         }
-        return raw;
+        return text;
+      }
+    }, {
+      key: "collapseGroups",
+      value: function collapseGroups() {
+        this._toggleGroups(NamelistInputEditor.collpaseCommands.hide);
+      }
+    }, {
+      key: "expandGroups",
+      value: function expandGroups(command) {
+        this._toggleGroups(NamelistInputEditor.collpaseCommands.show);
+      }
+    }, {
+      key: "hideUnsetVariables",
+      value: function hideUnsetVariables() {}
+    }, {
+      key: "showUnsetVariables",
+      value: function showUnsetVariables() {}
+    }, {
+      key: "_toggleGroups",
+      value: function _toggleGroups(command) {
+        this.container.querySelectorAll('div.namelist-input-variables.collapse').forEach(function (element) {
+          $(element).collapse(command);
+          var groupHeader = element.previousSibling;
+          var icon = groupHeader.querySelector('button[data-toggle="collapse"] i');
+          switch (command) {
+            case NamelistInputEditor.collpaseCommands.hide:
+              icon.classList.remove(NamelistInputEditor.iconClass.open);
+              icon.classList.add(NamelistInputEditor.iconClass.collapsed);
+              break;
+            case NamelistInputEditor.collpaseCommands.show:
+              icon.classList.remove(NamelistInputEditor.iconClass.collapsed);
+              icon.classList.add(NamelistInputEditor.iconClass.open);
+              break;
+          }
+        });
+        for (var group in this.view.groups) {
+          this.view.groups[group].collapse = command === NamelistInputEditor.collpaseCommands.hide;
+        }
+        this._storeView();
       }
 
       // check whether variable namelist object value is set
@@ -12250,12 +12294,12 @@
       key: "_initVariablesAsync",
       value: function () {
         var _initVariablesAsync2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-          var selectValues, userGuide, registry, group, variable, description, hasUserGuideEntry, defaultValue, entries;
+          var selectValues, userGuide, registry, group, variable, description, hasUserGuideEntry, defaultValue, entries, groupName;
           return _regeneratorRuntime().wrap(function _callee3$(_context3) {
             while (1) switch (_context3.prev = _context3.next) {
               case 0:
                 if (!(this.variables === null)) {
-                  _context3.next = 54;
+                  _context3.next = 55;
                   break;
                 }
                 this.variables = {};
@@ -12355,7 +12399,10 @@
 
                 // time_step default value not set in registry
                 this._setDefaultValue("domains", "time_step", 60);
-              case 54:
+                for (groupName in userGuide) {
+                  this.userGuideLinks[groupName] = "https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html#".concat(groupName.replace("_", "-"));
+                }
+              case 55:
               case "end":
                 return _context3.stop();
             }
@@ -12414,7 +12461,7 @@
           this._initGroupVariables(groupName, groupVariables);
         }
         $(this.container).find('*[title]').tooltip();
-        this._storeCollapseState();
+        this._storeView();
       }
 
       // collapse icons
@@ -12423,22 +12470,48 @@
       value:
       // create group variables 
       function _initGroupVariables(groupName, groupVariables) {
-        var _this2 = this,
+        var _this$view$groups,
+          _this$view$groups$gro,
+          _this$view$groups$gro2,
+          _this$view$groups$gro3,
+          _this2 = this,
           _this$namelist$groupN;
         var groupDiv = this._append(this.container, 'div');
         groupDiv.classList.add('namelist-input-group');
         groupDiv.dataset['group'] = groupName;
-        if (this.collapse[groupName] === undefined) {
-          this.collapse[groupName] = true;
-        }
-        var iconClass = this.collapse[groupName] === true ? NamelistInputEditor.iconClass.collapsed : NamelistInputEditor.iconClass.open;
+
+        // initialize group view
+        this.view.groups = (_this$view$groups = this.view.groups) !== null && _this$view$groups !== void 0 ? _this$view$groups : {};
+        this.view.groups[groupName] = (_this$view$groups$gro = this.view.groups[groupName]) !== null && _this$view$groups$gro !== void 0 ? _this$view$groups$gro : {};
+        this.view.groups[groupName].collapse = (_this$view$groups$gro2 = this.view.groups[groupName].collapse) !== null && _this$view$groups$gro2 !== void 0 ? _this$view$groups$gro2 : true;
+        this.view.groups[groupName].hideUnset = (_this$view$groups$gro3 = this.view.groups[groupName].hideUnset) !== null && _this$view$groups$gro3 !== void 0 ? _this$view$groups$gro3 : false;
+        var iconClass = this.view.groups[groupName].collapse === true ? NamelistInputEditor.iconClass.collapsed : NamelistInputEditor.iconClass.open;
         var headerDiv = this._append(groupDiv, 'div');
         headerDiv.classList.add('namelist-input-group-header');
         var headerDivHtml = '';
+
+        // collapse toggle
         headerDivHtml = headerDivHtml + "<button class=\"btn btn-sm\" type=\"button\" data-toggle=\"collapse\" data-target=\"#".concat(groupName, "\" aria-expanded=\"false\" aria-controls=\"").concat(groupName, "\"><i class=\"fas ").concat(iconClass, "\"></i></button>");
+
+        // group title
         headerDivHtml = headerDivHtml + "<h5>".concat(htmlEncode(groupName), "</h5>");
-        headerDivHtml = headerDivHtml + "<a href=\"https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html#".concat(htmlEncode(groupName.replace("_", "-")), "\" target=\"_blank\" class=\"ml-3 text-muted\"><i class=\"fas fa-external-link-alt\"></i></a>");
-        headerDivHtml = headerDivHtml + '</h5>';
+
+        // users guide link
+        if (groupName in this.userGuideLinks) {
+          headerDivHtml = headerDivHtml + "<a href=\"".concat(htmlEncode(this.userGuideLinks[groupName]), "\" target=\"_blank\" class=\"ml-3 text-muted\"><i class=\"fas fa-external-link-alt\"></i></a>");
+        }
+
+        // hide unset switch
+        headerDivHtml = headerDivHtml + '<div class="namelist-input-group-header-switch">';
+        headerDivHtml = headerDivHtml + '<label class="switch ml-2">';
+        headerDivHtml = headerDivHtml + "<input type=\"checkbox\" id=\"switch-hide-unset-".concat(htmlEncode(groupName), "\"");
+        if (this.view.groups[groupName].hideUnset === true) {
+          headerDivHtml = headerDivHtml + ' checked';
+        }
+        headerDivHtml = headerDivHtml + '><span class="slider round"></span>';
+        headerDivHtml = headerDivHtml + '</label>';
+        headerDivHtml = headerDivHtml + '<span>Hide Unset</span>';
+        headerDivHtml = headerDivHtml + '</div>';
         headerDiv.innerHTML = headerDivHtml;
         headerDiv.querySelector('button[data-toggle="collapse"]').addEventListener('click', function (e) {
           var icon = e.currentTarget.querySelector('i');
@@ -12446,13 +12519,21 @@
           if (icon.classList.contains(NamelistInputEditor.iconClass.open)) {
             icon.classList.remove(NamelistInputEditor.iconClass.open);
             icon.classList.add(NamelistInputEditor.iconClass.collapsed);
-            _this2.collapse[groupName] = true;
+            _this2.view.groups[groupName].collapse = true;
           } else {
             icon.classList.remove(NamelistInputEditor.iconClass.collapsed);
             icon.classList.add(NamelistInputEditor.iconClass.open);
-            _this2.collapse[groupName] = false;
+            _this2.view.groups[groupName].collapse = false;
           }
-          _this2._storeCollapseState();
+          _this2._storeView();
+        });
+        headerDiv.querySelector("input#switch-hide-unset-".concat(groupName)).addEventListener('change', function (e) {
+          var variablesDiv = e.currentTarget.closest('.namelist-input-group').querySelector('div.namelist-input-variables');
+          if (e.currentTarget.checked === true) {
+            variablesDiv.classList.add('namelist-input-hide-unset');
+          } else {
+            variablesDiv.classList.remove('namelist-input-hide-unset');
+          }
         });
         this.namelist[groupName] = (_this$namelist$groupN = this.namelist[groupName]) !== null && _this$namelist$groupN !== void 0 ? _this$namelist$groupN : {};
         this._appendGroupVariableFields(groupDiv, groupName, groupVariables);
@@ -12460,9 +12541,9 @@
 
       // capture variable group collapse state
     }, {
-      key: "_storeCollapseState",
-      value: function _storeCollapseState() {
-        localStorage.setItem("".concat(NamelistInputEditor._localStorageKey, "_collapse"), JSON.stringify(this.collapse));
+      key: "_storeView",
+      value: function _storeView() {
+        localStorage.setItem("".concat(NamelistInputEditor._localStorageKey, "_view"), JSON.stringify(this.view));
       }
 
       // create and append group variables
@@ -12472,8 +12553,11 @@
         var variablesDiv = this._append(groupDiv, 'div');
         variablesDiv.classList.add('namelist-input-variables');
         variablesDiv.classList.add('collapse');
-        if (this.collapse[groupName] === false) {
+        if (this.view.groups[groupName].collapse === false) {
           variablesDiv.classList.add('show');
+        }
+        if (this.view.groups[groupName].hideUnset) {
+          variablesDiv.classList.add('namelist-input-hide-unset');
         }
         variablesDiv.id = groupName;
         for (var _i7 = 0, _Object$entries3 = Object.entries(groupVariables); _i7 < _Object$entries3.length; _i7++) {
@@ -12774,6 +12858,10 @@
     selection: "selection"
   });
   _defineProperty(NamelistInputEditor, "_localStorageKey", '_wrf_domain_wizard_namelist_input');
+  _defineProperty(NamelistInputEditor, "collpaseCommands", {
+    hide: 'hide',
+    show: 'show'
+  });
   _defineProperty(NamelistInputEditor, "iconClass", {
     collapsed: 'fa-chevron-right',
     open: 'fa-chevron-down'
@@ -12787,24 +12875,34 @@
       this.header = this.modal.querySelector('div.modal-header');
       this.body = this.modal.querySelector('div.modal-body');
       this.footer = this.modal.querySelector('div.modal-footer');
-      this.namelistInpurEditor = new NamelistInputEditor(this.body.querySelector('div#namelist-input-container'), Object.assign({
+      this.editor = new NamelistInputEditor(this.body.querySelector('div#namelist-input-container'), Object.assign({
         change: function change(e) {
-          _this._updateRaw();
+          _this._updateText();
         }
       }, options));
-      this.namelistInputRawTextArea = this.body.querySelector('div#pane-namelist-input-raw textarea');
+      this.text = this.body.querySelector('div#pane-namelist-input-text textarea');
+      this.original = this.body.querySelector('div#pane-namelist-input-original textarea');
       this.footer.querySelector('#button-copy').addEventListener('click', function (e) {
-        navigator.clipboard.writeText(_this.namelistInpurEditor.toRaw());
+        navigator.clipboard.writeText(_this.editor.toText());
       });
       this.footer.querySelector('#button-save').addEventListener('click', function (e) {
-        var blob = new Blob([_this.namelistInpurEditor.toRaw()], {
+        var blob = new Blob([_this.editor.toText()], {
           type: "text/plain;charset=utf-8"
         });
         saveAs(blob, "namelist.input", {
           autoBom: true
         });
       });
-      this.tabErrors = document.getElementById('nav-item-namelist-input-errors');
+      this.tabErrors = document.getElementById('tab-namelist-input-errors').parentNode;
+      this.tabOriginal = document.getElementById('tab-namelist-input-original').parentNode;
+
+      // view commands
+      this.footer.querySelector('#view-group-collapse-all').addEventListener('click', function (e) {
+        _this.editor.collapseGroups();
+      });
+      this.footer.querySelector('#view-group-expand-all').addEventListener('click', function (e) {
+        _this.editor.expandGroups();
+      });
     }
     return _createClass(NamelistInputDialog, [{
       key: "openNamelistWpsAsync",
@@ -12815,10 +12913,10 @@
               case 0:
                 this._resetView();
                 _context.next = 3;
-                return this.namelistInpurEditor.openNamelistWpsAsync(namelistWps);
+                return this.editor.openNamelistWpsAsync(namelistWps);
               case 3:
                 $(this.modal).modal('show');
-                this._updateRaw();
+                this._updateText();
               case 5:
               case "end":
                 return _context.stop();
@@ -12839,16 +12937,18 @@
             while (1) switch (_context2.prev = _context2.next) {
               case 0:
                 this._resetView();
-                _context2.next = 3;
-                return this.namelistInpurEditor.openNamelistInputAsync(data);
-              case 3:
+                this.original.value = data;
+                this.tabOriginal.style['display'] = null;
+                _context2.next = 5;
+                return this.editor.openNamelistInputAsync(data);
+              case 5:
                 result = _context2.sent;
                 $(this.modal).modal('show');
-                this._updateRaw();
+                this._updateText();
                 if (result.hasErrors) {
                   this._showErrors(result.errors);
                 }
-              case 7:
+              case 9:
               case "end":
                 return _context2.stop();
             }
@@ -12863,12 +12963,13 @@
       key: "_resetView",
       value: function _resetView() {
         this.tabErrors.style['display'] = 'none';
+        this.tabOriginal.style['display'] = 'none';
         $('#tab-namelist-input-editor').tab('show');
       }
     }, {
-      key: "_updateRaw",
-      value: function _updateRaw() {
-        this.namelistInputRawTextArea.value = this.namelistInpurEditor.toRaw();
+      key: "_updateText",
+      value: function _updateText() {
+        this.text.value = this.editor.toText();
       }
     }, {
       key: "_showErrors",
@@ -13707,8 +13808,9 @@
       key: "loadGitHubExamplesAsync",
       value: function () {
         var _loadGitHubExamplesAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-          var _this2 = this;
-          var url, response, gitTree, row, _iterator, _step, item, button;
+          var _location$hash,
+            _this2 = this;
+          var url, response, gitTree, row, _iterator, _step, item, button, file, _button;
           return _regeneratorRuntime().wrap(function _callee3$(_context3) {
             while (1) switch (_context3.prev = _context3.next) {
               case 0:
@@ -13732,7 +13834,7 @@
                 _iterator.s();
               case 14:
                 if ((_step = _iterator.n()).done) {
-                  _context3.next = 31;
+                  _context3.next = 32;
                   break;
                 }
                 item = _step.value;
@@ -13740,12 +13842,13 @@
                   _context3.next = 18;
                   break;
                 }
-                return _context3.abrupt("continue", 29);
+                return _context3.abrupt("continue", 30);
               case 18:
                 button = document.createElement('button');
                 this.githubExampleList.append(button);
                 button.type = "button";
                 button.dataset['path'] = item['path'];
+                button.dataset['file'] = item['path'].substring(item['path'].lastIndexOf('/') + 1).toLowerCase();
                 button.dataset['url'] = item['url'];
                 button.innerText = item['path'];
                 button.classList.add("list-group-item");
@@ -13800,28 +13903,33 @@
                     return _ref2.apply(this, arguments);
                   };
                 }());
-              case 29:
+              case 30:
                 _context3.next = 14;
                 break;
-              case 31:
-                _context3.next = 36;
+              case 32:
+                _context3.next = 37;
                 break;
-              case 33:
-                _context3.prev = 33;
+              case 34:
+                _context3.prev = 34;
                 _context3.t0 = _context3["catch"](12);
                 _iterator.e(_context3.t0);
-              case 36:
-                _context3.prev = 36;
+              case 37:
+                _context3.prev = 37;
                 _iterator.f();
-                return _context3.finish(36);
-              case 39:
+                return _context3.finish(37);
+              case 40:
                 this.githubExampleList.style['display'] = 'block';
                 this.loader.style['display'] = 'none';
-              case 41:
+                file = (_location$hash = location.hash) === null || _location$hash === void 0 ? void 0 : _location$hash.toLowerCase();
+                if (file && file.startsWith("#namelist.")) {
+                  _button = this.githubExampleList.querySelector("button[data-file=\"".concat(file.substring(1), "\"]"));
+                  _button === null || _button === void 0 || _button.click();
+                }
+              case 44:
               case "end":
                 return _context3.stop();
             }
-          }, _callee3, this, [[12, 33, 36, 39]]);
+          }, _callee3, this, [[12, 34, 37, 40]]);
         }));
         function loadGitHubExamplesAsync() {
           return _loadGitHubExamplesAsync.apply(this, arguments);

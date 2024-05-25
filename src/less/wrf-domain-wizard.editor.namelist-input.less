@@ -8,13 +8,13 @@ div.namelist-input-editor {
             align-items: center;
             margin-top: 3px;
             margin-bottom: 3px;
+            align-items: center;
 
             h5 {
                 margin-top: 0;
                 margin-bottom: 0;
                 margin-left: 5px;
                 margin-right: 0;
-                flex-grow: 1;
             }
 
             button {
@@ -26,60 +26,75 @@ div.namelist-input-editor {
             button:hover {
                 border-color: #e1e1e1;
             }
+
+            div.namelist-input-group-header-switch {
+
+                display: flex;
+                align-items: center;
+                margin-left: 4px;
+                margin-right: 4px;
+
+                & > span {
+                    font-size: small;
+                    margin-left: 2px;
+                    margin-right: 2px;
+                }
+
+            }
         }
 
         div.namelist-input-variables {
 
-            div.namelist-input-variable:hover {
-                background-color: aliceblue;
-
-                div.input-group {
-                    div.input-group-prepend {
-                        .input-group-text {
-                            font-weight: bold;
-                        }
-                    }
-
-                    input.form-control, select.form-control {
-                        font-weight: bold;
-                    }
-
-                    div.namelist-input-variable-description {
-                        font-weight: bold;
-                        color: #495057;
-                    }
-                }
-            }
-
-            div.namelist-input-variable.namelist-input-variable-unset {
-
-                div.input-group {
-                    div.input-group-prepend {
-
-                        button.btn.btn-namelist-input-erase {
-                            visibility: hidden;
-                        }
-
-                        .input-group-text {
-                            font-style:italic;
-                            color: #8794a1;
-                            background-color: #eff2f5;
-                        }
-                    }
-
-                    input.form-control, select.form-control {
-                        font-style:italic;
-                        color: #8794a1;
-                    }
-
-                    div.namelist-input-variable-description {
-                        color: #8794a1;
-                    }                    
-                }
-            }
-
             div.namelist-input-variable {
                 width: 100%;
+
+                &:hover {
+                    background-color: aliceblue;
+    
+                    div.input-group {
+                        div.input-group-prepend {
+                            .input-group-text {
+                                font-weight: bold;
+                            }
+                        }
+    
+                        input.form-control, select.form-control {
+                            font-weight: bold;
+                        }
+    
+                        div.namelist-input-variable-description {
+                            font-weight: bold;
+                            color: #495057;
+                        }
+                    }
+                }
+
+                &.namelist-input-variable-unset {
+
+                    div.input-group {
+                        div.input-group-prepend {
+    
+                            button.btn.btn-namelist-input-erase {
+                                visibility: hidden;
+                            }
+    
+                            .input-group-text {
+                                font-style:italic;
+                                color: #8794a1;
+                                background-color: #eff2f5;
+                            }
+                        }
+    
+                        input.form-control, select.form-control {
+                            font-style:italic;
+                            color: #8794a1;
+                        }
+    
+                        div.namelist-input-variable-description {
+                            color: #8794a1;
+                        }                    
+                    }
+                }                
 
                 div.input-group {
 
@@ -144,6 +159,13 @@ div.namelist-input-editor {
                 }
             }
 
+            &.namelist-input-hide-unset {
+                div.namelist-input-variable {
+                    &.namelist-input-variable-unset {
+                            display: none;
+                    }
+                }    
+            }
         }
     }
 }

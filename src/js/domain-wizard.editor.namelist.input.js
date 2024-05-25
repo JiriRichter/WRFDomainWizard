@@ -42,16 +42,21 @@ export class NamelistInputEditor {
         // read-only variable flags
         this.readOnly = {};
 
+        // variable group user guide links
+        this.userGuideLinks = {};
+
         // namelist object
         this.namelist = null;
         
-        // initialize variable group collapse state
-        let value = localStorage.getItem(`${NamelistInputEditor._localStorageKey}_collapse`);
+        // initialize editor view state
+        let value = localStorage.getItem(`${NamelistInputEditor._localStorageKey}_view`);
         if (value) {
-            this.collapse = JSON.parse(value);
+            this.view = JSON.parse(value);
         }
         else {
-            this.collapse = {};
+            this.view = {
+                groups: {}
+            };
         }
     }
 
@@ -176,9 +181,9 @@ export class NamelistInputEditor {
         };
     }
 
-    // return RAW text representation of namelist data
-    toRaw() {
-        let raw = '';
+    // return raw text representation of namelist data
+    toText() {
+        let text = '';
 
         for(const [groupName, groupVariables] of Object.entries(this.variables)) {
 
@@ -200,10 +205,61 @@ export class NamelistInputEditor {
                 variableNames,
                 values);
 
-            raw = raw + groupContent;
+            text = text + groupContent;
         };
 
-        return raw;
+        return text;
+    }
+
+    static collpaseCommands = {
+        hide: 'hide',
+        show: 'show'
+    }
+
+    collapseGroups() {
+        this._toggleGroups(NamelistInputEditor.collpaseCommands.hide);
+    }
+
+    expandGroups(command) {
+        this._toggleGroups(NamelistInputEditor.collpaseCommands.show);
+    }
+
+    hideUnsetVariables() {
+        this.container.querySelectorAll('div.namelist-input-group')
+            .forEach((group) => {
+                const variables = group.querySelector('.namelist-input-variables');
+                variables.classList.add('namelist-input-hide-unset');
+                
+            });
+    }
+
+    showUnsetVariables() {
+    }
+
+    _toggleGroups(command) {
+        this.container.querySelectorAll('div.namelist-input-variables.collapse')
+            .forEach((element) => {
+                $(element).collapse(command);
+                const groupHeader = element.previousSibling;
+                const icon = groupHeader.querySelector('button[data-toggle="collapse"] i');
+                switch (command) {
+                    case NamelistInputEditor.collpaseCommands.hide:
+                        icon.classList.remove(NamelistInputEditor.iconClass.open);
+                        icon.classList.add(NamelistInputEditor.iconClass.collapsed);
+                        break;
+
+                    case NamelistInputEditor.collpaseCommands.show:
+                        icon.classList.remove(NamelistInputEditor.iconClass.collapsed);
+                        icon.classList.add(NamelistInputEditor.iconClass.open);
+                        break;
+                }
+            });
+
+        for(let group in this.view.groups) {
+            this.view.groups[group].collapse = command === NamelistInputEditor.collpaseCommands.hide;
+        }
+
+        this._storeView();
     }
 
     // check whether variable namelist object value is set
@@ -212,7 +268,6 @@ export class NamelistInputEditor {
             && this.namelist[group][variable] !== undefined
             && this.namelist[group][variable] !== null;
     }
-
     
     // set variable namelist object value
     _setNamelistValue(group, variable, value) {
@@ -346,6 +401,10 @@ export class NamelistInputEditor {
 
             // time_step default value not set in registry
             this._setDefaultValue("domains", "time_step", 60);
+
+            for(let groupName in userGuide) {
+                this.userGuideLinks[groupName] = `https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html#${groupName.replace("_", "-")}`;
+            }
         }
     }
 
@@ -372,7 +431,7 @@ export class NamelistInputEditor {
         };
 
         $(this.container).find('*[title]').tooltip();
-        this._storeCollapseState();
+        this._storeView();
     }
 
     // collapse icons
@@ -388,19 +447,42 @@ export class NamelistInputEditor {
         groupDiv.classList.add('namelist-input-group');
         groupDiv.dataset['group'] = groupName;
 
-        if (this.collapse[groupName] === undefined) {
-            this.collapse[groupName] = true;
-        }
+        // initialize group view
+        this.view.groups = this.view.groups ?? {};
+        this.view.groups[groupName] = this.view.groups[groupName] ?? {};
+        this.view.groups[groupName].collapse = this.view.groups[groupName].collapse ?? true;
+        this.view.groups[groupName].hideUnset = this.view.groups[groupName].hideUnset ?? false;
 
-        const iconClass = this.collapse[groupName] === true ? NamelistInputEditor.iconClass.collapsed : NamelistInputEditor.iconClass.open;
+        const iconClass = this.view.groups[groupName].collapse === true ? NamelistInputEditor.iconClass.collapsed : NamelistInputEditor.iconClass.open;
 
         const headerDiv = this._append(groupDiv, 'div');
         headerDiv.classList.add('namelist-input-group-header');
+
         let headerDivHtml = '';
+
+        // collapse toggle
         headerDivHtml = headerDivHtml + `<button class="btn btn-sm" type="button" data-toggle="collapse" data-target="#${groupName}" aria-expanded="false" aria-controls="${groupName}"><i class="fas ${iconClass}"></i></button>`;
+
+        // group title
         headerDivHtml = headerDivHtml + `<h5>${htmlEncode(groupName)}</h5>`;
-        headerDivHtml = headerDivHtml + `<a href="https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html#${htmlEncode(groupName.replace("_", "-"))}" target="_blank" class="ml-3 text-muted"><i class="fas fa-external-link-alt"></i></a>`;
-        headerDivHtml = headerDivHtml + '</h5>';
+
+        // users guide link
+        if (groupName in this.userGuideLinks) {
+            headerDivHtml = headerDivHtml + `<a href="${htmlEncode(this.userGuideLinks[groupName])}" target="_blank" class="ml-3 text-muted"><i class="fas fa-external-link-alt"></i></a>`;
+        }
+
+        // hide unset switch
+        headerDivHtml = headerDivHtml + '<div class="namelist-input-group-header-switch">';
+        headerDivHtml = headerDivHtml + '<label class="switch ml-2">';
+        headerDivHtml = headerDivHtml + `<input type="checkbox" id="switch-hide-unset-${htmlEncode(groupName)}"`;
+        if (this.view.groups[groupName].hideUnset === true) {
+            headerDivHtml = headerDivHtml + ' checked';
+        }
+        headerDivHtml = headerDivHtml + '><span class="slider round"></span>';
+        headerDivHtml = headerDivHtml + '</label>';
+        headerDivHtml = headerDivHtml + '<span>Hide Unset</span>';
+        headerDivHtml = headerDivHtml + '</div>';
+
         headerDiv.innerHTML = headerDivHtml;
 
         headerDiv.querySelector('button[data-toggle="collapse"]').addEventListener('click', (e) => {
@@ -409,13 +491,25 @@ export class NamelistInputEditor {
             if (icon.classList.contains(NamelistInputEditor.iconClass.open)) {
                 icon.classList.remove(NamelistInputEditor.iconClass.open);
                 icon.classList.add(NamelistInputEditor.iconClass.collapsed);
-                this.collapse[groupName] = true;
+                this.view.groups[groupName].collapse = true;
             } else {
                 icon.classList.remove(NamelistInputEditor.iconClass.collapsed);
                 icon.classList.add(NamelistInputEditor.iconClass.open);
-                this.collapse[groupName] = false;
+                this.view.groups[groupName].collapse = false;
             }
-            this._storeCollapseState();
+            this._storeView();
+        });
+
+        headerDiv.querySelector(`input#switch-hide-unset-${groupName}`).addEventListener('change', (e) => {
+            const variablesDiv = e.currentTarget
+                .closest('.namelist-input-group')
+                .querySelector('div.namelist-input-variables');
+            if (e.currentTarget.checked === true) {
+                variablesDiv.classList.add('namelist-input-hide-unset');
+            }
+            else {
+                variablesDiv.classList.remove('namelist-input-hide-unset');
+            }
         });
 
         this.namelist[groupName] = this.namelist[groupName] ?? {};
@@ -424,8 +518,8 @@ export class NamelistInputEditor {
     }
 
     // capture variable group collapse state
-    _storeCollapseState() {
-        localStorage.setItem(`${NamelistInputEditor._localStorageKey}_collapse`, JSON.stringify(this.collapse));
+    _storeView() {
+        localStorage.setItem(`${NamelistInputEditor._localStorageKey}_view`, JSON.stringify(this.view));
     }
 
     // create and append group variables
@@ -433,9 +527,14 @@ export class NamelistInputEditor {
         const variablesDiv = this._append(groupDiv, 'div');
         variablesDiv.classList.add('namelist-input-variables');
         variablesDiv.classList.add('collapse');
-        if (this.collapse[groupName] === false) {
+
+        if (this.view.groups[groupName].collapse === false) {
             variablesDiv.classList.add('show');
         }
+        if (this.view.groups[groupName].hideUnset) {
+            variablesDiv.classList.add('namelist-input-hide-unset');
+        }
+
         variablesDiv.id = groupName;
 
         for(const [variableName, variable] of Object.entries(groupVariables)) {

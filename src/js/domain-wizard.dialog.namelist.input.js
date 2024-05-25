@@ -8,42 +8,57 @@ export class NamelistInputDialog {
         this.body = this.modal.querySelector('div.modal-body');
         this.footer = this.modal.querySelector('div.modal-footer');
 
-        this.namelistInpurEditor = new NamelistInputEditor(
+        this.editor = new NamelistInputEditor(
             this.body.querySelector('div#namelist-input-container'), 
             Object.assign(
                 {
                     change: (e) => {
-                        this._updateRaw();
+                        this._updateText();
                     }
                 },
                 options));
 
-        this.namelistInputRawTextArea = this.body.querySelector('div#pane-namelist-input-raw textarea');
+        this.text = this.body.querySelector('div#pane-namelist-input-text textarea');
+        this.original = this.body.querySelector('div#pane-namelist-input-original textarea');
 
         this.footer.querySelector('#button-copy').addEventListener('click', (e) => {
-            navigator.clipboard.writeText(this.namelistInpurEditor.toRaw());
+            navigator.clipboard.writeText(this.editor.toText());
         });
 
         this.footer.querySelector('#button-save').addEventListener('click', (e) => {
-            const blob = new Blob([this.namelistInpurEditor.toRaw()], { type: "text/plain;charset=utf-8" });
+            const blob = new Blob([this.editor.toText()], { type: "text/plain;charset=utf-8" });
             saveAs(blob, "namelist.input", { autoBom: true });
         });
 
-        this.tabErrors = document.getElementById('nav-item-namelist-input-errors');
+        this.tabErrors = document.getElementById('tab-namelist-input-errors').parentNode;
+        this.tabOriginal = document.getElementById('tab-namelist-input-original').parentNode;
+
+        // view commands
+        this.footer.querySelector('#view-group-collapse-all').addEventListener('click', (e) => {
+            this.editor.collapseGroups();
+        });
+        this.footer.querySelector('#view-group-expand-all').addEventListener('click', (e) => {
+            this.editor.expandGroups();
+        });
+
     }
 
     async openNamelistWpsAsync(namelistWps) {
         this._resetView();
-        await this.namelistInpurEditor.openNamelistWpsAsync(namelistWps);
+        await this.editor.openNamelistWpsAsync(namelistWps);
         $(this.modal).modal('show');
-        this._updateRaw();
+        this._updateText();
     }
 
     async openNamelistInputAsync(data) {
         this._resetView();
-        var result = await this.namelistInpurEditor.openNamelistInputAsync(data);
+
+        this.original.value = data;
+        this.tabOriginal.style['display'] = null;
+
+        var result = await this.editor.openNamelistInputAsync(data);
         $(this.modal).modal('show');
-        this._updateRaw();
+        this._updateText();
         if (result.hasErrors) {
             this._showErrors(result.errors);
         }
@@ -51,11 +66,12 @@ export class NamelistInputDialog {
 
     _resetView() {
         this.tabErrors.style['display'] = 'none';
+        this.tabOriginal.style['display'] = 'none';
         $('#tab-namelist-input-editor').tab('show');
     }
 
-    _updateRaw() {
-        this.namelistInputRawTextArea.value = this.namelistInpurEditor.toRaw();
+    _updateText() {
+        this.text.value = this.editor.toText();
     }
 
     _showErrors(errors) {

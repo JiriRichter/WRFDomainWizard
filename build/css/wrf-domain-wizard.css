@@ -194,6 +194,58 @@ div#wps-save-dialog textarea {
     box-shadow: 0.2em -0.2em 0 0 currentcolor;
   }
 }
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 31px;
+  height: 15px;
+  margin-bottom: 0;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: none;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  transition: 0.4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 10px;
+  width: 10px;
+  left: 2px;
+  bottom: 2px;
+  background-color: rgba(0, 0, 0, 0.25);
+  transition: 0.4s;
+}
+input:checked + .slider {
+  background-color: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(0, 0, 0, 0.35);
+}
+input:focus + .slider {
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.35);
+}
+input:checked + .slider:before {
+  transform: translateX(16px);
+  background-color: white;
+}
+/* Rounded sliders */
+.slider.round {
+  border-radius: 10px;
+}
+.slider.round:before {
+  border-radius: 50%;
+}
 div.leaflet-sidebar {
   z-index: 1000;
   font-size: 16px;
@@ -450,16 +502,15 @@ div.namelist-input-editor div.namelist-input-group div.namelist-input-group-head
   width: 100%;
   display: flex;
   flex-direction: row;
-  align-items: center;
   margin-top: 3px;
   margin-bottom: 3px;
+  align-items: center;
 }
 div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header h5 {
   margin-top: 0;
   margin-bottom: 0;
   margin-left: 5px;
   margin-right: 0;
-  flex-grow: 1;
 }
 div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header button {
   outline: none !important;
@@ -468,6 +519,20 @@ div.namelist-input-editor div.namelist-input-group div.namelist-input-group-head
 }
 div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header button:hover {
   border-color: #e1e1e1;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header div.namelist-input-group-header-switch {
+  display: flex;
+  align-items: center;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header div.namelist-input-group-header-switch > span {
+  font-size: small;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable {
+  width: 100%;
 }
 div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover {
   background-color: aliceblue;
@@ -498,9 +563,6 @@ div.namelist-input-editor div.namelist-input-group div.namelist-input-variables 
 }
 div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.input-group div.namelist-input-variable-description {
   color: #8794a1;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable {
-  width: 100%;
 }
 div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group {
   flex-wrap: nowrap !important;
@@ -552,6 +614,9 @@ div.namelist-input-editor div.namelist-input-group div.namelist-input-variables 
   overflow: hidden;
   white-space: nowrap;
   color: #495057;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables.namelist-input-hide-unset div.namelist-input-variable.namelist-input-variable-unset {
+  display: none;
 }
 #namelist-input-dialog div.modal-body {
   display: flex;
