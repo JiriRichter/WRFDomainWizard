@@ -40,7 +40,18 @@ export class NamelistInputDialog {
         this.footer.querySelector('#view-group-expand-all').addEventListener('click', (e) => {
             this.editor.expandGroups();
         });
-
+        this.footer.querySelector('#view-variables-show-unset').addEventListener('click', (e) => {
+            this.editor.showUnsetVariables();
+        });
+        this.footer.querySelector('#view-variables-hide-unset').addEventListener('click', (e) => {
+            this.editor.hideUnsetVariables();
+        });
+        this.footer.querySelector('#view-group-show-unset').addEventListener('click', (e) => {
+            this.editor.showUnsetGroups();
+        });
+        this.footer.querySelector('#view-group-hide-unset').addEventListener('click', (e) => {
+            this.editor.hideUnsetGroups();
+        });
     }
 
     async openNamelistWpsAsync(namelistWps) {

@@ -888,26 +888,42 @@
   var MessageBoxDialog = /*#__PURE__*/function () {
     function MessageBoxDialog() {
       _classCallCheck(this, MessageBoxDialog);
-      this.container = $('div.modal#message-box-dialog');
-      this.dialogBody = $('div.modal-body', this.container);
-      this.dialogTitle = $('div.modal-header h5.modal-title', this.container);
+      this.container = document.querySelector('div.modal#message-box-dialog');
+      this.dialogBody = this.container.querySelector('div.modal-body');
+      this.dialogTitle = this.container.querySelector('div.modal-header h5.modal-title');
+      this.titleIcon = this.dialogTitle.querySelector('i');
+      this.title = this.dialogTitle.querySelector('span');
     }
     return _createClass(MessageBoxDialog, [{
       key: "show",
       value: function show(title, message, type) {
-        this.dialogTitle.empty();
+        this.empty();
+        this.setTitle(title, type);
+        this.dialogBody.innerText = message;
+        $(this.container).modal();
+      }
+    }, {
+      key: "empty",
+      value: function empty() {
+        this.title.innerHTML = '';
+        this.titleIcon.classList.remove('fa-exclamation-circle');
+        this.titleIcon.classList.remove('fa-info-circle');
+        this.titleIcon.classList.remove('fa-exclamation-triangle');
+        this.dialogBody.innerHTML = '';
+      }
+    }, {
+      key: "setTitle",
+      value: function setTitle(title, type) {
         if (type === MessageBoxDialog.types.error) {
-          this.dialogTitle.html('<i class="fas fa-exclamation-circle text-danger"></i>');
+          this.titleIcon.classList.add('fa-exclamation-circle');
         }
         if (type === MessageBoxDialog.types.info) {
-          this.dialogTitle.html('<i class="fas fa-info-circle text-info"></i>');
+          this.titleIcon.classList.add('fa-info-circle');
         }
         if (type === MessageBoxDialog.types.warning) {
-          this.dialogTitle.html('<i class="fas fa-exclamation-triangle text-warning"></i>');
+          this.titleIcon.classList.add('fa-exclamation-triangle');
         }
-        this.dialogTitle.append(title);
-        this.dialogBody.text(message);
-        this.container.modal();
+        this.title.innerText = title;
       }
     }]);
   }();
@@ -919,6 +935,11 @@
   var messageBoxDialog = new MessageBoxDialog();
   function errorMessageBox(title, message) {
     messageBoxDialog.show(title, message, MessageBoxDialog.types.error);
+  }
+  function enableGlobalErrorHandler() {
+    window.onerror = function (event, source, lineno, colno, error) {
+      messageBoxDialog.show('Error', source, MessageBoxDialog.types.error);
+    };
   }
 
   var SidebarWaypoints = function SidebarWaypoints(map, sidebar) {
@@ -12212,22 +12233,36 @@
     }, {
       key: "collapseGroups",
       value: function collapseGroups() {
-        this._toggleGroups(NamelistInputEditor.collpaseCommands.hide);
+        this._toggleGroupCollapse(NamelistInputEditor.collpaseCommands.hide);
       }
     }, {
       key: "expandGroups",
       value: function expandGroups(command) {
-        this._toggleGroups(NamelistInputEditor.collpaseCommands.show);
+        this._toggleGroupCollapse(NamelistInputEditor.collpaseCommands.show);
       }
     }, {
       key: "hideUnsetVariables",
-      value: function hideUnsetVariables() {}
+      value: function hideUnsetVariables() {
+        this._toggleVariableHideUnset(true);
+      }
     }, {
       key: "showUnsetVariables",
-      value: function showUnsetVariables() {}
+      value: function showUnsetVariables() {
+        this._toggleVariableHideUnset(false);
+      }
     }, {
-      key: "_toggleGroups",
-      value: function _toggleGroups(command) {
+      key: "hideUnsetGroups",
+      value: function hideUnsetGroups() {
+        this._toggleGroupHideUnset(true);
+      }
+    }, {
+      key: "showUnsetGroups",
+      value: function showUnsetGroups() {
+        this._toggleGroupHideUnset(false);
+      }
+    }, {
+      key: "_toggleGroupCollapse",
+      value: function _toggleGroupCollapse(command) {
         this.container.querySelectorAll('div.namelist-input-variables.collapse').forEach(function (element) {
           $(element).collapse(command);
           var groupHeader = element.previousSibling;
@@ -12247,6 +12282,35 @@
           this.view.groups[group].collapse = command === NamelistInputEditor.collpaseCommands.hide;
         }
         this._storeView();
+      }
+    }, {
+      key: "_toggleGroupHideUnset",
+      value: function _toggleGroupHideUnset(hideUnset) {
+        this.container.querySelectorAll('div.namelist-input-group').forEach(function (group) {
+          if (hideUnset === true) {
+            group.classList.add('namelist-input-hide-unset');
+          } else {
+            group.classList.remove('namelist-input-hide-unset');
+          }
+        });
+      }
+    }, {
+      key: "_toggleVariableHideUnset",
+      value: function _toggleVariableHideUnset(hideUnset) {
+        this.container.querySelectorAll('div.namelist-input-group').forEach(function (group) {
+          var variables = group.querySelector('.namelist-input-variables');
+          if (hideUnset === true) {
+            variables.classList.add('namelist-input-hide-unset');
+          } else {
+            variables.classList.remove('namelist-input-hide-unset');
+          }
+          var header = group.querySelector('.namelist-input-group-header');
+          var hideUnset = header.querySelector('input[name="switch-hide-unset"]');
+          hideUnset.checked = hideUnset;
+        });
+        for (var group in this.view.groups) {
+          this.view.groups[group].hideUnset = hideUnset;
+        }
       }
 
       // check whether variable namelist object value is set
@@ -12458,18 +12522,19 @@
           if (Object.keys(groupVariables).length === 0) {
             continue;
           }
-          this._initGroupVariables(groupName, groupVariables);
+          this._initVariableGroup(groupName, groupVariables);
         }
         $(this.container).find('*[title]').tooltip();
         this._storeView();
+        this._updateGroupView();
       }
 
       // collapse icons
     }, {
-      key: "_initGroupVariables",
+      key: "_initVariableGroup",
       value:
       // create group variables 
-      function _initGroupVariables(groupName, groupVariables) {
+      function _initVariableGroup(groupName, groupVariables) {
         var _this$view$groups,
           _this$view$groups$gro,
           _this$view$groups$gro2,
@@ -12496,6 +12561,9 @@
         // group title
         headerDivHtml = headerDivHtml + "<h5>".concat(htmlEncode(groupName), "</h5>");
 
+        // number of set variables
+        headerDivHtml = headerDivHtml + '<span class="badge badge-pill badge-light namelist-input-set-variable-count" style="display: none;"></span>';
+
         // users guide link
         if (groupName in this.userGuideLinks) {
           headerDivHtml = headerDivHtml + "<a href=\"".concat(htmlEncode(this.userGuideLinks[groupName]), "\" target=\"_blank\" class=\"ml-3 text-muted\"><i class=\"fas fa-external-link-alt\"></i></a>");
@@ -12504,7 +12572,7 @@
         // hide unset switch
         headerDivHtml = headerDivHtml + '<div class="namelist-input-group-header-switch">';
         headerDivHtml = headerDivHtml + '<label class="switch ml-2">';
-        headerDivHtml = headerDivHtml + "<input type=\"checkbox\" id=\"switch-hide-unset-".concat(htmlEncode(groupName), "\"");
+        headerDivHtml = headerDivHtml + "<input type=\"checkbox\" name=\"switch-hide-unset\" id=\"switch-hide-unset-".concat(htmlEncode(groupName), "\"");
         if (this.view.groups[groupName].hideUnset === true) {
           headerDivHtml = headerDivHtml + ' checked';
         }
@@ -12528,15 +12596,36 @@
           _this2._storeView();
         });
         headerDiv.querySelector("input#switch-hide-unset-".concat(groupName)).addEventListener('change', function (e) {
-          var variablesDiv = e.currentTarget.closest('.namelist-input-group').querySelector('div.namelist-input-variables');
+          var group = e.currentTarget.closest('.namelist-input-group');
+          var groupName = group.dataset['group'];
+          var variables = group.querySelector('div.namelist-input-variables');
+          _this2.view.groups[groupName].hideUnset = e.currentTarget.checked;
           if (e.currentTarget.checked === true) {
-            variablesDiv.classList.add('namelist-input-hide-unset');
+            variables.classList.add('namelist-input-hide-unset');
           } else {
-            variablesDiv.classList.remove('namelist-input-hide-unset');
+            variables.classList.remove('namelist-input-hide-unset');
           }
+          _this2._storeView();
         });
         this.namelist[groupName] = (_this$namelist$groupN = this.namelist[groupName]) !== null && _this$namelist$groupN !== void 0 ? _this$namelist$groupN : {};
         this._appendGroupVariableFields(groupDiv, groupName, groupVariables);
+      }
+    }, {
+      key: "_updateGroupView",
+      value: function _updateGroupView() {
+        this.container.querySelectorAll('div.namelist-input-group').forEach(function (group) {
+          var count = group.querySelectorAll('div.namelist-input-variable:not(.namelist-input-variable-unset)').length;
+          var badge = group.querySelector('div.namelist-input-group-header span.namelist-input-set-variable-count');
+          if (count > 0) {
+            badge.innerText = count;
+            badge.style.display = null;
+            group.classList.remove('namelist-input-group-unset');
+          } else {
+            badge.innerText = '0';
+            badge.style.display = 'none';
+            group.classList.add('namelist-input-group-unset');
+          }
+        });
       }
 
       // capture variable group collapse state
@@ -12743,6 +12832,7 @@
             variable: variableName
           });
         }
+        this._updateGroupView();
       }
 
       // select variable input fields and return them as an array
@@ -12902,6 +12992,18 @@
       });
       this.footer.querySelector('#view-group-expand-all').addEventListener('click', function (e) {
         _this.editor.expandGroups();
+      });
+      this.footer.querySelector('#view-variables-show-unset').addEventListener('click', function (e) {
+        _this.editor.showUnsetVariables();
+      });
+      this.footer.querySelector('#view-variables-hide-unset').addEventListener('click', function (e) {
+        _this.editor.hideUnsetVariables();
+      });
+      this.footer.querySelector('#view-group-show-unset').addEventListener('click', function (e) {
+        _this.editor.showUnsetGroups();
+      });
+      this.footer.querySelector('#view-group-hide-unset').addEventListener('click', function (e) {
+        _this.editor.hideUnsetGroups();
       });
     }
     return _createClass(NamelistInputDialog, [{
@@ -13941,6 +14043,8 @@
 
   exports.DomainWizard = DomainWizard;
   exports.NamelistInputPage = NamelistInputPage;
+  exports.enableGlobalErrorHandler = enableGlobalErrorHandler;
+  exports.errorMessageBox = errorMessageBox;
 
 }));
 //# sourceMappingURL=wrf-domain-wizard.js.map

@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Test</title>
+    <meta charset="utf-8" />
+
+    <link rel="stylesheet" href="{{baseUrl}}/lib/bootstrap.min.css" />
+    <link rel="stylesheet" href="{{baseUrl}}/lib/all.min.css" />
+    <link rel="stylesheet" href="{{baseUrl}}/css/wrf-domain-wizard.css?{{timestamp}}" />
+
+    <link rel="icon" href="{{baseUrl}}/img/globe_32x32.png" />
+</head>
+<body>
+
+    <button type="button" class="btn btn-danger" onclick="showError()">Show Error</button>
+    <button type="button" class="btn btn-danger" onclick="throwError()">Throw Error</button>
+
+
+    {{dialog.message-box}}
+
+    <script src="{{baseUrl}}/lib/jquery.min.js"></script>
+    <script src="{{baseUrl}}/lib/bootstrap.bundle.min.js"></script>
+    <script src="https://spin.js.org/spin.umd.js"></script>
+    <script src="{{baseUrl}}/lib/immediate.min.js"></script>
+    <script src="{{baseUrl}}/lib/proj4.js"></script>
+    <script src="{{baseUrl}}/lib/leaflet.js"></script>
+    <script src="{{baseUrl}}/lib/leaflet.spin.min.js"></script>
+    <script src="{{baseUrl}}/lib/leaflet-sidebar.min.js"></script>
+    <script src="{{baseUrl}}/lib/leaflet-providers.js"></script>
+    <script src="{{baseUrl}}/lib/Blob.js"></script>
+    <script src="{{baseUrl}}/lib/FileSaver.min.js"></script>
+    <script src="{{baseUrl}}/lib/html-to-image.js"></script>
+    <script src="{{baseUrl}}/lib/leaflet.textpath.js"></script>
+
+    <script src="{{baseUrl}}/js/wrf-domain-wizard.js"></script>
+
+    <script>
+
+        function showError() {
+            WRF.errorMessageBox('Error Message', 'This is a text error message');
+        }
+
+        WRF.enableGlobalErrorHandler();
+        
+        function throwError() {
+            throw new Error('This is a script error');
+        }
+
+    </script>
+</body>
+</html>

@@ -1,8 +1,10 @@
 class MessageBoxDialog {
     constructor() {
-        this.container = $('div.modal#message-box-dialog');
-        this.dialogBody = $('div.modal-body', this.container);
-        this.dialogTitle = $('div.modal-header h5.modal-title', this.container);
+        this.container = document.querySelector('div.modal#message-box-dialog');
+        this.dialogBody = this.container.querySelector('div.modal-body');
+        this.dialogTitle = this.container.querySelector('div.modal-header h5.modal-title');
+        this.titleIcon = this.dialogTitle.querySelector('i');
+        this.title = this.dialogTitle.querySelector('span');
    }
 
    static types = {
@@ -12,27 +14,47 @@ class MessageBoxDialog {
    }
 
    show(title, message, type) {
-        this.dialogTitle.empty();
+        this.empty();
+        this.setTitle(title, type);
+        this.dialogBody.innerText = message;
+        $(this.container).modal();
+    }
+
+    empty() {
+        this.title.innerHTML = '';
+        this.titleIcon.classList.remove('fa-exclamation-circle');
+        this.titleIcon.classList.remove('fa-info-circle');
+        this.titleIcon.classList.remove('fa-exclamation-triangle');
+
+        this.dialogBody.innerHTML = '';
+    }
+
+    setTitle(title, type) {
         if (type === MessageBoxDialog.types.error) {
-            this.dialogTitle.html('<i class="fas fa-exclamation-circle text-danger"></i>');
+            this.titleIcon.classList.add('fa-exclamation-circle');
         }
         if (type === MessageBoxDialog.types.info) {
-            this.dialogTitle.html('<i class="fas fa-info-circle text-info"></i>');
+            this.titleIcon.classList.add('fa-info-circle');
         }
         if (type === MessageBoxDialog.types.warning) {
-            this.dialogTitle.html('<i class="fas fa-exclamation-triangle text-warning"></i>');
+            this.titleIcon.classList.add('fa-exclamation-triangle');
         }
 
-        this.dialogTitle.append(title);
-
-        this.dialogBody.text(message);
-        this.container.modal();
+        this.title.innerText = title;
     }
+
+
 }
 
 const messageBoxDialog = new MessageBoxDialog()
 
 export function errorMessageBox(title, message) {
     messageBoxDialog.show(title, message, MessageBoxDialog.types.error);
+}
+
+export function enableGlobalErrorHandler() {
+    window.onerror = (event, source, lineno, colno, error) => {
+        messageBoxDialog.show('Error', source, MessageBoxDialog.types.error);
+    };
 }
 

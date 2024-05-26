@@ -1,5 +1,26 @@
 const analyticsFile = 'analytics.txt';
 
+const replacements = (baseUrl) => [{
+  from: '{{timestamp}}',
+  to: '<%= timestamp %>'
+},
+{
+  from: '{{baseUrl}}',
+  to: baseUrl
+},
+{
+  from: '{{analytics}}',
+  to: '<%= analytics %>'
+},
+{
+  from: '{{dialog.message-box}}',
+  to: '<%= dialogMessageBox() %>'
+},
+{
+  from: '{{dialog.namelist-input}}',
+  to: '<%= dialogNamelistInput() %>'
+}];
+
 module.exports = function(grunt) {
 
   grunt.initConfig({
@@ -116,50 +137,17 @@ module.exports = function(grunt) {
         src: ['src/index.html', 'src/namelist.input.test.html'],
         // index.html must be placed to root folder for GitHub Pages to work
         dest: './',             
-        replacements: [{
-          from: '{{timestamp}}',
-          to: '<%= timestamp %>'
-        },
-        {
-          from: '{{baseUrl}}',
-          to: 'build'
-        },
-        {
-          from: '{{analytics}}',
-          to: '<%= analytics %>'
-        },
-        {
-          from: '{{dialog.message-box}}',
-          to: '<%= dialogMessageBox() %>'
-        },
-        {
-          from: '{{dialog.namelist-input}}',
-          to: '<%= dialogNamelistInput() %>'
-        }]
+        replacements: replacements('build')
       },
       build: {
         src: ['src/index.html', 'src/namelist.input.test.html'],
         dest: 'build/',             
-        replacements: [{
-          from: '{{timestamp}}',
-          to: '<%= timestamp %>'
-        },
-        {
-          from: '{{baseUrl}}',
-          to: ''
-        },
-        {
-          from: '{{analytics}}',
-          to: '<%= analytics %>'
-        },
-        {
-          from: '{{dialog.message-box}}',
-          to: '<%= dialogMessageBox() %>'
-        },
-        {
-          from: '{{dialog.namelist-input}}',
-          to: '<%= dialogNamelistInput() %>'
-        }]
+        replacements: replacements('')
+      },
+      test: {
+        src: ['src/test.html'],
+        dest: 'test/',             
+        replacements: replacements('/build')
       }
     },
 

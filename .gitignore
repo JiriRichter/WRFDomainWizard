@@ -4,3 +4,4 @@ node_modules
 .env
 analytics.txt
 __pycache__
+test/*.html

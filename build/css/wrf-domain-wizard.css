@@ -618,6 +618,9 @@ div.namelist-input-editor div.namelist-input-group div.namelist-input-variables 
 div.namelist-input-editor div.namelist-input-group div.namelist-input-variables.namelist-input-hide-unset div.namelist-input-variable.namelist-input-variable-unset {
   display: none;
 }
+div.namelist-input-editor div.namelist-input-group.namelist-input-group-unset.namelist-input-hide-unset {
+  display: none;
+}
 #namelist-input-dialog div.modal-body {
   display: flex;
   flex-direction: column;

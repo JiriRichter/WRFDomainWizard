@@ -217,26 +217,30 @@ export class NamelistInputEditor {
     }
 
     collapseGroups() {
-        this._toggleGroups(NamelistInputEditor.collpaseCommands.hide);
+        this._toggleGroupCollapse(NamelistInputEditor.collpaseCommands.hide);
     }
 
     expandGroups(command) {
-        this._toggleGroups(NamelistInputEditor.collpaseCommands.show);
+        this._toggleGroupCollapse(NamelistInputEditor.collpaseCommands.show);
     }
 
     hideUnsetVariables() {
-        this.container.querySelectorAll('div.namelist-input-group')
-            .forEach((group) => {
-                const variables = group.querySelector('.namelist-input-variables');
-                variables.classList.add('namelist-input-hide-unset');
-                
-            });
+        this._toggleVariableHideUnset(true);
     }
 
     showUnsetVariables() {
+        this._toggleVariableHideUnset(false);
     }
 
-    _toggleGroups(command) {
+    hideUnsetGroups() {
+        this._toggleGroupHideUnset(true);
+    }
+
+    showUnsetGroups() {
+        this._toggleGroupHideUnset(false);
+    }
+
+    _toggleGroupCollapse(command) {
         this.container.querySelectorAll('div.namelist-input-variables.collapse')
             .forEach((element) => {
                 $(element).collapse(command);
@@ -260,6 +264,41 @@ export class NamelistInputEditor {
         }
 
         this._storeView();
+    }
+
+    _toggleGroupHideUnset(hideUnset) {
+        this.container.querySelectorAll('div.namelist-input-group')
+            .forEach((group) => {
+
+                if (hideUnset === true) {
+                    group.classList.add('namelist-input-hide-unset');
+                }
+                else {
+                    group.classList.remove('namelist-input-hide-unset');
+                }
+            });
+    }
+
+    _toggleVariableHideUnset(hideUnset) {
+        this.container.querySelectorAll('div.namelist-input-group')
+            .forEach((group) => {
+                const variables = group.querySelector('.namelist-input-variables');
+
+                if (hideUnset === true) {
+                    variables.classList.add('namelist-input-hide-unset');
+                }
+                else {
+                    variables.classList.remove('namelist-input-hide-unset');
+                }
+
+                const header =  group.querySelector('.namelist-input-group-header');
+                const hideUnset = header.querySelector('input[name="switch-hide-unset"]');
+                hideUnset.checked = hideUnset;
+            });
+
+        for(let group in this.view.groups) {
+            this.view.groups[group].hideUnset = hideUnset;
+        }
     }
 
     // check whether variable namelist object value is set
@@ -427,11 +466,12 @@ export class NamelistInputEditor {
             if (Object.keys(groupVariables).length === 0) {
                 continue;
             }
-            this._initGroupVariables(groupName, groupVariables);
+            this._initVariableGroup(groupName, groupVariables);
         };
 
         $(this.container).find('*[title]').tooltip();
         this._storeView();
+        this._updateGroupView();
     }
 
     // collapse icons
@@ -441,7 +481,7 @@ export class NamelistInputEditor {
     }
 
     // create group variables 
-    _initGroupVariables(groupName, groupVariables) {
+    _initVariableGroup(groupName, groupVariables) {
 
         const groupDiv = this._append(this.container, 'div');
         groupDiv.classList.add('namelist-input-group');
@@ -466,6 +506,9 @@ export class NamelistInputEditor {
         // group title
         headerDivHtml = headerDivHtml + `<h5>${htmlEncode(groupName)}</h5>`;
 
+        // number of set variables
+        headerDivHtml = headerDivHtml + '<span class="badge badge-pill badge-light namelist-input-set-variable-count" style="display: none;"></span>';
+
         // users guide link
         if (groupName in this.userGuideLinks) {
             headerDivHtml = headerDivHtml + `<a href="${htmlEncode(this.userGuideLinks[groupName])}" target="_blank" class="ml-3 text-muted"><i class="fas fa-external-link-alt"></i></a>`;
@@ -474,7 +517,7 @@ export class NamelistInputEditor {
         // hide unset switch
         headerDivHtml = headerDivHtml + '<div class="namelist-input-group-header-switch">';
         headerDivHtml = headerDivHtml + '<label class="switch ml-2">';
-        headerDivHtml = headerDivHtml + `<input type="checkbox" id="switch-hide-unset-${htmlEncode(groupName)}"`;
+        headerDivHtml = headerDivHtml + `<input type="checkbox" name="switch-hide-unset" id="switch-hide-unset-${htmlEncode(groupName)}"`;
         if (this.view.groups[groupName].hideUnset === true) {
             headerDivHtml = headerDivHtml + ' checked';
         }
@@ -501,20 +544,40 @@ export class NamelistInputEditor {
         });
 
         headerDiv.querySelector(`input#switch-hide-unset-${groupName}`).addEventListener('change', (e) => {
-            const variablesDiv = e.currentTarget
-                .closest('.namelist-input-group')
-                .querySelector('div.namelist-input-variables');
+            const group = e.currentTarget.closest('.namelist-input-group');
+            const groupName = group.dataset['group'];
+            const variables = group.querySelector('div.namelist-input-variables');
+            this.view.groups[groupName].hideUnset = e.currentTarget.checked;
             if (e.currentTarget.checked === true) {
-                variablesDiv.classList.add('namelist-input-hide-unset');
+                variables.classList.add('namelist-input-hide-unset');
             }
             else {
-                variablesDiv.classList.remove('namelist-input-hide-unset');
+                variables.classList.remove('namelist-input-hide-unset');
             }
+            this._storeView();
         });
 
         this.namelist[groupName] = this.namelist[groupName] ?? {};
 
         this._appendGroupVariableFields(groupDiv, groupName, groupVariables);
+    }
+
+    _updateGroupView() {
+        this.container.querySelectorAll('div.namelist-input-group').forEach((group) => {
+            const count = group.querySelectorAll('div.namelist-input-variable:not(.namelist-input-variable-unset)').length;
+            const badge = group.querySelector('div.namelist-input-group-header span.namelist-input-set-variable-count');
+
+            if (count > 0) {
+                badge.innerText = count;
+                badge.style.display = null;
+                group.classList.remove('namelist-input-group-unset');
+            }
+            else {
+                badge.innerText = '0';
+                badge.style.display = 'none';
+                group.classList.add('namelist-input-group-unset');
+            }
+        });
     }
 
     // capture variable group collapse state
@@ -766,6 +829,8 @@ export class NamelistInputEditor {
                 variable: variableName
             });
         }
+
+        this._updateGroupView();
     }
 
     // select variable input fields and return them as an array
