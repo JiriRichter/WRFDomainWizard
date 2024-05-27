@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="/lib/leaflet.css" />
     <link rel="stylesheet" href="/lib/all.min.css" />
     <link rel="stylesheet" href="/lib/leaflet-sidebar.min.css" />
-    <link rel="stylesheet" href="/css/wrf-domain-wizard.css?1716785983017" />
+    <link rel="stylesheet" href="/css/wrf-domain-wizard.css?1716829324445" />
 
     <link rel="icon" href="/img/globe_32x32.png" />
 
@@ -413,7 +413,28 @@ cfg: { // Application Insights Configuration
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"><span>namelist.input</span><a href="https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html" target="_blank" class="ml-3 text-muted"><i class="fas fa-external-link-alt"></i></a></h4>
+                <h4 class="modal-title"><span>namelist.input</span></h4>
+                <div class="dropdown dropdown-namelist-input-view">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdown-view" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      View
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdown-view">
+                        <h6 class="dropdown-header">Groups</h6>
+                        <a id="view-group-collapse-all" class="dropdown-item dropdown-selected" href="#"><i class="fas fa-check"></i><span class="ml-1">Collapse All</span></a>
+                        <a id="view-group-expand-all" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Expand All</span></a>
+                        <a id="view-group-show-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Unset</span></a>
+                        <a id="view-group-hide-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Hide Unset</span></a>
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Variables</h6>
+                        <a id="view-variables-show-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Unset</span></a>
+                        <a id="view-variables-hide-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Hide Unset</span></a>
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Views</h6>
+                        <a id="view-everything" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Everything</span></a>
+                        <a id="view-compact" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Compact</span></a>
+                        <a id="view-minimal" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Minimal</span></a>
+                    </div>
+                </div>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -430,6 +451,9 @@ cfg: { // Application Insights Configuration
                     </li>
                     <li class="nav-item" role="presentation" style="display: none;">
                         <button class="nav-link" id="tab-namelist-input-original" data-toggle="tab" data-target="#pane-namelist-input-original" type="button" role="tab" aria-controls="pane-namelist-input-original" aria-selected="false">Original</button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-namelist-input-info" data-toggle="tab" data-target="#pane-namelist-input-info" type="button" role="tab" aria-controls="pane-namelist-input-info" aria-selected="false">Documentation</button>
                       </li>
                   </ul>
                 
@@ -451,33 +475,30 @@ cfg: { // Application Insights Configuration
                     <div class="tab-pane fade" id="pane-namelist-input-original" role="namelist-input-original" aria-labelledby="tab-namelist-input-original">
                         <textarea class="form-control font-namelist resize-none" readonly></textarea>
                     </div>
+                    <div class="tab-pane fade" id="pane-namelist-input-info" role="namelist-input-info" aria-labelledby="tab-namelist-input-info">
+                        <div class="container">
+                            <div class="my-2">
+                                <h5>WRF Users Guide</h5>
+                                <div class="list-group">
+                                    <a href="https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html" class="list-group-item list-group-item-action" target="_blank">Namelist Variables</a>
+                                </div>
+                            </div>
+                            <div class="my-2">
+                                <h5>GitHub: wrf-model/WRF</h5>
+                                <div class="list-group">
+                                    <a href="https://github.com/wrf-model/WRF/tree/master/Registry" class="list-group-item list-group-item-action" target="_blank">Registry files</a>
+                                    <a href="https://github.com/wrf-model/WRF/blob/master/run/README.namelist" class="list-group-item list-group-item-action" target="_blank">run/README.namelist</a>
+                                    <a href="https://github.com/wrf-model/WRF/blob/master/test/em_real/examples.namelist" class="list-group-item list-group-item-action" target="_blank">test/em_real/examples.namelist</a>
+                                </div>
+                            </div>
+                          </div>
+                    </div>
                 </div>
 
             </div>
             <div class="modal-footer">
-
-                <div class="dropdown">
-                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdown-view" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      View
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdown-view">
-                        <h6 class="dropdown-header">Groups</h6>
-                        <a id="view-group-collapse-all" class="dropdown-item" href="#">Collapse All</a>
-                        <a id="view-group-expand-all" class="dropdown-item" href="#">Expand All</a>
-                        <a id="view-group-show-unset" class="dropdown-item" href="#">Show Unset</a>
-                        <a id="view-group-hide-unset" class="dropdown-item" href="#">Hide Unset</a>
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">Variables</h6>
-                        <a id="view-variables-show-unset" class="dropdown-item" href="#">Show Unset</a>
-                        <a id="view-variables-hide-unset" class="dropdown-item" href="#">Hide Unset</a>
-                        <div class="dropdown-divider"></div>
-                        <a id="view-show-all" class="dropdown-item" href="#">Show All</a>
-                        <a id="view-compact" class="dropdown-item" href="#">Compact View</a>
-                    </div>
-                </div>
-
                 <button id="button-save" type="button" class="btn btn-primary btn-sm"><i class="far fa-save"></i><span class="ml-1">Save</span></button>
-                <button id="button-copy" type="button" class="btn btn-secondary btn-sm"><i class="fas fa-copy"></i><span class="ml-1">Copy</span></button>
+                <button id="button-copy" type="button" class="btn btn-primary btn-sm"><i class="fas fa-copy"></i><span class="ml-1">Copy</span></button>
                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
             </div>
         </div>

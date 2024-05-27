@@ -12081,7 +12081,7 @@
     }, {
       key: "openNamelistWpsAsync",
       value: function () {
-        var _openNamelistWpsAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(namelistWps) {
+        var _openNamelistWpsAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(namelistWps, options) {
           var _this$namelist;
           var grid_id, i;
           return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -12113,14 +12113,14 @@
                 this._empty();
 
                 // initialize editor fields
-                this._initEditorFields();
+                this._initEditorFields(options);
               case 18:
               case "end":
                 return _context.stop();
             }
           }, _callee, this);
         }));
-        function openNamelistWpsAsync(_x) {
+        function openNamelistWpsAsync(_x, _x2) {
           return _openNamelistWpsAsync.apply(this, arguments);
         }
         return openNamelistWpsAsync;
@@ -12128,7 +12128,7 @@
     }, {
       key: "openNamelistInputAsync",
       value: function () {
-        var _openNamelistInputAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data) {
+        var _openNamelistInputAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data, options) {
           var errors, namelist, max_dom, _i, _Object$keys, groupName, group, _i2, _Object$keys2, variableName, variable, _i3, _errors, error;
           return _regeneratorRuntime().wrap(function _callee2$(_context2) {
             while (1) switch (_context2.prev = _context2.next) {
@@ -12226,7 +12226,7 @@
                 }
 
                 // initialize editor fields
-                this._initEditorFields();
+                this._initEditorFields(options);
                 return _context2.abrupt("return", {
                   errors: errors.length > 0 ? errors : null,
                   hasErrors: errors.length > 0
@@ -12237,7 +12237,7 @@
             }
           }, _callee2, this);
         }));
-        function openNamelistInputAsync(_x2) {
+        function openNamelistInputAsync(_x3, _x4) {
           return _openNamelistInputAsync.apply(this, arguments);
         }
         return openNamelistInputAsync;
@@ -12335,6 +12335,8 @@
             group.classList.remove('namelist-input-hide-unset');
           }
         });
+        this.view.hideUnsetGroups = hideUnset;
+        this._storeView();
       }
     }, {
       key: "_toggleVariableHideUnset",
@@ -12347,12 +12349,13 @@
             variables.classList.remove('namelist-input-hide-unset');
           }
           var header = group.querySelector('.namelist-input-group-header');
-          var hideUnset = header.querySelector('input[name="switch-hide-unset"]');
-          hideUnset.checked = hideUnset;
+          var hideUnsetSwitch = header.querySelector('input[name="switch-hide-unset"]');
+          hideUnsetSwitch.checked = hideUnset;
         });
         for (var group in this.view.groups) {
-          this.view.groups[group].hideUnset = hideUnset;
+          this.view.groups[group].hideUnsetVariables = hideUnset;
         }
+        this._storeView();
       }
 
       // check whether variable namelist object value is set
@@ -12542,7 +12545,7 @@
             }
           }, _callee4, this);
         }));
-        function _loadJsonAsync(_x3) {
+        function _loadJsonAsync(_x5) {
           return _loadJsonAsync2.apply(this, arguments);
         }
         return _loadJsonAsync;
@@ -12556,7 +12559,17 @@
       // create editor HTML
     }, {
       key: "_initEditorFields",
-      value: function _initEditorFields() {
+      value: function _initEditorFields(options) {
+        var editorOptions = {};
+        if (options) {
+          editorOptions = Object.assign(editorOptions, options);
+        }
+        if (typeof editorOptions.hideUnsetGroups === 'boolean') {
+          this.view.hideUnsetGroups = editorOptions.hideUnsetGroups;
+        } else {
+          var _this$view$hideUnsetG;
+          this.view.hideUnsetGroups = (_this$view$hideUnsetG = this.view.hideUnsetGroups) !== null && _this$view$hideUnsetG !== void 0 ? _this$view$hideUnsetG : true;
+        }
         for (var _i6 = 0, _Object$entries2 = Object.entries(this.variables); _i6 < _Object$entries2.length; _i6++) {
           var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i6], 2),
             groupName = _Object$entries2$_i[0],
@@ -12564,7 +12577,7 @@
           if (Object.keys(groupVariables).length === 0) {
             continue;
           }
-          this._initVariableGroup(groupName, groupVariables);
+          this._initVariableGroup(groupName, groupVariables, editorOptions);
         }
         $(this.container).find('*[title]').tooltip();
         this._storeView();
@@ -12576,22 +12589,33 @@
       key: "_initVariableGroup",
       value:
       // create group variables 
-      function _initVariableGroup(groupName, groupVariables) {
+      function _initVariableGroup(groupName, groupVariables, editorOptions) {
         var _this$view$groups,
           _this$view$groups$gro,
-          _this$view$groups$gro2,
-          _this$view$groups$gro3,
           _this2 = this,
           _this$namelist$groupN;
         var groupDiv = this._append(this.container, 'div');
         groupDiv.classList.add('namelist-input-group');
+        if (this.view.hideUnsetGroups === true) {
+          groupDiv.classList.add('namelist-input-hide-unset');
+        }
         groupDiv.dataset['group'] = groupName;
 
         // initialize group view
         this.view.groups = (_this$view$groups = this.view.groups) !== null && _this$view$groups !== void 0 ? _this$view$groups : {};
         this.view.groups[groupName] = (_this$view$groups$gro = this.view.groups[groupName]) !== null && _this$view$groups$gro !== void 0 ? _this$view$groups$gro : {};
-        this.view.groups[groupName].collapse = (_this$view$groups$gro2 = this.view.groups[groupName].collapse) !== null && _this$view$groups$gro2 !== void 0 ? _this$view$groups$gro2 : true;
-        this.view.groups[groupName].hideUnset = (_this$view$groups$gro3 = this.view.groups[groupName].hideUnset) !== null && _this$view$groups$gro3 !== void 0 ? _this$view$groups$gro3 : false;
+        if (typeof editorOptions.collapseGroups === 'boolean') {
+          this.view.groups[groupName].collapse = editorOptions.collapseGroups;
+        } else {
+          var _this$view$groups$gro2;
+          this.view.groups[groupName].collapse = (_this$view$groups$gro2 = this.view.groups[groupName].collapse) !== null && _this$view$groups$gro2 !== void 0 ? _this$view$groups$gro2 : false;
+        }
+        if (typeof editorOptions.hideUnsetVariables === 'boolean') {
+          this.view.groups[groupName].hideUnsetVariables = editorOptions.hideUnsetVariables;
+        } else {
+          var _this$view$groups$gro3;
+          this.view.groups[groupName].hideUnsetVariables = (_this$view$groups$gro3 = this.view.groups[groupName].hideUnsetVariables) !== null && _this$view$groups$gro3 !== void 0 ? _this$view$groups$gro3 : true;
+        }
         var iconClass = this.view.groups[groupName].collapse === true ? NamelistInputEditor.iconClass.collapsed : NamelistInputEditor.iconClass.open;
         var headerDiv = this._append(groupDiv, 'div');
         headerDiv.classList.add('namelist-input-group-header');
@@ -12604,18 +12628,18 @@
         headerDivHtml = headerDivHtml + "<h5>".concat(htmlEncode(groupName), "</h5>");
 
         // number of set variables
-        headerDivHtml = headerDivHtml + '<span class="badge badge-pill badge-light namelist-input-set-variable-count" style="display: none;"></span>';
+        headerDivHtml = headerDivHtml + '<span class="badge badge-pill namelist-input-set-variable-count" style="display: none;" title="Number of variables set in this group"></span>';
 
         // users guide link
         if (groupName in this.userGuideLinks) {
-          headerDivHtml = headerDivHtml + "<a href=\"".concat(htmlEncode(this.userGuideLinks[groupName]), "\" target=\"_blank\" class=\"ml-3 text-muted\"><i class=\"fas fa-external-link-alt\"></i></a>");
+          headerDivHtml = headerDivHtml + "<a href=\"".concat(htmlEncode(this.userGuideLinks[groupName]), "\" target=\"_blank\" class=\"namelist-input-variables-user-guide-link ml-3\" title=\"Open WRF User's Guide page for this group in a new tab\"><i class=\"fas fa-info-circle\"></i></a>");
         }
 
         // hide unset switch
         headerDivHtml = headerDivHtml + '<div class="namelist-input-group-header-switch">';
         headerDivHtml = headerDivHtml + '<label class="switch ml-2">';
         headerDivHtml = headerDivHtml + "<input type=\"checkbox\" name=\"switch-hide-unset\" id=\"switch-hide-unset-".concat(htmlEncode(groupName), "\"");
-        if (this.view.groups[groupName].hideUnset === true) {
+        if (this.view.groups[groupName].hideUnsetVariables === true) {
           headerDivHtml = headerDivHtml + ' checked';
         }
         headerDivHtml = headerDivHtml + '><span class="slider round"></span>';
@@ -12641,7 +12665,7 @@
           var group = e.currentTarget.closest('.namelist-input-group');
           var groupName = group.dataset['group'];
           var variables = group.querySelector('div.namelist-input-variables');
-          _this2.view.groups[groupName].hideUnset = e.currentTarget.checked;
+          _this2.view.groups[groupName].hideUnsetVariables = e.currentTarget.checked;
           if (e.currentTarget.checked === true) {
             variables.classList.add('namelist-input-hide-unset');
           } else {
@@ -12687,7 +12711,7 @@
         if (this.view.groups[groupName].collapse === false) {
           variablesDiv.classList.add('show');
         }
-        if (this.view.groups[groupName].hideUnset) {
+        if (this.view.groups[groupName].hideUnsetVariables) {
           variablesDiv.classList.add('namelist-input-hide-unset');
         }
         variablesDiv.id = groupName;
@@ -12989,7 +13013,7 @@
     character: "character",
     selection: "selection"
   });
-  _defineProperty(NamelistInputEditor, "_localStorageKey", '_wrf_domain_wizard_namelist_input');
+  _defineProperty(NamelistInputEditor, "_localStorageKey", '_wrf_domain_wizard_namelist_input_editor');
   _defineProperty(NamelistInputEditor, "collpaseCommands", {
     hide: 'hide',
     show: 'show'
@@ -13027,40 +13051,130 @@
       });
       this.tabErrors = document.getElementById('tab-namelist-input-errors').parentNode;
       this.tabOriginal = document.getElementById('tab-namelist-input-original').parentNode;
+      var value = localStorage.getItem("".concat(NamelistInputDialog._localStorageKey, "_view"));
+      if (value) {
+        this.view = JSON.parse(value);
+      } else {
+        this.view = {
+          collapseGroups: false,
+          hideUnsetGroups: true,
+          hideUnsetVariables: true
+        };
+      }
 
-      // view commands
-      this.footer.querySelector('#view-group-collapse-all').addEventListener('click', function (e) {
+      // group view actions
+      this.viewActions = {
+        collapseGroups: this.header.querySelector('#view-group-collapse-all'),
+        expandGroups: this.header.querySelector('#view-group-expand-all'),
+        showUnsetGroups: this.header.querySelector('#view-group-show-unset'),
+        hideUnsetGroups: this.header.querySelector('#view-group-hide-unset'),
+        showUnsetVariables: this.header.querySelector('#view-variables-show-unset'),
+        hideUnsetVariables: this.header.querySelector('#view-variables-hide-unset')
+      };
+      this.viewActions.collapseGroups.addEventListener('click', function (e) {
+        _this.view.collapseGroups = true;
         _this.editor.collapseGroups();
+        _this._updateViewMenu();
       });
-      this.footer.querySelector('#view-group-expand-all').addEventListener('click', function (e) {
+      this.viewActions.expandGroups.addEventListener('click', function (e) {
+        _this.view.collapseGroups = false;
         _this.editor.expandGroups();
+        _this._updateViewMenu();
       });
-      this.footer.querySelector('#view-variables-show-unset').addEventListener('click', function (e) {
-        _this.editor.showUnsetVariables();
-      });
-      this.footer.querySelector('#view-variables-hide-unset').addEventListener('click', function (e) {
-        _this.editor.hideUnsetVariables();
-      });
-      this.footer.querySelector('#view-group-show-unset').addEventListener('click', function (e) {
+      this.viewActions.showUnsetGroups.addEventListener('click', function (e) {
+        _this.view.hideUnsetGroups = false;
         _this.editor.showUnsetGroups();
+        _this._updateViewMenu();
       });
-      this.footer.querySelector('#view-group-hide-unset').addEventListener('click', function (e) {
+      this.viewActions.hideUnsetGroups.addEventListener('click', function (e) {
+        _this.view.hideUnsetGroups = true;
         _this.editor.hideUnsetGroups();
+        _this._updateViewMenu();
+      });
+
+      // variable view actions
+      this.viewActions.showUnsetVariables.addEventListener('click', function (e) {
+        _this.view.hideUnsetVariables = false;
+        _this.editor.showUnsetVariables();
+        _this._updateViewMenu();
+      });
+      this.viewActions.hideUnsetGroups.addEventListener('click', function (e) {
+        _this.view.hideUnsetVariables = true;
+        _this.editor.hideUnsetVariables();
+        _this._updateViewMenu();
+      });
+      this._updateViewMenu();
+      this.header.querySelector('#view-everything').addEventListener('click', function (e) {
+        _this.viewActions.expandGroups.click();
+        _this.viewActions.showUnsetGroups.click();
+        _this.viewActions.showUnsetVariables.click();
+      });
+      this.header.querySelector('#view-minimal').addEventListener('click', function (e) {
+        _this.viewActions.collapseGroups.click();
+        _this.viewActions.hideUnsetGroups.click();
+        _this.viewActions.hideUnsetVariables.click();
+      });
+      this.header.querySelector('#view-compact').addEventListener('click', function (e) {
+        _this.viewActions.expandGroups.click();
+        _this.viewActions.hideUnsetGroups.click();
+        _this.viewActions.hideUnsetVariables.click();
       });
     }
     return _createClass(NamelistInputDialog, [{
+      key: "_scrollToTop",
+      value: function _scrollToTop() {
+        this.body.scrollTop = 0;
+      }
+    }, {
+      key: "_storeView",
+      value: function _storeView() {
+        localStorage.setItem("".concat(NamelistInputDialog._localStorageKey, "_view"), JSON.stringify(this.view));
+      }
+    }, {
+      key: "_updateViewMenu",
+      value: function _updateViewMenu() {
+        if (this.view.collapseGroups === true) {
+          this.viewActions.collapseGroups.classList.add('dropdown-selected');
+          this.viewActions.expandGroups.classList.remove('dropdown-selected');
+        } else {
+          this.viewActions.collapseGroups.classList.remove('dropdown-selected');
+          this.viewActions.expandGroups.classList.add('dropdown-selected');
+        }
+        if (this.view.hideUnsetGroups === true) {
+          this.viewActions.hideUnsetGroups.classList.add('dropdown-selected');
+          this.viewActions.showUnsetGroups.classList.remove('dropdown-selected');
+        } else {
+          this.viewActions.hideUnsetGroups.classList.remove('dropdown-selected');
+          this.viewActions.showUnsetGroups.classList.add('dropdown-selected');
+        }
+        if (this.view.hideUnsetVariables === true) {
+          this.viewActions.hideUnsetVariables.classList.add('dropdown-selected');
+          this.viewActions.showUnsetVariables.classList.remove('dropdown-selected');
+        } else {
+          this.viewActions.hideUnsetVariables.classList.remove('dropdown-selected');
+          this.viewActions.showUnsetVariables.classList.add('dropdown-selected');
+        }
+        this._storeView();
+      }
+    }, {
+      key: "_openDialog",
+      value: function _openDialog() {
+        $(this.modal).modal('show');
+        this._scrollToTop();
+      }
+    }, {
       key: "openNamelistWpsAsync",
       value: function () {
         var _openNamelistWpsAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(namelistWps) {
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) switch (_context.prev = _context.next) {
               case 0:
-                this._resetView();
+                this._resetTabs();
                 _context.next = 3;
                 return this.editor.openNamelistWpsAsync(namelistWps);
               case 3:
-                $(this.modal).modal('show');
                 this._updateText();
+                this._openDialog();
               case 5:
               case "end":
                 return _context.stop();
@@ -13080,14 +13194,14 @@
           return _regeneratorRuntime().wrap(function _callee2$(_context2) {
             while (1) switch (_context2.prev = _context2.next) {
               case 0:
-                this._resetView();
+                this._resetTabs();
                 this.original.value = data;
                 this.tabOriginal.style['display'] = null;
                 _context2.next = 5;
-                return this.editor.openNamelistInputAsync(data);
+                return this.editor.openNamelistInputAsync(data, this.view);
               case 5:
                 result = _context2.sent;
-                $(this.modal).modal('show');
+                this._openDialog();
                 this._updateText();
                 if (result.hasErrors) {
                   this._showErrors(result.errors);
@@ -13104,8 +13218,8 @@
         return openNamelistInputAsync;
       }()
     }, {
-      key: "_resetView",
-      value: function _resetView() {
+      key: "_resetTabs",
+      value: function _resetTabs() {
         this.tabErrors.style['display'] = 'none';
         this.tabOriginal.style['display'] = 'none';
         $('#tab-namelist-input-editor').tab('show');
@@ -13131,6 +13245,7 @@
       }
     }]);
   }();
+  _defineProperty(NamelistInputDialog, "_localStorageKey", '_wrf_domain_wizard_namelist_input_dialog');
 
   var SidebarDomains = /*#__PURE__*/function () {
     function SidebarDomains(map, sidebar, options) {

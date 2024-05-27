@@ -2,6 +2,8 @@ import { NamelistInputEditor } from "./domain-wizard.editor.namelist.input";
 
 export class NamelistInputDialog {
 
+    static _localStorageKey = '_wrf_domain_wizard_namelist_input_dialog';
+
     constructor(options) {
         this.modal = document.getElementById('namelist-input-dialog');
         this.header = this.modal.querySelector('div.modal-header');
@@ -33,49 +35,150 @@ export class NamelistInputDialog {
         this.tabErrors = document.getElementById('tab-namelist-input-errors').parentNode;
         this.tabOriginal = document.getElementById('tab-namelist-input-original').parentNode;
 
-        // view commands
-        this.footer.querySelector('#view-group-collapse-all').addEventListener('click', (e) => {
+        let value = localStorage.getItem(`${NamelistInputDialog._localStorageKey}_view`);
+        if (value) {
+            this.view = JSON.parse(value);
+        }
+        else {
+            this.view = {
+                collapseGroups: false,
+                hideUnsetGroups: true,
+                hideUnsetVariables: true,
+            };
+        }
+
+        // group view actions
+        this.viewActions = {
+            collapseGroups: this.header.querySelector('#view-group-collapse-all'),
+            expandGroups: this.header.querySelector('#view-group-expand-all'),
+            showUnsetGroups: this.header.querySelector('#view-group-show-unset'),
+            hideUnsetGroups: this.header.querySelector('#view-group-hide-unset'),
+            showUnsetVariables: this.header.querySelector('#view-variables-show-unset'),
+            hideUnsetVariables: this.header.querySelector('#view-variables-hide-unset'),
+        }
+
+        this.viewActions.collapseGroups.addEventListener('click', (e) => {
+            this.view.collapseGroups = true;
             this.editor.collapseGroups();
+            this._updateViewMenu();
         });
-        this.footer.querySelector('#view-group-expand-all').addEventListener('click', (e) => {
+        this.viewActions.expandGroups.addEventListener('click', (e) => {
+            this.view.collapseGroups = false;
             this.editor.expandGroups();
+            this._updateViewMenu();
         });
-        this.footer.querySelector('#view-variables-show-unset').addEventListener('click', (e) => {
-            this.editor.showUnsetVariables();
-        });
-        this.footer.querySelector('#view-variables-hide-unset').addEventListener('click', (e) => {
-            this.editor.hideUnsetVariables();
-        });
-        this.footer.querySelector('#view-group-show-unset').addEventListener('click', (e) => {
+
+        this.viewActions.showUnsetGroups.addEventListener('click', (e) => {
+            this.view.hideUnsetGroups = false;
             this.editor.showUnsetGroups();
+            this._updateViewMenu();
         });
-        this.footer.querySelector('#view-group-hide-unset').addEventListener('click', (e) => {
+        this.viewActions.hideUnsetGroups.addEventListener('click', (e) => {
+            this.view.hideUnsetGroups = true;
             this.editor.hideUnsetGroups();
+            this._updateViewMenu();
         });
+
+        // variable view actions
+        this.viewActions.showUnsetVariables.addEventListener('click', (e) => {
+            this.view.hideUnsetVariables = false;
+            this.editor.showUnsetVariables();
+            this._updateViewMenu();
+        });
+        this.viewActions.hideUnsetGroups.addEventListener('click', (e) => {
+            this.view.hideUnsetVariables = true;
+            this.editor.hideUnsetVariables();
+            this._updateViewMenu();
+        });
+
+        this._updateViewMenu();
+
+        this.header.querySelector('#view-everything').addEventListener('click', (e) => {
+            this.viewActions.expandGroups.click();
+            this.viewActions.showUnsetGroups.click();
+            this.viewActions.showUnsetVariables.click();
+        });
+
+        this.header.querySelector('#view-minimal').addEventListener('click', (e) => {
+            this.viewActions.collapseGroups.click();
+            this.viewActions.hideUnsetGroups.click();
+            this.viewActions.hideUnsetVariables.click();
+        });
+
+        this.header.querySelector('#view-compact').addEventListener('click', (e) => {
+            this.viewActions.expandGroups.click();
+            this.viewActions.hideUnsetGroups.click();
+            this.viewActions.hideUnsetVariables.click();
+        });
+    }
+
+    _scrollToTop() {
+        this.body.scrollTop = 0;
+    }
+
+    _storeView() {
+        localStorage.setItem(`${NamelistInputDialog._localStorageKey}_view`, JSON.stringify(this.view));
+    }
+
+    _updateViewMenu() {
+        if (this.view.collapseGroups === true) {
+            this.viewActions.collapseGroups.classList.add('dropdown-selected');
+            this.viewActions.expandGroups.classList.remove('dropdown-selected');
+        }
+        else {
+            this.viewActions.collapseGroups.classList.remove('dropdown-selected');
+            this.viewActions.expandGroups.classList.add('dropdown-selected');
+        }
+
+        if (this.view.hideUnsetGroups === true) {
+            this.viewActions.hideUnsetGroups.classList.add('dropdown-selected');
+            this.viewActions.showUnsetGroups.classList.remove('dropdown-selected');
+        }
+        else {
+            this.viewActions.hideUnsetGroups.classList.remove('dropdown-selected');
+            this.viewActions.showUnsetGroups.classList.add('dropdown-selected');
+        }
+
+        if (this.view.hideUnsetVariables === true) {
+            this.viewActions.hideUnsetVariables.classList.add('dropdown-selected');
+            this.viewActions.showUnsetVariables.classList.remove('dropdown-selected');
+        }
+        else {
+            this.viewActions.hideUnsetVariables.classList.remove('dropdown-selected');
+            this.viewActions.showUnsetVariables.classList.add('dropdown-selected');
+        }
+
+        this._storeView();
+    }
+
+    _openDialog() {
+        $(this.modal).modal('show');
+        this._scrollToTop();
     }
 
     async openNamelistWpsAsync(namelistWps) {
-        this._resetView();
+        this._resetTabs();
+
         await this.editor.openNamelistWpsAsync(namelistWps);
-        $(this.modal).modal('show');
         this._updateText();
+        this._openDialog();
     }
 
     async openNamelistInputAsync(data) {
-        this._resetView();
+        this._resetTabs();
 
         this.original.value = data;
         this.tabOriginal.style['display'] = null;
 
-        var result = await this.editor.openNamelistInputAsync(data);
-        $(this.modal).modal('show');
+        var result = await this.editor.openNamelistInputAsync(data, this.view);
+        this._openDialog();
         this._updateText();
         if (result.hasErrors) {
             this._showErrors(result.errors);
         }
     }
 
-    _resetView() {
+    _resetTabs() {
         this.tabErrors.style['display'] = 'none';
         this.tabOriginal.style['display'] = 'none';
         $('#tab-namelist-input-editor').tab('show');

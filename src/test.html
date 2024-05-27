@@ -13,9 +13,17 @@
 </head>
 <body>
 
-    <button type="button" class="btn btn-danger" onclick="showError()">Show Error</button>
-    <button type="button" class="btn btn-danger" onclick="throwError()">Throw Error</button>
-    <button type="button" class="btn btn-danger" onclick="scriptError()">Script Error</button>
+    <div class="container-fluid">
+        <h2>Test Page</h2>
+        <div class="">
+            <div>Message Box Dialog</div>
+            <div>
+                <button type="button" class="btn btn-danger" onclick="showError()">Show Error</button>
+                <button type="button" class="btn btn-danger" onclick="throwError()">Throw Error</button>
+                <button type="button" class="btn btn-danger" onclick="scriptError()">Script Error</button>
+            </div>
+        </div>
+    </div>
 
 
     {{dialog.message-box}}

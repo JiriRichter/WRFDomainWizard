@@ -538,6 +538,18 @@ div.namelist-input-editor div.namelist-input-group div.namelist-input-group-head
   margin-left: 2px;
   margin-right: 2px;
 }
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header span.badge.badge-pill.namelist-input-set-variable-count {
+  color: #212529;
+  background-color: #89ff007a;
+  font-size: 65%;
+  margin-left: 1rem;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header a.namelist-input-variables-user-guide-link {
+  margin-left: 1rem;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header a.namelist-input-variables-user-guide-link i {
+  color: #2196f3bd;
+}
 div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable {
   width: 100%;
 }
@@ -644,6 +656,18 @@ div.namelist-input-editor div.namelist-input-group.namelist-input-group-unset.na
   height: 100%;
   resize: none;
   overflow: auto;
+}
+#namelist-input-dialog div.modal-header {
+  align-items: center !important;
+}
+#namelist-input-dialog div.modal-header div.dropdown-namelist-input-view {
+  margin-left: 2rem;
+}
+#namelist-input-dialog div.modal-header div.dropdown-namelist-input-view a.dropdown-item i {
+  visibility: hidden;
+}
+#namelist-input-dialog div.modal-header div.dropdown-namelist-input-view a.dropdown-item.dropdown-selected i {
+  visibility: visible;
 }
 .leaflet-container.cursor-crosshair {
   cursor: crosshair;
