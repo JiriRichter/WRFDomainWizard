@@ -892,38 +892,56 @@
       this.dialogBody = this.container.querySelector('div.modal-body');
       this.dialogTitle = this.container.querySelector('div.modal-header h5.modal-title');
       this.titleIcon = this.dialogTitle.querySelector('i');
-      this.title = this.dialogTitle.querySelector('span');
+      this.titleSpan = this.dialogTitle.querySelector('span');
     }
     return _createClass(MessageBoxDialog, [{
-      key: "show",
-      value: function show(title, message, type) {
-        this.empty();
-        this.setTitle(title, type);
-        this.dialogBody.innerText = message;
+      key: "open",
+      value: function open() {
         $(this.container).modal();
+        return this;
+      }
+    }, {
+      key: "close",
+      value: function close() {
+        $(this.container).modal('hide');
+        return this;
       }
     }, {
       key: "empty",
       value: function empty() {
-        this.title.innerHTML = '';
+        this.titleSpan.innerHTML = '';
         this.titleIcon.classList.remove('fa-exclamation-circle');
         this.titleIcon.classList.remove('fa-info-circle');
         this.titleIcon.classList.remove('fa-exclamation-triangle');
         this.dialogBody.innerHTML = '';
+        return this;
       }
     }, {
-      key: "setTitle",
-      value: function setTitle(title, type) {
-        if (type === MessageBoxDialog.types.error) {
+      key: "title",
+      value: function title(_title, icon) {
+        if (icon === MessageBoxDialog.types.error) {
           this.titleIcon.classList.add('fa-exclamation-circle');
         }
-        if (type === MessageBoxDialog.types.info) {
+        if (icon === MessageBoxDialog.types.info) {
           this.titleIcon.classList.add('fa-info-circle');
         }
-        if (type === MessageBoxDialog.types.warning) {
+        if (icon === MessageBoxDialog.types.warning) {
           this.titleIcon.classList.add('fa-exclamation-triangle');
         }
-        this.title.innerText = title;
+        this.titleSpan.innerText = _title;
+        return this;
+      }
+    }, {
+      key: "html",
+      value: function html(_html) {
+        this.dialogBody.innerHTML = _html;
+        return this;
+      }
+    }, {
+      key: "text",
+      value: function text(message) {
+        this.dialogBody.innerText = message;
+        return this;
       }
     }]);
   }();
@@ -933,12 +951,36 @@
     warning: 2
   });
   var messageBoxDialog = new MessageBoxDialog();
+  function getTemplate(name) {
+    return document.getElementById('message-box-dialog-templates').querySelector("div[template=\"".concat(name, "\"]"));
+  }
   function errorMessageBox(title, message) {
-    messageBoxDialog.show(title, message, MessageBoxDialog.types.error);
+    messageBoxDialog.empty().title(title, MessageBoxDialog.types.error).text(message).open();
   }
   function enableGlobalErrorHandler() {
     window.onerror = function (event, source, lineno, colno, error) {
-      messageBoxDialog.show('Error', source, MessageBoxDialog.types.error);
+      if (!event || !source || !error) {
+        return;
+      }
+      if (!error.stack) {
+        return;
+      }
+      if (source.toLowerCase().includes("/lib/")) {
+        return;
+      }
+      var template = getTemplate('global-error');
+      messageBoxDialog.empty().title('Unexpected Error', MessageBoxDialog.types.error).html(template.innerHTML);
+      var errorDetails = '';
+      errorDetails = errorDetails + "Error: ".concat(event, "\n");
+      errorDetails = errorDetails + "Timestamp: ".concat(new Date().toISOString(), "\n");
+      errorDetails = errorDetails + "Source: ".concat(source, "\n");
+      errorDetails = errorDetails + "Line: ".concat(lineno, "\n");
+      errorDetails = errorDetails + "Stack:\n";
+      errorDetails = errorDetails + "".concat(error.stack);
+      messageBoxDialog.dialogBody.querySelector('textarea').value = errorDetails;
+      var title = 'Error: ' + event + ' @ ' + source + ":" + lineno;
+      messageBoxDialog.dialogBody.querySelector('a#create-github-issue').href = "https://github.com/JiriRichter/WRFDomainWizard/issues/new?labels=bug&title=".concat(encodeURI(title), "&body=").concat(encodeURI(errorDetails));
+      messageBoxDialog.open();
     };
   }
 

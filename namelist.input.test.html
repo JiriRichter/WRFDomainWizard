@@ -11,7 +11,7 @@
 
     <link rel="stylesheet" href="build/lib/bootstrap.min.css" />
     <link rel="stylesheet" href="build/lib/all.min.css" />
-    <link rel="stylesheet" href="build/css/wrf-domain-wizard.css?1716489047123" />
+    <link rel="stylesheet" href="build/css/wrf-domain-wizard.css?1716785983017" />
 
     <link rel="icon" href="build/img/globe_32x32.png" />
 </head>
@@ -60,6 +60,23 @@
     </div>
 </div>
 
+<div id="message-box-dialog-templates" style="display: none;">
+    <div template="global-error">
+        <div class="global-error">
+            <p>
+                The WRF domain wizard encountered an unexpected error. To help improve this tool, consider creating an <a href="https://github.com/JiriRichter/WRFDomainWizard/issues" target="_blank">issue on this project's GitHub page</a>. If you decide to create an issue, please, follow these steps: 
+                <ul>
+                    <li>Check an issue for this error has not already been created. If you are not sure, creating a duplicate issue is ok.</li>
+                    <li>If the error happened while opening a namelist file, please, attach the file to the issue. Make sure the file does not contain any personal information.</li>
+                    <li>Add brief description of steps taken before this error occured.</li>
+                </ul>
+            </p>
+            <h6>Error Details:</h6>
+            <textarea class="form-control" readonly></textarea>
+            <a id="create-github-issue" class="btn btn-primary my-2" href="#" role="button" target="_blank">Create Issue</a>
+        </div>
+    </div>
+</div>
 
     <div id="namelist-input-dialog" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-fullscreen" role="document">
@@ -153,6 +170,8 @@
     <script src="build/js/wrf-domain-wizard.js"></script>
 
     <script type="module">
+
+        WRF.enableGlobalErrorHandler();
 
         var page = new WRF.NamelistInputPage({
             jsonBaseUrl: 'build/json'

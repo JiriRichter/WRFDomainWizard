@@ -377,6 +377,7 @@
 
     <script src="{{baseUrl}}/js/wrf-domain-wizard.js"></script>
     <script>
+        WRF.enableGlobalErrorHandler();
         var wizard = new WRF.DomainWizard({
             div: $('div#map'),
             jsonBaseUrl: '{{baseUrl}}/json',
