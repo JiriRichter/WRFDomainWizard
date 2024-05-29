@@ -12494,9 +12494,9 @@
                   description: description,
                   entries: entries
                 };
-                if (selectValues[variable] && selectValues[variable].values) {
+                if (selectValues[group] && selectValues[group][variable] && selectValues[group][variable].values) {
                   this.variables[group][variable].type = NamelistInputEditor.variableTypes.selection;
-                  this.variables[group][variable]['values'] = selectValues[variable].values;
+                  this.variables[group][variable]['values'] = selectValues[group][variable].values;
                 }
                 _context3.next = 16;
                 break;

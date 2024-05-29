@@ -1,183 +1,237 @@
 {
-    "fine_input_stream": {
-        "values": {
-            "0": "all fields are used",
-            "2": "only input specified from input stream 2"
+    "time_control": {
+        "fine_input_stream": {
+            "values": {
+                "0": "all fields are used",
+                "2": "only input specified from input stream 2"
+            }
+        },
+        "io_form_auxinput4": {
+            "values": {
+                "2": "netCDF"
+            }
+        },
+        "io_form_history": {
+            "values": {
+                "2": "netCDF",
+                "102": "split netCDF files, one per processor",
+                "1": "binary format",
+                "4": "PHDF5",
+                "5": "GRIB1",
+                "10": "GRIB2",
+                "11": "parallel netCDF"
+            }
+        },
+        "io_form_restart": {
+            "values": {
+                "2": "netCDF",
+                "102": "split netCDF files, one per processor",
+                "11": "parallel netCDF"
+            }
+        },
+        "io_form_input": {
+            "values": {
+                "2": "netCDF",
+                "102": "split netCDF files, one per processor",
+                "11": "parallel netCDF"
+            }
+        },
+        "io_form_boundary": {
+            "values": {
+                "2": "netCDF",
+                "4": "PHDF5",
+                "5": "GRIB1",
+                "10": "GRIB2",
+                "11": "parallel netCDF"
+            }
+        },
+        "io_form_auxinput2": {
+            "values": {
+                "2": "netCDF",
+                "4": "PHD5",
+                "5": "GRIB1",
+                "10": "GRIB2",
+                "11": "parallel netCDF"
+            }
+        },
+        "diag_print": {
+            "values": {
+                "0": "no print",
+                "1": "domain-averaged 3-hourly hydrostatic surface pressure tendency (Dpsfc/Dt), and dry-hydrostatic column pressure tendency (Dmu/Dt) added to standard output file",
+                "2": "option 1, plus domain-averaged rainfall, sfc evaporation, and sensible and latent heat fluxes"
+            }
+        },
+        "io_form_auxhist2": {
+            "values": {
+                "2": "netCDF",
+                "4": "PHD5",
+                "5": "GRIB1",
+                "10": "GRIB2",
+                "11": "parallel netCDF"
+            }
+        },
+        "output_diagnostics": {
+            "values": {
+                "0": "none",
+                "1": "add 48 sfc diagnostic arrays (max/min/mean/std) in the specified time interval"
+            }
+        },
+        "nwp_diagnostics": {
+            "values": {
+                "0": "none",
+                "1": "add 'history_interval' diagnostic fileds (10m wind sp, 2-5 km max helicity, max vert. velocity in updraft and downdraft below 400mb, 2-5 km mean vert. velocity, max column graupel; must also turn on 'do_radar_ref'"
+            }
         }
     },
-    "io_form_auxinput4": {
-        "values": {
-            "2": "netCDF"
+    "domains": {
+        "smooth_option": {
+            "values": {
+                "0": "off",
+                "1": "1-2-1 smoothing",
+                "2": "smoothing-desmoothing"
+            }
+        },
+        "hypsometric_opt": {
+            "values": {
+                "1": "use a form of the hydrostatic equation that depends on air density",
+                "2": "computes height in real.exe and pressure in the model by using the hypsometric equation (less biased when compared against input data)"
+            }
+        },
+        "wif_input_opt": {
+            "values": {
+                "0": "none",
+                "1": "process the Water Ice Friendly Aerosol input from metgrid",
+                "2": "use black carbon aerosol category and its radiative effect"
+            }
+        },
+        "auto_levels_opt": {
+            "values": {
+                "1": "assumes a known first several layers, then generates equi-height spaced levels up to the model top",
+                "2": "set 'dzstretch_s,' 'dzstretch_u,' 'dzbot,' and 'max_dz' to stretch levels according to logP, up to where it reaches max thickness (max_dz) and starting from thickness dzbot"
+            }
+        },
+        "ideal_init_method": {
+            "values": {
+                "1": "albedo from phb",
+                "2": "albedo from t_init"
+            }
+        },
+        "interp_method_type": {
+            "values": {
+                "1": "bi-linear",
+                "2": "Smolarkiewicz (SINT) method",
+                "3": "nearest-neighbor",
+                "4": "overlapping quadratic",
+                "12": "uses SINT, and same scheme for computation of fine-grid lateral boundaries"
+            }
+        },
+        "force_sfc_in_vinterp": {
+            "range": {
+                "start": "0",
+                "end": "eta_levels"
+            }
+        },
+        "use_trop_level": {
+            "values": {
+                "0": "off",
+                "1": "use tropopause level data"
+            }
+        },
+        "interp_type": {
+            "values": {
+                "1": "vertical interpolation is linear in pressure",
+                "2": "vertical interpolation is linear in log(pressure)"
+            }
+        },
+        "extrap_type": {
+            "values": {
+                "1": "using the two lowest levels",
+                "2": "using the lowest level as a constant below ground"
+            }
+        },
+        "t_extrap_type": {
+            "values": {
+                "1": "isothermal",
+                "2": "-6.5 K/km lapse rate for temp",
+                "3": "constant theta"
+            }
+        },
+        "lagrange_order": {
+            "values": {
+                "1": "linear",
+                "2": "quadratic",
+                "9": "cubic spline"
+            }
+        },
+        "rh2qv_method": {
+            "values": {
+                "1": "old MM5 method",
+                "2": "WMO-recommended method"
+            }
+        },
+        "vert_refine_method": {
+            "values": {
+                "0": "no vertical refinement",
+                "1": "integer vertical refinement",
+                "2": " use specified or computed eta levels for vertical refinement"
+            }
         }
     },
-    "io_form_history": {
-        "values": {
-            "2": "netCDF",
-            "102": "split netCDF files, one per processor",
-            "1": "binary format",
-            "4": "PHDF5",
-            "5": "GRIB1",
-            "10": "GRIB2",
-            "11": "parallel netCDF"
+    "physics": {
+        "mp_physics": {
+            "values": {
+                "0": "no microphysics",
+                "1": "Kessler scheme",
+                "2": "Purdue Lin scheme",
+                "3": "WSM 3-class ice scheme",
+                "4": "WSM 5-class scheme",
+                "5": "Ferrier (Eta) scheme",
+                "6": "WSM 6-class graupel scheme",
+                "7": "Goddard 4-ice scheme; also uses \"gsfcgce_hail\" and \"gsfcgce_2ice\"",
+                "8": "Thompson graupel scheme",
+                "9": "Milbrandt-Yau 2-moment scheme",
+                "10": "Morrison 2-moment",
+                "11": "CAM 5.1 5-class",
+                "13": "SBU_YLin 5-class",
+                "14": "WDM 5-class",
+                "15": "High-res Ferrier with advection",
+                "16": "WDM 6-class",
+                "18": "NSSL 2-moment 4-ice with predicted (unactivated) CCN (or activated CCN)",
+                "24": "WSM7; like WSM6, but with hail",
+                "26": "WDM7; like WDM6, but with hail",
+                "28": "aerosol-aware Thompson with water- and ice-friendly aerosol climatology",
+                "30": "HUJI spectral bin, fast version",
+                "38": "Thompson hail/graupel/aerosol",
+                "40": "Morrison double-moment with CESM aerosol",
+                "50": "P3 1-ice category, 1-moment cloud water",
+                "51": "P3 1-ice category, 2-moment cloud water",
+                "52": "P3 2-ice categories, 2-moment cloud water",
+                "53": "P3 1-ice category, 3-moment ice, 2-moment cloud water",
+                "55": "Jensen ISHMAEL",
+                "56": "NTU multi-moment"
+            }
+        },
+        "do_radar_ref": {
+            "values": {
+                "0": "off",
+                "1": "allow radar reflectivity to be computed using mp-scheme-specific parameters"
+            }
+        },
+        "var": {
+            "values": {
+                "0": "val0",
+                "1": "val1",
+                "2": "val2"
+            }
         }
     },
-    "io_form_restart": {
-        "values": {
-            "2": "netCDF",
-            "102": "split netCDF files, one per processor",
-            "11": "parallel netCDF"
-        }
-    },
-    "io_form_input": {
-        "values": {
-            "2": "netCDF",
-            "102": "split netCDF files, one per processor",
-            "11": "parallel netCDF"
-        }
-    },
-    "io_form_boundary": {
-        "values": {
-            "2": "netCDF",
-            "4": "PHDF5",
-            "5": "GRIB1",
-            "10": "GRIB2",
-            "11": "parallel netCDF"
-        }
-    },
-    "io_form_auxinput2": {
-        "values": {
-            "2": "netCDF",
-            "4": "PHD5",
-            "5": "GRIB1",
-            "10": "GRIB2",
-            "11": "parallel netCDF"
-        }
-    },
-    "diag_print": {
-        "values": {
-            "0": "no print",
-            "1": "domain-averaged 3-hourly hydrostatic surface pressure tendency (Dpsfc/Dt), and dry-hydrostatic column pressure tendency (Dmu/Dt) added to standard output file",
-            "2": "option 1, plus domain-averaged rainfall, sfc evaporation, and sensible and latent heat fluxes"
-        }
-    },
-    "io_form_auxhist2": {
-        "values": {
-            "2": "netCDF",
-            "4": "PHD5",
-            "5": "GRIB1",
-            "10": "GRIB2",
-            "11": "parallel netCDF"
-        }
-    },
-    "output_diagnostics": {
-        "values": {
-            "0": "none",
-            "1": "add 48 sfc diagnostic arrays (max/min/mean/std) in the specified time interval"
-        }
-    },
-    "nwp_diagnostics": {
-        "values": {
-            "0": "none",
-            "1": "add 'history_interval' diagnostic fileds (10m wind sp, 2-5 km max helicity, max vert. velocity in updraft and downdraft below 400mb, 2-5 km mean vert. velocity, max column graupel; must also turn on 'do_radar_ref'"
-        }
-    },
-    "smooth_option": {
-        "values": {
-            "0": "off",
-            "1": "1-2-1 smoothing",
-            "2": "smoothing-desmoothing"
-        }
-    },
-    "hypsometric_opt": {
-        "values": {
-            "1": "use a form of the hydrostatic equation that depends on air density",
-            "2": "computes height in real.exe and pressure in the model by using the hypsometric equation (less biased when compared against input data)"
-        }
-    },
-    "wif_input_opt": {
-        "values": {
-            "0": "none",
-            "1": "process the Water Ice Friendly Aerosol input from metgrid",
-            "2": "use black carbon aerosol category and its radiative effect"
-        }
-    },
-    "auto_levels_opt": {
-        "values": {
-            "1": "assumes a known first several layers, then generates equi-height spaced levels up to the model top",
-            "2": "set 'dzstretch_s,' 'dzstretch_u,' 'dzbot,' and 'max_dz' to stretch levels according to logP, up to where it reaches max thickness (max_dz) and starting from thickness dzbot"
-        }
-    },
-    "ideal_init_method": {
-        "values": {
-            "1": "albedo from phb",
-            "2": "albedo from t_init"
-        }
-    },
-    "interp_method_type": {
-        "values": {
-            "1": "bi-linear",
-            "2": "Smolarkiewicz (SINT) method",
-            "3": "nearest-neighbor",
-            "4": "overlapping quadratic",
-            "12": "uses SINT, and same scheme for computation of fine-grid lateral boundaries"
-        }
-    },
-    "force_sfc_in_vinterp": {
-        "range": {
-            "start": "0",
-            "end": "eta_levels"
-        }
-    },
-    "use_trop_level": {
-        "values": {
-            "0": "off",
-            "1": "use tropopause level data"
-        }
-    },
-    "interp_type": {
-        "values": {
-            "1": "vertical interpolation is linear in pressure",
-            "2": "vertical interpolation is linear in log(pressure)"
-        }
-    },
-    "extrap_type": {
-        "values": {
-            "1": "using the two lowest levels",
-            "2": "using the lowest level as a constant below ground"
-        }
-    },
-    "t_extrap_type": {
-        "values": {
-            "1": "isothermal",
-            "2": "-6.5 K/km lapse rate for temp",
-            "3": "constant theta"
-        }
-    },
-    "lagrange_order": {
-        "values": {
-            "1": "linear",
-            "2": "quadratic",
-            "9": "cubic spline"
-        }
-    },
-    "rh2qv_method": {
-        "values": {
-            "1": "old MM5 method",
-            "2": "WMO-recommended method"
-        }
-    },
-    "vert_refine_method": {
-        "values": {
-            "0": "no vertical refinement",
-            "1": "integer vertical refinement",
-            "2": " use specified or computed eta levels for vertical refinement"
-        }
-    },
-    "var": {
-        "values": {
-            "0": "a1",
-            "1": "a2",
-            "2": "a3"
+    "group": {
+        "var": {
+            "values": {
+                "0": "val0",
+                "1": "val1",
+                "2": "val2"
+            }
         }
     }
 }
