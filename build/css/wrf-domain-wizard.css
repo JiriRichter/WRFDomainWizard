@@ -552,80 +552,76 @@ div.namelist-input-editor div.namelist-input-group div.namelist-input-group-head
 }
 div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable {
   width: 100%;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover {
-  background-color: aliceblue;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover div.input-group div.input-group-prepend .input-group-text {
-  font-weight: bold;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover div.input-group input.form-control,
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover div.input-group select.form-control {
-  font-weight: bold;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover div.input-group div.namelist-input-variable-description {
-  font-weight: bold;
-  color: #495057;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.input-group div.input-group-prepend button.btn.btn-namelist-input-erase {
-  visibility: hidden;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.input-group div.input-group-prepend .input-group-text {
-  font-style: italic;
-  color: #8794a1;
-  background-color: #eff2f5;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.input-group input.form-control,
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.input-group select.form-control {
-  font-style: italic;
-  color: #8794a1;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.input-group div.namelist-input-variable-description {
-  color: #8794a1;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group {
+  display: flex;
+  flex-direction: row;
   flex-wrap: nowrap !important;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group div.input-group-prepend {
-  flex-grow: 0 !important;
-  flex-shrink: 0 !important;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group div.input-group-prepend button.btn.btn-namelist-input-erase {
-  border: none;
   margin-top: -1px;
 }
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group div.input-group-prepend button.btn.btn-namelist-input-erase:focus {
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable button.btn.btn-namelist-input-erase {
+  border: none;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable button.btn.btn-namelist-input-erase:focus {
   box-shadow: none;
 }
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group div.input-group-prepend .input-group-text {
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-name {
   width: 200px;
   border-radius: 0;
-  margin-top: -1px;
-}
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group input.form-control,
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group select.form-control {
-  width: 200px;
-  border-radius: 0;
-  margin-top: -1px;
   flex-grow: 0 !important;
   flex-shrink: 0 !important;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
 }
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group input.form-control:invalid,
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group select.form-control:invalid {
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value {
+  width: 200px;
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  z-index: 1;
+  border-top: 1px solid #ced4da;
+  border-bottom: 1px solid #ced4da;
+  border-right: 1px solid #ced4da;
+  border-left: none;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value input.form-control,
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value select.form-control {
+  border-radius: 0;
+  border: none;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value input.form-control:invalid,
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value select.form-control:invalid {
   background-color: #ff8080;
 }
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group div.input-group-prepend.input-group-checkbox {
-  width: 200px;
-  flex-grow: 0 !important;
-  flex-shrink: 0 !important;
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value input.form-control:focus,
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value select.form-control:focus {
+  box-shadow: none;
 }
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group div.input-group-prepend.input-group-checkbox div.input-group-text {
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value div.input-group div.input-group-text {
+  border-radius: 0;
+  border-top: none;
+  border-bottom: none;
+  border-right: none;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value div.namelist-input-variable-check {
+  height: 100%;
   width: 100%;
+  background-color: #e9ecef;
 }
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group div.input-group-prepend.input-group-checkbox div.input-group-text input[type="checkbox"] {
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value div.namelist-input-variable-check div.form-check {
+  display: flex;
   width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
-div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.input-group div.namelist-input-variable-description {
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value div.namelist-input-variable-check div.form-check input.form-check-input {
+  position: relative;
+  margin: auto;
+  padding: 0;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-description {
   font-size: 0.75rem;
   align-self: center;
   padding-left: 10px;
@@ -633,6 +629,36 @@ div.namelist-input-editor div.namelist-input-group div.namelist-input-variables 
   overflow: hidden;
   white-space: nowrap;
   color: #495057;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover {
+  background-color: aliceblue;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover div.namelist-input-variable-name {
+  font-weight: bold;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover div.namelist-input-variable-value input,
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover div.namelist-input-variable-value select {
+  font-weight: bold;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover div.namelist-input-variable-description {
+  font-weight: bold;
+  color: #495057;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset button.btn.btn-namelist-input-erase {
+  visibility: hidden;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.namelist-input-variable-name {
+  font-style: italic;
+  color: #8794a1;
+  background-color: #eff2f5;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.namelist-input-variable-value input,
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.namelist-input-variable-value select {
+  font-style: italic;
+  color: #8794a1;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.namelist-input-variable-description {
+  color: #8794a1;
 }
 div.namelist-input-editor div.namelist-input-group div.namelist-input-variables.namelist-input-hide-unset div.namelist-input-variable.namelist-input-variable-unset {
   display: none;

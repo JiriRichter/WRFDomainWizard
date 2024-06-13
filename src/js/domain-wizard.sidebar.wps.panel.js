@@ -36,7 +36,7 @@ export class SidebarDomainsPanel {
             inputPoleLon,
             localStorageKey = 'wrf_domain_wizard_wps_panel';
 
-        // defaul settings
+        // default settings
         this.options = {
             minGridDistanceMeters: 100,
             minGridDistanceDegrees: 0

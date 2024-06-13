@@ -28,7 +28,7 @@ export class SidebarDomains {
             inputFile,
             captureImageDialog;
 
-        // defaul settings
+        // default settings
         this.options = {
             jsonBaseUrl: 'json',
             sampleBaseUrl: 'samples',

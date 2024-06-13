@@ -3,25 +3,27 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><span>namelist.input</span></h4>
-                <div class="dropdown dropdown-namelist-input-view">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdown-view" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      View
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdown-view">
-                        <h6 class="dropdown-header">Groups</h6>
-                        <a id="view-group-collapse-all" class="dropdown-item dropdown-selected" href="#"><i class="fas fa-check"></i><span class="ml-1">Collapse All</span></a>
-                        <a id="view-group-expand-all" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Expand All</span></a>
-                        <a id="view-group-show-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Unset</span></a>
-                        <a id="view-group-hide-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Hide Unset</span></a>
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">Variables</h6>
-                        <a id="view-variables-show-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Unset</span></a>
-                        <a id="view-variables-hide-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Hide Unset</span></a>
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">Views</h6>
-                        <a id="view-everything" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Everything</span></a>
-                        <a id="view-compact" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Compact</span></a>
-                        <a id="view-minimal" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Minimal</span></a>
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <div class="dropdown dropdown-namelist-input-view">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdown-view" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        View
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdown-view">
+                            <h6 class="dropdown-header">Groups</h6>
+                            <a id="view-group-collapse-all" class="dropdown-item dropdown-selected" href="#"><i class="fas fa-check"></i><span class="ml-1">Collapse All</span></a>
+                            <a id="view-group-expand-all" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Expand All</span></a>
+                            <a id="view-group-show-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Unset</span></a>
+                            <a id="view-group-hide-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Hide Unset</span></a>
+                            <div class="dropdown-divider"></div>
+                            <h6 class="dropdown-header">Variables</h6>
+                            <a id="view-variables-show-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Unset</span></a>
+                            <a id="view-variables-hide-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Hide Unset</span></a>
+                            <div class="dropdown-divider"></div>
+                            <h6 class="dropdown-header">Views</h6>
+                            <a id="view-all" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">All</span></a>
+                            <a id="view-compact" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Compact</span></a>
+                            <a id="view-min" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Minimized</span></a>
+                        </div>
                     </div>
                 </div>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>

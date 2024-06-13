@@ -1,6 +1,7 @@
 import { htmlEncode } from "./utils/html";
 import { Namelist } from "./utils/namelist";
 import { distanceToMeters } from "./utils/math";
+import { NamelistDateTimePicker } from './domain-wizard.control.namelist-datetime-picker';
 
 export class NamelistInputEditor {
 
@@ -15,14 +16,41 @@ export class NamelistInputEditor {
         logical: "logical",
         real: "real",
         character: "character",
-        selection: "selection"
+        selection: "selection",
+        datetime: "datetime"
     }
 
     static _localStorageKey = '_wrf_domain_wizard_namelist_input_editor'
 
+    static _dateTimePickers = {
+        'start_year': {
+            year: 'start_year',
+            month: 'start_month',
+            day: 'start_day',
+            hour: 'start_hour',
+            minute: 'start_minute',
+            second: 'start_second'
+        },
+        'end_year': {
+            year: 'end_year',
+            month: 'end_month',
+            day: 'end_day',
+            hour: 'end_hour',
+            minute: 'end_minute',
+            second: 'end_second'
+        }
+    }
+
+    // variable to skip during editor field rendering
+    static _ignoreVariables = [
+        'julyr',
+        'julday',
+        'gmt'
+    ];
+
     constructor(container, options) {
 
-        // defaul settings
+        // default settings
         this.options = {
             jsonBaseUrl: 'json',
             change: null,
@@ -38,6 +66,9 @@ export class NamelistInputEditor {
         
         // variable definitions
         this.variables = null;
+
+        // variable to skip during editor field rendering
+        this._ignoreVariables = null;
 
         // read-only variable flags
         this.readOnly = {};
@@ -341,114 +372,136 @@ export class NamelistInputEditor {
     // construct variable definition object
     async _initVariablesAsync() {
 
-        if (this.variables === null) {
-            this.variables = {};
+        if (this.variables !== null) {
+            return;
+        }
 
-            // load variable JSON files
-            const selectValues = await this._loadJsonAsync('namelist.input.select.values.json');
-            const userGuide = await this._loadJsonAsync('namelist.input.users.guide.json');
-            const registry = await this._loadJsonAsync('namelist.input.registry.json');
+        this.variables = {};
 
-            for(let group in registry) {
+        // load variable JSON files
+        const selectValues = await this._loadJsonAsync('namelist.input.select.values.json');
+        const userGuide = await this._loadJsonAsync('namelist.input.users.guide.json');
+        const registry = await this._loadJsonAsync('namelist.input.registry.json');
 
-                this.variables[group] = {};
+        for(let group in registry) {
 
-                for (let variable in registry[group]) {
+            this.variables[group] = {};
 
-                    let description = null;
-                    const hasUserGuideEntry = userGuide[group] && userGuide[group][variable];
+            for (let variable in registry[group]) {
 
-                    if (hasUserGuideEntry && userGuide[group][variable].description){
-                        description = userGuide[group][variable].description
-                    }
-                    else if (variable['comments'] && variable['comments'].length > 0) {
-                        description = variable['comments'].join("; ");
-                    }
+                let description = null;
+                const hasUserGuideEntry = userGuide[group] && userGuide[group][variable];
 
-                    let defaultValue = registry[group][variable].defaultValue;
+                if (hasUserGuideEntry && userGuide[group][variable].description){
+                    description = userGuide[group][variable].description
+                }
+                else if (variable['comments'] && variable['comments'].length > 0) {
+                    description = variable['comments'].join("; ");
+                }
 
-                    let entries = null;
-                    switch(registry[group][variable].entries) {
+                let defaultValue = registry[group][variable].defaultValue;
 
-                        // translate entries
-                        case "max_domains":
-                            entries = NamelistInputEditor.entries.maxDom;
+                let entries = null;
+                switch(registry[group][variable].entries) {
+
+                    // translate entries
+                    case "max_domains":
+                        entries = NamelistInputEditor.entries.maxDom;
+                        break;
+
+                    // common entries
+                    case NamelistInputEditor.entries.single:
+                    case NamelistInputEditor.entries.maxEta:
+                    case NamelistInputEditor.entries.maxDom:
+                        entries = registry[group][variable].entries;
+                        break;
+
+                    default:
+                        console.warn(`Unknown variable ${variable} number entries value ${registry[group][variable].entries}`);
+                        continue;
+                }
+
+                if (hasUserGuideEntry && userGuide[group][variable].entries !== entries) {
+
+                    // correct variable entries for known cases where user guide and WRF registry differ
+                    switch(variable) {
+                        // https://github.com/wrf-model/WRF/blob/master/test/em_real/namelist.input
+                        case "dx":
+                        case "dy":
+                            entries = NamelistInputEditor.entries.single;
                             break;
 
-                        // common entries
-                        case NamelistInputEditor.entries.single:
-                        case NamelistInputEditor.entries.maxEta:
-                        case NamelistInputEditor.entries.maxDom:
-                            entries = registry[group][variable].entries;
+                        // https://github.com/wrf-model/WRF/blob/master/run/README.namelist
+                        case "eta_levels":
+                            entries = NamelistInputEditor.entries.maxEta;
                             break;
 
+                        // https://github.com/wrf-model/WRF/blob/master/doc/README.NSSLmp
+                        case "nssl_alphah":
+                        case "nssl_alphahl":
+                        case "nssl_cnoh":
+                        case "nssl_cnohl":
+                        case "nssl_cnor":
+                        case "nssl_cnos":
+                        case "nssl_rho_qh":
+                        case "nssl_rho_qs":
+                            entries = NamelistInputEditor.entries.single
+                            break;
+
+                        case "topo_wind":
+                        case "gph":
+                            entries = NamelistInputEditor.entries.maxDom
+                            break;
+
+                        case "max_obs":
+                            entries = NamelistInputEditor.entries.single
+                            break;
+                                
                         default:
-                            console.warn(`Unknown variable ${variable} number entries value ${registry[group][variable].entries}`);
-                            continue;
-                    }
-
-                    if (hasUserGuideEntry && userGuide[group][variable].entries !== entries) {
-
-                        // correct variable entries for known cases where user guide and WRF registry differ
-                        switch(variable) {
-                            // https://github.com/wrf-model/WRF/blob/master/test/em_real/namelist.input
-                            case "dx":
-                            case "dy":
-                                entries = NamelistInputEditor.entries.single;
-                                break;
-
-                            // https://github.com/wrf-model/WRF/blob/master/run/README.namelist
-                            case "eta_levels":
-                                entries = NamelistInputEditor.entries.maxEta;
-                                break;
-
-                            // https://github.com/wrf-model/WRF/blob/master/doc/README.NSSLmp
-                            case "nssl_alphah":
-                            case "nssl_alphahl":
-                            case "nssl_cnoh":
-                            case "nssl_cnohl":
-                            case "nssl_cnor":
-                            case "nssl_cnos":
-                            case "nssl_rho_qh":
-                            case "nssl_rho_qs":
-                                entries = NamelistInputEditor.entries.single
-                                break;
-
-                            case "topo_wind":
-                            case "gph":
-                                entries = NamelistInputEditor.entries.maxDom
-                                break;
-
-                            case "max_obs":
-                                entries = NamelistInputEditor.entries.single
-                                break;
-                                    
-                            default:
-                                console.warn(`Variable ${variable} number of entries differ between registry ${entries} and users guide ${userGuide[group][variable].entries}`);
-                        }
-                    }
-
-                    this.variables[group][variable] = {
-                        type: registry[group][variable].type,
-                        defaultValue: defaultValue,
-                        description: description,
-                        entries: entries
-                    };
-
-                    if (selectValues[group] && selectValues[group][variable] && selectValues[group][variable].values) {
-                        this.variables[group][variable].type = NamelistInputEditor.variableTypes.selection;
-                        this.variables[group][variable]['values'] = selectValues[group][variable].values;
+                            console.warn(`Variable ${variable} number of entries differ between registry ${entries} and users guide ${userGuide[group][variable].entries}`);
                     }
                 }
+
+                this.variables[group][variable] = {
+                    type: registry[group][variable].type,
+                    defaultValue: defaultValue,
+                    description: description,
+                    entries: entries
+                };
+
+                if (selectValues[group] && selectValues[group][variable] && selectValues[group][variable].values) {
+                    this.variables[group][variable].type = NamelistInputEditor.variableTypes.selection;
+                    this.variables[group][variable]['values'] = selectValues[group][variable].values;
+                }
+
+                if (variable in NamelistInputEditor._dateTimePickers) {
+                    this.variables[group][variable].type = NamelistInputEditor.variableTypes.datetime;
+                }
             }
+        }
 
-            // set default values for variables with missing or invalid default value in auto-generated JSON data
+        // set default values for variables with missing or invalid default value in auto-generated JSON data
 
-            // time_step default value not set in registry
-            this._setDefaultValue("domains", "time_step", 60);
+        // time_step default value not set in registry
+        this._setDefaultValue("domains", "time_step", 60);
 
-            for(let groupName in userGuide) {
-                this.userGuideLinks[groupName] = `https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html#${groupName.replace("_", "-")}`;
+        for(let groupName in userGuide) {
+            this.userGuideLinks[groupName] = `https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html#${groupName.replace("_", "-")}`;
+        }
+
+        // construct ignore variable lookup hash table
+        this._ignoreVariables = {};
+        for(let variableName of NamelistInputEditor._ignoreVariables) {
+            if (!(variableName in this._ignoreVariables)) {
+                this._ignoreVariables[variableName] = null;
+            }
+        }
+
+        for (const [dateTimePickerVariable, dateTimePickerOptions] of Object.entries(NamelistInputEditor._dateTimePickers)) {
+            for(let variableName of Object.values(dateTimePickerOptions)) {
+                if (typeof(variableName) === 'string' && !(variableName in this._ignoreVariables) && dateTimePickerVariable !== variableName) {
+                    this._ignoreVariables[variableName] = null;
+                }
             }
         }
     }
@@ -642,6 +695,11 @@ export class NamelistInputEditor {
     // create and append variable input fields
     _appendVariableField(variablesDiv, groupName, variableName, variable) {
 
+        if (variableName in this._ignoreVariables) {
+            console.debug(`Skipping ignored variable ${variableName}`);
+            return;
+        }
+
         console.debug(`Creating variable ${variableName} input`);
 
         const variableDiv = this._append(variablesDiv, 'div');
@@ -657,12 +715,13 @@ export class NamelistInputEditor {
             variableDiv.classList.add('namelist-input-variable-unset');
         }
 
-        let html = '<div class="input-group input-group-sm">';
-
-        html += '<div class="input-group-prepend">';
+        let html = ''; 
+        
+        //<div class="input-group input-group-sm">';
+        //html += '<div class="input-group-prepend">';
 
         // erase button HTML
-        html += '<button class="btn btn-outline-secondary btn-namelist-input-erase" type="button"'
+        html += '<button class="btn btn-sm btn-outline-secondary btn-namelist-input-erase" type="button"'
         if (readOnly === true) {
             variableDiv.classList.add('namelist-input-variable-readonly');
             html += ' disabled';
@@ -670,9 +729,9 @@ export class NamelistInputEditor {
         html += '><i class="fas fa-eraser"></i></button>'
 
         // variable name HTML
-        html += '<span class="input-group-text" id="inputGroup-sizing-sm">';
+        html += '<div class="namelist-input-variable-name">';
         html += htmlEncode(variableName);
-        html += '</span></div>';
+        html += '</div>';
 
         // variable input field(s) HTML
         switch (variable.entries) {
@@ -773,7 +832,47 @@ export class NamelistInputEditor {
                     'change',
                     (input) => input.value);
                 break;
+
+            case NamelistInputEditor.variableTypes.datetime:
+
+                variableDiv.querySelectorAll('div.namelist-input-datetime-picker').forEach((div, index) => {
+
+                    const dateTimeVariables = NamelistInputEditor._dateTimePickers[variableName];
+    
+                    NamelistInputEditor._dateTimePickers[variableName]['dateTimePicker'] = new NamelistDateTimePicker(
+                        div,
+                        {
+                            onChange: (e) => {},
+                            displayTimeZone: null, // local
+                            valueUtc: {
+                                year: this._getNamelistVariableValue(groupName, dateTimeVariables.year, this.variables[groupName][dateTimeVariables.year], index),
+                                month: this._getNamelistVariableValue(groupName, dateTimeVariables.month, this.variables[groupName][dateTimeVariables.month], index),
+                                day: this._getNamelistVariableValue(groupName, dateTimeVariables.day, this.variables[groupName][dateTimeVariables.day], index),
+                                hour: this._getNamelistVariableValue(groupName, dateTimeVariables.hour, this.variables[groupName][dateTimeVariables.hour], index),
+                                minute: this._getNamelistVariableValue(groupName, dateTimeVariables.minute, this.variables[groupName][dateTimeVariables.minute], index),
+                                second: (dateTimeVariables.second ? 
+                                    this._getNamelistVariableValue(groupName, dateTimeVariables.second, this.variables[groupName][dateTimeVariables.second], index) :
+                                    null)
+                            }
+                        });
+                });
+
+                break;
         }
+    }
+
+    _getNamelistVariableValue(groupName, variableName, variable, index) {
+        if (this._isNamelistValueSet(groupName, variableName) === true) {
+
+            switch (variable.entries) {
+                case NamelistInputEditor.entries.maxDom:
+                    return this.namelist[groupName][variableName][index];
+
+                case NamelistInputEditor.entries.single:
+                    return this.namelist[groupName][variableName];
+            }
+        }
+        return variable.defaultValue;
     }
 
     // set variable input fields value from current namelist object
@@ -894,14 +993,14 @@ export class NamelistInputEditor {
             throw new Error(`Variable ${variableName} value is not defined`);
         }
 
-        let html = '';
+        let html = '<div class="namelist-input-variable-value">';
 
         const fieldId = htmlEncode(this._getInputFieldId(variableName, index));
         const fieldName = htmlEncode(variableName);
 
         switch(variable.type) {
             case NamelistInputEditor.variableTypes.selection:
-                html = html + `<select class="form-control" id="${fieldId}" name="${fieldName}"${(readOnly ? " readonly": "")} required>`;
+                html = html + `<select class="form-control form-control-sm" id="${fieldId}" name="${fieldName}"${(readOnly ? " readonly": "")} required>`;
                 for (const [key, value] of Object.entries(variable['values'])) {
                     html = html + `<option value="${key}"`;
                     if (value !== null && key.toString() === value.toString()) {
@@ -913,8 +1012,9 @@ export class NamelistInputEditor {
                 break;
     
             case NamelistInputEditor.variableTypes.logical:
-                html = html + '<div class="input-group-prepend input-group-checkbox"><div class="input-group-text">'
-                html = html + `<input class="" type="checkbox" id="${fieldId}" name="${fieldName}"`;
+                html = html + '<div class="namelist-input-variable-check">'
+                html = html + '<div class="form-check">'
+                html = html + `<input class="form-check-input" type="checkbox" id="${fieldId}" name="${fieldName}"`;
                 if (readOnly === true) {
                     html = html + ' readonly';
                 }
@@ -922,11 +1022,12 @@ export class NamelistInputEditor {
                     html = html + ' checked';
                 }
                 html = html + '/>';
-                html = html + '</div></div>';
+                html = html + '</div>';
+                html = html + '</div>';
                 break;
 
             case NamelistInputEditor.variableTypes.integer:
-                html = html + `<input type="number" class="form-control" id="${fieldId}" name="${fieldName}"`;
+                html = html + `<input type="number" class="form-control form-control-sm" id="${fieldId}" name="${fieldName}"`;
                 html = html + ` value="${parseInt(value)}"`;
                 if (readOnly === true) {
                     html = html + ' readonly';
@@ -935,7 +1036,7 @@ export class NamelistInputEditor {
                 break;
         
             case NamelistInputEditor.variableTypes.real:
-                html = html + `<input type="number" class="form-control" id="${fieldId}" name="${fieldName}"`;
+                html = html + `<input type="number" class="form-control form-control-sm" id="${fieldId}" name="${fieldName}"`;
                 html = html + ` value="${value.toFixed(this.options.floatDigits)}"`;
                 if (readOnly === true) {
                     html = html + ' readonly';
@@ -953,11 +1054,25 @@ export class NamelistInputEditor {
                 }
                 html = html + ' required />';
                 break;
+
+            case NamelistInputEditor.variableTypes.datetime:
+                html += `<div class="input-group input-group-sm namelist-input-datetime-picker">`;
+                html += `<input type="text" class="form-control" id="${fieldId}"`;
+                //html += ' required';
+                html += '>';
+                html += '<div class="input-group-addon input-group-append">';
+                html += '<div class="input-group-text">';
+                html += '<i class="far fa-calendar-alt"></i>';
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+                break;
+
             default:
                 throw new Error(`Unknown variable data type ${variable.type}`);
         }
 
-        return html;
+        return html + '</div>';
     }
 
     // creates and appends a new child HTML element to parent element

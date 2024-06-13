@@ -93,13 +93,13 @@ export class NamelistInputDialog {
 
         this._updateViewMenu();
 
-        this.header.querySelector('#view-everything').addEventListener('click', (e) => {
+        this.header.querySelector('#view-all').addEventListener('click', (e) => {
             this.viewActions.expandGroups.click();
             this.viewActions.showUnsetGroups.click();
             this.viewActions.showUnsetVariables.click();
         });
 
-        this.header.querySelector('#view-minimal').addEventListener('click', (e) => {
+        this.header.querySelector('#view-min').addEventListener('click', (e) => {
             this.viewActions.collapseGroups.click();
             this.viewActions.hideUnsetGroups.click();
             this.viewActions.hideUnsetVariables.click();

@@ -11,7 +11,7 @@
     "grunt": "grunt",
     "uglify": "uglifyjs build/js/wrf-domain-wizard.js -c -m -o build/js/wrf-domain-wizard.min.js --source-map filename=build/js/wrf-domain-wizard.min.js.map --comments",
     "serve": "live-server . --open=index.html#lat-lon_region --verbose --watch=build,index.html --wait=1000",
-    "serve-namelist": "live-server . --open=namelist.input.test.html --verbose --watch=build,index.html --wait=1000",
+    "serve-namelist": "live-server . --open=namelist.input.html#test --verbose --watch=build,index.html --wait=1000",
     "serve-test": "live-server . --open=test/test.html --verbose --watch=build,test.html --wait=1000",
     "watch-js": "rollup --config rollup.config.mjs --watch",
     "watch-less": "npm run grunt watch",
@@ -51,7 +51,6 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "blob-polyfill": "^7.0.20220408",
     "bootstrap": "^4.6.1",
-    "bootstrap-datetimepicker-npm": "^4.17.37-npm",
     "bootstrap5": "npm:bootstrap@^5.3.3",
     "file-saver": "^2.0.5",
     "html-to-image": "^1.11.11",
@@ -62,6 +61,8 @@
     "leaflet-sidebar-v2": "^3.2.3",
     "leaflet-spin": "^1.1.2",
     "leaflet-textpath": "^1.2.3",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
     "proj4": "^2.9.0",
     "spin.js": "^4.1.1"
   }

@@ -7,13 +7,14 @@
 
     <link rel="stylesheet" href="{{baseUrl}}/lib/bootstrap.min.css" />
     <link rel="stylesheet" href="{{baseUrl}}/lib/all.min.css" />
+    <link rel="stylesheet" href="{{baseUrl}}/lib/bootstrap-datetimepicker.min.css" />
     <link rel="stylesheet" href="{{baseUrl}}/css/wrf-domain-wizard.css?{{timestamp}}" />
 
     <link rel="icon" href="{{baseUrl}}/img/globe_32x32.png" />
 </head>
 <body>
 
-    <div class="container-fluid">
+    <div class="container">
         <h2>Test Page</h2>
         <div class="">
             <div>Message Box Dialog</div>
@@ -25,6 +26,49 @@
         </div>
     </div>
 
+    <hr />
+
+    <div class="container">
+        <h2>Datetime Picker</h2>
+        <div>
+            <div class="form-group">
+                <label for="datetime-input">Input (UTC)</label>
+                <input type="text" class="form-control" id="datetime-input">
+            </div>
+            <div class="form-group">
+                <label for="datetime-output">Output (UTC)</label>
+                <input type="text" class="form-control" id="datetime-output">
+            </div>
+        </div>
+        <div class="">
+            <div class="form-group">
+                <label for="datetimpicker-test">Local Date-Time:</label>
+                <div class="input-group date">
+                    <input type="text" class="form-control" id="date-time-local" required="">
+                    <select class="form-control timezone"></select>
+                    <div class="input-group-addon input-group-append">
+                        <div class="input-group-text">
+                            <i class="far fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="datetimpicker-test">UTC Date-Time:</label>
+                <div class="input-group date">
+                    <input type="text" class="form-control" id="date-time-utc" required="">
+                    <select class="form-control timezone"></select>
+                    <div class="input-group-addon input-group-append">
+                        <div class="input-group-text">
+                            <i class="far fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
 
     {{dialog.message-box}}
 
@@ -41,6 +85,9 @@
     <script src="{{baseUrl}}/lib/FileSaver.min.js"></script>
     <script src="{{baseUrl}}/lib/html-to-image.js"></script>
     <script src="{{baseUrl}}/lib/leaflet.textpath.js"></script>
+    <script src="{{baseUrl}}/lib/moment.min.js"></script>
+    <script src="{{baseUrl}}/lib/moment-timezone-with-data.min.js"></script>
+    <script src="{{baseUrl}}/lib/bootstrap-datetimepicker.min.js"></script>
 
     <script src="{{baseUrl}}/js/wrf-domain-wizard.js"></script>
 
@@ -60,8 +107,36 @@
             const o = {};
             let x = o.test.test + 10;
         }
-
-
     </script>
+
+    <script>
+        const namelist = {
+            share: {
+                start_date: '2024-05-01_03:00:00',
+                end_date: '2024-05-01_09:00:00'
+            }
+        };
+
+        document.getElementById('datetime-input').value = namelist.share.start_date;
+        document.getElementById('datetime-output').value = namelist.share.start_date;
+
+        var dtLocal = new WRF.NamelistDateTimePicker(
+            document.getElementById('date-time-local'),
+            {
+                valueUtc: namelist.share.start_date,
+                onChange: (e) => {
+                    document.getElementById('datetime-output').value = e.sender.formatUtc();
+                }
+            }
+        );
+        var dtUtc = new WRF.NamelistDateTimePicker(
+            document.getElementById('date-time-utc'),
+            {
+                valueUtc: namelist.share.start_date,
+                displayTimeZone: 'UTC'
+            }
+        );
+    </script>
+
 </body>
 </html>

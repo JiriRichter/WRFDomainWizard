@@ -171,6 +171,7 @@ for item in git_trees["tree"]:
             variables[group] = {}
 
         if name in variables[group]:
+            last_source = variables[group][name]["sources"][-1]
             variables[group][name]["sources"].append(source)
             if comments != None and len(comments) > 0:
                 if variables[group][name]["comments"] == None:
@@ -181,13 +182,13 @@ for item in git_trees["tree"]:
                     variables[group][name]["comments"] = list(set(variables[group][name]["comments"]))
 
             if type != variables[group][name]["type"]:
-                add_variable_error(variables[group][name], "Variable {0} data type does not match".format(name))
+                add_variable_error(variables[group][name], "Data type {0} ({1}) does not match existing type {2} ({3})".format(type, source, variables[group][name]["type"], last_source))
             
             if entries != variables[group][name]["entries"]:
-                add_variable_error(variables[group][name], "Variable {0} current number of entries {1} does not match existing number os entries {2}".format(name, entries, variables[group][name]["entries"]))
+                add_variable_error(variables[group][name], "Number of entries {0} ({1}) does not match existing number of entries {2} ({3})".format(entries, source, variables[group][name]["entries"], last_source))
             
             if default_value != variables[group][name]["defaultValue"]:
-                add_variable_error(variables[group][name], "Variable {0} existing default value {1} differs current default value of {2}".format(name, variables[group][name]["defaultValue"], default_value))
+                add_variable_error(variables[group][name], "Default value '{0}' ({1}) does not match existing default value '{2}' ({3})".format(default_value, source, variables[group][name]["defaultValue"], last_source))
             
         else:
             variables[group][name] = {
@@ -204,3 +205,9 @@ for item in git_trees["tree"]:
 json_path = "src/json/namelist.input.registry.json"
 with open(json_path, "w") as outfile:
     outfile.write(json.dumps(variables, indent=4))
+
+for group in variables:
+    for variable in variables[group]:
+        if 'errors' in variables[group][variable]:
+            for error in variables[group][variable]['errors']:
+                print("{0}/{1}: {2}".format(group, variable, error))

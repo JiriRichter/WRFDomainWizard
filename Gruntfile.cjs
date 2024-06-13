@@ -47,7 +47,7 @@ module.exports = function(grunt) {
         ],
         dest: '<%= targetFolder %>/',
       },
-      lib: {
+      node_modules: {
         expand: true,
         cwd: 'node_modules',
         flatten: true,
@@ -97,11 +97,29 @@ module.exports = function(grunt) {
           'html-to-image/dist/html-to-image.js',
 
           // https://github.com/makinacorpus/Leaflet.TextPath
-          'leaflet-textpath/leaflet.textpath.js'
+          'leaflet-textpath/leaflet.textpath.js',
+
+          // https://www.npmjs.com/package/moment
+          'moment/min/moment.min.js',
+
+          // https://www.npmjs.com/package/moment-timezone
+          'moment-timezone/builds/moment-timezone-with-data.min.js'
         ],
         dest: '<%= targetFolder %>/lib',
       },
-      images: {
+      lib: {
+        expand: true,
+        cwd: 'lib',
+        flatten: true,
+        filter: 'isFile',
+        src: [
+          // https://github.com/monim67/bootstrap-datetimepicker
+          'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js',
+          'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css'
+        ],
+        dest: '<%= targetFolder %>/lib',
+      },
+      leaflet_images: {
         expand: true,
         cwd: 'node_modules',
         flatten: true,
@@ -111,6 +129,17 @@ module.exports = function(grunt) {
           'leaflet/dist/images/*.png',
         ],
         dest: '<%= targetFolder %>/lib/images',
+      },
+      bootstrap_datetimepicker_images: {
+        expand: true,
+        cwd: 'lib',
+        flatten: true,
+        filter: 'isFile',
+        src: [
+          // https://github.com/monim67/bootstrap-datetimepicker
+          'bootstrap-datetimepicker/images/clock-bg-sm.png',
+        ],
+        dest: '<%= targetFolder %>/images',
       },
       webfonts: {
         expand: true,
@@ -134,13 +163,13 @@ module.exports = function(grunt) {
 
     replace: {
       github: {
-        src: ['src/index.html', 'src/namelist.input.test.html'],
+        src: ['src/index.html', 'src/namelist.input.html'],
         // index.html must be placed to root folder for GitHub Pages to work
         dest: './',             
         replacements: replacements('build')
       },
       build: {
-        src: ['src/index.html', 'src/namelist.input.test.html'],
+        src: ['src/index.html', 'src/namelist.input.html'],
         dest: 'build/',             
         replacements: replacements('')
       },

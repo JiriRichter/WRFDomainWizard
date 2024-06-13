@@ -59,117 +59,143 @@ div.namelist-input-editor {
         div.namelist-input-variables {
 
             div.namelist-input-variable {
-                width: 100%;
 
-                &:hover {
-                    background-color: aliceblue;
-    
-                    div.input-group {
-                        div.input-group-prepend {
-                            .input-group-text {
-                                font-weight: bold;
-                            }
-                        }
-    
-                        input.form-control, select.form-control {
-                            font-weight: bold;
-                        }
-    
-                        div.namelist-input-variable-description {
-                            font-weight: bold;
-                            color: #495057;
-                        }
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap !important;
+                margin-top: -1px;
+
+                button.btn.btn-namelist-input-erase {
+                    border: none;
+
+                    &:focus {
+                        box-shadow: none;
                     }
                 }
 
-                &.namelist-input-variable-unset {
+                div.namelist-input-variable-name {
+                    width: 200px;
+                    border-radius: 0;
+                    flex-grow: 0 !important;
+                    flex-shrink: 0 !important;
 
-                    div.input-group {
-                        div.input-group-prepend {
-    
-                            button.btn.btn-namelist-input-erase {
-                                visibility: hidden;
-                            }
-    
-                            .input-group-text {
-                                font-style:italic;
-                                color: #8794a1;
-                                background-color: #eff2f5;
-                            }
-                        }
-    
-                        input.form-control, select.form-control {
-                            font-style:italic;
-                            color: #8794a1;
-                        }
-    
-                        div.namelist-input-variable-description {
-                            color: #8794a1;
-                        }                    
-                    }
-                }                
+                    padding: .25rem .5rem;
+                    font-size: .875rem;
+                    line-height: 1.5;
+                    color: #495057;
+                    background-color: #e9ecef;
+                    border: 1px solid #ced4da;
+                }
 
-                div.input-group {
+                div.namelist-input-variable-value {
+                    width: 200px;
+                    flex-grow: 0 !important;
+                    flex-shrink: 0 !important;
+                    z-index: 1;
 
-                    flex-wrap: nowrap !important;
-
-                    div.input-group-prepend {
-
-                        flex-grow: 0 !important;
-                        flex-shrink: 0 !important;
-
-                        button.btn.btn-namelist-input-erase {
-                            border: none;
-                            margin-top: -1px;
-                        }
-
-                        button.btn.btn-namelist-input-erase:focus {
-                            box-shadow: none;
-                        }
-
-                        .input-group-text {
-                            width: 200px;
-                            border-radius: 0;
-                            margin-top: -1px;
-                        }
-                    }
+                    border-top: 1px solid #ced4da;
+                    border-bottom: 1px solid #ced4da;
+                    border-right: 1px solid #ced4da;
+                    border-left: none;
 
                     input.form-control, select.form-control {
-                        width: 200px;
                         border-radius: 0;
-                        margin-top: -1px;
-                        flex-grow: 0 !important;
-                        flex-shrink: 0 !important;
+                        border: none;
                     }
 
                     input.form-control:invalid, select.form-control:invalid {
                         background-color: #ff8080;
                     }
 
-                    div.input-group-prepend.input-group-checkbox {
-                        width: 200px;
-                        flex-grow: 0 !important;
-                        flex-shrink: 0 !important;
+                    input.form-control:focus, select.form-control:focus {
+                        box-shadow: none;
+                    }
+
+                    div.input-group {
 
                         div.input-group-text {
-                            width: 100%;
+                            border-radius: 0;
+                            border-top: none;
+                            border-bottom: none;
+                            border-right: none;
+                        }
+                    }
 
-                            input[type="checkbox"] {
-                                width: 100%;
+                    div.namelist-input-variable-check {
+
+                        height: 100%;
+                        width: 100%;
+                        background-color: #e9ecef;
+
+                        div.form-check {
+                            display: flex;
+                            width: 100%;
+                            height: 100%;
+                            padding: 0;
+                            margin: 0;                           
+
+                            input.form-check-input {
+                                position: relative;
+                                margin: auto;
+                                padding: 0;
                             }
+                        }
+                    }
+                }
+
+                div.namelist-input-variable-description {
+                    font-size: .75rem;
+                    align-self: center;
+                    padding-left: 10px;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    color: #495057;
+                }
+
+                &:hover {
+                    background-color: aliceblue;
+    
+                    div.namelist-input-variable-name {
+                        font-weight: bold;
+                    }
+
+                    div.namelist-input-variable-value {
+                        input, select {
+                            font-weight: bold;
                         }
                     }
 
                     div.namelist-input-variable-description {
-                        font-size: .75rem;
-                        align-self: center;
-                        padding-left: 10px;
-                        text-overflow: ellipsis;
-                        overflow: hidden;
-                        white-space: nowrap;
+                        font-weight: bold;
                         color: #495057;
                     }
                 }
+
+                &.namelist-input-variable-unset {
+
+                    button.btn.btn-namelist-input-erase {
+                        visibility: hidden;
+                    }
+                    
+                    div.namelist-input-variable-name {
+                        font-style:italic;
+                        color: #8794a1;
+                        background-color: #eff2f5;
+                    }
+
+                    div.namelist-input-variable-value {
+                        input, select {
+                            font-style:italic;
+                            color: #8794a1;
+                        }
+                    }
+
+                    div.namelist-input-variable-description {
+                        color: #8794a1;
+                    }
+                }                
             }
 
             &.namelist-input-hide-unset {

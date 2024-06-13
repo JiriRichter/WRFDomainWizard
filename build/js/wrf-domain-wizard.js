@@ -10562,7 +10562,7 @@
 
   var GeogDataResDialog = /*#__PURE__*/_createClass(function GeogDataResDialog(options) {
     _classCallCheck(this, GeogDataResDialog);
-    // defaul settings
+    // default settings
     this.options = {
       jsonBaseUrl: 'json'
     };
@@ -10793,7 +10793,7 @@
       tableCornerNE,
       tableCornerNW;
 
-    // defaul settings
+    // default settings
     this.options = {
       minGridDistanceMeters: 100,
       minGridDistanceDegrees: 0
@@ -11460,7 +11460,7 @@
       inputPoleLon,
       localStorageKey = 'wrf_domain_wizard_wps_panel';
 
-    // defaul settings
+    // default settings
     this.options = {
       minGridDistanceMeters: 100,
       minGridDistanceDegrees: 0
@@ -12030,10 +12030,135 @@
     });
   }
 
+  var NamelistDateTimePicker = /*#__PURE__*/function () {
+    function NamelistDateTimePicker(inputGroup, options) {
+      _classCallCheck(this, NamelistDateTimePicker);
+      // default settings
+      this._options = {
+        onChange: null,
+        valueUtc: null,
+        displayTimeZone: null
+      };
+      if (options) {
+        this._options = Object.assign(this._options, options);
+      }
+
+      // set default timezone
+      if (!this._options.displayTimeZone) {
+        this._options.displayTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      }
+      this._input = inputGroup.querySelector('input');
+      this._init(inputGroup);
+    }
+    return _createClass(NamelistDateTimePicker, [{
+      key: "_init",
+      value: function _init(element) {
+        var _this = this;
+        this._dateTimePicker = $(element).datetimepicker({
+          "allowInputToggle": true,
+          "showClose": true,
+          "showClear": true,
+          "showTodayButton": true,
+          "format": NamelistDateTimePicker._format,
+          timeZone: this.displayTimeZone,
+          icons: {
+            date: 'far fa-calendar-alt',
+            time: 'far fa-clock',
+            clear: 'far fa-trash-alt',
+            close: 'fas fa-times',
+            today: 'far fa-calendar-check'
+          }
+        });
+        var self = this;
+        this._dateTimePicker.on("dp.change", function (e) {
+          if (typeof self._options.onChange === 'function') {
+            self._options.onChange.call(_this, {
+              sender: self,
+              valueUtc: self.valueUtc
+            });
+          }
+        });
+        if (this._options.valueUtc !== null) {
+          this.valueUtc = this._options.valueUtc;
+        }
+        var timezoneSelect = element.querySelector('select.timezone');
+        if (timezoneSelect) {
+          moment.tz.names().forEach(function (name) {
+            var option = document.createElement('option');
+            option.value = name;
+            option.innerText = name;
+            if (name == _this.displayTimeZone) {
+              option.selected = true;
+            }
+            timezoneSelect.append(option);
+          });
+          timezoneSelect.addEventListener('change', function (e) {
+            _this.displayTimeZone = e.currentTarget.value;
+          });
+        }
+      }
+    }, {
+      key: "_dateTimePickerObject",
+      get: function get() {
+        return this._dateTimePicker.data("DateTimePicker");
+      }
+    }, {
+      key: "_momentValueUtc",
+      get: function get() {
+        return moment.tz(this._input.value, NamelistDateTimePicker._format, this.displayTimeZone).tz(NamelistDateTimePicker._utc);
+      }
+    }, {
+      key: "formatUtc",
+      value: function formatUtc() {
+        return this._momentValueUtc.format(NamelistDateTimePicker._format);
+      }
+    }, {
+      key: "valueUtc",
+      get: function get() {
+        return this._momentToNsDate(this._momentValueUtc);
+      },
+      set: function set(value) {
+        var momentValue = null;
+        if (typeof value === 'string') {
+          momentValue = moment.tz(value, NamelistDateTimePicker._format, NamelistDateTimePicker._utc);
+        } else {
+          momentValue = moment.tz([value.year, value.month - 1, value.day, value.hour, value.minute, value.second], NamelistDateTimePicker._utc);
+        }
+        this._input.value = momentValue.tz(this.displayTimeZone).format(NamelistDateTimePicker._format);
+      }
+    }, {
+      key: "displayTimeZone",
+      get: function get() {
+        return this._options.displayTimeZone;
+      },
+      set: function set(tz) {
+        var utc = this.valueUtc;
+        this._options.displayTimeZone = tz;
+        this._dateTimePickerObject.timeZone(tz);
+        this.valueUtc = utc;
+      }
+    }, {
+      key: "_momentToNsDate",
+      value: function _momentToNsDate(value) {
+        var values = value.toArray();
+        return {
+          year: values[0],
+          month: values[1] + 1,
+          day: values[2],
+          hour: values[3],
+          minute: values[4],
+          second: values[5]
+        };
+      }
+    }]);
+  }();
+  _defineProperty(NamelistDateTimePicker, "_format", "YYYY-MM-DD_HH:mm:ss");
+  _defineProperty(NamelistDateTimePicker, "_utc", "UTC");
+
   var NamelistInputEditor = /*#__PURE__*/function () {
     function NamelistInputEditor(container, options) {
       _classCallCheck(this, NamelistInputEditor);
-      // defaul settings
+      // default settings
       this.options = {
         jsonBaseUrl: 'json',
         change: null,
@@ -12048,6 +12173,9 @@
 
       // variable definitions
       this.variables = null;
+
+      // variable to skip during editor field rendering
+      this._ignoreVariables = null;
 
       // read-only variable flags
       this.readOnly = {};
@@ -12403,41 +12531,43 @@
       key: "_initVariablesAsync",
       value: function () {
         var _initVariablesAsync2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-          var selectValues, userGuide, registry, group, variable, description, hasUserGuideEntry, defaultValue, entries, groupName;
+          var selectValues, userGuide, registry, group, variable, description, hasUserGuideEntry, defaultValue, entries, groupName, _iterator, _step, _variableName, _i6, _Object$entries2, _Object$entries2$_i, dateTimePickerVariable, dateTimePickerOptions, _i7, _Object$values, variableName;
           return _regeneratorRuntime().wrap(function _callee3$(_context3) {
             while (1) switch (_context3.prev = _context3.next) {
               case 0:
-                if (!(this.variables === null)) {
-                  _context3.next = 55;
+                if (!(this.variables !== null)) {
+                  _context3.next = 2;
                   break;
                 }
+                return _context3.abrupt("return");
+              case 2:
                 this.variables = {};
 
                 // load variable JSON files
-                _context3.next = 4;
+                _context3.next = 5;
                 return this._loadJsonAsync('namelist.input.select.values.json');
-              case 4:
+              case 5:
                 selectValues = _context3.sent;
-                _context3.next = 7;
+                _context3.next = 8;
                 return this._loadJsonAsync('namelist.input.users.guide.json');
-              case 7:
+              case 8:
                 userGuide = _context3.sent;
-                _context3.next = 10;
+                _context3.next = 11;
                 return this._loadJsonAsync('namelist.input.registry.json');
-              case 10:
+              case 11:
                 registry = _context3.sent;
                 _context3.t0 = _regeneratorRuntime().keys(registry);
-              case 12:
+              case 13:
                 if ((_context3.t1 = _context3.t0()).done) {
-                  _context3.next = 53;
+                  _context3.next = 55;
                   break;
                 }
                 group = _context3.t1.value;
                 this.variables[group] = {};
                 _context3.t2 = _regeneratorRuntime().keys(registry[group]);
-              case 16:
+              case 17:
                 if ((_context3.t3 = _context3.t2()).done) {
-                  _context3.next = 51;
+                  _context3.next = 53;
                   break;
                 }
                 variable = _context3.t3.value;
@@ -12451,43 +12581,43 @@
                 defaultValue = registry[group][variable].defaultValue;
                 entries = null;
                 _context3.t4 = registry[group][variable].entries;
-                _context3.next = _context3.t4 === "max_domains" ? 26 : _context3.t4 === NamelistInputEditor.entries.single ? 28 : _context3.t4 === NamelistInputEditor.entries.maxEta ? 28 : _context3.t4 === NamelistInputEditor.entries.maxDom ? 28 : 30;
+                _context3.next = _context3.t4 === "max_domains" ? 27 : _context3.t4 === NamelistInputEditor.entries.single ? 29 : _context3.t4 === NamelistInputEditor.entries.maxEta ? 29 : _context3.t4 === NamelistInputEditor.entries.maxDom ? 29 : 31;
                 break;
-              case 26:
+              case 27:
                 entries = NamelistInputEditor.entries.maxDom;
-                return _context3.abrupt("break", 32);
-              case 28:
+                return _context3.abrupt("break", 33);
+              case 29:
                 entries = registry[group][variable].entries;
-                return _context3.abrupt("break", 32);
-              case 30:
+                return _context3.abrupt("break", 33);
+              case 31:
                 console.warn("Unknown variable ".concat(variable, " number entries value ").concat(registry[group][variable].entries));
-                return _context3.abrupt("continue", 16);
-              case 32:
+                return _context3.abrupt("continue", 17);
+              case 33:
                 if (!(hasUserGuideEntry && userGuide[group][variable].entries !== entries)) {
-                  _context3.next = 47;
+                  _context3.next = 48;
                   break;
                 }
                 _context3.t5 = variable;
-                _context3.next = _context3.t5 === "dx" ? 36 : _context3.t5 === "dy" ? 36 : _context3.t5 === "eta_levels" ? 38 : _context3.t5 === "nssl_alphah" ? 40 : _context3.t5 === "nssl_alphahl" ? 40 : _context3.t5 === "nssl_cnoh" ? 40 : _context3.t5 === "nssl_cnohl" ? 40 : _context3.t5 === "nssl_cnor" ? 40 : _context3.t5 === "nssl_cnos" ? 40 : _context3.t5 === "nssl_rho_qh" ? 40 : _context3.t5 === "nssl_rho_qs" ? 40 : _context3.t5 === "topo_wind" ? 42 : _context3.t5 === "gph" ? 42 : _context3.t5 === "max_obs" ? 44 : 46;
+                _context3.next = _context3.t5 === "dx" ? 37 : _context3.t5 === "dy" ? 37 : _context3.t5 === "eta_levels" ? 39 : _context3.t5 === "nssl_alphah" ? 41 : _context3.t5 === "nssl_alphahl" ? 41 : _context3.t5 === "nssl_cnoh" ? 41 : _context3.t5 === "nssl_cnohl" ? 41 : _context3.t5 === "nssl_cnor" ? 41 : _context3.t5 === "nssl_cnos" ? 41 : _context3.t5 === "nssl_rho_qh" ? 41 : _context3.t5 === "nssl_rho_qs" ? 41 : _context3.t5 === "topo_wind" ? 43 : _context3.t5 === "gph" ? 43 : _context3.t5 === "max_obs" ? 45 : 47;
                 break;
-              case 36:
+              case 37:
                 entries = NamelistInputEditor.entries.single;
-                return _context3.abrupt("break", 47);
-              case 38:
+                return _context3.abrupt("break", 48);
+              case 39:
                 entries = NamelistInputEditor.entries.maxEta;
-                return _context3.abrupt("break", 47);
-              case 40:
+                return _context3.abrupt("break", 48);
+              case 41:
                 entries = NamelistInputEditor.entries.single;
-                return _context3.abrupt("break", 47);
-              case 42:
+                return _context3.abrupt("break", 48);
+              case 43:
                 entries = NamelistInputEditor.entries.maxDom;
-                return _context3.abrupt("break", 47);
-              case 44:
+                return _context3.abrupt("break", 48);
+              case 45:
                 entries = NamelistInputEditor.entries.single;
-                return _context3.abrupt("break", 47);
-              case 46:
-                console.warn("Variable ".concat(variable, " number of entries differ between registry ").concat(entries, " and users guide ").concat(userGuide[group][variable].entries));
+                return _context3.abrupt("break", 48);
               case 47:
+                console.warn("Variable ".concat(variable, " number of entries differ between registry ").concat(entries, " and users guide ").concat(userGuide[group][variable].entries));
+              case 48:
                 this.variables[group][variable] = {
                   type: registry[group][variable].type,
                   defaultValue: defaultValue,
@@ -12498,12 +12628,15 @@
                   this.variables[group][variable].type = NamelistInputEditor.variableTypes.selection;
                   this.variables[group][variable]['values'] = selectValues[group][variable].values;
                 }
-                _context3.next = 16;
-                break;
-              case 51:
-                _context3.next = 12;
+                if (variable in NamelistInputEditor._dateTimePickers) {
+                  this.variables[group][variable].type = NamelistInputEditor.variableTypes.datetime;
+                }
+                _context3.next = 17;
                 break;
               case 53:
+                _context3.next = 13;
+                break;
+              case 55:
                 // set default values for variables with missing or invalid default value in auto-generated JSON data
 
                 // time_step default value not set in registry
@@ -12511,7 +12644,32 @@
                 for (groupName in userGuide) {
                   this.userGuideLinks[groupName] = "https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html#".concat(groupName.replace("_", "-"));
                 }
-              case 55:
+
+                // construct ignore variable lookup hash table
+                this._ignoreVariables = {};
+                _iterator = _createForOfIteratorHelper(NamelistInputEditor._ignoreVariables);
+                try {
+                  for (_iterator.s(); !(_step = _iterator.n()).done;) {
+                    _variableName = _step.value;
+                    if (!(_variableName in this._ignoreVariables)) {
+                      this._ignoreVariables[_variableName] = null;
+                    }
+                  }
+                } catch (err) {
+                  _iterator.e(err);
+                } finally {
+                  _iterator.f();
+                }
+                for (_i6 = 0, _Object$entries2 = Object.entries(NamelistInputEditor._dateTimePickers); _i6 < _Object$entries2.length; _i6++) {
+                  _Object$entries2$_i = _slicedToArray(_Object$entries2[_i6], 2), dateTimePickerVariable = _Object$entries2$_i[0], dateTimePickerOptions = _Object$entries2$_i[1];
+                  for (_i7 = 0, _Object$values = Object.values(dateTimePickerOptions); _i7 < _Object$values.length; _i7++) {
+                    variableName = _Object$values[_i7];
+                    if (typeof variableName === 'string' && !(variableName in this._ignoreVariables) && dateTimePickerVariable !== variableName) {
+                      this._ignoreVariables[variableName] = null;
+                    }
+                  }
+                }
+              case 61:
               case "end":
                 return _context3.stop();
             }
@@ -12570,10 +12728,10 @@
           var _this$view$hideUnsetG;
           this.view.hideUnsetGroups = (_this$view$hideUnsetG = this.view.hideUnsetGroups) !== null && _this$view$hideUnsetG !== void 0 ? _this$view$hideUnsetG : true;
         }
-        for (var _i6 = 0, _Object$entries2 = Object.entries(this.variables); _i6 < _Object$entries2.length; _i6++) {
-          var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i6], 2),
-            groupName = _Object$entries2$_i[0],
-            groupVariables = _Object$entries2$_i[1];
+        for (var _i8 = 0, _Object$entries3 = Object.entries(this.variables); _i8 < _Object$entries3.length; _i8++) {
+          var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i8], 2),
+            groupName = _Object$entries3$_i[0],
+            groupVariables = _Object$entries3$_i[1];
           if (Object.keys(groupVariables).length === 0) {
             continue;
           }
@@ -12715,10 +12873,10 @@
           variablesDiv.classList.add('namelist-input-hide-unset');
         }
         variablesDiv.id = groupName;
-        for (var _i7 = 0, _Object$entries3 = Object.entries(groupVariables); _i7 < _Object$entries3.length; _i7++) {
-          var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i7], 2),
-            variableName = _Object$entries3$_i[0],
-            variable = _Object$entries3$_i[1];
+        for (var _i9 = 0, _Object$entries4 = Object.entries(groupVariables); _i9 < _Object$entries4.length; _i9++) {
+          var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i9], 2),
+            variableName = _Object$entries4$_i[0],
+            variable = _Object$entries4$_i[1];
           this._appendVariableField(variablesDiv, groupName, variableName, variable);
         }
       }
@@ -12728,6 +12886,10 @@
       key: "_appendVariableField",
       value: function _appendVariableField(variablesDiv, groupName, variableName, variable) {
         var _this3 = this;
+        if (variableName in this._ignoreVariables) {
+          console.debug("Skipping ignored variable ".concat(variableName));
+          return;
+        }
         console.debug("Creating variable ".concat(variableName, " input"));
         var variableDiv = this._append(variablesDiv, 'div');
         variableDiv.classList.add('namelist-input-variable');
@@ -12739,11 +12901,13 @@
         if (isSet === false) {
           variableDiv.classList.add('namelist-input-variable-unset');
         }
-        var html = '<div class="input-group input-group-sm">';
-        html += '<div class="input-group-prepend">';
+        var html = '';
+
+        //<div class="input-group input-group-sm">';
+        //html += '<div class="input-group-prepend">';
 
         // erase button HTML
-        html += '<button class="btn btn-outline-secondary btn-namelist-input-erase" type="button"';
+        html += '<button class="btn btn-sm btn-outline-secondary btn-namelist-input-erase" type="button"';
         if (readOnly === true) {
           variableDiv.classList.add('namelist-input-variable-readonly');
           html += ' disabled';
@@ -12751,9 +12915,9 @@
         html += '><i class="fas fa-eraser"></i></button>';
 
         // variable name HTML
-        html += '<span class="input-group-text" id="inputGroup-sizing-sm">';
+        html += '<div class="namelist-input-variable-name">';
         html += htmlEncode(variableName);
-        html += '</span></div>';
+        html += '</div>';
 
         // variable input field(s) HTML
         switch (variable.entries) {
@@ -12819,7 +12983,38 @@
               return input.value;
             });
             break;
+          case NamelistInputEditor.variableTypes.datetime:
+            variableDiv.querySelectorAll('div.namelist-input-datetime-picker').forEach(function (div, index) {
+              var dateTimeVariables = NamelistInputEditor._dateTimePickers[variableName];
+              NamelistInputEditor._dateTimePickers[variableName]['dateTimePicker'] = new NamelistDateTimePicker(div, {
+                onChange: function onChange(e) {},
+                displayTimeZone: null,
+                // local
+                valueUtc: {
+                  year: _this3._getNamelistVariableValue(groupName, dateTimeVariables.year, _this3.variables[groupName][dateTimeVariables.year], index),
+                  month: _this3._getNamelistVariableValue(groupName, dateTimeVariables.month, _this3.variables[groupName][dateTimeVariables.month], index),
+                  day: _this3._getNamelistVariableValue(groupName, dateTimeVariables.day, _this3.variables[groupName][dateTimeVariables.day], index),
+                  hour: _this3._getNamelistVariableValue(groupName, dateTimeVariables.hour, _this3.variables[groupName][dateTimeVariables.hour], index),
+                  minute: _this3._getNamelistVariableValue(groupName, dateTimeVariables.minute, _this3.variables[groupName][dateTimeVariables.minute], index),
+                  second: dateTimeVariables.second ? _this3._getNamelistVariableValue(groupName, dateTimeVariables.second, _this3.variables[groupName][dateTimeVariables.second], index) : null
+                }
+              });
+            });
+            break;
         }
+      }
+    }, {
+      key: "_getNamelistVariableValue",
+      value: function _getNamelistVariableValue(groupName, variableName, variable, index) {
+        if (this._isNamelistValueSet(groupName, variableName) === true) {
+          switch (variable.entries) {
+            case NamelistInputEditor.entries.maxDom:
+              return this.namelist[groupName][variableName][index];
+            case NamelistInputEditor.entries.single:
+              return this.namelist[groupName][variableName];
+          }
+        }
+        return variable.defaultValue;
       }
 
       // set variable input fields value from current namelist object
@@ -12929,16 +13124,16 @@
         if (value === undefined || value === null) {
           throw new Error("Variable ".concat(variableName, " value is not defined"));
         }
-        var html = '';
+        var html = '<div class="namelist-input-variable-value">';
         var fieldId = htmlEncode(this._getInputFieldId(variableName, index));
         var fieldName = htmlEncode(variableName);
         switch (variable.type) {
           case NamelistInputEditor.variableTypes.selection:
-            html = html + "<select class=\"form-control\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"").concat(readOnly ? " readonly" : "", " required>");
-            for (var _i8 = 0, _Object$entries4 = Object.entries(variable['values']); _i8 < _Object$entries4.length; _i8++) {
-              var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i8], 2),
-                key = _Object$entries4$_i[0],
-                _value = _Object$entries4$_i[1];
+            html = html + "<select class=\"form-control form-control-sm\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"").concat(readOnly ? " readonly" : "", " required>");
+            for (var _i10 = 0, _Object$entries5 = Object.entries(variable['values']); _i10 < _Object$entries5.length; _i10++) {
+              var _Object$entries5$_i = _slicedToArray(_Object$entries5[_i10], 2),
+                key = _Object$entries5$_i[0],
+                _value = _Object$entries5$_i[1];
               html = html + "<option value=\"".concat(key, "\"");
               if (_value !== null && key.toString() === _value.toString()) {
                 html = html + ' selected';
@@ -12948,8 +13143,9 @@
             html = html + '<select/>';
             break;
           case NamelistInputEditor.variableTypes.logical:
-            html = html + '<div class="input-group-prepend input-group-checkbox"><div class="input-group-text">';
-            html = html + "<input class=\"\" type=\"checkbox\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"");
+            html = html + '<div class="namelist-input-variable-check">';
+            html = html + '<div class="form-check">';
+            html = html + "<input class=\"form-check-input\" type=\"checkbox\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"");
             if (readOnly === true) {
               html = html + ' readonly';
             }
@@ -12957,10 +13153,11 @@
               html = html + ' checked';
             }
             html = html + '/>';
-            html = html + '</div></div>';
+            html = html + '</div>';
+            html = html + '</div>';
             break;
           case NamelistInputEditor.variableTypes.integer:
-            html = html + "<input type=\"number\" class=\"form-control\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"");
+            html = html + "<input type=\"number\" class=\"form-control form-control-sm\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"");
             html = html + " value=\"".concat(parseInt(value), "\"");
             if (readOnly === true) {
               html = html + ' readonly';
@@ -12968,7 +13165,7 @@
             html = html + ' step="1" required/>';
             break;
           case NamelistInputEditor.variableTypes.real:
-            html = html + "<input type=\"number\" class=\"form-control\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"");
+            html = html + "<input type=\"number\" class=\"form-control form-control-sm\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"");
             html = html + " value=\"".concat(value.toFixed(this.options.floatDigits), "\"");
             if (readOnly === true) {
               html = html + ' readonly';
@@ -12985,10 +13182,22 @@
             }
             html = html + ' required />';
             break;
+          case NamelistInputEditor.variableTypes.datetime:
+            html += "<div class=\"input-group input-group-sm namelist-input-datetime-picker\">";
+            html += "<input type=\"text\" class=\"form-control\" id=\"".concat(fieldId, "\"");
+            //html += ' required';
+            html += '>';
+            html += '<div class="input-group-addon input-group-append">';
+            html += '<div class="input-group-text">';
+            html += '<i class="far fa-calendar-alt"></i>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            break;
           default:
             throw new Error("Unknown variable data type ".concat(variable.type));
         }
-        return html;
+        return html + '</div>';
       }
 
       // creates and appends a new child HTML element to parent element
@@ -13011,9 +13220,30 @@
     logical: "logical",
     real: "real",
     character: "character",
-    selection: "selection"
+    selection: "selection",
+    datetime: "datetime"
   });
   _defineProperty(NamelistInputEditor, "_localStorageKey", '_wrf_domain_wizard_namelist_input_editor');
+  _defineProperty(NamelistInputEditor, "_dateTimePickers", {
+    'start_year': {
+      year: 'start_year',
+      month: 'start_month',
+      day: 'start_day',
+      hour: 'start_hour',
+      minute: 'start_minute',
+      second: 'start_second'
+    },
+    'end_year': {
+      year: 'end_year',
+      month: 'end_month',
+      day: 'end_day',
+      hour: 'end_hour',
+      minute: 'end_minute',
+      second: 'end_second'
+    }
+  });
+  // variable to skip during editor field rendering
+  _defineProperty(NamelistInputEditor, "_ignoreVariables", ['julyr', 'julday', 'gmt']);
   _defineProperty(NamelistInputEditor, "collpaseCommands", {
     hide: 'hide',
     show: 'show'
@@ -13104,12 +13334,12 @@
         _this._updateViewMenu();
       });
       this._updateViewMenu();
-      this.header.querySelector('#view-everything').addEventListener('click', function (e) {
+      this.header.querySelector('#view-all').addEventListener('click', function (e) {
         _this.viewActions.expandGroups.click();
         _this.viewActions.showUnsetGroups.click();
         _this.viewActions.showUnsetVariables.click();
       });
-      this.header.querySelector('#view-minimal').addEventListener('click', function (e) {
+      this.header.querySelector('#view-min').addEventListener('click', function (e) {
         _this.viewActions.collapseGroups.click();
         _this.viewActions.hideUnsetGroups.click();
         _this.viewActions.hideUnsetVariables.click();
@@ -13256,7 +13486,7 @@
       var container, wpsNamelist, domain, wpsPanel, newDomainContext;
       var buttonNew, buttonSave, buttonOpen, buttonReset, inputFile, captureImageDialog;
 
-      // defaul settings
+      // default settings
       this.options = {
         jsonBaseUrl: 'json',
         sampleBaseUrl: 'samples',
@@ -14199,6 +14429,7 @@
   }();
 
   exports.DomainWizard = DomainWizard;
+  exports.NamelistDateTimePicker = NamelistDateTimePicker;
   exports.NamelistInputPage = NamelistInputPage;
   exports.enableGlobalErrorHandler = enableGlobalErrorHandler;
   exports.errorMessageBox = errorMessageBox;
