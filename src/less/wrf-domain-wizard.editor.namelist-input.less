@@ -92,7 +92,6 @@ div.namelist-input-editor {
                     width: 200px;
                     flex-grow: 0 !important;
                     flex-shrink: 0 !important;
-                    z-index: 1;
 
                     border-top: 1px solid #ced4da;
                     border-bottom: 1px solid #ced4da;
@@ -112,7 +111,7 @@ div.namelist-input-editor {
                         box-shadow: none;
                     }
 
-                    div.input-group {
+                    div.input-group.namelist-input-datetime-picker {
 
                         div.input-group-text {
                             border-radius: 0;
@@ -152,6 +151,10 @@ div.namelist-input-editor {
                     overflow: hidden;
                     white-space: nowrap;
                     color: #495057;
+                }
+
+                &.namelist-input-variable-highlight {
+                    background-color: #ffeb3b;
                 }
 
                 &:hover {

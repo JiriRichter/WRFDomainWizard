@@ -12045,9 +12045,10 @@
 
       // set default timezone
       if (!this._options.displayTimeZone) {
-        this._options.displayTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        this._options.displayTimeZone = NamelistDateTimePicker.localTimeZone;
       }
       this._input = inputGroup.querySelector('input');
+      this._widget = inputGroup;
       this._init(inputGroup);
     }
     return _createClass(NamelistDateTimePicker, [{
@@ -12055,12 +12056,13 @@
       value: function _init(element) {
         var _this = this;
         this._dateTimePicker = $(element).datetimepicker({
-          "allowInputToggle": true,
-          "showClose": true,
-          "showClear": true,
-          "showTodayButton": true,
-          "format": NamelistDateTimePicker._format,
+          allowInputToggle: true,
+          showClose: true,
+          showClear: true,
+          showTodayButton: true,
+          format: NamelistDateTimePicker._format,
           timeZone: this.displayTimeZone,
+          useCurrent: true,
           icons: {
             date: 'far fa-calendar-alt',
             time: 'far fa-clock',
@@ -12081,21 +12083,21 @@
         if (this._options.valueUtc !== null) {
           this.valueUtc = this._options.valueUtc;
         }
-        var timezoneSelect = element.querySelector('select.timezone');
-        if (timezoneSelect) {
-          moment.tz.names().forEach(function (name) {
-            var option = document.createElement('option');
-            option.value = name;
-            option.innerText = name;
-            if (name == _this.displayTimeZone) {
-              option.selected = true;
-            }
-            timezoneSelect.append(option);
-          });
-          timezoneSelect.addEventListener('change', function (e) {
-            _this.displayTimeZone = e.currentTarget.value;
-          });
-        }
+      }
+    }, {
+      key: "show",
+      value: function show() {
+        this._dateTimePickerObject.show();
+      }
+    }, {
+      key: "input",
+      get: function get() {
+        return this._input;
+      }
+    }, {
+      key: "widget",
+      get: function get() {
+        return this._widget;
       }
     }, {
       key: "_dateTimePickerObject",
@@ -12150,6 +12152,16 @@
           second: values[5]
         };
       }
+    }], [{
+      key: "localTimeZone",
+      get: function get() {
+        return Intl.DateTimeFormat().resolvedOptions().timeZone;
+      }
+    }, {
+      key: "timeZoneNames",
+      get: function get() {
+        return moment.tz.names();
+      }
     }]);
   }();
   _defineProperty(NamelistDateTimePicker, "_format", "YYYY-MM-DD_HH:mm:ss");
@@ -12162,7 +12174,9 @@
       this.options = {
         jsonBaseUrl: 'json',
         change: null,
-        floatDigits: 3
+        floatDigits: 3,
+        timeZone: null,
+        onInitialize: null
       };
       if (options) {
         this.options = Object.assign(this.options, options);
@@ -12176,6 +12190,7 @@
 
       // variable to skip during editor field rendering
       this._ignoreVariables = null;
+      this._variableSubstitutes = {};
 
       // read-only variable flags
       this.readOnly = {};
@@ -12195,6 +12210,7 @@
           groups: {}
         };
       }
+      this._dateTimePickers = {};
     }
 
     // current max_dom value
@@ -12203,6 +12219,23 @@
       get: function get() {
         var _this$namelist$domain, _this$namelist$domain2;
         return (_this$namelist$domain = (_this$namelist$domain2 = this.namelist.domains) === null || _this$namelist$domain2 === void 0 ? void 0 : _this$namelist$domain2.max_dom) !== null && _this$namelist$domain !== void 0 ? _this$namelist$domain : 1;
+      }
+    }, {
+      key: "timeZone",
+      get: function get() {
+        return this.options.timeZone;
+      },
+      set: function set(tz) {
+        this.options.timeZone = tz;
+        for (var _i = 0, _Object$values = Object.values(this._dateTimePickers); _i < _Object$values.length; _i++) {
+          var groupDateTimePickers = _Object$values[_i];
+          for (var _i2 = 0, _Object$values2 = Object.values(groupDateTimePickers); _i2 < _Object$values2.length; _i2++) {
+            var dateTimePickers = _Object$values2[_i2];
+            dateTimePickers.forEach(function (dateTimePicker) {
+              dateTimePicker.displayTimeZone = tz;
+            });
+          }
+        }
       }
 
       // initializes editor from namelist.wps object
@@ -12257,7 +12290,7 @@
       key: "openNamelistInputAsync",
       value: function () {
         var _openNamelistInputAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data, options) {
-          var errors, namelist, max_dom, _i, _Object$keys, groupName, group, _i2, _Object$keys2, variableName, variable, _i3, _errors, error;
+          var errors, namelist, max_dom, _i3, _Object$keys, groupName, group, _i4, _Object$keys2, variableName, variable, _i5, _errors, error;
           return _regeneratorRuntime().wrap(function _callee2$(_context2) {
             while (1) switch (_context2.prev = _context2.next) {
               case 0:
@@ -12291,13 +12324,13 @@
                 errors.push("variable 'max_dom' is not a valid integer");
                 return _context2.abrupt("return");
               case 15:
-                _i = 0, _Object$keys = Object.keys(namelist);
+                _i3 = 0, _Object$keys = Object.keys(namelist);
               case 16:
-                if (!(_i < _Object$keys.length)) {
+                if (!(_i3 < _Object$keys.length)) {
                   _context2.next = 45;
                   break;
                 }
-                groupName = _Object$keys[_i];
+                groupName = _Object$keys[_i3];
                 group = this.variables[groupName];
                 if (!(group === undefined)) {
                   _context2.next = 22;
@@ -12306,13 +12339,13 @@
                 errors.push("Unknown variable group ".concat(groupName));
                 return _context2.abrupt("continue", 42);
               case 22:
-                _i2 = 0, _Object$keys2 = Object.keys(namelist[groupName]);
+                _i4 = 0, _Object$keys2 = Object.keys(namelist[groupName]);
               case 23:
-                if (!(_i2 < _Object$keys2.length)) {
+                if (!(_i4 < _Object$keys2.length)) {
                   _context2.next = 42;
                   break;
                 }
-                variableName = _Object$keys2[_i2];
+                variableName = _Object$keys2[_i4];
                 variable = group[variableName];
                 if (!(variable === undefined)) {
                   _context2.next = 29;
@@ -12339,17 +12372,17 @@
                 }
                 return _context2.abrupt("break", 39);
               case 39:
-                _i2++;
+                _i4++;
                 _context2.next = 23;
                 break;
               case 42:
-                _i++;
+                _i3++;
                 _context2.next = 16;
                 break;
               case 45:
                 this.namelist = namelist;
-                for (_i3 = 0, _errors = errors; _i3 < _errors.length; _i3++) {
-                  error = _errors[_i3];
+                for (_i5 = 0, _errors = errors; _i5 < _errors.length; _i5++) {
+                  error = _errors[_i5];
                   console.warn(error);
                 }
 
@@ -12376,12 +12409,12 @@
         var _this = this;
         var text = '';
         var _loop = function _loop() {
-          var _Object$entries$_i = _slicedToArray(_Object$entries[_i4], 2),
+          var _Object$entries$_i = _slicedToArray(_Object$entries[_i6], 2),
             groupName = _Object$entries$_i[0],
             groupVariables = _Object$entries$_i[1];
           var variableNames = [];
-          for (var _i5 = 0, _Object$keys3 = Object.keys(groupVariables); _i5 < _Object$keys3.length; _i5++) {
-            var name = _Object$keys3[_i5];
+          for (var _i7 = 0, _Object$keys3 = Object.keys(groupVariables); _i7 < _Object$keys3.length; _i7++) {
+            var name = _Object$keys3[_i7];
             if (_this._isNamelistValueSet(groupName, name) === true) {
               variableNames.push(name);
             }
@@ -12395,20 +12428,70 @@
           var groupContent = Namelist.formatSection(groupName, variableNames, values);
           text = text + groupContent;
         };
-        for (var _i4 = 0, _Object$entries = Object.entries(this.variables); _i4 < _Object$entries.length; _i4++) {
+        for (var _i6 = 0, _Object$entries = Object.entries(this.variables); _i6 < _Object$entries.length; _i6++) {
           if (_loop()) continue;
         }
         return text;
       }
     }, {
+      key: "goToTop",
+      value: function goToTop() {
+        this.clearHighlight();
+        this.container.scrollIntoView();
+      }
+    }, {
+      key: "goToGroup",
+      value: function goToGroup(name) {
+        this.clearHighlight();
+        var groupDiv = this.container.querySelector("div.namelist-input-group[data-group=\"".concat(name, "\"]"));
+        if (!groupDiv) {
+          return;
+        }
+        this._expandGroup(groupDiv);
+        groupDiv.scrollIntoView();
+      }
+    }, {
+      key: "_expandGroup",
+      value: function _expandGroup(groupDiv) {
+        this._toggleGroupHideUnset(groupDiv, false);
+        this._toggleGroupCollapse(groupDiv.querySelector('div.namelist-input-variables'), NamelistInputEditor.collpaseCommands.show);
+        this._toggleGroupVariableHideUnset(groupDiv, false);
+      }
+    }, {
+      key: "clearHighlight",
+      value: function clearHighlight() {
+        this.container.querySelectorAll('div.namelist-input-variable.namelist-input-variable-highlight').forEach(function (div) {
+          div.classList.remove('namelist-input-variable-highlight');
+        });
+      }
+    }, {
+      key: "goToVariable",
+      value: function goToVariable(variableName) {
+        this.clearHighlight();
+        if (variableName in this._variableSubstitutes) {
+          variableName = this._variableSubstitutes[variableName];
+        }
+        var variableDiv = this.container.querySelector("div.namelist-input-variable[data-variable=\"".concat(variableName, "\"]"));
+        if (!variableDiv) {
+          return;
+        }
+        variableDiv.classList.add('namelist-input-variable-highlight');
+        var collapsibleDiv = variableDiv.closest('div.namelist-input-variables.collapse');
+        var groupDiv = variableDiv.closest('div.namelist-input-group');
+        $(collapsibleDiv).one('shown.bs.collapse', function (e) {
+          variableDiv.scrollIntoView();
+        });
+        this._expandGroup(groupDiv);
+      }
+    }, {
       key: "collapseGroups",
       value: function collapseGroups() {
-        this._toggleGroupCollapse(NamelistInputEditor.collpaseCommands.hide);
+        this._toggleAllGroupsCollapse(NamelistInputEditor.collpaseCommands.hide);
       }
     }, {
       key: "expandGroups",
       value: function expandGroups(command) {
-        this._toggleGroupCollapse(NamelistInputEditor.collpaseCommands.show);
+        this._toggleAllGroupsCollapse(NamelistInputEditor.collpaseCommands.show);
       }
     }, {
       key: "hideUnsetVariables",
@@ -12423,30 +12506,36 @@
     }, {
       key: "hideUnsetGroups",
       value: function hideUnsetGroups() {
-        this._toggleGroupHideUnset(true);
+        this._toggleAllGroupsHideUnset(true);
       }
     }, {
       key: "showUnsetGroups",
       value: function showUnsetGroups() {
-        this._toggleGroupHideUnset(false);
+        this._toggleAllGroupsHideUnset(false);
       }
     }, {
       key: "_toggleGroupCollapse",
-      value: function _toggleGroupCollapse(command) {
+      value: function _toggleGroupCollapse(variablesDiv, command) {
+        $(variablesDiv).collapse(command);
+        var groupHeader = variablesDiv.previousSibling;
+        var icon = groupHeader.querySelector('button[data-toggle="collapse"] i');
+        switch (command) {
+          case NamelistInputEditor.collpaseCommands.hide:
+            icon.classList.remove(NamelistInputEditor.iconClass.open);
+            icon.classList.add(NamelistInputEditor.iconClass.collapsed);
+            break;
+          case NamelistInputEditor.collpaseCommands.show:
+            icon.classList.remove(NamelistInputEditor.iconClass.collapsed);
+            icon.classList.add(NamelistInputEditor.iconClass.open);
+            break;
+        }
+      }
+    }, {
+      key: "_toggleAllGroupsCollapse",
+      value: function _toggleAllGroupsCollapse(command) {
+        var _this2 = this;
         this.container.querySelectorAll('div.namelist-input-variables.collapse').forEach(function (element) {
-          $(element).collapse(command);
-          var groupHeader = element.previousSibling;
-          var icon = groupHeader.querySelector('button[data-toggle="collapse"] i');
-          switch (command) {
-            case NamelistInputEditor.collpaseCommands.hide:
-              icon.classList.remove(NamelistInputEditor.iconClass.open);
-              icon.classList.add(NamelistInputEditor.iconClass.collapsed);
-              break;
-            case NamelistInputEditor.collpaseCommands.show:
-              icon.classList.remove(NamelistInputEditor.iconClass.collapsed);
-              icon.classList.add(NamelistInputEditor.iconClass.open);
-              break;
-          }
+          _this2._toggleGroupCollapse(element, command);
         });
         for (var group in this.view.groups) {
           this.view.groups[group].collapse = command === NamelistInputEditor.collpaseCommands.hide;
@@ -12455,30 +12544,42 @@
       }
     }, {
       key: "_toggleGroupHideUnset",
-      value: function _toggleGroupHideUnset(hideUnset) {
-        this.container.querySelectorAll('div.namelist-input-group').forEach(function (group) {
-          if (hideUnset === true) {
-            group.classList.add('namelist-input-hide-unset');
-          } else {
-            group.classList.remove('namelist-input-hide-unset');
-          }
+      value: function _toggleGroupHideUnset(groupDiv, hideUnset) {
+        if (hideUnset === true) {
+          groupDiv.classList.add('namelist-input-hide-unset');
+        } else {
+          groupDiv.classList.remove('namelist-input-hide-unset');
+        }
+      }
+    }, {
+      key: "_toggleAllGroupsHideUnset",
+      value: function _toggleAllGroupsHideUnset(hideUnset) {
+        var _this3 = this;
+        this.container.querySelectorAll('div.namelist-input-group').forEach(function (groupDiv) {
+          _this3._toggleGroupHideUnset(groupDiv, hideUnset);
         });
         this.view.hideUnsetGroups = hideUnset;
         this._storeView();
       }
     }, {
+      key: "_toggleGroupVariableHideUnset",
+      value: function _toggleGroupVariableHideUnset(groupDiv, hideUnset) {
+        var variables = groupDiv.querySelector('.namelist-input-variables');
+        if (hideUnset === true) {
+          variables.classList.add('namelist-input-hide-unset');
+        } else {
+          variables.classList.remove('namelist-input-hide-unset');
+        }
+        var header = groupDiv.querySelector('.namelist-input-group-header');
+        var hideUnsetSwitch = header.querySelector('input[name="switch-hide-unset"]');
+        hideUnsetSwitch.checked = hideUnset;
+      }
+    }, {
       key: "_toggleVariableHideUnset",
       value: function _toggleVariableHideUnset(hideUnset) {
-        this.container.querySelectorAll('div.namelist-input-group').forEach(function (group) {
-          var variables = group.querySelector('.namelist-input-variables');
-          if (hideUnset === true) {
-            variables.classList.add('namelist-input-hide-unset');
-          } else {
-            variables.classList.remove('namelist-input-hide-unset');
-          }
-          var header = group.querySelector('.namelist-input-group-header');
-          var hideUnsetSwitch = header.querySelector('input[name="switch-hide-unset"]');
-          hideUnsetSwitch.checked = hideUnset;
+        var _this4 = this;
+        this.container.querySelectorAll('div.namelist-input-group').forEach(function (groupDiv) {
+          _this4._toggleGroupVariableHideUnset(groupDiv, hideUnset);
         });
         for (var group in this.view.groups) {
           this.view.groups[group].hideUnsetVariables = hideUnset;
@@ -12523,6 +12624,7 @@
     }, {
       key: "_empty",
       value: function _empty() {
+        this._dateTimePickers = {};
         while (this.container.firstChild && this.container.removeChild(this.container.firstChild));
       }
 
@@ -12531,7 +12633,7 @@
       key: "_initVariablesAsync",
       value: function () {
         var _initVariablesAsync2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-          var selectValues, userGuide, registry, group, variable, description, hasUserGuideEntry, defaultValue, entries, groupName, _iterator, _step, _variableName, _i6, _Object$entries2, _Object$entries2$_i, dateTimePickerVariable, dateTimePickerOptions, _i7, _Object$values, variableName;
+          var selectValues, userGuide, registry, group, variable, description, hasUserGuideEntry, defaultValue, entries, groupName, _iterator, _step, _variableName, _i8, _Object$values3, groupDateTimePickers, _i9, _Object$entries2, _Object$entries2$_i, dateTimePickerVariableName, dateTimePicker, _i10, _Object$values4, variableName;
           return _regeneratorRuntime().wrap(function _callee3$(_context3) {
             while (1) switch (_context3.prev = _context3.next) {
               case 0:
@@ -12628,7 +12730,7 @@
                   this.variables[group][variable].type = NamelistInputEditor.variableTypes.selection;
                   this.variables[group][variable]['values'] = selectValues[group][variable].values;
                 }
-                if (variable in NamelistInputEditor._dateTimePickers) {
+                if (group in NamelistInputEditor._dateTimePickers && variable in NamelistInputEditor._dateTimePickers[group]) {
                   this.variables[group][variable].type = NamelistInputEditor.variableTypes.datetime;
                 }
                 _context3.next = 17;
@@ -12660,16 +12762,27 @@
                 } finally {
                   _iterator.f();
                 }
-                for (_i6 = 0, _Object$entries2 = Object.entries(NamelistInputEditor._dateTimePickers); _i6 < _Object$entries2.length; _i6++) {
-                  _Object$entries2$_i = _slicedToArray(_Object$entries2[_i6], 2), dateTimePickerVariable = _Object$entries2$_i[0], dateTimePickerOptions = _Object$entries2$_i[1];
-                  for (_i7 = 0, _Object$values = Object.values(dateTimePickerOptions); _i7 < _Object$values.length; _i7++) {
-                    variableName = _Object$values[_i7];
-                    if (typeof variableName === 'string' && !(variableName in this._ignoreVariables) && dateTimePickerVariable !== variableName) {
-                      this._ignoreVariables[variableName] = null;
+                this._variableSubstitutes = {};
+                for (_i8 = 0, _Object$values3 = Object.values(NamelistInputEditor._dateTimePickers); _i8 < _Object$values3.length; _i8++) {
+                  groupDateTimePickers = _Object$values3[_i8];
+                  for (_i9 = 0, _Object$entries2 = Object.entries(groupDateTimePickers); _i9 < _Object$entries2.length; _i9++) {
+                    _Object$entries2$_i = _slicedToArray(_Object$entries2[_i9], 2), dateTimePickerVariableName = _Object$entries2$_i[0], dateTimePicker = _Object$entries2$_i[1];
+                    for (_i10 = 0, _Object$values4 = Object.values(dateTimePicker.variables); _i10 < _Object$values4.length; _i10++) {
+                      variableName = _Object$values4[_i10];
+                      if (typeof variableName === 'string' && !(variableName in this._ignoreVariables) && variableName !== dateTimePickerVariableName) {
+                        this._ignoreVariables[variableName] = null;
+                        this._variableSubstitutes[variableName] = dateTimePickerVariableName;
+                      }
                     }
                   }
                 }
-              case 61:
+                if (typeof this.options.onInitialize === 'function') {
+                  this.options.onInitialize.call(this, {
+                    sender: this,
+                    variables: this.variables
+                  });
+                }
+              case 63:
               case "end":
                 return _context3.stop();
             }
@@ -12728,8 +12841,8 @@
           var _this$view$hideUnsetG;
           this.view.hideUnsetGroups = (_this$view$hideUnsetG = this.view.hideUnsetGroups) !== null && _this$view$hideUnsetG !== void 0 ? _this$view$hideUnsetG : true;
         }
-        for (var _i8 = 0, _Object$entries3 = Object.entries(this.variables); _i8 < _Object$entries3.length; _i8++) {
-          var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i8], 2),
+        for (var _i11 = 0, _Object$entries3 = Object.entries(this.variables); _i11 < _Object$entries3.length; _i11++) {
+          var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i11], 2),
             groupName = _Object$entries3$_i[0],
             groupVariables = _Object$entries3$_i[1];
           if (Object.keys(groupVariables).length === 0) {
@@ -12750,7 +12863,7 @@
       function _initVariableGroup(groupName, groupVariables, editorOptions) {
         var _this$view$groups,
           _this$view$groups$gro,
-          _this2 = this,
+          _this5 = this,
           _this$namelist$groupN;
         var groupDiv = this._append(this.container, 'div');
         groupDiv.classList.add('namelist-input-group');
@@ -12811,25 +12924,25 @@
           if (icon.classList.contains(NamelistInputEditor.iconClass.open)) {
             icon.classList.remove(NamelistInputEditor.iconClass.open);
             icon.classList.add(NamelistInputEditor.iconClass.collapsed);
-            _this2.view.groups[groupName].collapse = true;
+            _this5.view.groups[groupName].collapse = true;
           } else {
             icon.classList.remove(NamelistInputEditor.iconClass.collapsed);
             icon.classList.add(NamelistInputEditor.iconClass.open);
-            _this2.view.groups[groupName].collapse = false;
+            _this5.view.groups[groupName].collapse = false;
           }
-          _this2._storeView();
+          _this5._storeView();
         });
         headerDiv.querySelector("input#switch-hide-unset-".concat(groupName)).addEventListener('change', function (e) {
           var group = e.currentTarget.closest('.namelist-input-group');
           var groupName = group.dataset['group'];
           var variables = group.querySelector('div.namelist-input-variables');
-          _this2.view.groups[groupName].hideUnsetVariables = e.currentTarget.checked;
+          _this5.view.groups[groupName].hideUnsetVariables = e.currentTarget.checked;
           if (e.currentTarget.checked === true) {
             variables.classList.add('namelist-input-hide-unset');
           } else {
             variables.classList.remove('namelist-input-hide-unset');
           }
-          _this2._storeView();
+          _this5._storeView();
         });
         this.namelist[groupName] = (_this$namelist$groupN = this.namelist[groupName]) !== null && _this$namelist$groupN !== void 0 ? _this$namelist$groupN : {};
         this._appendGroupVariableFields(groupDiv, groupName, groupVariables);
@@ -12873,8 +12986,8 @@
           variablesDiv.classList.add('namelist-input-hide-unset');
         }
         variablesDiv.id = groupName;
-        for (var _i9 = 0, _Object$entries4 = Object.entries(groupVariables); _i9 < _Object$entries4.length; _i9++) {
-          var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i9], 2),
+        for (var _i12 = 0, _Object$entries4 = Object.entries(groupVariables); _i12 < _Object$entries4.length; _i12++) {
+          var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i12], 2),
             variableName = _Object$entries4$_i[0],
             variable = _Object$entries4$_i[1];
           this._appendVariableField(variablesDiv, groupName, variableName, variable);
@@ -12885,7 +12998,7 @@
     }, {
       key: "_appendVariableField",
       value: function _appendVariableField(variablesDiv, groupName, variableName, variable) {
-        var _this3 = this;
+        var _this6 = this;
         if (variableName in this._ignoreVariables) {
           console.debug("Skipping ignored variable ".concat(variableName));
           return;
@@ -12916,7 +13029,16 @@
 
         // variable name HTML
         html += '<div class="namelist-input-variable-name">';
-        html += htmlEncode(variableName);
+        switch (variable.type) {
+          case NamelistInputEditor.variableTypes.datetime:
+            if (NamelistInputEditor._dateTimePickers[groupName][variableName].title) {
+              html += htmlEncode(NamelistInputEditor._dateTimePickers[groupName][variableName].title);
+            }
+            break;
+          default:
+            html += htmlEncode(variableName);
+            break;
+        }
         html += '</div>';
 
         // variable input field(s) HTML
@@ -12934,10 +13056,22 @@
         }
 
         // variable description HTML
-        if (variable.description) {
-          html += '<div class="namelist-input-variable-description">';
-          html += htmlEncode(variable.description);
-          html += '</div>';
+        switch (variable.type) {
+          case NamelistInputEditor.variableTypes.datetime:
+            if (NamelistInputEditor._dateTimePickers[groupName][variableName].description) {
+              html += '<div class="namelist-input-variable-description">';
+              html += htmlEncode(NamelistInputEditor._dateTimePickers[groupName][variableName].description);
+              html += " (".concat(Object.values(NamelistInputEditor._dateTimePickers[groupName][variableName].variables).join(', '), ")");
+              html += '</div>';
+            }
+            break;
+          default:
+            if (variable.description) {
+              html += '<div class="namelist-input-variable-description">';
+              html += htmlEncode(variable.description);
+              html += '</div>';
+            }
+            break;
         }
         html += '</div>';
         variableDiv.innerHTML = html;
@@ -12951,9 +13085,21 @@
           var groupName = variableDiv.closest('div.namelist-input-group').dataset['group'];
           var variableName = variableDiv.dataset['variable'];
           variableDiv.classList.add('namelist-input-variable-unset');
-          _this3.namelist[groupName][variableName] = null;
-          _this3._setVariableFieldValue(groupName, variableName);
-          _this3._fireChange(groupName, variableName);
+          switch (_this6.variables[groupName][variableName].type) {
+            case NamelistInputEditor.variableTypes.datetime:
+              for (var key in NamelistInputEditor._dateTimePickers[groupName][variableName].variables) {
+                _this6.namelist[groupName][NamelistInputEditor._dateTimePickers[groupName][variableName].variables[key]] = null;
+              }
+              _this6._dateTimePickers[groupName][variableName].forEach(function (dateTimePicker, index) {
+                dateTimePicker.valueUtc = _this6._getNamelistDateTimeValueUtc(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables, index);
+              });
+              break;
+            default:
+              _this6.namelist[groupName][variableName] = null;
+              _this6._setVariableFieldValue(groupName, variableName);
+              break;
+          }
+          _this6._fireChange(groupName, variableName);
         });
 
         // configure variable input fields event listeners
@@ -12985,23 +13131,58 @@
             break;
           case NamelistInputEditor.variableTypes.datetime:
             variableDiv.querySelectorAll('div.namelist-input-datetime-picker').forEach(function (div, index) {
-              var dateTimeVariables = NamelistInputEditor._dateTimePickers[variableName];
-              NamelistInputEditor._dateTimePickers[variableName]['dateTimePicker'] = new NamelistDateTimePicker(div, {
-                onChange: function onChange(e) {},
-                displayTimeZone: null,
-                // local
-                valueUtc: {
-                  year: _this3._getNamelistVariableValue(groupName, dateTimeVariables.year, _this3.variables[groupName][dateTimeVariables.year], index),
-                  month: _this3._getNamelistVariableValue(groupName, dateTimeVariables.month, _this3.variables[groupName][dateTimeVariables.month], index),
-                  day: _this3._getNamelistVariableValue(groupName, dateTimeVariables.day, _this3.variables[groupName][dateTimeVariables.day], index),
-                  hour: _this3._getNamelistVariableValue(groupName, dateTimeVariables.hour, _this3.variables[groupName][dateTimeVariables.hour], index),
-                  minute: _this3._getNamelistVariableValue(groupName, dateTimeVariables.minute, _this3.variables[groupName][dateTimeVariables.minute], index),
-                  second: dateTimeVariables.second ? _this3._getNamelistVariableValue(groupName, dateTimeVariables.second, _this3.variables[groupName][dateTimeVariables.second], index) : null
-                }
+              var _this6$_dateTimePicke, _this6$_dateTimePicke2;
+              var dateTimePicker = new NamelistDateTimePicker(div, {
+                onChange: function onChange(e) {
+                  var variableDiv = e.sender.widget.closest('div.namelist-input-variable');
+                  var variableName = variableDiv.dataset['variable'];
+                  var groupName = variableDiv.closest('div.namelist-input-group').dataset['group'];
+                  variableDiv.classList.remove('namelist-input-variable-unset');
+                  switch (_this6.variables[groupName][variableName].entries) {
+                    case NamelistInputEditor.entries.single:
+                      {
+                        var valueUtc = _this6._dateTimePickers[groupName][variableName][0].valueUtc;
+                        for (var key in NamelistInputEditor._dateTimePickers[groupName][variableName].variables) {
+                          _this6._setNamelistValue(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables[key], valueUtc[key]);
+                        }
+                      }
+                      break;
+                    case NamelistInputEditor.entries.maxDom:
+                      {
+                        var valuesUtc = _this6._dateTimePickers[groupName][variableName].map(function (x) {
+                          return x.valueUtc;
+                        });
+                        for (var key in NamelistInputEditor._dateTimePickers[groupName][variableName].variables) {
+                          _this6._setNamelistValue(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables[key], valuesUtc.map(function (x) {
+                            return x[key];
+                          }));
+                        }
+                      }
+                      break;
+                  }
+                  _this6._fireChange(groupName, variableName);
+                },
+                displayTimeZone: _this6.options.timeZone,
+                valueUtc: _this6._getNamelistDateTimeValueUtc(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables, index)
               });
+              _this6._dateTimePickers[groupName] = (_this6$_dateTimePicke = _this6._dateTimePickers[groupName]) !== null && _this6$_dateTimePicke !== void 0 ? _this6$_dateTimePicke : {};
+              _this6._dateTimePickers[groupName][variableName] = (_this6$_dateTimePicke2 = _this6._dateTimePickers[groupName][variableName]) !== null && _this6$_dateTimePicke2 !== void 0 ? _this6$_dateTimePicke2 : [];
+              _this6._dateTimePickers[groupName][variableName].push(dateTimePicker);
             });
             break;
         }
+      }
+    }, {
+      key: "_getNamelistDateTimeValueUtc",
+      value: function _getNamelistDateTimeValueUtc(groupName, dateTimeVariables, index) {
+        return {
+          year: this._getNamelistVariableValue(groupName, dateTimeVariables.year, this.variables[groupName][dateTimeVariables.year], index),
+          month: this._getNamelistVariableValue(groupName, dateTimeVariables.month, this.variables[groupName][dateTimeVariables.month], index),
+          day: this._getNamelistVariableValue(groupName, dateTimeVariables.day, this.variables[groupName][dateTimeVariables.day], index),
+          hour: this._getNamelistVariableValue(groupName, dateTimeVariables.hour, this.variables[groupName][dateTimeVariables.hour], index),
+          minute: this._getNamelistVariableValue(groupName, dateTimeVariables.minute, this.variables[groupName][dateTimeVariables.minute], index),
+          second: dateTimeVariables.second ? this._getNamelistVariableValue(groupName, dateTimeVariables.second, this.variables[groupName][dateTimeVariables.second], index) : null
+        };
       }
     }, {
       key: "_getNamelistVariableValue",
@@ -13026,11 +13207,11 @@
         switch (variable.entries) {
           case NamelistInputEditor.entries.maxDom:
             for (var i = 0; i < this.max_dom; i++) {
-              this._setInputFieldValue(variableName, variable, isSet ? this.namelist[groupName][variableName][i] : variable.defaultValue, i);
+              this._setInputFieldValue(groupName, variableName, variable, isSet ? this.namelist[groupName][variableName][i] : variable.defaultValue, i);
             }
             break;
           case NamelistInputEditor.entries.single:
-            this._setInputFieldValue(variableName, variable, isSet ? this.namelist[groupName][variableName] : variable.defaultValue, null);
+            this._setInputFieldValue(groupName, variableName, variable, isSet ? this.namelist[groupName][variableName] : variable.defaultValue, null);
             break;
           case NamelistInputEditor.entries.maxEta:
             break;
@@ -13040,7 +13221,7 @@
       // set variable input fields value
     }, {
       key: "_setInputFieldValue",
-      value: function _setInputFieldValue(variableName, variable, value, index) {
+      value: function _setInputFieldValue(groupName, variableName, variable, value, index) {
         var fieldId = this._getInputFieldId(variableName, index);
         switch (variable.type) {
           case NamelistInputEditor.variableTypes.selection:
@@ -13054,6 +13235,10 @@
           case NamelistInputEditor.variableTypes.character:
             document.querySelector("input#".concat(fieldId)).value = value;
             break;
+          case NamelistInputEditor.variableTypes.datetime:
+            var dateTimePicker = this._dateTimePickers[groupName][variableName][index !== null && index !== void 0 ? index : 0];
+            dateTimePicker.valueUtc = this._getNamelistDateTimeValueUtc(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables, index);
+            break;
         }
       }
 
@@ -13061,24 +13246,24 @@
     }, {
       key: "_addVariableFieldListeners",
       value: function _addVariableFieldListeners(variableDiv, fieldTag, variableName, eventType, getFieldValue) {
-        var _this4 = this;
+        var _this7 = this;
         variableDiv.querySelectorAll("".concat(fieldTag, "[name=\"").concat(variableName, "\"]")).forEach(function (field) {
           field.addEventListener(eventType, function (e) {
             var variableName = e.currentTarget.name;
             var variableDiv = document.querySelector("div.namelist-input-variable[data-variable=\"".concat(variableName, "\"]"));
             var groupName = variableDiv.closest('div.namelist-input-group').dataset['group'];
             variableDiv.classList.remove('namelist-input-variable-unset');
-            switch (_this4.variables[groupName][variableName].entries) {
+            switch (_this7.variables[groupName][variableName].entries) {
               case NamelistInputEditor.entries.single:
-                _this4._setNamelistValue(groupName, variableName, getFieldValue.call(_this4, e.currentTarget));
+                _this7._setNamelistValue(groupName, variableName, getFieldValue.call(_this7, e.currentTarget));
                 break;
               case NamelistInputEditor.entries.maxDom:
-                _this4._setNamelistValue(groupName, variableName, _this4._listVariableFields(groupName, variableName, fieldTag).map(function (input) {
-                  return getFieldValue.call(_this4, input);
+                _this7._setNamelistValue(groupName, variableName, _this7._listVariableFields(groupName, variableName, fieldTag).map(function (input) {
+                  return getFieldValue.call(_this7, input);
                 }));
                 break;
             }
-            _this4._fireChange(groupName, variableName);
+            _this7._fireChange(groupName, variableName);
           });
         });
       }
@@ -13130,8 +13315,8 @@
         switch (variable.type) {
           case NamelistInputEditor.variableTypes.selection:
             html = html + "<select class=\"form-control form-control-sm\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"").concat(readOnly ? " readonly" : "", " required>");
-            for (var _i10 = 0, _Object$entries5 = Object.entries(variable['values']); _i10 < _Object$entries5.length; _i10++) {
-              var _Object$entries5$_i = _slicedToArray(_Object$entries5[_i10], 2),
+            for (var _i13 = 0, _Object$entries5 = Object.entries(variable['values']); _i13 < _Object$entries5.length; _i13++) {
+              var _Object$entries5$_i = _slicedToArray(_Object$entries5[_i13], 2),
                 key = _Object$entries5$_i[0],
                 _value = _Object$entries5$_i[1];
               html = html + "<option value=\"".concat(key, "\"");
@@ -13225,21 +13410,31 @@
   });
   _defineProperty(NamelistInputEditor, "_localStorageKey", '_wrf_domain_wizard_namelist_input_editor');
   _defineProperty(NamelistInputEditor, "_dateTimePickers", {
-    'start_year': {
-      year: 'start_year',
-      month: 'start_month',
-      day: 'start_day',
-      hour: 'start_hour',
-      minute: 'start_minute',
-      second: 'start_second'
-    },
-    'end_year': {
-      year: 'end_year',
-      month: 'end_month',
-      day: 'end_day',
-      hour: 'end_hour',
-      minute: 'end_minute',
-      second: 'end_second'
+    'time_control': {
+      'start_year': {
+        variables: {
+          year: 'start_year',
+          month: 'start_month',
+          day: 'start_day',
+          hour: 'start_hour',
+          minute: 'start_minute',
+          second: 'start_second'
+        },
+        description: 'start time',
+        title: 'start time'
+      },
+      'end_year': {
+        variables: {
+          year: 'end_year',
+          month: 'end_month',
+          day: 'end_day',
+          hour: 'end_hour',
+          minute: 'end_minute',
+          second: 'end_second'
+        },
+        description: 'end time',
+        title: 'end time'
+      }
     }
   });
   // variable to skip during editor field rendering
@@ -13264,8 +13459,51 @@
       this.editor = new NamelistInputEditor(this.body.querySelector('div#namelist-input-container'), Object.assign({
         change: function change(e) {
           _this._updateText();
+        },
+        timeZone: null,
+        onInitialize: function onInitialize(e) {
+          var goToGroup = _this.header.querySelector('select#go-to-group');
+          var goToVariable = _this.header.querySelector('select#go-to-variable');
+          var groups = [];
+          var variables = [];
+          for (var _i = 0, _Object$keys = Object.keys(e.variables); _i < _Object$keys.length; _i++) {
+            var groupName = _Object$keys[_i];
+            groups.push(groupName);
+            for (var _i2 = 0, _Object$keys2 = Object.keys(e.variables[groupName]); _i2 < _Object$keys2.length; _i2++) {
+              var variableName = _Object$keys2[_i2];
+              variables.push(variableName);
+            }
+          }
+          groups.sort();
+          variables.sort();
+          for (var _i3 = 0, _groups = groups; _i3 < _groups.length; _i3++) {
+            var _groupName = _groups[_i3];
+            var option = document.createElement('option');
+            option.value = _groupName;
+            option.innerText = _groupName;
+            goToGroup.append(option);
+          }
+          for (var _i4 = 0, _variables = variables; _i4 < _variables.length; _i4++) {
+            var _variableName = _variables[_i4];
+            var _option = document.createElement('option');
+            _option.value = _variableName;
+            _option.innerText = _variableName;
+            goToVariable.append(_option);
+          }
+          $(goToGroup).on('changed.bs.select', function (e) {
+            _this.editor.goToGroup(goToGroup.value);
+          });
+          $(goToGroup).selectpicker();
+          $(goToVariable).on('changed.bs.select', function (e) {
+            _this.editor.goToVariable(goToVariable.value);
+          });
+          $(goToVariable).selectpicker();
         }
       }, options));
+      this.header.querySelector('button#go-to-top').addEventListener('click', function (e) {
+        _this.editor.clearHighlight();
+        _this._scrollToTop();
+      });
       this.text = this.body.querySelector('div#pane-namelist-input-text textarea');
       this.original = this.body.querySelector('div#pane-namelist-input-original textarea');
       this.footer.querySelector('#button-copy').addEventListener('click', function (e) {
@@ -13348,6 +13586,22 @@
         _this.viewActions.expandGroups.click();
         _this.viewActions.hideUnsetGroups.click();
         _this.viewActions.hideUnsetVariables.click();
+      });
+
+      // timezone select
+      var timeZoneSelect = this.header.querySelector('select#select-timezone');
+      NamelistDateTimePicker.timeZoneNames.forEach(function (name) {
+        var localTimeZone = NamelistDateTimePicker.localTimeZone;
+        var option = document.createElement('option');
+        option.value = name;
+        option.innerText = name;
+        if (name == localTimeZone) {
+          option.selected = true;
+        }
+        timeZoneSelect.append(option);
+      });
+      $(timeZoneSelect).on('changed.bs.select', function (e) {
+        _this.editor.timeZone = timeZoneSelect.value;
       });
     }
     return _createClass(NamelistInputDialog, [{

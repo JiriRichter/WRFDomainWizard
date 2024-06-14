@@ -18,22 +18,24 @@ export class NamelistDateTimePicker {
 
         // set default timezone
         if (!this._options.displayTimeZone) {
-            this._options.displayTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            this._options.displayTimeZone = NamelistDateTimePicker.localTimeZone;
         }
 
         this._input = inputGroup.querySelector('input');
+        this._widget = inputGroup;
         this._init(inputGroup);        
     }
 
     _init(element) {
 
         this._dateTimePicker = $(element).datetimepicker({
-            "allowInputToggle": true,
-            "showClose": true,
-            "showClear": true,
-            "showTodayButton": true,
-            "format": NamelistDateTimePicker._format,
+            allowInputToggle: true,
+            showClose: true,
+            showClear: true,
+            showTodayButton: true,
+            format: NamelistDateTimePicker._format,
             timeZone: this.displayTimeZone,
+            useCurrent: true,
             icons: {
                 date: 'far fa-calendar-alt',
                 time: 'far fa-clock',
@@ -56,23 +58,26 @@ export class NamelistDateTimePicker {
         if (this._options.valueUtc !== null) {
             this.valueUtc = this._options.valueUtc;
         }
+    }
 
-        const timezoneSelect = element.querySelector('select.timezone');
-        if (timezoneSelect) {
-            moment.tz.names().forEach((name) => {
-                const option = document.createElement('option');
-                option.value = name;
-                option.innerText = name;
-                if (name == this.displayTimeZone) {
-                    option.selected = true;
-                }
-                timezoneSelect.append(option);
-            });
+    show() {
+        this._dateTimePickerObject.show();
+    }
 
-            timezoneSelect.addEventListener('change', (e) => {
-                this.displayTimeZone = e.currentTarget.value;
-            });
-        }
+    get input() {
+        return this._input;
+    }
+
+    get widget() {
+        return this._widget;
+    }
+
+    static get localTimeZone() {
+        return Intl.DateTimeFormat().resolvedOptions().timeZone;
+    }
+
+    static get timeZoneNames() {
+        return moment.tz.names();
     }
 
     get _dateTimePickerObject() {

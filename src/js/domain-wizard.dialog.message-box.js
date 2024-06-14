@@ -1,4 +1,5 @@
 class MessageBoxDialog {
+
     constructor() {
         this.container = document.querySelector('div.modal#message-box-dialog');
         this.dialogBody = this.container.querySelector('div.modal-body');

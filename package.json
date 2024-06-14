@@ -51,6 +51,7 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "blob-polyfill": "^7.0.20220408",
     "bootstrap": "^4.6.1",
+    "bootstrap-select": "^1.13.18",
     "bootstrap5": "npm:bootstrap@^5.3.3",
     "file-saver": "^2.0.5",
     "html-to-image": "^1.11.11",

@@ -43,5 +43,44 @@
                 }
             }
         }
+
+        form.form-inline {
+            & > button {
+                
+                border: none;
+
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+        }        
+
+        div.bootstrap-select {
+
+            button.btn.dropdown-toggle {
+
+                padding: .25rem .5rem;
+                font-size: .875rem;
+                line-height: 1.5;
+
+                &:focus {
+                    outline: none !important;
+                    box-shadow: none;
+                }
+            }
+
+            .dropdown-item, .no-results {
+                padding: .25rem .5rem;
+                font-size: .875rem;
+                line-height: 1.5;
+            }
+
+            input.form-control {
+                height: calc(1.5em + .5rem + 2px);
+                padding: .25rem .5rem;
+                font-size: .875rem;
+                line-height: 1.5;
+            }
+        }
     }
 }

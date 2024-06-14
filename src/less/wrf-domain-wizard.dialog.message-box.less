@@ -1,5 +1,7 @@
 div#message-box-dialog {
 
+    z-index: 2050;
+
     div.global-error {
 
         textarea {
@@ -9,5 +11,11 @@ div#message-box-dialog {
             font-family: 'Courier New';
             font-size: small;
         }
+    }
+}
+
+body.modal-open {
+    div.modal-backdrop~div.modal-backdrop {
+        z-index: 2040;
     }
 }

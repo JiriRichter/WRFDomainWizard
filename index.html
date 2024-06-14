@@ -15,7 +15,9 @@
     <link rel="stylesheet" href="build/lib/all.min.css" />
     <link rel="stylesheet" href="build/lib/leaflet-sidebar.min.css" />
     <link rel="stylesheet" href="build/lib/bootstrap-datetimepicker.min.css" />
-    <link rel="stylesheet" href="build/css/wrf-domain-wizard.css?1718283211933" />
+    <link rel="stylesheet" href="build/lib/bootstrap-select.min.css" />
+    
+    <link rel="stylesheet" href="build/css/wrf-domain-wizard.css?1718387030117" />
 
     <link rel="icon" href="build/img/globe_32x32.png" />
 
@@ -414,30 +416,46 @@ cfg: { // Application Insights Configuration
     <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"><span>namelist.input</span></h4>
-                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <div class="dropdown dropdown-namelist-input-view">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdown-view" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        View
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdown-view">
-                            <h6 class="dropdown-header">Groups</h6>
-                            <a id="view-group-collapse-all" class="dropdown-item dropdown-selected" href="#"><i class="fas fa-check"></i><span class="ml-1">Collapse All</span></a>
-                            <a id="view-group-expand-all" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Expand All</span></a>
-                            <a id="view-group-show-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Unset</span></a>
-                            <a id="view-group-hide-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Hide Unset</span></a>
-                            <div class="dropdown-divider"></div>
-                            <h6 class="dropdown-header">Variables</h6>
-                            <a id="view-variables-show-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Unset</span></a>
-                            <a id="view-variables-hide-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Hide Unset</span></a>
-                            <div class="dropdown-divider"></div>
-                            <h6 class="dropdown-header">Views</h6>
-                            <a id="view-all" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">All</span></a>
-                            <a id="view-compact" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Compact</span></a>
-                            <a id="view-min" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Minimized</span></a>
-                        </div>
-                    </div>
-                </div>
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <span class="navbar-brand">namelist.input</span>
+
+                    <ul class="navbar-nav">
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">View</a>
+                            <div class="dropdown-menu dropdown-namelist-input-view" aria-labelledby="dropdown-view">
+                                <h6 class="dropdown-header">Groups</h6>
+                                <a id="view-group-collapse-all" class="dropdown-item dropdown-selected" href="#"><i class="fas fa-check"></i><span class="ml-1">Collapse All</span></a>
+                                <a id="view-group-expand-all" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Expand All</span></a>
+                                <a id="view-group-show-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Unset</span></a>
+                                <a id="view-group-hide-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Hide Unset</span></a>
+                                <div class="dropdown-divider"></div>
+                                <h6 class="dropdown-header">Variables</h6>
+                                <a id="view-variables-show-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Unset</span></a>
+                                <a id="view-variables-hide-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Hide Unset</span></a>
+                                <div class="dropdown-divider"></div>
+                                <h6 class="dropdown-header">Views</h6>
+                                <a id="view-all" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">All</span></a>
+                                <a id="view-compact" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Compact</span></a>
+                                <a id="view-min" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Minimized</span></a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                    <span class="navbar-text mr-1">Timezone:</span>
+                    <form class="form-inline">
+                        <select class="selectpicker" aria-label="Timezone" id="select-timezone" data-live-search="true"></select>
+                    </form>
+
+                    <span class="navbar-text mr-1">Go To:</span>
+                    <form class="form-inline">
+                        <button class="btn btn-sm btn-outline-secondary" id="go-to-top" type="button" title="Go to Top"><i class="fas fa-angle-double-up"></i></button>
+                        <select class="" aria-label="Group" id="go-to-group" data-live-search="true" title="Group"></select>
+                        <select class="" aria-label="Group" id="go-to-variable" data-live-search="true" title="Variable"></select>
+                    </form>
+
+                </nav>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -527,6 +545,7 @@ cfg: { // Application Insights Configuration
     <script src="build/lib/moment.min.js"></script>
     <script src="build/lib/moment-timezone-with-data.min.js"></script>
     <script src="build/lib/bootstrap-datetimepicker.min.js"></script>
+    <script src="build/lib/bootstrap-select.min.js"></script>
 
     <script src="build/js/wrf-domain-wizard.js"></script>
     <script>

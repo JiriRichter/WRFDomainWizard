@@ -103,7 +103,11 @@ module.exports = function(grunt) {
           'moment/min/moment.min.js',
 
           // https://www.npmjs.com/package/moment-timezone
-          'moment-timezone/builds/moment-timezone-with-data.min.js'
+          'moment-timezone/builds/moment-timezone-with-data.min.js',
+
+          // https://www.npmjs.com/package/bootstrap-select
+          'bootstrap-select/dist/css/bootstrap-select.min.css',
+          'bootstrap-select/dist/js/bootstrap-select.min.js'
         ],
         dest: '<%= targetFolder %>/lib',
       },

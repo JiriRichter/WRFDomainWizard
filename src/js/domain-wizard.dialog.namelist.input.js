@@ -1,4 +1,5 @@
 import { NamelistInputEditor } from "./domain-wizard.editor.namelist.input";
+import { NamelistDateTimePicker } from './domain-wizard.control.namelist-datetime-picker';
 
 export class NamelistInputDialog {
 
@@ -16,10 +17,56 @@ export class NamelistInputDialog {
                 {
                     change: (e) => {
                         this._updateText();
+                    },
+                    timeZone: null,
+                    onInitialize: (e) => {
+                        const goToGroup = this.header.querySelector('select#go-to-group');
+                        const goToVariable = this.header.querySelector('select#go-to-variable');
+                        const groups = [];
+                        const variables = [];
+
+                        for(const groupName of Object.keys(e.variables)) {
+                            groups.push(groupName);
+                            for(const variableName of Object.keys(e.variables[groupName])) {
+                                variables.push(variableName);
+                            }
+                        }
+
+                        groups.sort();
+                        variables.sort();
+
+                        for(const groupName of groups) {
+                            let option = document.createElement('option');
+                            option.value = groupName;
+                            option.innerText = groupName;
+                            goToGroup.append(option);
+                        }
+
+                        for(const variableName of variables) {
+                            let option = document.createElement('option');
+                            option.value = variableName;
+                            option.innerText = variableName;
+                            goToVariable.append(option);
+                        }
+
+                        $(goToGroup).on('changed.bs.select', (e) => {
+                            this.editor.goToGroup(goToGroup.value);
+                        });
+                        $(goToGroup).selectpicker();
+
+                        $(goToVariable).on('changed.bs.select', (e) => {
+                            this.editor.goToVariable(goToVariable.value);
+                        });
+                        $(goToVariable).selectpicker();
                     }
                 },
                 options));
 
+        this.header.querySelector('button#go-to-top').addEventListener('click', (e) => {
+            this.editor.clearHighlight()
+            this._scrollToTop();
+        });
+        
         this.text = this.body.querySelector('div#pane-namelist-input-text textarea');
         this.original = this.body.querySelector('div#pane-namelist-input-original textarea');
 
@@ -110,6 +157,25 @@ export class NamelistInputDialog {
             this.viewActions.hideUnsetGroups.click();
             this.viewActions.hideUnsetVariables.click();
         });
+
+        // timezone select
+        const timeZoneSelect = this.header.querySelector('select#select-timezone');
+        NamelistDateTimePicker.timeZoneNames.forEach((name) => {
+
+            var localTimeZone = NamelistDateTimePicker.localTimeZone;
+
+            const option = document.createElement('option');
+            option.value = name;
+            option.innerText = name;
+            if (name == localTimeZone) {
+                option.selected = true;
+            }
+            timeZoneSelect.append(option);
+        });
+
+        $(timeZoneSelect).on('changed.bs.select', (e) => {
+            this.editor.timeZone = timeZoneSelect.value;
+        })
     }
 
     _scrollToTop() {
