@@ -283,6 +283,8 @@ export class NamelistInputEditor {
             return;
         }
 
+        groupDiv.classList.add('namelist-input-group-highlight');
+
         this._expandGroup(groupDiv);
         groupDiv.scrollIntoView();
     }
@@ -298,6 +300,10 @@ export class NamelistInputEditor {
     clearHighlight() {
         this.container.querySelectorAll('div.namelist-input-variable.namelist-input-variable-highlight').forEach((div) => {
             div.classList.remove('namelist-input-variable-highlight');
+        });
+
+        this.container.querySelectorAll('div.namelist-input-group.namelist-input-group-highlight').forEach((div) => {
+            div.classList.remove('namelist-input-group-highlight');
         });
     }
 
@@ -318,11 +324,18 @@ export class NamelistInputEditor {
         var collapsibleDiv = variableDiv.closest('div.namelist-input-variables.collapse');
         var groupDiv = variableDiv.closest('div.namelist-input-group');
 
-        $(collapsibleDiv).one('shown.bs.collapse', (e) => {
-            variableDiv.scrollIntoView();
-        });
+        var expanded = collapsibleDiv.classList.contains('show');
+        if (expanded === false) {
+            $(collapsibleDiv).one('shown.bs.collapse', (e) => {
+                variableDiv.scrollIntoView();
+            });
+        }
 
         this._expandGroup(groupDiv);
+
+        if (expanded === true) {
+            variableDiv.scrollIntoView();
+        }
     }
 
     static collpaseCommands = {
@@ -477,6 +490,8 @@ export class NamelistInputEditor {
         const selectValues = await this._loadJsonAsync('namelist.input.select.values.json');
         const userGuide = await this._loadJsonAsync('namelist.input.users.guide.json');
         const registry = await this._loadJsonAsync('namelist.input.registry.json');
+        const readme = await this._loadJsonAsync('namelist.input.readme.json');
+        const manual = await this._loadJsonAsync('namelist.input.manual.json');
 
         for(let group in registry) {
 
@@ -571,6 +586,31 @@ export class NamelistInputEditor {
 
                 if (group in NamelistInputEditor._dateTimePickers && variable in NamelistInputEditor._dateTimePickers[group]) {
                     this.variables[group][variable].type = NamelistInputEditor.variableTypes.datetime;
+                }
+            }
+        }
+
+        for(let group in manual) {
+            this.variables[group] = this.variables[group] ?? {};
+            for(let variable in manual[group]) {
+                this.variables[group][variable] = manual[group][variable];
+            }
+        }
+
+        const allVariables = {};
+        for(const [_, group] of Object.entries(this.variables)) {
+            Object.keys(group).forEach((key) => { allVariables[key] = null;});
+        }
+
+        for(let group in readme) {
+            if (!(group in this.variables)) {
+                console.warn(`README.namelist group ${group} not found in WRF registry files`);
+            }
+
+            for(let variable in readme[group]) {
+                if (!(variable in allVariables)) {
+                    console.warn(`README.namelist variable ${variable} not found in WRF registry files`);
+                    continue;
                 }
             }
         }

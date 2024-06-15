@@ -27,60 +27,85 @@
 
         align-items: center !important;
 
-        div.dropdown-namelist-input-view {
+        nav.navbar {
 
-            margin-left: 2rem;
+            ul.navbar-nav {
+                li.nav-item.dropdown {
+                    a.nav-link.dropdown-toggle {
+                        font-size: @font-size-sm;
+                    }
 
-            a.dropdown-item {
-                i {
-                    visibility: hidden;
+                    div.dropdown-menu {
+                        a.dropdown-item {
+                            padding: .25rem .5rem;
+                            font-size: @font-size-sm;
+                            line-height: 1.5;
+                        }
+                    }
+
+                    div.dropdown-namelist-input-view {
+
+                        margin-left: 2rem;
+            
+                        a.dropdown-item {
+
+                            i {
+                                visibility: hidden;
+                            }
+            
+                            &.dropdown-selected {
+                                i {
+                                    visibility: visible;
+                                }
+                            }
+                        }
+                    }                    
                 }
+            }
 
-                &.dropdown-selected {
-                    i {
-                        visibility: visible;
+            span.navbar-text {
+                font-size: @font-size-sm;
+            }
+
+            form.form-inline {
+                & > button {
+                    
+                    border: none;
+    
+                    &:focus {
+                        box-shadow: none;
                     }
                 }
-            }
-        }
 
-        form.form-inline {
-            & > button {
-                
-                border: none;
+                div.bootstrap-select {
 
-                &:focus {
-                    box-shadow: none;
+                    button.btn.dropdown-toggle {
+        
+                        padding: .25rem .5rem;
+                        font-size: @font-size-sm;
+                        line-height: 1.5;
+                        background-color: #eff2f5;
+        
+                        &:focus {
+                            outline: none !important;
+                            box-shadow: none;
+                        }
+                    }
+        
+                    .dropdown-item, .no-results {
+                        padding: .25rem .5rem;
+                        font-size: @font-size-sm;
+                        line-height: 1.5;
+                    }
+        
+                    input.form-control {
+                        height: calc(1.5em + .5rem + 2px);
+                        padding: .25rem .5rem;
+                        font-size: @font-size-sm;
+                        line-height: 1.5;
+                    }
                 }
-            }
-        }        
-
-        div.bootstrap-select {
-
-            button.btn.dropdown-toggle {
-
-                padding: .25rem .5rem;
-                font-size: .875rem;
-                line-height: 1.5;
-
-                &:focus {
-                    outline: none !important;
-                    box-shadow: none;
-                }
-            }
-
-            .dropdown-item, .no-results {
-                padding: .25rem .5rem;
-                font-size: .875rem;
-                line-height: 1.5;
-            }
-
-            input.form-control {
-                height: calc(1.5em + .5rem + 2px);
-                padding: .25rem .5rem;
-                font-size: .875rem;
-                line-height: 1.5;
-            }
+            }                    
         }
     }
 }

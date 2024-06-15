@@ -12447,6 +12447,7 @@
         if (!groupDiv) {
           return;
         }
+        groupDiv.classList.add('namelist-input-group-highlight');
         this._expandGroup(groupDiv);
         groupDiv.scrollIntoView();
       }
@@ -12463,6 +12464,9 @@
         this.container.querySelectorAll('div.namelist-input-variable.namelist-input-variable-highlight').forEach(function (div) {
           div.classList.remove('namelist-input-variable-highlight');
         });
+        this.container.querySelectorAll('div.namelist-input-group.namelist-input-group-highlight').forEach(function (div) {
+          div.classList.remove('namelist-input-group-highlight');
+        });
       }
     }, {
       key: "goToVariable",
@@ -12478,10 +12482,16 @@
         variableDiv.classList.add('namelist-input-variable-highlight');
         var collapsibleDiv = variableDiv.closest('div.namelist-input-variables.collapse');
         var groupDiv = variableDiv.closest('div.namelist-input-group');
-        $(collapsibleDiv).one('shown.bs.collapse', function (e) {
-          variableDiv.scrollIntoView();
-        });
+        var expanded = collapsibleDiv.classList.contains('show');
+        if (expanded === false) {
+          $(collapsibleDiv).one('shown.bs.collapse', function (e) {
+            variableDiv.scrollIntoView();
+          });
+        }
         this._expandGroup(groupDiv);
+        if (expanded === true) {
+          variableDiv.scrollIntoView();
+        }
       }
     }, {
       key: "collapseGroups",
@@ -12633,7 +12643,7 @@
       key: "_initVariablesAsync",
       value: function () {
         var _initVariablesAsync2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-          var selectValues, userGuide, registry, group, variable, description, hasUserGuideEntry, defaultValue, entries, groupName, _iterator, _step, _variableName, _i8, _Object$values3, groupDateTimePickers, _i9, _Object$entries2, _Object$entries2$_i, dateTimePickerVariableName, dateTimePicker, _i10, _Object$values4, variableName;
+          var selectValues, userGuide, registry, readme, manual, group, variable, description, hasUserGuideEntry, defaultValue, entries, _group, _this$variables$_grou, _variable, allVariables, _i8, _Object$entries2, _Object$entries2$_i, _group2, _group3, _variable2, groupName, _iterator, _step, _variableName, _i9, _Object$values3, groupDateTimePickers, _i10, _Object$entries3, _Object$entries3$_i, dateTimePickerVariableName, dateTimePicker, _i11, _Object$values4, variableName;
           return _regeneratorRuntime().wrap(function _callee3$(_context3) {
             while (1) switch (_context3.prev = _context3.next) {
               case 0:
@@ -12658,18 +12668,26 @@
                 return this._loadJsonAsync('namelist.input.registry.json');
               case 11:
                 registry = _context3.sent;
+                _context3.next = 14;
+                return this._loadJsonAsync('namelist.input.readme.json');
+              case 14:
+                readme = _context3.sent;
+                _context3.next = 17;
+                return this._loadJsonAsync('namelist.input.manual.json');
+              case 17:
+                manual = _context3.sent;
                 _context3.t0 = _regeneratorRuntime().keys(registry);
-              case 13:
+              case 19:
                 if ((_context3.t1 = _context3.t0()).done) {
-                  _context3.next = 55;
+                  _context3.next = 61;
                   break;
                 }
                 group = _context3.t1.value;
                 this.variables[group] = {};
                 _context3.t2 = _regeneratorRuntime().keys(registry[group]);
-              case 17:
+              case 23:
                 if ((_context3.t3 = _context3.t2()).done) {
-                  _context3.next = 53;
+                  _context3.next = 59;
                   break;
                 }
                 variable = _context3.t3.value;
@@ -12683,43 +12701,43 @@
                 defaultValue = registry[group][variable].defaultValue;
                 entries = null;
                 _context3.t4 = registry[group][variable].entries;
-                _context3.next = _context3.t4 === "max_domains" ? 27 : _context3.t4 === NamelistInputEditor.entries.single ? 29 : _context3.t4 === NamelistInputEditor.entries.maxEta ? 29 : _context3.t4 === NamelistInputEditor.entries.maxDom ? 29 : 31;
+                _context3.next = _context3.t4 === "max_domains" ? 33 : _context3.t4 === NamelistInputEditor.entries.single ? 35 : _context3.t4 === NamelistInputEditor.entries.maxEta ? 35 : _context3.t4 === NamelistInputEditor.entries.maxDom ? 35 : 37;
                 break;
-              case 27:
-                entries = NamelistInputEditor.entries.maxDom;
-                return _context3.abrupt("break", 33);
-              case 29:
-                entries = registry[group][variable].entries;
-                return _context3.abrupt("break", 33);
-              case 31:
-                console.warn("Unknown variable ".concat(variable, " number entries value ").concat(registry[group][variable].entries));
-                return _context3.abrupt("continue", 17);
               case 33:
+                entries = NamelistInputEditor.entries.maxDom;
+                return _context3.abrupt("break", 39);
+              case 35:
+                entries = registry[group][variable].entries;
+                return _context3.abrupt("break", 39);
+              case 37:
+                console.warn("Unknown variable ".concat(variable, " number entries value ").concat(registry[group][variable].entries));
+                return _context3.abrupt("continue", 23);
+              case 39:
                 if (!(hasUserGuideEntry && userGuide[group][variable].entries !== entries)) {
-                  _context3.next = 48;
+                  _context3.next = 54;
                   break;
                 }
                 _context3.t5 = variable;
-                _context3.next = _context3.t5 === "dx" ? 37 : _context3.t5 === "dy" ? 37 : _context3.t5 === "eta_levels" ? 39 : _context3.t5 === "nssl_alphah" ? 41 : _context3.t5 === "nssl_alphahl" ? 41 : _context3.t5 === "nssl_cnoh" ? 41 : _context3.t5 === "nssl_cnohl" ? 41 : _context3.t5 === "nssl_cnor" ? 41 : _context3.t5 === "nssl_cnos" ? 41 : _context3.t5 === "nssl_rho_qh" ? 41 : _context3.t5 === "nssl_rho_qs" ? 41 : _context3.t5 === "topo_wind" ? 43 : _context3.t5 === "gph" ? 43 : _context3.t5 === "max_obs" ? 45 : 47;
+                _context3.next = _context3.t5 === "dx" ? 43 : _context3.t5 === "dy" ? 43 : _context3.t5 === "eta_levels" ? 45 : _context3.t5 === "nssl_alphah" ? 47 : _context3.t5 === "nssl_alphahl" ? 47 : _context3.t5 === "nssl_cnoh" ? 47 : _context3.t5 === "nssl_cnohl" ? 47 : _context3.t5 === "nssl_cnor" ? 47 : _context3.t5 === "nssl_cnos" ? 47 : _context3.t5 === "nssl_rho_qh" ? 47 : _context3.t5 === "nssl_rho_qs" ? 47 : _context3.t5 === "topo_wind" ? 49 : _context3.t5 === "gph" ? 49 : _context3.t5 === "max_obs" ? 51 : 53;
                 break;
-              case 37:
-                entries = NamelistInputEditor.entries.single;
-                return _context3.abrupt("break", 48);
-              case 39:
-                entries = NamelistInputEditor.entries.maxEta;
-                return _context3.abrupt("break", 48);
-              case 41:
-                entries = NamelistInputEditor.entries.single;
-                return _context3.abrupt("break", 48);
               case 43:
-                entries = NamelistInputEditor.entries.maxDom;
-                return _context3.abrupt("break", 48);
-              case 45:
                 entries = NamelistInputEditor.entries.single;
-                return _context3.abrupt("break", 48);
+                return _context3.abrupt("break", 54);
+              case 45:
+                entries = NamelistInputEditor.entries.maxEta;
+                return _context3.abrupt("break", 54);
               case 47:
+                entries = NamelistInputEditor.entries.single;
+                return _context3.abrupt("break", 54);
+              case 49:
+                entries = NamelistInputEditor.entries.maxDom;
+                return _context3.abrupt("break", 54);
+              case 51:
+                entries = NamelistInputEditor.entries.single;
+                return _context3.abrupt("break", 54);
+              case 53:
                 console.warn("Variable ".concat(variable, " number of entries differ between registry ").concat(entries, " and users guide ").concat(userGuide[group][variable].entries));
-              case 48:
+              case 54:
                 this.variables[group][variable] = {
                   type: registry[group][variable].type,
                   defaultValue: defaultValue,
@@ -12733,12 +12751,55 @@
                 if (group in NamelistInputEditor._dateTimePickers && variable in NamelistInputEditor._dateTimePickers[group]) {
                   this.variables[group][variable].type = NamelistInputEditor.variableTypes.datetime;
                 }
-                _context3.next = 17;
+                _context3.next = 23;
                 break;
-              case 53:
-                _context3.next = 13;
+              case 59:
+                _context3.next = 19;
                 break;
-              case 55:
+              case 61:
+                for (_group in manual) {
+                  this.variables[_group] = (_this$variables$_grou = this.variables[_group]) !== null && _this$variables$_grou !== void 0 ? _this$variables$_grou : {};
+                  for (_variable in manual[_group]) {
+                    this.variables[_group][_variable] = manual[_group][_variable];
+                  }
+                }
+                allVariables = {};
+                for (_i8 = 0, _Object$entries2 = Object.entries(this.variables); _i8 < _Object$entries2.length; _i8++) {
+                  _Object$entries2$_i = _slicedToArray(_Object$entries2[_i8], 2), _Object$entries2$_i[0], _group2 = _Object$entries2$_i[1];
+                  Object.keys(_group2).forEach(function (key) {
+                    allVariables[key] = null;
+                  });
+                }
+                _context3.t6 = _regeneratorRuntime().keys(readme);
+              case 65:
+                if ((_context3.t7 = _context3.t6()).done) {
+                  _context3.next = 78;
+                  break;
+                }
+                _group3 = _context3.t7.value;
+                if (!(_group3 in this.variables)) {
+                  console.warn("README.namelist group ".concat(_group3, " not found in WRF registry files"));
+                }
+                _context3.t8 = _regeneratorRuntime().keys(readme[_group3]);
+              case 69:
+                if ((_context3.t9 = _context3.t8()).done) {
+                  _context3.next = 76;
+                  break;
+                }
+                _variable2 = _context3.t9.value;
+                if (_variable2 in allVariables) {
+                  _context3.next = 74;
+                  break;
+                }
+                console.warn("README.namelist variable ".concat(_variable2, " not found in WRF registry files"));
+                return _context3.abrupt("continue", 69);
+              case 74:
+                _context3.next = 69;
+                break;
+              case 76:
+                _context3.next = 65;
+                break;
+              case 78:
                 // set default values for variables with missing or invalid default value in auto-generated JSON data
 
                 // time_step default value not set in registry
@@ -12763,12 +12824,12 @@
                   _iterator.f();
                 }
                 this._variableSubstitutes = {};
-                for (_i8 = 0, _Object$values3 = Object.values(NamelistInputEditor._dateTimePickers); _i8 < _Object$values3.length; _i8++) {
-                  groupDateTimePickers = _Object$values3[_i8];
-                  for (_i9 = 0, _Object$entries2 = Object.entries(groupDateTimePickers); _i9 < _Object$entries2.length; _i9++) {
-                    _Object$entries2$_i = _slicedToArray(_Object$entries2[_i9], 2), dateTimePickerVariableName = _Object$entries2$_i[0], dateTimePicker = _Object$entries2$_i[1];
-                    for (_i10 = 0, _Object$values4 = Object.values(dateTimePicker.variables); _i10 < _Object$values4.length; _i10++) {
-                      variableName = _Object$values4[_i10];
+                for (_i9 = 0, _Object$values3 = Object.values(NamelistInputEditor._dateTimePickers); _i9 < _Object$values3.length; _i9++) {
+                  groupDateTimePickers = _Object$values3[_i9];
+                  for (_i10 = 0, _Object$entries3 = Object.entries(groupDateTimePickers); _i10 < _Object$entries3.length; _i10++) {
+                    _Object$entries3$_i = _slicedToArray(_Object$entries3[_i10], 2), dateTimePickerVariableName = _Object$entries3$_i[0], dateTimePicker = _Object$entries3$_i[1];
+                    for (_i11 = 0, _Object$values4 = Object.values(dateTimePicker.variables); _i11 < _Object$values4.length; _i11++) {
+                      variableName = _Object$values4[_i11];
                       if (typeof variableName === 'string' && !(variableName in this._ignoreVariables) && variableName !== dateTimePickerVariableName) {
                         this._ignoreVariables[variableName] = null;
                         this._variableSubstitutes[variableName] = dateTimePickerVariableName;
@@ -12782,7 +12843,7 @@
                     variables: this.variables
                   });
                 }
-              case 63:
+              case 86:
               case "end":
                 return _context3.stop();
             }
@@ -12841,10 +12902,10 @@
           var _this$view$hideUnsetG;
           this.view.hideUnsetGroups = (_this$view$hideUnsetG = this.view.hideUnsetGroups) !== null && _this$view$hideUnsetG !== void 0 ? _this$view$hideUnsetG : true;
         }
-        for (var _i11 = 0, _Object$entries3 = Object.entries(this.variables); _i11 < _Object$entries3.length; _i11++) {
-          var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i11], 2),
-            groupName = _Object$entries3$_i[0],
-            groupVariables = _Object$entries3$_i[1];
+        for (var _i12 = 0, _Object$entries4 = Object.entries(this.variables); _i12 < _Object$entries4.length; _i12++) {
+          var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i12], 2),
+            groupName = _Object$entries4$_i[0],
+            groupVariables = _Object$entries4$_i[1];
           if (Object.keys(groupVariables).length === 0) {
             continue;
           }
@@ -12986,10 +13047,10 @@
           variablesDiv.classList.add('namelist-input-hide-unset');
         }
         variablesDiv.id = groupName;
-        for (var _i12 = 0, _Object$entries4 = Object.entries(groupVariables); _i12 < _Object$entries4.length; _i12++) {
-          var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i12], 2),
-            variableName = _Object$entries4$_i[0],
-            variable = _Object$entries4$_i[1];
+        for (var _i13 = 0, _Object$entries5 = Object.entries(groupVariables); _i13 < _Object$entries5.length; _i13++) {
+          var _Object$entries5$_i = _slicedToArray(_Object$entries5[_i13], 2),
+            variableName = _Object$entries5$_i[0],
+            variable = _Object$entries5$_i[1];
           this._appendVariableField(variablesDiv, groupName, variableName, variable);
         }
       }
@@ -13315,10 +13376,10 @@
         switch (variable.type) {
           case NamelistInputEditor.variableTypes.selection:
             html = html + "<select class=\"form-control form-control-sm\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"").concat(readOnly ? " readonly" : "", " required>");
-            for (var _i13 = 0, _Object$entries5 = Object.entries(variable['values']); _i13 < _Object$entries5.length; _i13++) {
-              var _Object$entries5$_i = _slicedToArray(_Object$entries5[_i13], 2),
-                key = _Object$entries5$_i[0],
-                _value = _Object$entries5$_i[1];
+            for (var _i14 = 0, _Object$entries6 = Object.entries(variable['values']); _i14 < _Object$entries6.length; _i14++) {
+              var _Object$entries6$_i = _slicedToArray(_Object$entries6[_i14], 2),
+                key = _Object$entries6$_i[0],
+                _value = _Object$entries6$_i[1];
               html = html + "<option value=\"".concat(key, "\"");
               if (_value !== null && key.toString() === _value.toString()) {
                 html = html + ' selected';
@@ -13492,10 +13553,14 @@
           }
           $(goToGroup).on('changed.bs.select', function (e) {
             _this.editor.goToGroup(goToGroup.value);
+            goToVariable.value = null;
+            $(goToVariable).selectpicker('refresh');
           });
           $(goToGroup).selectpicker();
           $(goToVariable).on('changed.bs.select', function (e) {
             _this.editor.goToVariable(goToVariable.value);
+            goToGroup.value = null;
+            $(goToGroup).selectpicker('refresh');
           });
           $(goToVariable).selectpicker();
         }

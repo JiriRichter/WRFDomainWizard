@@ -51,11 +51,15 @@ export class NamelistInputDialog {
 
                         $(goToGroup).on('changed.bs.select', (e) => {
                             this.editor.goToGroup(goToGroup.value);
+                            goToVariable.value = null;
+                            $(goToVariable).selectpicker('refresh');
                         });
                         $(goToGroup).selectpicker();
 
                         $(goToVariable).on('changed.bs.select', (e) => {
                             this.editor.goToVariable(goToVariable.value);
+                            goToGroup.value = null;
+                            $(goToGroup).selectpicker('refresh');
                         });
                         $(goToVariable).selectpicker();
                     }

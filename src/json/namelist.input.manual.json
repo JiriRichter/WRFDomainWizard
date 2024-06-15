@@ -1,0 +1,26 @@
+{
+    "namelist_quilt": {
+        "nio_tasks_per_group": {
+            "type": "selection",
+            "defaultValue": 0,
+            "entries": "1",
+            "values": {
+                "0": "no quilting",
+                "1": "quilting I/O"
+            },
+            "description": "",
+            "sources": [
+                "run/README.namelist"
+            ]
+        },
+        "nio_groups": {
+            "type": "integer",
+            "defaultValue": 1,
+            "entries": "1",
+            "description": "May be set to higher value for nesting IO",
+            "sources": [
+                "run/README.namelist"
+            ]
+        }
+    }
+}
