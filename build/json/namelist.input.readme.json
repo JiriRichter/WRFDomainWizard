@@ -2345,7 +2345,7 @@
             "defaultValue": "1,"
         }
     },
-    "grib": {
+    "grib2": {
         "background_proc_id": {
             "entries": "1",
             "defaultValue": "255,"

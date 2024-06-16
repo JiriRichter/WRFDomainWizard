@@ -8,7 +8,13 @@ export class NamelistInputEditor {
     static entries = {
         maxDom: "max_dom",
         single: "1",
-        maxEta: "max_eta"
+        maxEta: "max_eta",
+        maxBogus: "max_bogus",
+        maxMoves: "max_moves",
+        maxOcean: "max_ocean",
+        maxOcean: "max_ocean",
+        maxPressureLevels: "max_plevs",
+        maxZLevels: "max_zlevs"
     }
 
     static variableTypes = {
@@ -523,6 +529,11 @@ export class NamelistInputEditor {
                     case NamelistInputEditor.entries.single:
                     case NamelistInputEditor.entries.maxEta:
                     case NamelistInputEditor.entries.maxDom:
+                    case NamelistInputEditor.entries.maxBogus:
+                    case NamelistInputEditor.entries.maxMoves:
+                    case NamelistInputEditor.entries.maxOcean:
+                    case NamelistInputEditor.entries.maxPressureLevels:
+                    case NamelistInputEditor.entries.maxZLevels:
                         entries = registry[group][variable].entries;
                         break;
 
@@ -608,6 +619,22 @@ export class NamelistInputEditor {
             }
 
             for(let variable in readme[group]) {
+
+                switch (variable) {
+                    case "io_style_emiss":
+                        // https://github.com/wrf-model/WRF/issues/2071
+                        continue;
+
+                    case "inputout_begin_mo":
+                    case "inputout_end_mo":
+                        // https://github.com/wrf-model/WRF/issues/2072
+                        continue;
+
+                    case "ntiedtke_dx_opt":
+                        // https://github.com/wrf-model/WRF/issues/2073
+                        continue;
+                }
+
                 if (!(variable in allVariables)) {
                     console.warn(`README.namelist variable ${variable} not found in WRF registry files`);
                     continue;
@@ -650,6 +677,70 @@ export class NamelistInputEditor {
                 variables: this.variables
             })
         }
+
+        //set conditional values
+        this.dependencyMap = {};
+        // num_urban_ndm                       = 1! (=  2 if BEP or BEM active) maximum number of street dimensions (ndm in BEP or BEM header)
+        // num_urban_ng                        = 1! (= 10 if BEP or BEM active) number of grid levels in the ground (ng_u in BEP or BEM header)
+        // num_urban_nwr                       = 1! (= 10 if BEP or BEM active) number of grid levels in the walls or roof (nwr_u in BEP or BEM header)
+        // num_urban_nz                        = 1! (= 18 if BEP or BEM active) maximum number of vertical levels in the urban grid (nz_um in BEP or BEM header)
+        // num_urban_ngb                       = 1! (= 10 if BEM active)        number of grid levels in the ground below building (ngb_u in BEM header)
+        // num_urban_nf                        = 1! (= 10 if BEM active)        number of grid levels in the floors (nf_u in BEM header)
+        // num_urban_nbui                      = 1! (= 15 if BEM active)        maximum number of types of buildings in an urban class (nbui_max in BEM header)
+        this.dependencyMap['physics'] = {};
+        this.dependencyMap['physics']['sf_urban_physics'] = {
+            updates: [ 'num_urban_ndm', 'num_urban_ng', 'num_urban_nwr', 'num_urban_nz', 'num_urban_ngb', 'num_urban_nf', 'num_urban_nbui' ]
+        };
+
+        this.variables['physics']['num_urban_ndm'].defaultValue = () => {
+            const sf_urban_physics = this.getValue('physics', 'sf_urban_physics')[0];
+            if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                return 2;
+            }
+            return 1;
+        }
+        this.variables['physics']['num_urban_ng'].defaultValue = () => {
+            const sf_urban_physics = this.getValue('physics', 'sf_urban_physics')[0];
+            if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                return 10;
+            }
+            return 1;
+        }
+        this.variables['physics']['num_urban_nwr'].defaultValue = () => {
+            const sf_urban_physics = this.getValue('physics', 'sf_urban_physics')[0];
+            if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                return 10;
+            }
+            return 1;
+        }
+        this.variables['physics']['num_urban_nz'].defaultValue = () => {
+            const sf_urban_physics = this.getValue('physics', 'sf_urban_physics')[0];
+            if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                return 18;
+            }
+            return 1;
+        }
+        this.variables['physics']['num_urban_ngb'].defaultValue = () => {
+            const sf_urban_physics = this.getValue('physics', 'sf_urban_physics')[0];
+            if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                return 10;
+            }
+            return 1;
+        }
+        this.variables['physics']['num_urban_nf'].defaultValue = () => {
+            const sf_urban_physics = this.getValue('physics', 'sf_urban_physics')[0];
+            if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                return 10;
+            }
+            return 1;
+        }
+        this.variables['physics']['num_urban_nbui'].defaultValue = () => {
+            const sf_urban_physics = this.getValue('physics', 'sf_urban_physics')[0];
+            if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                return 15;
+            }
+            return 1;
+        }
     }
 
     // load a JSON config file
@@ -664,6 +755,14 @@ export class NamelistInputEditor {
         this.variables[group][variable].defaultValue = defaultValue;
     }
 
+    _getDefaultValue(group, variable) {
+        switch (typeof(this.variables[group][variable].defaultValue)) {
+            case "function":
+                return this.variables[group][variable].defaultValue.call(this);
+            default:
+                return this.variables[group][variable].defaultValue;
+        }
+    }
     // create editor HTML
     _initEditorFields(options) {
 
@@ -850,7 +949,7 @@ export class NamelistInputEditor {
 
         const variableDiv = this._append(variablesDiv, 'div');
         variableDiv.classList.add('namelist-input-variable');
-        variableDiv.dataset['default'] = variable.defaultValue;
+        variableDiv.dataset['default'] = this._getDefaultValue(groupName, variableName);
         variableDiv.dataset['variable'] = variableName;
 
         const isSet = this._isNamelistValueSet(groupName, variableName);
@@ -897,7 +996,7 @@ export class NamelistInputEditor {
                     html += this._getInputFieldHtml(
                         variableName, 
                         variable, 
-                        (isSet ? namelistGroup[variableName][i] : variable.defaultValue), 
+                        (isSet ? namelistGroup[variableName][i] : this._getDefaultValue(groupName, variableName)), 
                         readOnly,
                         i);
                 }
@@ -907,7 +1006,7 @@ export class NamelistInputEditor {
                 html += this._getInputFieldHtml(
                     variableName, 
                     variable, 
-                    (isSet ? namelistGroup[variableName] : variable.defaultValue),
+                    (isSet ? namelistGroup[variableName] : this._getDefaultValue(groupName, variableName)),
                     readOnly,
                     null);
                 break;
@@ -967,7 +1066,8 @@ export class NamelistInputEditor {
 
                     default:
                         this.namelist[groupName][variableName] = null;
-                        this._setVariableFieldValue(groupName, variableName);
+                        this._updateVariableFieldValue(groupName, variableName);
+                        this._updateDependentVariables(groupName, variableName);
                         break;
                 }
                 this._fireChange(groupName, variableName);
@@ -1097,11 +1197,18 @@ export class NamelistInputEditor {
                     return this.namelist[groupName][variableName];
             }
         }
-        return variable.defaultValue;
+        return this._getDefaultValue(groupName, variableName);
+    }
+
+    getValue(groupName, variableName) {
+        if (this._isNamelistValueSet(groupName, variableName) === true) {
+            return this.namelist[groupName][variableName];
+        }
+        return this._getDefaultValue(groupName, variableName);
     }
 
     // set variable input fields value from current namelist object
-    _setVariableFieldValue(groupName, variableName) {
+    _updateVariableFieldValue(groupName, variableName) {
 
         const variable = this.variables[groupName][variableName];
         const isSet = this._isNamelistValueSet(groupName, variableName);
@@ -1114,7 +1221,7 @@ export class NamelistInputEditor {
                         groupName,
                         variableName, 
                         variable, 
-                        (isSet ? this.namelist[groupName][variableName][i] : variable.defaultValue),
+                        (isSet ? this.namelist[groupName][variableName][i] : this._getDefaultValue(groupName, variableName)),
                         i);
                 }
                 break;
@@ -1124,7 +1231,7 @@ export class NamelistInputEditor {
                     groupName,
                     variableName, 
                     variable, 
-                    (isSet ? this.namelist[groupName][variableName] : variable.defaultValue),
+                    (isSet ? this.namelist[groupName][variableName] : this._getDefaultValue(groupName, variableName)),
                     null);
                 break;
 
@@ -1185,9 +1292,20 @@ export class NamelistInputEditor {
                         break;
                     }
 
+                this._updateDependentVariables(groupName, variableName);
                 this._fireChange(groupName, variableName);
             });
         });        
+    }
+
+    _updateDependentVariables(groupName, variableName) {
+        if (groupName in this.dependencyMap && variableName in this.dependencyMap[groupName]) {
+            if (Array.isArray(this.dependencyMap[groupName][variableName].updates)) {
+                this.dependencyMap[groupName][variableName].updates.forEach((dependent) => {
+                    this._updateVariableFieldValue(groupName, dependent);
+                });
+            }
+        }
     }
 
     // fire change event

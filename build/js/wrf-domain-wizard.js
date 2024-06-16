@@ -346,6 +346,15 @@
     var i = _toPrimitive(t, "string");
     return "symbol" == typeof i ? i : i + "";
   }
+  function _typeof(o) {
+    "@babel/helpers - typeof";
+
+    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
+      return typeof o;
+    } : function (o) {
+      return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
+    }, _typeof(o);
+  }
   function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
     try {
       var info = gen[key](arg);
@@ -12643,6 +12652,7 @@
       key: "_initVariablesAsync",
       value: function () {
         var _initVariablesAsync2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+          var _this5 = this;
           var selectValues, userGuide, registry, readme, manual, group, variable, description, hasUserGuideEntry, defaultValue, entries, _group, _this$variables$_grou, _variable, allVariables, _i8, _Object$entries2, _Object$entries2$_i, _group2, _group3, _variable2, groupName, _iterator, _step, _variableName, _i9, _Object$values3, groupDateTimePickers, _i10, _Object$entries3, _Object$entries3$_i, dateTimePickerVariableName, dateTimePicker, _i11, _Object$values4, variableName;
           return _regeneratorRuntime().wrap(function _callee3$(_context3) {
             while (1) switch (_context3.prev = _context3.next) {
@@ -12701,7 +12711,7 @@
                 defaultValue = registry[group][variable].defaultValue;
                 entries = null;
                 _context3.t4 = registry[group][variable].entries;
-                _context3.next = _context3.t4 === "max_domains" ? 33 : _context3.t4 === NamelistInputEditor.entries.single ? 35 : _context3.t4 === NamelistInputEditor.entries.maxEta ? 35 : _context3.t4 === NamelistInputEditor.entries.maxDom ? 35 : 37;
+                _context3.next = _context3.t4 === "max_domains" ? 33 : _context3.t4 === NamelistInputEditor.entries.single ? 35 : _context3.t4 === NamelistInputEditor.entries.maxEta ? 35 : _context3.t4 === NamelistInputEditor.entries.maxDom ? 35 : _context3.t4 === NamelistInputEditor.entries.maxBogus ? 35 : _context3.t4 === NamelistInputEditor.entries.maxMoves ? 35 : _context3.t4 === NamelistInputEditor.entries.maxOcean ? 35 : _context3.t4 === NamelistInputEditor.entries.maxPressureLevels ? 35 : _context3.t4 === NamelistInputEditor.entries.maxZLevels ? 35 : 37;
                 break;
               case 33:
                 entries = NamelistInputEditor.entries.maxDom;
@@ -12773,7 +12783,7 @@
                 _context3.t6 = _regeneratorRuntime().keys(readme);
               case 65:
                 if ((_context3.t7 = _context3.t6()).done) {
-                  _context3.next = 78;
+                  _context3.next = 84;
                   break;
                 }
                 _group3 = _context3.t7.value;
@@ -12783,23 +12793,33 @@
                 _context3.t8 = _regeneratorRuntime().keys(readme[_group3]);
               case 69:
                 if ((_context3.t9 = _context3.t8()).done) {
-                  _context3.next = 76;
+                  _context3.next = 82;
                   break;
                 }
                 _variable2 = _context3.t9.value;
+                _context3.t10 = _variable2;
+                _context3.next = _context3.t10 === "io_style_emiss" ? 74 : _context3.t10 === "inputout_begin_mo" ? 75 : _context3.t10 === "inputout_end_mo" ? 75 : _context3.t10 === "ntiedtke_dx_opt" ? 76 : 77;
+                break;
+              case 74:
+                return _context3.abrupt("continue", 69);
+              case 75:
+                return _context3.abrupt("continue", 69);
+              case 76:
+                return _context3.abrupt("continue", 69);
+              case 77:
                 if (_variable2 in allVariables) {
-                  _context3.next = 74;
+                  _context3.next = 80;
                   break;
                 }
                 console.warn("README.namelist variable ".concat(_variable2, " not found in WRF registry files"));
                 return _context3.abrupt("continue", 69);
-              case 74:
+              case 80:
                 _context3.next = 69;
                 break;
-              case 76:
+              case 82:
                 _context3.next = 65;
                 break;
-              case 78:
+              case 84:
                 // set default values for variables with missing or invalid default value in auto-generated JSON data
 
                 // time_step default value not set in registry
@@ -12843,7 +12863,70 @@
                     variables: this.variables
                   });
                 }
-              case 86:
+
+                //set conditional values
+                this.dependencyMap = {};
+                // num_urban_ndm                       = 1! (=  2 if BEP or BEM active) maximum number of street dimensions (ndm in BEP or BEM header)
+                // num_urban_ng                        = 1! (= 10 if BEP or BEM active) number of grid levels in the ground (ng_u in BEP or BEM header)
+                // num_urban_nwr                       = 1! (= 10 if BEP or BEM active) number of grid levels in the walls or roof (nwr_u in BEP or BEM header)
+                // num_urban_nz                        = 1! (= 18 if BEP or BEM active) maximum number of vertical levels in the urban grid (nz_um in BEP or BEM header)
+                // num_urban_ngb                       = 1! (= 10 if BEM active)        number of grid levels in the ground below building (ngb_u in BEM header)
+                // num_urban_nf                        = 1! (= 10 if BEM active)        number of grid levels in the floors (nf_u in BEM header)
+                // num_urban_nbui                      = 1! (= 15 if BEM active)        maximum number of types of buildings in an urban class (nbui_max in BEM header)
+                this.dependencyMap['physics'] = {};
+                this.dependencyMap['physics']['sf_urban_physics'] = {
+                  updates: ['num_urban_ndm', 'num_urban_ng', 'num_urban_nwr', 'num_urban_nz', 'num_urban_ngb', 'num_urban_nf', 'num_urban_nbui']
+                };
+                this.variables['physics']['num_urban_ndm'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 2;
+                  }
+                  return 1;
+                };
+                this.variables['physics']['num_urban_ng'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 10;
+                  }
+                  return 1;
+                };
+                this.variables['physics']['num_urban_nwr'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 10;
+                  }
+                  return 1;
+                };
+                this.variables['physics']['num_urban_nz'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 18;
+                  }
+                  return 1;
+                };
+                this.variables['physics']['num_urban_ngb'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 10;
+                  }
+                  return 1;
+                };
+                this.variables['physics']['num_urban_nf'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 10;
+                  }
+                  return 1;
+                };
+                this.variables['physics']['num_urban_nbui'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 15;
+                  }
+                  return 1;
+                };
+              case 102:
               case "end":
                 return _context3.stop();
             }
@@ -12887,7 +12970,16 @@
       value: function _setDefaultValue(group, variable, defaultValue) {
         this.variables[group][variable].defaultValue = defaultValue;
       }
-
+    }, {
+      key: "_getDefaultValue",
+      value: function _getDefaultValue(group, variable) {
+        switch (_typeof(this.variables[group][variable].defaultValue)) {
+          case "function":
+            return this.variables[group][variable].defaultValue.call(this);
+          default:
+            return this.variables[group][variable].defaultValue;
+        }
+      }
       // create editor HTML
     }, {
       key: "_initEditorFields",
@@ -12924,7 +13016,7 @@
       function _initVariableGroup(groupName, groupVariables, editorOptions) {
         var _this$view$groups,
           _this$view$groups$gro,
-          _this5 = this,
+          _this6 = this,
           _this$namelist$groupN;
         var groupDiv = this._append(this.container, 'div');
         groupDiv.classList.add('namelist-input-group');
@@ -12985,25 +13077,25 @@
           if (icon.classList.contains(NamelistInputEditor.iconClass.open)) {
             icon.classList.remove(NamelistInputEditor.iconClass.open);
             icon.classList.add(NamelistInputEditor.iconClass.collapsed);
-            _this5.view.groups[groupName].collapse = true;
+            _this6.view.groups[groupName].collapse = true;
           } else {
             icon.classList.remove(NamelistInputEditor.iconClass.collapsed);
             icon.classList.add(NamelistInputEditor.iconClass.open);
-            _this5.view.groups[groupName].collapse = false;
+            _this6.view.groups[groupName].collapse = false;
           }
-          _this5._storeView();
+          _this6._storeView();
         });
         headerDiv.querySelector("input#switch-hide-unset-".concat(groupName)).addEventListener('change', function (e) {
           var group = e.currentTarget.closest('.namelist-input-group');
           var groupName = group.dataset['group'];
           var variables = group.querySelector('div.namelist-input-variables');
-          _this5.view.groups[groupName].hideUnsetVariables = e.currentTarget.checked;
+          _this6.view.groups[groupName].hideUnsetVariables = e.currentTarget.checked;
           if (e.currentTarget.checked === true) {
             variables.classList.add('namelist-input-hide-unset');
           } else {
             variables.classList.remove('namelist-input-hide-unset');
           }
-          _this5._storeView();
+          _this6._storeView();
         });
         this.namelist[groupName] = (_this$namelist$groupN = this.namelist[groupName]) !== null && _this$namelist$groupN !== void 0 ? _this$namelist$groupN : {};
         this._appendGroupVariableFields(groupDiv, groupName, groupVariables);
@@ -13059,7 +13151,7 @@
     }, {
       key: "_appendVariableField",
       value: function _appendVariableField(variablesDiv, groupName, variableName, variable) {
-        var _this6 = this;
+        var _this7 = this;
         if (variableName in this._ignoreVariables) {
           console.debug("Skipping ignored variable ".concat(variableName));
           return;
@@ -13067,7 +13159,7 @@
         console.debug("Creating variable ".concat(variableName, " input"));
         var variableDiv = this._append(variablesDiv, 'div');
         variableDiv.classList.add('namelist-input-variable');
-        variableDiv.dataset['default'] = variable.defaultValue;
+        variableDiv.dataset['default'] = this._getDefaultValue(groupName, variableName);
         variableDiv.dataset['variable'] = variableName;
         var isSet = this._isNamelistValueSet(groupName, variableName);
         var readOnly = this._isReadOnly(groupName, variableName);
@@ -13106,11 +13198,11 @@
         switch (variable.entries) {
           case NamelistInputEditor.entries.maxDom:
             for (var i = 0; i < this.max_dom; i++) {
-              html += this._getInputFieldHtml(variableName, variable, isSet ? namelistGroup[variableName][i] : variable.defaultValue, readOnly, i);
+              html += this._getInputFieldHtml(variableName, variable, isSet ? namelistGroup[variableName][i] : this._getDefaultValue(groupName, variableName), readOnly, i);
             }
             break;
           case NamelistInputEditor.entries.single:
-            html += this._getInputFieldHtml(variableName, variable, isSet ? namelistGroup[variableName] : variable.defaultValue, readOnly, null);
+            html += this._getInputFieldHtml(variableName, variable, isSet ? namelistGroup[variableName] : this._getDefaultValue(groupName, variableName), readOnly, null);
             break;
           case NamelistInputEditor.entries.maxEta:
             break;
@@ -13146,21 +13238,22 @@
           var groupName = variableDiv.closest('div.namelist-input-group').dataset['group'];
           var variableName = variableDiv.dataset['variable'];
           variableDiv.classList.add('namelist-input-variable-unset');
-          switch (_this6.variables[groupName][variableName].type) {
+          switch (_this7.variables[groupName][variableName].type) {
             case NamelistInputEditor.variableTypes.datetime:
               for (var key in NamelistInputEditor._dateTimePickers[groupName][variableName].variables) {
-                _this6.namelist[groupName][NamelistInputEditor._dateTimePickers[groupName][variableName].variables[key]] = null;
+                _this7.namelist[groupName][NamelistInputEditor._dateTimePickers[groupName][variableName].variables[key]] = null;
               }
-              _this6._dateTimePickers[groupName][variableName].forEach(function (dateTimePicker, index) {
-                dateTimePicker.valueUtc = _this6._getNamelistDateTimeValueUtc(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables, index);
+              _this7._dateTimePickers[groupName][variableName].forEach(function (dateTimePicker, index) {
+                dateTimePicker.valueUtc = _this7._getNamelistDateTimeValueUtc(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables, index);
               });
               break;
             default:
-              _this6.namelist[groupName][variableName] = null;
-              _this6._setVariableFieldValue(groupName, variableName);
+              _this7.namelist[groupName][variableName] = null;
+              _this7._updateVariableFieldValue(groupName, variableName);
+              _this7._updateDependentVariables(groupName, variableName);
               break;
           }
-          _this6._fireChange(groupName, variableName);
+          _this7._fireChange(groupName, variableName);
         });
 
         // configure variable input fields event listeners
@@ -13192,43 +13285,43 @@
             break;
           case NamelistInputEditor.variableTypes.datetime:
             variableDiv.querySelectorAll('div.namelist-input-datetime-picker').forEach(function (div, index) {
-              var _this6$_dateTimePicke, _this6$_dateTimePicke2;
+              var _this7$_dateTimePicke, _this7$_dateTimePicke2;
               var dateTimePicker = new NamelistDateTimePicker(div, {
                 onChange: function onChange(e) {
                   var variableDiv = e.sender.widget.closest('div.namelist-input-variable');
                   var variableName = variableDiv.dataset['variable'];
                   var groupName = variableDiv.closest('div.namelist-input-group').dataset['group'];
                   variableDiv.classList.remove('namelist-input-variable-unset');
-                  switch (_this6.variables[groupName][variableName].entries) {
+                  switch (_this7.variables[groupName][variableName].entries) {
                     case NamelistInputEditor.entries.single:
                       {
-                        var valueUtc = _this6._dateTimePickers[groupName][variableName][0].valueUtc;
+                        var valueUtc = _this7._dateTimePickers[groupName][variableName][0].valueUtc;
                         for (var key in NamelistInputEditor._dateTimePickers[groupName][variableName].variables) {
-                          _this6._setNamelistValue(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables[key], valueUtc[key]);
+                          _this7._setNamelistValue(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables[key], valueUtc[key]);
                         }
                       }
                       break;
                     case NamelistInputEditor.entries.maxDom:
                       {
-                        var valuesUtc = _this6._dateTimePickers[groupName][variableName].map(function (x) {
+                        var valuesUtc = _this7._dateTimePickers[groupName][variableName].map(function (x) {
                           return x.valueUtc;
                         });
                         for (var key in NamelistInputEditor._dateTimePickers[groupName][variableName].variables) {
-                          _this6._setNamelistValue(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables[key], valuesUtc.map(function (x) {
+                          _this7._setNamelistValue(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables[key], valuesUtc.map(function (x) {
                             return x[key];
                           }));
                         }
                       }
                       break;
                   }
-                  _this6._fireChange(groupName, variableName);
+                  _this7._fireChange(groupName, variableName);
                 },
-                displayTimeZone: _this6.options.timeZone,
-                valueUtc: _this6._getNamelistDateTimeValueUtc(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables, index)
+                displayTimeZone: _this7.options.timeZone,
+                valueUtc: _this7._getNamelistDateTimeValueUtc(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables, index)
               });
-              _this6._dateTimePickers[groupName] = (_this6$_dateTimePicke = _this6._dateTimePickers[groupName]) !== null && _this6$_dateTimePicke !== void 0 ? _this6$_dateTimePicke : {};
-              _this6._dateTimePickers[groupName][variableName] = (_this6$_dateTimePicke2 = _this6._dateTimePickers[groupName][variableName]) !== null && _this6$_dateTimePicke2 !== void 0 ? _this6$_dateTimePicke2 : [];
-              _this6._dateTimePickers[groupName][variableName].push(dateTimePicker);
+              _this7._dateTimePickers[groupName] = (_this7$_dateTimePicke = _this7._dateTimePickers[groupName]) !== null && _this7$_dateTimePicke !== void 0 ? _this7$_dateTimePicke : {};
+              _this7._dateTimePickers[groupName][variableName] = (_this7$_dateTimePicke2 = _this7._dateTimePickers[groupName][variableName]) !== null && _this7$_dateTimePicke2 !== void 0 ? _this7$_dateTimePicke2 : [];
+              _this7._dateTimePickers[groupName][variableName].push(dateTimePicker);
             });
             break;
         }
@@ -13256,23 +13349,31 @@
               return this.namelist[groupName][variableName];
           }
         }
-        return variable.defaultValue;
+        return this._getDefaultValue(groupName, variableName);
+      }
+    }, {
+      key: "getValue",
+      value: function getValue(groupName, variableName) {
+        if (this._isNamelistValueSet(groupName, variableName) === true) {
+          return this.namelist[groupName][variableName];
+        }
+        return this._getDefaultValue(groupName, variableName);
       }
 
       // set variable input fields value from current namelist object
     }, {
-      key: "_setVariableFieldValue",
-      value: function _setVariableFieldValue(groupName, variableName) {
+      key: "_updateVariableFieldValue",
+      value: function _updateVariableFieldValue(groupName, variableName) {
         var variable = this.variables[groupName][variableName];
         var isSet = this._isNamelistValueSet(groupName, variableName);
         switch (variable.entries) {
           case NamelistInputEditor.entries.maxDom:
             for (var i = 0; i < this.max_dom; i++) {
-              this._setInputFieldValue(groupName, variableName, variable, isSet ? this.namelist[groupName][variableName][i] : variable.defaultValue, i);
+              this._setInputFieldValue(groupName, variableName, variable, isSet ? this.namelist[groupName][variableName][i] : this._getDefaultValue(groupName, variableName), i);
             }
             break;
           case NamelistInputEditor.entries.single:
-            this._setInputFieldValue(groupName, variableName, variable, isSet ? this.namelist[groupName][variableName] : variable.defaultValue, null);
+            this._setInputFieldValue(groupName, variableName, variable, isSet ? this.namelist[groupName][variableName] : this._getDefaultValue(groupName, variableName), null);
             break;
           case NamelistInputEditor.entries.maxEta:
             break;
@@ -13307,26 +13408,39 @@
     }, {
       key: "_addVariableFieldListeners",
       value: function _addVariableFieldListeners(variableDiv, fieldTag, variableName, eventType, getFieldValue) {
-        var _this7 = this;
+        var _this8 = this;
         variableDiv.querySelectorAll("".concat(fieldTag, "[name=\"").concat(variableName, "\"]")).forEach(function (field) {
           field.addEventListener(eventType, function (e) {
             var variableName = e.currentTarget.name;
             var variableDiv = document.querySelector("div.namelist-input-variable[data-variable=\"".concat(variableName, "\"]"));
             var groupName = variableDiv.closest('div.namelist-input-group').dataset['group'];
             variableDiv.classList.remove('namelist-input-variable-unset');
-            switch (_this7.variables[groupName][variableName].entries) {
+            switch (_this8.variables[groupName][variableName].entries) {
               case NamelistInputEditor.entries.single:
-                _this7._setNamelistValue(groupName, variableName, getFieldValue.call(_this7, e.currentTarget));
+                _this8._setNamelistValue(groupName, variableName, getFieldValue.call(_this8, e.currentTarget));
                 break;
               case NamelistInputEditor.entries.maxDom:
-                _this7._setNamelistValue(groupName, variableName, _this7._listVariableFields(groupName, variableName, fieldTag).map(function (input) {
-                  return getFieldValue.call(_this7, input);
+                _this8._setNamelistValue(groupName, variableName, _this8._listVariableFields(groupName, variableName, fieldTag).map(function (input) {
+                  return getFieldValue.call(_this8, input);
                 }));
                 break;
             }
-            _this7._fireChange(groupName, variableName);
+            _this8._updateDependentVariables(groupName, variableName);
+            _this8._fireChange(groupName, variableName);
           });
         });
+      }
+    }, {
+      key: "_updateDependentVariables",
+      value: function _updateDependentVariables(groupName, variableName) {
+        var _this9 = this;
+        if (groupName in this.dependencyMap && variableName in this.dependencyMap[groupName]) {
+          if (Array.isArray(this.dependencyMap[groupName][variableName].updates)) {
+            this.dependencyMap[groupName][variableName].updates.forEach(function (dependent) {
+              _this9._updateVariableFieldValue(groupName, dependent);
+            });
+          }
+        }
       }
 
       // fire change event
@@ -13456,11 +13570,14 @@
       }
     }]);
   }();
-  _defineProperty(NamelistInputEditor, "entries", {
+  _defineProperty(NamelistInputEditor, "entries", _defineProperty(_defineProperty(_defineProperty({
     maxDom: "max_dom",
     single: "1",
-    maxEta: "max_eta"
-  });
+    maxEta: "max_eta",
+    maxBogus: "max_bogus",
+    maxMoves: "max_moves",
+    maxOcean: "max_ocean"
+  }, "maxOcean", "max_ocean"), "maxPressureLevels", "max_plevs"), "maxZLevels", "max_zlevs"));
   _defineProperty(NamelistInputEditor, "variableTypes", {
     integer: "integer",
     logical: "logical",

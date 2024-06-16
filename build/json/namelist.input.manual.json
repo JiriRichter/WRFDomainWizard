@@ -22,5 +22,92 @@
                 "run/README.namelist"
             ]
         }
+    },
+    "chem": {
+        "frames_per_emissfile" : {
+            "type": "integer",
+            "defaultValue": 12,
+            "entries": "1",
+            "description": "number of times in each chemistry emission file",
+            "sources": [
+                "run/README.namelist"
+            ]
+        }
+    },
+    "time_control": {
+        "override_restart_timers" : {
+            "type": "logical",
+            "defaultValue": false,
+            "entries": "1",
+            "description": "whether to change the alarms from what is previously set",
+            "sources": [
+                "run/README.namelist"
+            ]
+        }
+    },
+    "physics" : {
+        "num_urban_ndm" : {
+            "type": "integer",
+            "defaultValue": 1,
+            "entries": "1",
+            "description": "maximum number of street dimensions (ndm in BEP or BEM header)",
+            "sources": [
+                "run/README.namelist"
+            ]
+        },
+        "num_urban_ng" : {
+            "type": "integer",
+            "defaultValue": 1,
+            "entries": "1",
+            "description": "number of grid levels in the ground (ng_u in BEP or BEM header)",
+            "sources": [
+                "run/README.namelist"
+            ]
+        },
+        "num_urban_nwr" : {
+            "type": "integer",
+            "defaultValue": 1,
+            "entries": "1",
+            "description": "number of grid levels in the walls or roof (nwr_u in BEP or BEM header)",
+            "sources": [
+                "run/README.namelist"
+            ]
+        },
+        "num_urban_nz" : {
+            "type": "integer",
+            "defaultValue": 1,
+            "entries": "1",
+            "description": "maximum number of vertical levels in the urban grid (nz_um in BEP or BEM header)",
+            "sources": [
+                "run/README.namelist"
+            ]
+        },
+        "num_urban_ngb" : {
+            "type": "integer",
+            "defaultValue": 1,
+            "entries": "1",
+            "description": "number of grid levels in the ground below building (ngb_u in BEM header)",
+            "sources": [
+                "run/README.namelist"
+            ]
+        },
+        "num_urban_nf" : {
+            "type": "integer",
+            "defaultValue": 1,
+            "entries": "1",
+            "description": "number of grid levels in the floors (nf_u in BEM header)",
+            "sources": [
+                "run/README.namelist"
+            ]
+        },
+        "num_urban_nbui" : {
+            "type": "integer",
+            "defaultValue": 1,
+            "entries": "1",
+            "description": "maximum number of types of buildings in an urban class (nbui_max in BEM header)",
+            "sources": [
+                "run/README.namelist"
+            ]
+        }
     }
 }
