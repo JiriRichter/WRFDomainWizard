@@ -2,11 +2,12 @@ import { SidebarDomainsPanel } from "./domain-wizard.sidebar.wps.panel";
 import { WRFDomainGrid } from "./leaflet/leaflet.wrf-grid";
 import { WRFDomain } from "./leaflet/leaflet.wrf-domain";
 import { WPSSaveDialog } from "./domain-wizard.dialog.save";
-import { WPSNamelist } from "./utils/namelist.wps"
+import { WPSNamelist, WPSNamelistError } from "./utils/namelist.wps"
 import { errorMessageBox } from "./domain-wizard.dialog.message-box";
 import { geogridOutput } from "./utils/geogrid.output";
 import { saveAs } from "file-saver";
 import { NamelistInputDialog } from "./domain-wizard.dialog.namelist.input";
+import { NamelistError } from "./utils/namelist";
 
 export class SidebarDomains {
 
@@ -55,7 +56,6 @@ export class SidebarDomains {
         // creates new WPS namelist object from existing data and
         // draws domains
         function createDomainFromNamelist(zoom) {
-            removeDomain();
             domain = new WRFDomain(wpsNamelist);
             domain.addTo(map);
 
@@ -82,7 +82,20 @@ export class SidebarDomains {
             });
         }
 
+        function _handleWPSNamelistError(error) {
+            if (error instanceof NamelistError) {
+                errorMessageBox("Invalid WPS Namelist", error.message);
+            }
+            else if (error instanceof WPSNamelistError) {
+                errorMessageBox("Invalid WPS Namelist", error.message);
+            }
+            else {
+                throw error;
+            }
+        }
+
         buttonReset.on('click', function (e) {
+            removeDomain();
             createDomainFromNamelist(false);
         });
 
@@ -116,13 +129,19 @@ export class SidebarDomains {
             };
 
             reader.onload = function (e) {
-                if (filename == 'wrfsi.nl') {
-                    wpsNamelist = WPSNamelist.converFromWRFSIString(e.target.result);
+                removeDomain();
+                try{
+                    if (filename == 'wrfsi.nl') {
+                        wpsNamelist = WPSNamelist.converFromWRFSIString(e.target.result);
+                    }
+                    else {
+                        wpsNamelist = new WPSNamelist(e.target.result);
+                    }
+                    createDomainFromNamelist(true);
                 }
-                else {
-                    wpsNamelist = new WPSNamelist(e.target.result);
+                catch(error) {
+                    _handleWPSNamelistError(error);
                 }
-                createDomainFromNamelist(true);
             };
             reader.readAsText(e.target.files[0]);
             inputFile.val(null);
@@ -314,10 +333,16 @@ export class SidebarDomains {
             $.get(
                 wpsNamelistUrl, 
                 (data) => {
-                    wpsNamelist = new WPSNamelist(data);
-                    sidebar.open('domains');
-                    createDomainFromNamelist(true);
-                    this._addGeogridCorners(sample);
+                    removeDomain();
+                    try {
+                        wpsNamelist = new WPSNamelist(data);
+                        sidebar.open('domains');
+                        createDomainFromNamelist(true);
+                        this._addGeogridCorners(sample);
+                    }
+                    catch(error) {
+                        _handleWPSNamelistError(error);
+                    }
                 }, 'text')
                 .fail(() => {
                     errorMessageBox("File Load Error", "Unable to load " + wpsNamelistUrl);

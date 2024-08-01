@@ -68,6 +68,11 @@ export class Namelist {
             }
             else if ((name == "character") || (name == "integer") || (name == "real") || (name == "logical")) {
 
+                // check property is inside a group
+                if (current_group === null) {
+                    throw new NamelistError(`Namelist variable '${current_prop}' is not inside a group section. All properties are expected to be inside a group section starting with '&[GROUPNAME]' and ending with '/'.`);
+                }
+
                 if (current_group[current_prop] == null) {
                     current_group[current_prop] = value;
                 }
@@ -499,4 +504,17 @@ export class Namelist {
             section[paramName] = [].concat(section[paramName]);
         }
     }
+}
+
+export class NamelistError extends Error {
+    constructor(message = "", ...args) {
+        super(message, ...args);
+  
+      // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+        Error.captureStackTrace(this, NamelistError);
+    }
+  
+    this.name = "NamelistError";
+  }
 }

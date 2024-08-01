@@ -1,0 +1,37 @@
+&share
+ wrf_core             = 'ARW'
+ max_dom              = 1
+ start_date           = '2024-07-04_03:00:00'
+ end_date             = '2024-07-04_18:00:00'
+ interval_seconds     = 21600
+ io_form_geogrid      = 2
+ debug_level          = 0
+/
+
+&geogrid
+ parent_id            = 1
+ geog_data_res        = 'default'
+ dx                   = 12000
+ dy                   = 12000
+ map_proj             = 'lambert'
+ ref_lat              = 46.169
+ ref_lon              = -117.422
+ truelat1             = 46.169
+ truelat2             = 46.169
+ pole_lat             = 90
+ pole_lon             = 0
+ stand_lon            = -117.422
+ geog_data_path       = 'geog'
+ opt_geogrid_tbl_path = './geogrid/'
+/
+
+&ungrib
+ out_format           = 'WPS'
+ prefix               = 'FILE'
+/
+
+&metgrid
+ fg_name              = 'FILE'
+ io_form_metgrid      = 2
+ opt_metgrid_tbl_path = './metgrid'
+/

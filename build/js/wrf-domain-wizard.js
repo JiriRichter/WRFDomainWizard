@@ -4,6 +4,24 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.WRF = global.WRF || {}));
 })(this, (function (exports) { 'use strict';
 
+  function _callSuper(t, o, e) {
+    return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e));
+  }
+  function _construct(t, e, r) {
+    if (_isNativeReflectConstruct()) return Reflect.construct.apply(null, arguments);
+    var o = [null];
+    o.push.apply(o, e);
+    var p = new (t.bind.apply(t, o))();
+    return r && _setPrototypeOf(p, r.prototype), p;
+  }
+  function _isNativeReflectConstruct() {
+    try {
+      var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+    } catch (t) {}
+    return (_isNativeReflectConstruct = function () {
+      return !!t;
+    })();
+  }
   function _iterableToArrayLimit(r, l) {
     var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
     if (null != t) {
@@ -420,6 +438,82 @@
       obj[key] = value;
     }
     return obj;
+  }
+  function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function");
+    }
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        writable: true,
+        configurable: true
+      }
+    });
+    Object.defineProperty(subClass, "prototype", {
+      writable: false
+    });
+    if (superClass) _setPrototypeOf(subClass, superClass);
+  }
+  function _getPrototypeOf(o) {
+    _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) {
+      return o.__proto__ || Object.getPrototypeOf(o);
+    };
+    return _getPrototypeOf(o);
+  }
+  function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+      o.__proto__ = p;
+      return o;
+    };
+    return _setPrototypeOf(o, p);
+  }
+  function _isNativeFunction(fn) {
+    try {
+      return Function.toString.call(fn).indexOf("[native code]") !== -1;
+    } catch (e) {
+      return typeof fn === "function";
+    }
+  }
+  function _wrapNativeSuper(Class) {
+    var _cache = typeof Map === "function" ? new Map() : undefined;
+    _wrapNativeSuper = function _wrapNativeSuper(Class) {
+      if (Class === null || !_isNativeFunction(Class)) return Class;
+      if (typeof Class !== "function") {
+        throw new TypeError("Super expression must either be null or a function");
+      }
+      if (typeof _cache !== "undefined") {
+        if (_cache.has(Class)) return _cache.get(Class);
+        _cache.set(Class, Wrapper);
+      }
+      function Wrapper() {
+        return _construct(Class, arguments, _getPrototypeOf(this).constructor);
+      }
+      Wrapper.prototype = Object.create(Class.prototype, {
+        constructor: {
+          value: Wrapper,
+          enumerable: false,
+          writable: true,
+          configurable: true
+        }
+      });
+      return _setPrototypeOf(Wrapper, Class);
+    };
+    return _wrapNativeSuper(Class);
+  }
+  function _assertThisInitialized(self) {
+    if (self === void 0) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+    return self;
+  }
+  function _possibleConstructorReturn(self, call) {
+    if (call && (typeof call === "object" || typeof call === "function")) {
+      return call;
+    } else if (call !== void 0) {
+      throw new TypeError("Derived constructors may only return object or undefined");
+    }
+    return _assertThisInitialized(self);
   }
   function _slicedToArray(arr, i) {
     return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
@@ -1101,6 +1195,10 @@
         } else if (name == "object") {
           current_prop = value.toLowerCase();
         } else if (name == "character" || name == "integer" || name == "real" || name == "logical") {
+          // check property is inside a group
+          if (current_group === null) {
+            throw new NamelistError("Namelist variable '".concat(current_prop, "' is not inside a group section. All properties are expected to be inside a group section starting with '&[GROUPNAME]' and ending with '/'."));
+          }
           if (current_group[current_prop] == null) {
             current_group[current_prop] = value;
           } else {
@@ -1520,9 +1618,29 @@
   _defineProperty(Namelist, "_re_logical_p", /(\.(([tT][rR][uU][eE]|[[fF][aA][lL][sS][eE])\.?|[tTfF]\w*))\s*,?\s*/);
   _defineProperty(Namelist, "_re_null", /\s*\b|\s*,\s*/);
   _defineProperty(Namelist, "_re_orphan", /[^&]*/);
+  var NamelistError = /*#__PURE__*/function (_Error) {
+    function NamelistError() {
+      var _this;
+      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
+      _classCallCheck(this, NamelistError);
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+      _this = _callSuper(this, NamelistError, [message].concat(args));
+
+      // Maintains proper stack trace for where our error was thrown (only available on V8)
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(_this, NamelistError);
+      }
+      _this.name = "NamelistError";
+      return _this;
+    }
+    _inherits(NamelistError, _Error);
+    return _createClass(NamelistError);
+  }( /*#__PURE__*/_wrapNativeSuper(Error));
 
   var WPSNamelist = /*#__PURE__*/function () {
-    function WPSNamelist(obj) {
+    function WPSNamelist(data) {
       _classCallCheck(this, WPSNamelist);
       var ns;
 
@@ -1636,17 +1754,33 @@
         //A character string giving the path, either relative or absolute, to the METGRID.TBL file; the path should not contain the actual file name, as METGRID.TBL is assumed, but should only give the path where this file is located
         process_only_bdy: 0 //An integer specifying the number of boundary rows and columns to be processed by metgrid for time periods after the initial time; for the initial time, metgrid will always interpolate to every grid point. Setting this option to the intended value of spec_bdy_width in the WRF namelist.input will speed up processing in metgrid, but it should not be set if interpolated data are needed in the domain interior. If this option is set to zero, metgrid will horizontally interpolate meteorological data to every grid point in the model domains. This option is only available for ARW            
       };
-      if (typeof obj === 'string') {
-        ns = new Namelist(obj);
+      if (typeof data === 'string') {
+        ns = new Namelist(data);
         if ('hgridspec' in ns) {
           // Format used prior WRF version 3
           this._createWRFSI(ns);
         } else {
           this._create(ns);
         }
+
+        // check required properties
+        this._validateRequiredVariable(this.geogrid, 'geogrid', 'parent_grid_ratio');
+        this._validateRequiredVariable(this.geogrid, 'geogrid', 'i_parent_start');
+        this._validateRequiredVariable(this.geogrid, 'geogrid', 'j_parent_start');
+        this._validateRequiredVariable(this.geogrid, 'geogrid', 'e_we');
+        this._validateRequiredVariable(this.geogrid, 'geogrid', 'e_sn');
+        this._validateRequiredVariable(this.geogrid, 'geogrid', 'dx');
+        this._validateRequiredVariable(this.geogrid, 'geogrid', 'dy');
       }
     }
     return _createClass(WPSNamelist, [{
+      key: "_validateRequiredVariable",
+      value: function _validateRequiredVariable(group, groupName, variableName) {
+        if (group[variableName] === undefined || group[variableName] === null) {
+          throw new WPSNamelistError("WPS namelist is missing required variable '".concat(variableName, "' under group '").concat(groupName, "'"));
+        }
+      }
+    }, {
       key: "_create",
       value: function _create(ns) {
         if ('share' in ns) {
@@ -1791,6 +1925,26 @@
       }
     }]);
   }();
+  var WPSNamelistError = /*#__PURE__*/function (_Error) {
+    function WPSNamelistError() {
+      var _this;
+      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
+      _classCallCheck(this, WPSNamelistError);
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+      _this = _callSuper(this, WPSNamelistError, [message].concat(args));
+
+      // Maintains proper stack trace for where our error was thrown (only available on V8)
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(_this, WPSNamelistError);
+      }
+      _this.name = "WPSNamelistError";
+      return _this;
+    }
+    _inherits(WPSNamelistError, _Error);
+    return _createClass(WPSNamelistError);
+  }( /*#__PURE__*/_wrapNativeSuper(Error));
 
   var EarthRadius = 6370000;
   var WrfProjections = {
@@ -13942,7 +14096,6 @@
       // creates new WPS namelist object from existing data and
       // draws domains
       function createDomainFromNamelist(zoom) {
-        removeDomain();
         domain = new WRFDomain(wpsNamelist);
         domain.addTo(map);
         wpsPanel.show(domain);
@@ -13962,7 +14115,17 @@
           paddingBottomRight: L.point(padding.x, padding.y)
         });
       }
+      function _handleWPSNamelistError(error) {
+        if (error instanceof NamelistError) {
+          errorMessageBox("Invalid WPS Namelist", error.message);
+        } else if (error instanceof WPSNamelistError) {
+          errorMessageBox("Invalid WPS Namelist", error.message);
+        } else {
+          throw error;
+        }
+      }
       buttonReset.on('click', function (e) {
+        removeDomain();
         createDomainFromNamelist(false);
       });
       buttonOpen.on('click', function (e) {
@@ -13988,12 +14151,17 @@
           errorMessageBox('File Open Error', 'Unable to read file!');
         };
         reader.onload = function (e) {
-          if (filename == 'wrfsi.nl') {
-            wpsNamelist = WPSNamelist.converFromWRFSIString(e.target.result);
-          } else {
-            wpsNamelist = new WPSNamelist(e.target.result);
+          removeDomain();
+          try {
+            if (filename == 'wrfsi.nl') {
+              wpsNamelist = WPSNamelist.converFromWRFSIString(e.target.result);
+            } else {
+              wpsNamelist = new WPSNamelist(e.target.result);
+            }
+            createDomainFromNamelist(true);
+          } catch (error) {
+            _handleWPSNamelistError(error);
           }
-          createDomainFromNamelist(true);
         };
         reader.readAsText(e.target.files[0]);
         inputFile.val(null);
@@ -14170,10 +14338,15 @@
         var sample = location.hash.substring(1),
           wpsNamelistUrl = "".concat(this.options.sampleBaseUrl, "/").concat(sample, "/namelist.wps");
         $.get(wpsNamelistUrl, function (data) {
-          wpsNamelist = new WPSNamelist(data);
-          sidebar.open('domains');
-          createDomainFromNamelist(true);
-          _this._addGeogridCorners(sample);
+          removeDomain();
+          try {
+            wpsNamelist = new WPSNamelist(data);
+            sidebar.open('domains');
+            createDomainFromNamelist(true);
+            _this._addGeogridCorners(sample);
+          } catch (error) {
+            _handleWPSNamelistError(error);
+          }
         }, 'text').fail(function () {
           errorMessageBox("File Load Error", "Unable to load " + wpsNamelistUrl);
         });

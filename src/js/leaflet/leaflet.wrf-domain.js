@@ -444,7 +444,3 @@ WRFDomain.prototype.removeMainGrid = /** @this {WRFDomainGrid} */ function () {
     this._mainGrid.updateId(1);
     this._mainGrid.addTo(this._map);
 }
-
-export function wrfDomain(obj, options) {
-    return new WRFDomain(new WPSNamelist(obj), options);
-}
