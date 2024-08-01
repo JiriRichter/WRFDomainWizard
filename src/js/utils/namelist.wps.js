@@ -1,9 +1,9 @@
 import { Namelist } from "./namelist";
 
 export class WPSNamelist {
-    constructor(obj) {
+    constructor(data) {
 
-        var ns;
+        let ns;
 
         // https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html#wps-namelist-variables
 
@@ -71,8 +71,8 @@ export class WPSNamelist {
             process_only_bdy: 0 //An integer specifying the number of boundary rows and columns to be processed by metgrid for time periods after the initial time; for the initial time, metgrid will always interpolate to every grid point. Setting this option to the intended value of spec_bdy_width in the WRF namelist.input will speed up processing in metgrid, but it should not be set if interpolated data are needed in the domain interior. If this option is set to zero, metgrid will horizontally interpolate meteorological data to every grid point in the model domains. This option is only available for ARW            
         };
 
-        if (typeof obj === 'string') {
-            ns = new Namelist(obj);
+        if (typeof data === 'string') {
+            ns = new Namelist(data);
             
             if ('hgridspec' in ns) {
                 // Format used prior WRF version 3
@@ -80,6 +80,21 @@ export class WPSNamelist {
             } else {
                 this._create(ns);
             }
+
+            // check required properties
+            this._validateRequiredVariable(this.geogrid, 'geogrid', 'parent_grid_ratio');
+            this._validateRequiredVariable(this.geogrid, 'geogrid', 'i_parent_start');
+            this._validateRequiredVariable(this.geogrid, 'geogrid', 'j_parent_start');
+            this._validateRequiredVariable(this.geogrid, 'geogrid', 'e_we');
+            this._validateRequiredVariable(this.geogrid, 'geogrid', 'e_sn');
+            this._validateRequiredVariable(this.geogrid, 'geogrid', 'dx');
+            this._validateRequiredVariable(this.geogrid, 'geogrid', 'dy');
+        }
+    }
+
+    _validateRequiredVariable(group, groupName, variableName) {
+        if (group[variableName] === undefined || group[variableName] === null) {
+            throw new WPSNamelistError(`WPS namelist is missing required variable '${variableName}' under group '${groupName}'`);
         }
     }
 
@@ -299,6 +314,15 @@ export class WPSNamelist {
     }
 }
 
-export function wpsNamelist(obj) {
-    return new WPSNamelist(obj);
+export class WPSNamelistError extends Error {
+    constructor(message = "", ...args) {
+        super(message, ...args);
+  
+      // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+        Error.captureStackTrace(this, WPSNamelistError);
+    }
+  
+    this.name = "WPSNamelistError";
+  }
 }

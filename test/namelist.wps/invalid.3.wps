@@ -1,0 +1,20 @@
+&share
+ wrf_core             = 'ARW'
+ max_dom              = 1
+ start_date           = '2024-07-04_03:00:00'
+ end_date             = '2024-07-04_18:00:00'
+ interval_seconds     = 21600
+ io_form_geogrid      = 2
+ debug_level          = 0
+/
+
+&ungrib
+ out_format           = 'WPS'
+ prefix               = 'FILE'
+/
+
+&metgrid
+ fg_name              = 'FILE'
+ io_form_metgrid      = 2
+ opt_metgrid_tbl_path = './metgrid'
+/
