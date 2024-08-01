@@ -4,6 +4,334 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.WRF = global.WRF || {}));
 })(this, (function (exports) { 'use strict';
 
+  function _iterableToArrayLimit(r, l) {
+    var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
+    if (null != t) {
+      var e,
+        n,
+        i,
+        u,
+        a = [],
+        f = !0,
+        o = !1;
+      try {
+        if (i = (t = t.call(r)).next, 0 === l) {
+          if (Object(t) !== t) return;
+          f = !1;
+        } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0);
+      } catch (r) {
+        o = !0, n = r;
+      } finally {
+        try {
+          if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return;
+        } finally {
+          if (o) throw n;
+        }
+      }
+      return a;
+    }
+  }
+  function _regeneratorRuntime() {
+    _regeneratorRuntime = function () {
+      return e;
+    };
+    var t,
+      e = {},
+      r = Object.prototype,
+      n = r.hasOwnProperty,
+      o = Object.defineProperty || function (t, e, r) {
+        t[e] = r.value;
+      },
+      i = "function" == typeof Symbol ? Symbol : {},
+      a = i.iterator || "@@iterator",
+      c = i.asyncIterator || "@@asyncIterator",
+      u = i.toStringTag || "@@toStringTag";
+    function define(t, e, r) {
+      return Object.defineProperty(t, e, {
+        value: r,
+        enumerable: !0,
+        configurable: !0,
+        writable: !0
+      }), t[e];
+    }
+    try {
+      define({}, "");
+    } catch (t) {
+      define = function (t, e, r) {
+        return t[e] = r;
+      };
+    }
+    function wrap(t, e, r, n) {
+      var i = e && e.prototype instanceof Generator ? e : Generator,
+        a = Object.create(i.prototype),
+        c = new Context(n || []);
+      return o(a, "_invoke", {
+        value: makeInvokeMethod(t, r, c)
+      }), a;
+    }
+    function tryCatch(t, e, r) {
+      try {
+        return {
+          type: "normal",
+          arg: t.call(e, r)
+        };
+      } catch (t) {
+        return {
+          type: "throw",
+          arg: t
+        };
+      }
+    }
+    e.wrap = wrap;
+    var h = "suspendedStart",
+      l = "suspendedYield",
+      f = "executing",
+      s = "completed",
+      y = {};
+    function Generator() {}
+    function GeneratorFunction() {}
+    function GeneratorFunctionPrototype() {}
+    var p = {};
+    define(p, a, function () {
+      return this;
+    });
+    var d = Object.getPrototypeOf,
+      v = d && d(d(values([])));
+    v && v !== r && n.call(v, a) && (p = v);
+    var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p);
+    function defineIteratorMethods(t) {
+      ["next", "throw", "return"].forEach(function (e) {
+        define(t, e, function (t) {
+          return this._invoke(e, t);
+        });
+      });
+    }
+    function AsyncIterator(t, e) {
+      function invoke(r, o, i, a) {
+        var c = tryCatch(t[r], t, o);
+        if ("throw" !== c.type) {
+          var u = c.arg,
+            h = u.value;
+          return h && "object" == typeof h && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) {
+            invoke("next", t, i, a);
+          }, function (t) {
+            invoke("throw", t, i, a);
+          }) : e.resolve(h).then(function (t) {
+            u.value = t, i(u);
+          }, function (t) {
+            return invoke("throw", t, i, a);
+          });
+        }
+        a(c.arg);
+      }
+      var r;
+      o(this, "_invoke", {
+        value: function (t, n) {
+          function callInvokeWithMethodAndArg() {
+            return new e(function (e, r) {
+              invoke(t, n, e, r);
+            });
+          }
+          return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg();
+        }
+      });
+    }
+    function makeInvokeMethod(e, r, n) {
+      var o = h;
+      return function (i, a) {
+        if (o === f) throw Error("Generator is already running");
+        if (o === s) {
+          if ("throw" === i) throw a;
+          return {
+            value: t,
+            done: !0
+          };
+        }
+        for (n.method = i, n.arg = a;;) {
+          var c = n.delegate;
+          if (c) {
+            var u = maybeInvokeDelegate(c, n);
+            if (u) {
+              if (u === y) continue;
+              return u;
+            }
+          }
+          if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) {
+            if (o === h) throw o = s, n.arg;
+            n.dispatchException(n.arg);
+          } else "return" === n.method && n.abrupt("return", n.arg);
+          o = f;
+          var p = tryCatch(e, r, n);
+          if ("normal" === p.type) {
+            if (o = n.done ? s : l, p.arg === y) continue;
+            return {
+              value: p.arg,
+              done: n.done
+            };
+          }
+          "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg);
+        }
+      };
+    }
+    function maybeInvokeDelegate(e, r) {
+      var n = r.method,
+        o = e.iterator[n];
+      if (o === t) return r.delegate = null, "throw" === n && e.iterator.return && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y;
+      var i = tryCatch(o, e.iterator, r.arg);
+      if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y;
+      var a = i.arg;
+      return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y);
+    }
+    function pushTryEntry(t) {
+      var e = {
+        tryLoc: t[0]
+      };
+      1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e);
+    }
+    function resetTryEntry(t) {
+      var e = t.completion || {};
+      e.type = "normal", delete e.arg, t.completion = e;
+    }
+    function Context(t) {
+      this.tryEntries = [{
+        tryLoc: "root"
+      }], t.forEach(pushTryEntry, this), this.reset(!0);
+    }
+    function values(e) {
+      if (e || "" === e) {
+        var r = e[a];
+        if (r) return r.call(e);
+        if ("function" == typeof e.next) return e;
+        if (!isNaN(e.length)) {
+          var o = -1,
+            i = function next() {
+              for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next;
+              return next.value = t, next.done = !0, next;
+            };
+          return i.next = i;
+        }
+      }
+      throw new TypeError(typeof e + " is not iterable");
+    }
+    return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", {
+      value: GeneratorFunctionPrototype,
+      configurable: !0
+    }), o(GeneratorFunctionPrototype, "constructor", {
+      value: GeneratorFunction,
+      configurable: !0
+    }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) {
+      var e = "function" == typeof t && t.constructor;
+      return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name));
+    }, e.mark = function (t) {
+      return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t;
+    }, e.awrap = function (t) {
+      return {
+        __await: t
+      };
+    }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () {
+      return this;
+    }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) {
+      void 0 === i && (i = Promise);
+      var a = new AsyncIterator(wrap(t, r, n, o), i);
+      return e.isGeneratorFunction(r) ? a : a.next().then(function (t) {
+        return t.done ? t.value : a.next();
+      });
+    }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () {
+      return this;
+    }), define(g, "toString", function () {
+      return "[object Generator]";
+    }), e.keys = function (t) {
+      var e = Object(t),
+        r = [];
+      for (var n in e) r.push(n);
+      return r.reverse(), function next() {
+        for (; r.length;) {
+          var t = r.pop();
+          if (t in e) return next.value = t, next.done = !1, next;
+        }
+        return next.done = !0, next;
+      };
+    }, e.values = values, Context.prototype = {
+      constructor: Context,
+      reset: function (e) {
+        if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t);
+      },
+      stop: function () {
+        this.done = !0;
+        var t = this.tryEntries[0].completion;
+        if ("throw" === t.type) throw t.arg;
+        return this.rval;
+      },
+      dispatchException: function (e) {
+        if (this.done) throw e;
+        var r = this;
+        function handle(n, o) {
+          return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o;
+        }
+        for (var o = this.tryEntries.length - 1; o >= 0; --o) {
+          var i = this.tryEntries[o],
+            a = i.completion;
+          if ("root" === i.tryLoc) return handle("end");
+          if (i.tryLoc <= this.prev) {
+            var c = n.call(i, "catchLoc"),
+              u = n.call(i, "finallyLoc");
+            if (c && u) {
+              if (this.prev < i.catchLoc) return handle(i.catchLoc, !0);
+              if (this.prev < i.finallyLoc) return handle(i.finallyLoc);
+            } else if (c) {
+              if (this.prev < i.catchLoc) return handle(i.catchLoc, !0);
+            } else {
+              if (!u) throw Error("try statement without catch or finally");
+              if (this.prev < i.finallyLoc) return handle(i.finallyLoc);
+            }
+          }
+        }
+      },
+      abrupt: function (t, e) {
+        for (var r = this.tryEntries.length - 1; r >= 0; --r) {
+          var o = this.tryEntries[r];
+          if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) {
+            var i = o;
+            break;
+          }
+        }
+        i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null);
+        var a = i ? i.completion : {};
+        return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a);
+      },
+      complete: function (t, e) {
+        if ("throw" === t.type) throw t.arg;
+        return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y;
+      },
+      finish: function (t) {
+        for (var e = this.tryEntries.length - 1; e >= 0; --e) {
+          var r = this.tryEntries[e];
+          if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y;
+        }
+      },
+      catch: function (t) {
+        for (var e = this.tryEntries.length - 1; e >= 0; --e) {
+          var r = this.tryEntries[e];
+          if (r.tryLoc === t) {
+            var n = r.completion;
+            if ("throw" === n.type) {
+              var o = n.arg;
+              resetTryEntry(r);
+            }
+            return o;
+          }
+        }
+        throw Error("illegal catch attempt");
+      },
+      delegateYield: function (e, r, n) {
+        return this.delegate = {
+          iterator: values(e),
+          resultName: r,
+          nextLoc: n
+        }, "next" === this.method && (this.arg = t), y;
+      }
+    }, e;
+  }
   function _toPrimitive(t, r) {
     if ("object" != typeof t || !t) return t;
     var e = t[Symbol.toPrimitive];
@@ -17,6 +345,45 @@
   function _toPropertyKey(t) {
     var i = _toPrimitive(t, "string");
     return "symbol" == typeof i ? i : i + "";
+  }
+  function _typeof(o) {
+    "@babel/helpers - typeof";
+
+    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
+      return typeof o;
+    } : function (o) {
+      return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
+    }, _typeof(o);
+  }
+  function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+    try {
+      var info = gen[key](arg);
+      var value = info.value;
+    } catch (error) {
+      reject(error);
+      return;
+    }
+    if (info.done) {
+      resolve(value);
+    } else {
+      Promise.resolve(value).then(_next, _throw);
+    }
+  }
+  function _asyncToGenerator(fn) {
+    return function () {
+      var self = this,
+        args = arguments;
+      return new Promise(function (resolve, reject) {
+        var gen = fn.apply(self, args);
+        function _next(value) {
+          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+        }
+        function _throw(err) {
+          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+        }
+        _next(undefined);
+      });
+    };
   }
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -53,6 +420,79 @@
       obj[key] = value;
     }
     return obj;
+  }
+  function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+  }
+  function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
+  }
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+  }
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+    return arr2;
+  }
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+  function _createForOfIteratorHelper(o, allowArrayLike) {
+    var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+    if (!it) {
+      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+        if (it) o = it;
+        var i = 0;
+        var F = function () {};
+        return {
+          s: F,
+          n: function () {
+            if (i >= o.length) return {
+              done: true
+            };
+            return {
+              done: false,
+              value: o[i++]
+            };
+          },
+          e: function (e) {
+            throw e;
+          },
+          f: F
+        };
+      }
+      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+    var normalCompletion = true,
+      didErr = false,
+      err;
+    return {
+      s: function () {
+        it = it.call(o);
+      },
+      n: function () {
+        var step = it.next();
+        normalCompletion = step.done;
+        return step;
+      },
+      e: function (e) {
+        didErr = true;
+        err = e;
+      },
+      f: function () {
+        try {
+          if (!normalCompletion && it.return != null) it.return();
+        } finally {
+          if (didErr) throw err;
+        }
+      }
+    };
   }
 
   var SidebarElevationData = /*#__PURE__*/_createClass(function SidebarElevationData(map, sidebar) {
@@ -457,26 +897,60 @@
   var MessageBoxDialog = /*#__PURE__*/function () {
     function MessageBoxDialog() {
       _classCallCheck(this, MessageBoxDialog);
-      this.container = $('div.modal#message-box-dialog');
-      this.dialogBody = $('div.modal-body', this.container);
-      this.dialogTitle = $('div.modal-header h5.modal-title', this.container);
+      this.container = document.querySelector('div.modal#message-box-dialog');
+      this.dialogBody = this.container.querySelector('div.modal-body');
+      this.dialogTitle = this.container.querySelector('div.modal-header h5.modal-title');
+      this.titleIcon = this.dialogTitle.querySelector('i');
+      this.titleSpan = this.dialogTitle.querySelector('span');
     }
     return _createClass(MessageBoxDialog, [{
-      key: "show",
-      value: function show(title, message, type) {
-        this.dialogTitle.empty();
-        if (type === MessageBoxDialog.types.error) {
-          this.dialogTitle.html('<i class="fas fa-exclamation-circle text-danger"></i>');
+      key: "open",
+      value: function open() {
+        $(this.container).modal();
+        return this;
+      }
+    }, {
+      key: "close",
+      value: function close() {
+        $(this.container).modal('hide');
+        return this;
+      }
+    }, {
+      key: "empty",
+      value: function empty() {
+        this.titleSpan.innerHTML = '';
+        this.titleIcon.classList.remove('fa-exclamation-circle');
+        this.titleIcon.classList.remove('fa-info-circle');
+        this.titleIcon.classList.remove('fa-exclamation-triangle');
+        this.dialogBody.innerHTML = '';
+        return this;
+      }
+    }, {
+      key: "title",
+      value: function title(_title, icon) {
+        if (icon === MessageBoxDialog.types.error) {
+          this.titleIcon.classList.add('fa-exclamation-circle');
         }
-        if (type === MessageBoxDialog.types.info) {
-          this.dialogTitle.html('<i class="fas fa-info-circle text-info"></i>');
+        if (icon === MessageBoxDialog.types.info) {
+          this.titleIcon.classList.add('fa-info-circle');
         }
-        if (type === MessageBoxDialog.types.warning) {
-          this.dialogTitle.html('<i class="fas fa-exclamation-triangle text-warning"></i>');
+        if (icon === MessageBoxDialog.types.warning) {
+          this.titleIcon.classList.add('fa-exclamation-triangle');
         }
-        this.dialogTitle.append(title);
-        this.dialogBody.text(message);
-        this.container.modal();
+        this.titleSpan.innerText = _title;
+        return this;
+      }
+    }, {
+      key: "html",
+      value: function html(_html) {
+        this.dialogBody.innerHTML = _html;
+        return this;
+      }
+    }, {
+      key: "text",
+      value: function text(message) {
+        this.dialogBody.innerText = message;
+        return this;
       }
     }]);
   }();
@@ -486,8 +960,37 @@
     warning: 2
   });
   var messageBoxDialog = new MessageBoxDialog();
+  function getTemplate(name) {
+    return document.getElementById('message-box-dialog-templates').querySelector("div[template=\"".concat(name, "\"]"));
+  }
   function errorMessageBox(title, message) {
-    messageBoxDialog.show(title, message, MessageBoxDialog.types.error);
+    messageBoxDialog.empty().title(title, MessageBoxDialog.types.error).text(message).open();
+  }
+  function enableGlobalErrorHandler() {
+    window.onerror = function (event, source, lineno, colno, error) {
+      if (!event || !source || !error) {
+        return;
+      }
+      if (!error.stack) {
+        return;
+      }
+      if (source.toLowerCase().includes("/lib/")) {
+        return;
+      }
+      var template = getTemplate('global-error');
+      messageBoxDialog.empty().title('Unexpected Error', MessageBoxDialog.types.error).html(template.innerHTML);
+      var errorDetails = '';
+      errorDetails = errorDetails + "Error: ".concat(event, "\n");
+      errorDetails = errorDetails + "Timestamp: ".concat(new Date().toISOString(), "\n");
+      errorDetails = errorDetails + "Source: ".concat(source, "\n");
+      errorDetails = errorDetails + "Line: ".concat(lineno, "\n");
+      errorDetails = errorDetails + "Stack:\n";
+      errorDetails = errorDetails + "".concat(error.stack);
+      messageBoxDialog.dialogBody.querySelector('textarea').value = errorDetails;
+      var title = 'Error: ' + event + ' @ ' + source + ":" + lineno;
+      messageBoxDialog.dialogBody.querySelector('a#create-github-issue').href = "https://github.com/JiriRichter/WRFDomainWizard/issues/new?labels=bug&title=".concat(encodeURI(title), "&body=").concat(encodeURI(errorDetails));
+      messageBoxDialog.open();
+    };
   }
 
   var SidebarWaypoints = function SidebarWaypoints(map, sidebar) {
@@ -574,14 +1077,13 @@
    *              index: index for array
    *             }
    */
-  /**
-   * @constructor
-   * @dict
-   * */
   var Namelist = /*#__PURE__*/function () {
     function Namelist(data) {
       _classCallCheck(this, Namelist);
-      var tokens = this._parse(data),
+      if (!data) {
+        throw new Error("Invalid data");
+      }
+      var tokens = Namelist._tokenize(data),
         current_group = null,
         current_prop = null,
         i,
@@ -612,9 +1114,9 @@
     }
 
     // parse namelist data to tokens
-    return _createClass(Namelist, [{
-      key: "_parse",
-      value: function _parse(data) {
+    return _createClass(Namelist, null, [{
+      key: "_tokenize",
+      value: function _tokenize(data) {
         var tokens = [];
         function addElement(pos, name, value) {
           var index = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -630,24 +1132,6 @@
         var prev = "initial";
         var str;
         var i = 0;
-
-        // regular expression for each item	
-        var re_comment = /(!.*)\n\s*/;
-        var re_group = /(?:&|\$)\s*([a-zA-Z_][\w]*)\s*/;
-        var re_array = /([a-zA-Z_][\w]*)\s*(\(\s*((\s*:\s*(\-|\+)?\d*){1,2}|((\-|\+)?\d+(\s*:\s*(\-|\+)?\d*){0,2}))(\s*,\s*(((\-|\+)?\d*(\s*:\s*(\-|\+)?\d*){0,2})))*\s*\)(\s*\(\s*(:\s*\d*|\d+(\s*:\s*\d*)?)\s*\))?)\s*=\s*/;
-        var re_object = /([a-zA-Z_][\w]*)\s*=\s*/;
-        var re_repeat = /([0-9]+)\s*\*\s*/;
-        var re_complex_start = /\(\s*/;
-        var re_complex_end = /\)\s*,?\s*/;
-        var re_string = /('((?:[^']+|'')*)'|"((?:[^"]+|"")*)")\s*,?\s*/;
-        var re_nondelimited_c = /([^'"\*\s,\/!&\$(=%\.][^\*\s,\/!&\$(=%\.]*)\s*,?\s*/;
-        var re_nondelimited_d = /(\d+[^\*\s\d,\/!&\$\(=%\.][^\s,\/!&\$\(=%\.]*)\s*,?\s*/;
-        var re_real = /(((\-|\+)?\d*\.\d*([eEdDqQ](\-|\+)?\d+)?)|((\-|\+)?\d+[eEdDqQ](\-|\+)?\d+))\s*,?\s*/;
-        var re_integer = /((\-|\+)?\d+)\b\s*,?\s*/;
-        var re_logical_c = /([tT][rR][uU][eE]|[tT]|[fF][aA][lL][sS][eE]|[fF])\s*,?\s*/;
-        var re_logical_p = /(\.(([tT][rR][uU][eE]|[[fF][aA][lL][sS][eE])\.?|[tTfF]\w*))\s*,?\s*/;
-        var re_null = /\s*\b|\s*,\s*/;
-        var re_orphan = /[^&]*/;
         while (i < data.length) {
           cur = data[i];
           curstr = data.substr(i);
@@ -655,7 +1139,7 @@
           // (1-1) a comment
           if (cur.match(/!/)) {
             // COMMENT
-            str = re_comment.exec(curstr);
+            str = Namelist._re_comment.exec(curstr);
             if (str && str.index == 0) {
               //console.log("found comment: " + str);
               //addElement(i, "comment", str);
@@ -673,7 +1157,7 @@
           // (2-1) a character constant
           else if (cur.match(/['"]/)) {
             // CHARACTER CONSTANT
-            str = re_string.exec(curstr);
+            str = Namelist._re_string.exec(curstr);
             if (str && str.index == 0) {
               //console.log("found character: " + str[1]);
               addElement(i, "character", str[2]);
@@ -703,7 +1187,7 @@
           // (4-1) the start or the end of a group
           else if (cur.match(/[$&]/)) {
             // GROUP
-            str = re_group.exec(curstr);
+            str = Namelist._re_group.exec(curstr);
             if (str && str.index == 0) {
               if (str[1].match(/^end$/i)) {
                 if (prev == "object") {
@@ -728,7 +1212,7 @@
           // (5-2) a real constant
           else if (cur.match(/\./)) {
             // LOGICAL CONSTANT
-            str = re_logical_p.exec(curstr);
+            str = Namelist._re_logical_p.exec(curstr);
             if (str && str.index == 0) {
               //console.log("found logical: " + str[1]);
               addElement(i, "logical", str[1]);
@@ -736,7 +1220,7 @@
               prev = "logical";
             } else {
               // REAL			
-              str = re_real.exec(curstr);
+              str = Namelist._re_real.exec(curstr);
               if (str && str.index == 0) {
                 //console.log("found real: " + str[1]);
                 addElement(i, "real", parseFloat(str[1]));
@@ -756,7 +1240,7 @@
           // (6-4) a nondelimited character constant
           else if (cur.match(/[[a-zA-Z_]/)) {
             if (prev == "group_end" || prev == "initial") {
-              str = re_orphan.exec(curstr);
+              str = Namelist._re_orphan.exec(curstr);
               if (str && str.index == 0) {
                 //console.log("found orphan: " + str[0]);
                 addElement(i, "orphan", str[0]);
@@ -765,7 +1249,7 @@
               }
             } else {
               // OBJECT
-              str = re_object.exec(curstr);
+              str = Namelist._re_object.exec(curstr);
               if (str && str.index == 0) {
                 if (prev == "object") {
                   addElement(i - 1, "null", "");
@@ -777,7 +1261,7 @@
                 prev = "object";
               } else {
                 // ARRAY
-                str = re_array.exec(curstr);
+                str = Namelist._re_array.exec(curstr);
                 if (str && str.index == 0) {
                   //console.log("found array: " + str[1] + " index: " + str[2]);
                   addElement(i, "array", str[1], str[2]);
@@ -785,7 +1269,7 @@
                   prev = "array";
                 } else {
                   // LOGICAL CONSTANT
-                  str = re_logical_c.exec(curstr);
+                  str = Namelist._re_logical_c.exec(curstr);
                   if (str && str.index == 0) {
                     //console.log("found logical: " + str[1]);
                     addElement(i, "logical", str[1]);
@@ -793,7 +1277,7 @@
                     prev = "logical";
                   } else {
                     // NONDELIMITED CHARACTER CONSTANT
-                    str = re_nondelimited_c.exec(curstr);
+                    str = Namelist._re_nondelimited_c.exec(curstr);
                     if (str && str.index == 0) {
                       //console.log("found nondelimited: " + str[1]);
                       addElement(i, "nondelimited", str[1]);
@@ -813,7 +1297,7 @@
           // [7] LEFT PARENTHESIS
           // (7-1) the start of a complex number
           else if (cur.match(/\(/)) {
-            str = re_complex_start.exec(curstr);
+            str = Namelist._re_complex_start.exec(curstr);
             if (str && str.index == 0) {
               // COMPLEX START
               //console.log("found complex start");
@@ -829,7 +1313,7 @@
           // [8] RIGHT PARENTHESIS
           // (8-1) the end of a complex number
           else if (cur.match(/\)/)) {
-            str = re_complex_end.exec(curstr);
+            str = Namelist._re_complex_end.exec(curstr);
             if (str && str.index == 0) {
               // COMPLEX END
               //console.log("found complex end");
@@ -846,7 +1330,7 @@
           // (9-1) a real constant
           // (9-2) an integer constant
           else if (cur.match(/[\+\-]/)) {
-            str = re_real.exec(curstr);
+            str = Namelist._re_real.exec(curstr);
             if (str && str.index == 0) {
               // REAL
               //console.log("found real: " + str[1]);
@@ -854,7 +1338,7 @@
               i += str[0].length;
               prev = "real";
             } else {
-              str = re_integer.exec(curstr);
+              str = Namelist._re_integer.exec(curstr);
               if (str && str.index == 0) {
                 // INTEGER
                 //console.log("found integer: " + str[1]);
@@ -874,7 +1358,7 @@
           // (10-3) a real constant
           // (10-4) an integer constant
           else if (cur.match(/[\d]/)) {
-            str = re_repeat.exec(curstr);
+            str = Namelist._re_repeat.exec(curstr);
             if (str && str.index == 0) {
               // REPEAT
               //console.log("found repeat: " + str[1]);
@@ -882,7 +1366,7 @@
               i += str[0].length;
               prev = "repeat";
             } else {
-              str = re_real.exec(curstr);
+              str = Namelist._re_real.exec(curstr);
               if (str && str.index == 0) {
                 // REAL
                 //console.log("found real: " + str[1]);
@@ -890,7 +1374,7 @@
                 i += str[0].length;
                 prev = "real";
               } else {
-                str = re_integer.exec(curstr);
+                str = Namelist._re_integer.exec(curstr);
                 if (str && str.index == 0) {
                   // INTEGER
                   //console.log("found integer: " + str[1]);
@@ -898,7 +1382,7 @@
                   i += str[0].length;
                   prev = "integer";
                 } else {
-                  str = re_nondelimited_d.exec(curstr);
+                  str = Namelist._re_nondelimited_d.exec(curstr);
                   if (str && str.index == 0) {
                     // NONDELIMITED CHARACTER CONSTANT
                     //console.log("found nondelimited: " + str[1]);
@@ -918,7 +1402,7 @@
           // (11-1) null
           else {
             // NULL
-            str = re_null.exec(curstr);
+            str = Namelist._re_null.exec(curstr);
             if (str && str.index == 0) {
               //console.log("found null #4");
               addElement(i, "null", "");
@@ -931,8 +1415,111 @@
         }
         return tokens;
       }
+    }, {
+      key: "isReal",
+      value: function isReal(str) {
+        var match = Namelist._re_real.exec(str);
+        return match !== null && match.index == 0;
+      }
+    }, {
+      key: "isInteger",
+      value: function isInteger(str) {
+        var match = Namelist._re_integer.exec(str);
+        return match !== null && match.index == 0;
+      }
+    }, {
+      key: "isLogical",
+      value: function isLogical(str) {
+        var match = Namelist._re_logical_p.exec(str);
+        return match !== null && match.index == 0;
+      }
+    }, {
+      key: "parseLogicalValue",
+      value: function parseLogicalValue(str) {
+        return str.toLowerCase() === '.true.';
+      }
+    }, {
+      key: "parseValue",
+      value: function parseValue(str) {
+        if (Namelist.isLogical(str)) {
+          return Namelist.parseLogicalValue(str);
+        } else if (Namelist.isReal(str)) {
+          return parseFloat(str);
+        } else if (Namelist.isInteger(str)) {
+          return parseInt(str);
+        } else {
+          return str;
+        }
+      }
+    }, {
+      key: "_formatValue",
+      value: function _formatValue(val) {
+        if (val == undefined) {
+          throw new Error('Undefined value');
+        } else if (Array.isArray(val)) {
+          var strVal = Namelist._formatValue(val[0]);
+          for (var i = 1; i < val.length; i++) {
+            strVal += ', ' + Namelist._formatValue(val[i]);
+          }
+          return strVal;
+        } else if (typeof val == "string") {
+          return "'" + val + "'";
+        } else if (typeof val == "boolean") {
+          return val ? '.true.' : '.false.';
+        } else if (!Namelist._isInteger(val)) {
+          return val.toFixed(3);
+        }
+        return val.toString();
+      }
+    }, {
+      key: "_isInteger",
+      value: function _isInteger(val) {
+        return typeof val === "number" && isFinite(val) && val > -9007199254740992 && val < 9007199254740992 && Math.floor(val) === val;
+      }
+    }, {
+      key: "formatSection",
+      value: function formatSection(section, properties, values) {
+        var content = '&' + section + '\n';
+        console.debug("format namelist section ".concat(section));
+        for (var i = 0; i < properties.length; i++) {
+          console.debug("   ".concat(properties[i], ": ").concat(values[i]));
+          if (values[i] === null) {
+            // property not set - continue
+            continue;
+          } else if (values[i] === undefined) {
+            throw new Error("Property ".concat(properties[i], " is not defined"));
+          } else {
+            content += ' ' + properties[i].padEnd(20) + ' = ' + Namelist._formatValue(values[i]) + '\n';
+          }
+        }
+        return content + '/\n\n';
+      }
+    }, {
+      key: "convertToArray",
+      value: function convertToArray(section, paramName) {
+        if (section[paramName] != undefined && !Array.isArray(section[paramName])) {
+          section[paramName] = [].concat(section[paramName]);
+        }
+      }
     }]);
   }();
+  // regular expression for each item	
+  _defineProperty(Namelist, "_re_comment", /(!.*)\n\s*/);
+  _defineProperty(Namelist, "_re_group", /(?:&|\$)\s*([a-zA-Z_][\w]*)\s*/);
+  _defineProperty(Namelist, "_re_array", /([a-zA-Z_][\w]*)\s*(\(\s*((\s*:\s*(\-|\+)?\d*){1,2}|((\-|\+)?\d+(\s*:\s*(\-|\+)?\d*){0,2}))(\s*,\s*(((\-|\+)?\d*(\s*:\s*(\-|\+)?\d*){0,2})))*\s*\)(\s*\(\s*(:\s*\d*|\d+(\s*:\s*\d*)?)\s*\))?)\s*=\s*/);
+  _defineProperty(Namelist, "_re_object", /([a-zA-Z_][\w]*)\s*=\s*/);
+  _defineProperty(Namelist, "_re_repeat", /([0-9]+)\s*\*\s*/);
+  _defineProperty(Namelist, "_re_complex_start", /\(\s*/);
+  _defineProperty(Namelist, "_re_complex_end", /\)\s*,?\s*/);
+  _defineProperty(Namelist, "_re_string", /('((?:[^']+|'')*)'|"((?:[^"]+|"")*)")\s*,?\s*/);
+  _defineProperty(Namelist, "_re_nondelimited_c", /([^'"\*\s,\/!&\$(=%\.][^\*\s,\/!&\$(=%\.]*)\s*,?\s*/);
+  _defineProperty(Namelist, "_re_nondelimited_d", /(\d+[^\*\s\d,\/!&\$\(=%\.][^\s,\/!&\$\(=%\.]*)\s*,?\s*/);
+  _defineProperty(Namelist, "_re_real", /(((\-|\+)?\d*\.\d*([eEdDqQ](\-|\+)?\d+)?)|((\-|\+)?\d+[eEdDqQ](\-|\+)?\d+))\s*,?\s*/);
+  _defineProperty(Namelist, "_re_integer", /((\-|\+)?\d+)\b\s*,?\s*/);
+  _defineProperty(Namelist, "_re_logical_c", /([tT][rR][uU][eE]|[tT]|[fF][aA][lL][sS][eE]|[fF])\s*,?\s*/);
+  _defineProperty(Namelist, "_re_logical_p", /(\.(([tT][rR][uU][eE]|[[fF][aA][lL][sS][eE])\.?|[tTfF]\w*))\s*,?\s*/);
+  _defineProperty(Namelist, "_re_null", /\s*\b|\s*,\s*/);
+  _defineProperty(Namelist, "_re_orphan", /[^&]*/);
 
   var WPSNamelist = /*#__PURE__*/function () {
     function WPSNamelist(obj) {
@@ -1064,30 +1651,29 @@
       value: function _create(ns) {
         if ('share' in ns) {
           Object.assign(this.share, ns['share']);
-          WPSNamelist._convertToArray(this.geogrid, 'start_year');
-          WPSNamelist._convertToArray(this.geogrid, 'start_month');
-          WPSNamelist._convertToArray(this.geogrid, 'start_day');
-          WPSNamelist._convertToArray(this.geogrid, 'start_hour');
-          WPSNamelist._convertToArray(this.geogrid, 'end_year');
-          WPSNamelist._convertToArray(this.geogrid, 'end_month');
-          WPSNamelist._convertToArray(this.geogrid, 'end_day');
-          WPSNamelist._convertToArray(this.geogrid, 'end_hour');
-          WPSNamelist._convertToArray(this.geogrid, 'start_date');
-          WPSNamelist._convertToArray(this.geogrid, 'end_date');
-          WPSNamelist._convertToArray(this.geogrid, 'active_grid');
+          Namelist.convertToArray(this.geogrid, 'start_year');
+          Namelist.convertToArray(this.geogrid, 'start_month');
+          Namelist.convertToArray(this.geogrid, 'start_day');
+          Namelist.convertToArray(this.geogrid, 'start_hour');
+          Namelist.convertToArray(this.geogrid, 'end_year');
+          Namelist.convertToArray(this.geogrid, 'end_month');
+          Namelist.convertToArray(this.geogrid, 'end_day');
+          Namelist.convertToArray(this.geogrid, 'end_hour');
+          Namelist.convertToArray(this.geogrid, 'start_date');
+          Namelist.convertToArray(this.geogrid, 'end_date');
+          Namelist.convertToArray(this.geogrid, 'active_grid');
         }
         if ('geogrid' in ns) {
           Object.assign(this.geogrid, ns['geogrid']);
-          WPSNamelist._convertToArray(this.geogrid, 'parent_id');
-          WPSNamelist._convertToArray(this.geogrid, 'parent_grid_ratio');
-          WPSNamelist._convertToArray(this.geogrid, 'i_parent_start');
-          WPSNamelist._convertToArray(this.geogrid, 'J_parent_start');
-          WPSNamelist._convertToArray(this.geogrid, 's_we');
-          WPSNamelist._convertToArray(this.geogrid, 'e_we');
-          WPSNamelist._convertToArray(this.geogrid, 's_sn');
-          WPSNamelist._convertToArray(this.geogrid, 'e_sn');
-          WPSNamelist._convertToArray(this.geogrid, 'geog_data_res');
-          WPSNamelist._convertToArray(this.geogrid, 'e_we');
+          Namelist.convertToArray(this.geogrid, 'parent_id');
+          Namelist.convertToArray(this.geogrid, 'parent_grid_ratio');
+          Namelist.convertToArray(this.geogrid, 'i_parent_start');
+          Namelist.convertToArray(this.geogrid, 'J_parent_start');
+          Namelist.convertToArray(this.geogrid, 's_we');
+          Namelist.convertToArray(this.geogrid, 'e_we');
+          Namelist.convertToArray(this.geogrid, 's_sn');
+          Namelist.convertToArray(this.geogrid, 'e_sn');
+          Namelist.convertToArray(this.geogrid, 'geog_data_res');
         }
         if ('ungrib' in ns) {
           Object.assign(this.ungrib, ns['ungrib']);
@@ -1192,62 +1778,16 @@
       value: function toString() {
         this._setDefaults();
         var content = '';
-        content += WPSNamelist._formatSection('share', ['wrf_core', 'max_dom', 'start_date', 'end_date', 'interval_seconds', 'io_form_geogrid', 'debug_level'], [this.share.wrf_core, this.share.max_dom, this.share.start_date, this.share.end_date, this.share.interval_seconds, this.share.io_form_geogrid, this.share.debug_level]);
-        content += WPSNamelist._formatSection('geogrid', ['parent_id', 'parent_grid_ratio', 'i_parent_start', 'j_parent_start', 'e_we', 'e_sn', 'geog_data_res', 'dx', 'dy', 'map_proj', 'ref_lat', 'ref_lon', 'truelat1', 'truelat2', 'pole_lat', 'pole_lon', 'stand_lon', 'geog_data_path', 'opt_geogrid_tbl_path'], [this.geogrid.parent_id, this.geogrid.parent_grid_ratio, this.geogrid.i_parent_start, this.geogrid.j_parent_start, this.geogrid.e_we, this.geogrid.e_sn, this.geogrid.geog_data_res, this.geogrid.dx, this.geogrid.dy, this.geogrid.map_proj, this.geogrid.ref_lat, this.geogrid.ref_lon, this.geogrid.truelat1, this.geogrid.truelat2, this.geogrid.pole_lat, this.geogrid.pole_lon, this.geogrid.stand_lon, this.geogrid.geog_data_path, this.geogrid.opt_geogrid_tbl_path]);
-        content += WPSNamelist._formatSection('ungrib', ['out_format', 'prefix'], [this.ungrib.out_format, this.ungrib.prefix]);
-        content += WPSNamelist._formatSection('metgrid', ['fg_name', 'io_form_metgrid', 'opt_metgrid_tbl_path'], [this.metgrid.fg_name, this.metgrid.io_form_metgrid, this.metgrid.opt_metgrid_tbl_path]);
+        content += Namelist.formatSection('share', ['wrf_core', 'max_dom', 'start_date', 'end_date', 'interval_seconds', 'io_form_geogrid', 'debug_level'], [this.share.wrf_core, this.share.max_dom, this.share.start_date, this.share.end_date, this.share.interval_seconds, this.share.io_form_geogrid, this.share.debug_level]);
+        content += Namelist.formatSection('geogrid', ['parent_id', 'parent_grid_ratio', 'i_parent_start', 'j_parent_start', 'e_we', 'e_sn', 'geog_data_res', 'dx', 'dy', 'map_proj', 'ref_lat', 'ref_lon', 'truelat1', 'truelat2', 'pole_lat', 'pole_lon', 'stand_lon', 'geog_data_path', 'opt_geogrid_tbl_path'], [this.geogrid.parent_id, this.geogrid.parent_grid_ratio, this.geogrid.i_parent_start, this.geogrid.j_parent_start, this.geogrid.e_we, this.geogrid.e_sn, this.geogrid.geog_data_res, this.geogrid.dx, this.geogrid.dy, this.geogrid.map_proj, this.geogrid.ref_lat, this.geogrid.ref_lon, this.geogrid.truelat1, this.geogrid.truelat2, this.geogrid.pole_lat, this.geogrid.pole_lon, this.geogrid.stand_lon, this.geogrid.geog_data_path, this.geogrid.opt_geogrid_tbl_path]);
+        content += Namelist.formatSection('ungrib', ['out_format', 'prefix'], [this.ungrib.out_format, this.ungrib.prefix]);
+        content += Namelist.formatSection('metgrid', ['fg_name', 'io_form_metgrid', 'opt_metgrid_tbl_path'], [this.metgrid.fg_name, this.metgrid.io_form_metgrid, this.metgrid.opt_metgrid_tbl_path]);
         return content;
       }
     }], [{
-      key: "_convertToArray",
-      value: function _convertToArray(section, paramName) {
-        if (section[paramName] && !Array.isArray(section[paramName])) {
-          section[paramName] = [].concat(section[paramName]);
-        }
-      }
-    }, {
-      key: "_isInteger",
-      value: function _isInteger(val) {
-        return typeof val === "number" && isFinite(val) && val > -9007199254740992 && val < 9007199254740992 && Math.floor(val) === val;
-      }
-    }, {
-      key: "_formatValue",
-      value: function _formatValue(val) {
-        if (Array.isArray(val)) {
-          var strVal = WPSNamelist._formatValue(val[0]);
-          for (var i = 1; i < val.length; i++) {
-            strVal += ', ' + WPSNamelist._formatValue(val[i]);
-          }
-          return strVal;
-        } else if (typeof val == "string") {
-          return "'" + val + "'";
-        } else if (typeof val == "boolean") {
-          return val ? '.true.' : '.false.';
-        } else if (!WPSNamelist._isInteger(val)) {
-          return val.toFixed(3);
-        }
-        return val.toString();
-      }
-    }, {
       key: "_formarDate",
       value: function _formarDate(d) {
         return d.getFullYear().toString() + '-' + d.getMonth().toString().padStart(2, '0') + '-' + d.getDay().toString().padStart(2, '0');
-      }
-    }, {
-      key: "_formatSection",
-      value: function _formatSection(section, properties, values) {
-        var content = '&' + section + '\n';
-        for (var i = 0; i < properties.length; i++) {
-          if (values[i] === null) {
-            // property not set - continue
-            continue;
-          } else if (typeof values[i] === 'undefined') {
-            throw new Error("Property ".concat(properties[i], " is not defined"));
-          } else {
-            content += ' ' + properties[i].padEnd(20) + ' = ' + WPSNamelist._formatValue(values[i]) + '\n';
-          }
-        }
-        return content + '/\n\n';
       }
     }]);
   }();
@@ -1266,6 +1806,15 @@
   }
   function degreesToMeters(d) {
     return d * EarthRadius * Math.PI * 2.0 / 360.0;
+  }
+  function distanceToMeters(map_proj, distance) {
+    if (map_proj === undefined) {
+      throw new Error("Invalid map_proj argument");
+    }
+    if (isNaN(distance)) {
+      throw new Error("Invalid distance argument");
+    }
+    return map_proj === WrfProjections.latlon ? degreesToMeters(distance) : distance;
   }
 
   function globals(defs) {
@@ -10022,7 +10571,7 @@
 
   var GeogDataResDialog = /*#__PURE__*/_createClass(function GeogDataResDialog(options) {
     _classCallCheck(this, GeogDataResDialog);
-    // defaul settings
+    // default settings
     this.options = {
       jsonBaseUrl: 'json'
     };
@@ -10253,7 +10802,7 @@
       tableCornerNE,
       tableCornerNW;
 
-    // defaul settings
+    // default settings
     this.options = {
       minGridDistanceMeters: 100,
       minGridDistanceDegrees: 0
@@ -10796,12 +11345,12 @@
     },
     'dxInMeters': {
       get: function get() {
-        return this.map_proj === WrfProjections.latlon ? degreesToMeters(this.dx) : this.dx;
+        return distanceToMeters(this.map_proj, this.dx);
       }
     },
     'dyInMeters': {
       get: function get() {
-        return this.map_proj === WrfProjections.latlon ? degreesToMeters(this.dy) : this.dy;
+        return distanceToMeters(this.map_proj, this.dy);
       }
     }
   });
@@ -10920,7 +11469,7 @@
       inputPoleLon,
       localStorageKey = 'wrf_domain_wizard_wps_panel';
 
-    // defaul settings
+    // default settings
     this.options = {
       minGridDistanceMeters: 100,
       minGridDistanceDegrees: 0
@@ -11481,6 +12030,1886 @@
 
   var FileSaver_minExports = FileSaver_min.exports;
 
+  function htmlEncode(text) {
+    if (!text) {
+      return '';
+    }
+    return text.replace(/[\u00A0-\u9999<>\&]/g, function (i) {
+      return '&#' + i.charCodeAt(0) + ';';
+    });
+  }
+
+  function getLocalTimeZone() {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
+  function listTimeZoneNames() {
+    return moment.tz.names();
+  }
+
+  var NamelistDateTimePicker = /*#__PURE__*/function () {
+    function NamelistDateTimePicker(inputGroup, options) {
+      _classCallCheck(this, NamelistDateTimePicker);
+      // default settings
+      this._options = {
+        onChange: null,
+        valueUtc: null,
+        displayTimeZone: null
+      };
+      if (options) {
+        this._options = Object.assign(this._options, options);
+      }
+
+      // set default timezone
+      if (!this._options.displayTimeZone) {
+        this._options.displayTimeZone = getLocalTimeZone();
+      }
+      this._input = inputGroup.querySelector('input');
+      this._widget = inputGroup;
+      this._init(inputGroup);
+    }
+    return _createClass(NamelistDateTimePicker, [{
+      key: "_init",
+      value: function _init(element) {
+        var _this = this;
+        this._dateTimePicker = $(element).datetimepicker({
+          allowInputToggle: true,
+          showClose: true,
+          showClear: true,
+          showTodayButton: true,
+          format: NamelistDateTimePicker._format,
+          timeZone: this.displayTimeZone,
+          useCurrent: true,
+          icons: {
+            date: 'far fa-calendar-alt',
+            time: 'far fa-clock',
+            clear: 'far fa-trash-alt',
+            close: 'fas fa-times',
+            today: 'far fa-calendar-check'
+          }
+        });
+        var self = this;
+        this._dateTimePicker.on("dp.change", function (e) {
+          if (typeof self._options.onChange === 'function') {
+            self._options.onChange.call(_this, {
+              sender: self,
+              valueUtc: self.valueUtc
+            });
+          }
+        });
+        if (this._options.valueUtc !== null) {
+          this.valueUtc = this._options.valueUtc;
+        }
+      }
+    }, {
+      key: "show",
+      value: function show() {
+        this._dateTimePickerObject.show();
+      }
+    }, {
+      key: "input",
+      get: function get() {
+        return this._input;
+      }
+    }, {
+      key: "widget",
+      get: function get() {
+        return this._widget;
+      }
+    }, {
+      key: "_dateTimePickerObject",
+      get: function get() {
+        return this._dateTimePicker.data("DateTimePicker");
+      }
+    }, {
+      key: "_momentValueUtc",
+      get: function get() {
+        return moment.tz(this._input.value, NamelistDateTimePicker._format, this.displayTimeZone).tz(NamelistDateTimePicker._utc);
+      }
+    }, {
+      key: "formatUtc",
+      value: function formatUtc() {
+        return this._momentValueUtc.format(NamelistDateTimePicker._format);
+      }
+    }, {
+      key: "valueUtc",
+      get: function get() {
+        return this._momentToNsDate(this._momentValueUtc);
+      },
+      set: function set(value) {
+        var momentValue = null;
+        if (typeof value === 'string') {
+          momentValue = moment.tz(value, NamelistDateTimePicker._format, NamelistDateTimePicker._utc);
+        } else {
+          momentValue = moment.tz([value.year, value.month - 1, value.day, value.hour, value.minute, value.second], NamelistDateTimePicker._utc);
+        }
+        this._input.value = momentValue.tz(this.displayTimeZone).format(NamelistDateTimePicker._format);
+      }
+    }, {
+      key: "displayTimeZone",
+      get: function get() {
+        return this._options.displayTimeZone;
+      },
+      set: function set(tz) {
+        var utc = this.valueUtc;
+        this._options.displayTimeZone = tz;
+        this._dateTimePickerObject.timeZone(tz);
+        this.valueUtc = utc;
+      }
+    }, {
+      key: "_momentToNsDate",
+      value: function _momentToNsDate(value) {
+        var values = value.toArray();
+        return {
+          year: values[0],
+          month: values[1] + 1,
+          day: values[2],
+          hour: values[3],
+          minute: values[4],
+          second: values[5]
+        };
+      }
+    }]);
+  }();
+  _defineProperty(NamelistDateTimePicker, "_format", "YYYY-MM-DD_HH:mm:ss");
+  _defineProperty(NamelistDateTimePicker, "_utc", "UTC");
+
+  var NamelistInputEditor = /*#__PURE__*/function () {
+    function NamelistInputEditor(container, options) {
+      _classCallCheck(this, NamelistInputEditor);
+      // default settings
+      this.options = {
+        jsonBaseUrl: 'json',
+        change: null,
+        floatDigits: 3,
+        timeZone: null,
+        onInitialize: null
+      };
+      if (options) {
+        this.options = Object.assign(this.options, options);
+      }
+
+      // editor container element
+      this.container = container;
+
+      // variable definitions
+      this.variables = null;
+
+      // variable to skip during editor field rendering
+      this._ignoreVariables = null;
+      this._variableSubstitutes = {};
+
+      // read-only variable flags
+      this.readOnly = {};
+
+      // variable group user guide links
+      this.userGuideLinks = {};
+
+      // namelist object
+      this.namelist = null;
+
+      // initialize editor view state
+      var value = localStorage.getItem("".concat(NamelistInputEditor._localStorageKey, "_view"));
+      if (value) {
+        this.view = JSON.parse(value);
+      } else {
+        this.view = {
+          groups: {}
+        };
+      }
+      this._dateTimePickers = {};
+    }
+
+    // current max_dom value
+    return _createClass(NamelistInputEditor, [{
+      key: "max_dom",
+      get: function get() {
+        var _this$namelist$domain, _this$namelist$domain2;
+        return (_this$namelist$domain = (_this$namelist$domain2 = this.namelist.domains) === null || _this$namelist$domain2 === void 0 ? void 0 : _this$namelist$domain2.max_dom) !== null && _this$namelist$domain !== void 0 ? _this$namelist$domain : 1;
+      }
+    }, {
+      key: "timeZone",
+      get: function get() {
+        return this.options.timeZone;
+      },
+      set: function set(tz) {
+        this.options.timeZone = tz;
+        for (var _i = 0, _Object$values = Object.values(this._dateTimePickers); _i < _Object$values.length; _i++) {
+          var groupDateTimePickers = _Object$values[_i];
+          for (var _i2 = 0, _Object$values2 = Object.values(groupDateTimePickers); _i2 < _Object$values2.length; _i2++) {
+            var dateTimePickers = _Object$values2[_i2];
+            dateTimePickers.forEach(function (dateTimePicker) {
+              dateTimePicker.displayTimeZone = tz;
+            });
+          }
+        }
+      }
+
+      // initializes editor from namelist.wps object
+    }, {
+      key: "openNamelistWpsAsync",
+      value: function () {
+        var _openNamelistWpsAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(namelistWps, options) {
+          var _this$namelist;
+          var grid_id, i;
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) switch (_context.prev = _context.next) {
+              case 0:
+                // empty elements
+                this._empty();
+                this.namelist = (_this$namelist = this.namelist) !== null && _this$namelist !== void 0 ? _this$namelist : {};
+                this._setReadOnlyNamelistValue('domains', 'max_dom', namelistWps.share.max_dom);
+                this._setReadOnlyNamelistValue('domains', 'e_we', namelistWps.geogrid.e_we);
+                this._setReadOnlyNamelistValue('domains', 'e_sn', namelistWps.geogrid.e_sn);
+                this._setReadOnlyNamelistValue('domains', 'dx', distanceToMeters(namelistWps.geogrid.map_proj, namelistWps.geogrid.dx));
+                this._setReadOnlyNamelistValue('domains', 'dy', distanceToMeters(namelistWps.geogrid.map_proj, namelistWps.geogrid.dy));
+                grid_id = [];
+                for (i = 1; i <= namelistWps.share.max_dom; i++) {
+                  grid_id.push(i);
+                }
+                this._setReadOnlyNamelistValue('domains', 'grid_id', grid_id);
+                this._setReadOnlyNamelistValue('domains', 'parent_id', namelistWps.geogrid.parent_id);
+                this._setReadOnlyNamelistValue('domains', 'i_parent_start', namelistWps.geogrid.i_parent_start);
+                this._setReadOnlyNamelistValue('domains', 'j_parent_start', namelistWps.geogrid.j_parent_start);
+                this._setReadOnlyNamelistValue('domains', 'parent_grid_ratio', namelistWps.geogrid.parent_grid_ratio);
+
+                // initialize variable definitions
+                _context.next = 16;
+                return this._initVariablesAsync();
+              case 16:
+                // empty elements
+                this._empty();
+
+                // initialize editor fields
+                this._initEditorFields(options);
+              case 18:
+              case "end":
+                return _context.stop();
+            }
+          }, _callee, this);
+        }));
+        function openNamelistWpsAsync(_x, _x2) {
+          return _openNamelistWpsAsync.apply(this, arguments);
+        }
+        return openNamelistWpsAsync;
+      }() // open namelist object
+    }, {
+      key: "openNamelistInputAsync",
+      value: function () {
+        var _openNamelistInputAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data, options) {
+          var errors, namelist, max_dom, _i3, _Object$keys, groupName, group, _i4, _Object$keys2, variableName, variable, _i5, _errors, error;
+          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+            while (1) switch (_context2.prev = _context2.next) {
+              case 0:
+                errors = []; // empty elements
+                this._empty();
+
+                // initialize variable definitions
+                _context2.next = 4;
+                return this._initVariablesAsync();
+              case 4:
+                namelist = new Namelist(data);
+                if (!(namelist.domains === undefined)) {
+                  _context2.next = 8;
+                  break;
+                }
+                result.errors.push("domains variable group not found in namelist");
+                return _context2.abrupt("return");
+              case 8:
+                if (!(namelist.domains.max_dom === undefined)) {
+                  _context2.next = 11;
+                  break;
+                }
+                result.errors.push("variable 'max_dom' not found in namelist");
+                return _context2.abrupt("return");
+              case 11:
+                max_dom = parseInt(namelist.domains.max_dom);
+                if (!isNaN(max_dom)) {
+                  _context2.next = 15;
+                  break;
+                }
+                errors.push("variable 'max_dom' is not a valid integer");
+                return _context2.abrupt("return");
+              case 15:
+                _i3 = 0, _Object$keys = Object.keys(namelist);
+              case 16:
+                if (!(_i3 < _Object$keys.length)) {
+                  _context2.next = 45;
+                  break;
+                }
+                groupName = _Object$keys[_i3];
+                group = this.variables[groupName];
+                if (!(group === undefined)) {
+                  _context2.next = 22;
+                  break;
+                }
+                errors.push("Unknown variable group ".concat(groupName));
+                return _context2.abrupt("continue", 42);
+              case 22:
+                _i4 = 0, _Object$keys2 = Object.keys(namelist[groupName]);
+              case 23:
+                if (!(_i4 < _Object$keys2.length)) {
+                  _context2.next = 42;
+                  break;
+                }
+                variableName = _Object$keys2[_i4];
+                variable = group[variableName];
+                if (!(variable === undefined)) {
+                  _context2.next = 29;
+                  break;
+                }
+                errors.push("Unknown variable ".concat(variableName, " in group ").concat(groupName));
+                return _context2.abrupt("continue", 39);
+              case 29:
+                _context2.t0 = variable.entries;
+                _context2.next = _context2.t0 === NamelistInputEditor.entries.maxDom ? 32 : _context2.t0 === NamelistInputEditor.entries.maxEta ? 35 : _context2.t0 === NamelistInputEditor.entries.single ? 37 : 39;
+                break;
+              case 32:
+                Namelist.convertToArray(namelist[groupName], variableName);
+                while (namelist[groupName][variableName].length < max_dom) {
+                  namelist[groupName][variableName].push(namelist[groupName][variableName][0]);
+                }
+                return _context2.abrupt("break", 39);
+              case 35:
+                Namelist.convertToArray(namelist[groupName], variableName);
+                return _context2.abrupt("break", 39);
+              case 37:
+                if (Array.isArray(namelist[groupName][variableName])) {
+                  namelist[groupName][variableName] = namelist[groupName][variableName][0];
+                }
+                return _context2.abrupt("break", 39);
+              case 39:
+                _i4++;
+                _context2.next = 23;
+                break;
+              case 42:
+                _i3++;
+                _context2.next = 16;
+                break;
+              case 45:
+                this.namelist = namelist;
+                for (_i5 = 0, _errors = errors; _i5 < _errors.length; _i5++) {
+                  error = _errors[_i5];
+                  console.warn(error);
+                }
+
+                // initialize editor fields
+                this._initEditorFields(options);
+                return _context2.abrupt("return", {
+                  errors: errors.length > 0 ? errors : null,
+                  hasErrors: errors.length > 0
+                });
+              case 49:
+              case "end":
+                return _context2.stop();
+            }
+          }, _callee2, this);
+        }));
+        function openNamelistInputAsync(_x3, _x4) {
+          return _openNamelistInputAsync.apply(this, arguments);
+        }
+        return openNamelistInputAsync;
+      }() // return raw text representation of namelist data
+    }, {
+      key: "toText",
+      value: function toText() {
+        var _this = this;
+        var text = '';
+        var _loop = function _loop() {
+          var _Object$entries$_i = _slicedToArray(_Object$entries[_i6], 2),
+            groupName = _Object$entries$_i[0],
+            groupVariables = _Object$entries$_i[1];
+          var variableNames = [];
+          for (var _i7 = 0, _Object$keys3 = Object.keys(groupVariables); _i7 < _Object$keys3.length; _i7++) {
+            var name = _Object$keys3[_i7];
+            if (_this._isNamelistValueSet(groupName, name) === true) {
+              variableNames.push(name);
+            }
+          }
+          if (variableNames.length === 0) {
+            return 1; // continue
+          }
+          var values = variableNames.map(function (name) {
+            return _this.namelist[groupName][name];
+          });
+          var groupContent = Namelist.formatSection(groupName, variableNames, values);
+          text = text + groupContent;
+        };
+        for (var _i6 = 0, _Object$entries = Object.entries(this.variables); _i6 < _Object$entries.length; _i6++) {
+          if (_loop()) continue;
+        }
+        return text;
+      }
+    }, {
+      key: "goToTop",
+      value: function goToTop() {
+        this.clearHighlight();
+        this.container.scrollIntoView();
+      }
+    }, {
+      key: "goToGroup",
+      value: function goToGroup(name) {
+        this.clearHighlight();
+        var groupDiv = this.container.querySelector("div.namelist-input-group[data-group=\"".concat(name, "\"]"));
+        if (!groupDiv) {
+          return;
+        }
+        groupDiv.classList.add('namelist-input-group-highlight');
+        this._expandGroup(groupDiv);
+        groupDiv.scrollIntoView();
+      }
+    }, {
+      key: "_expandGroup",
+      value: function _expandGroup(groupDiv) {
+        this._toggleGroupHideUnset(groupDiv, false);
+        this._toggleGroupCollapse(groupDiv.querySelector('div.namelist-input-variables'), NamelistInputEditor.collpaseCommands.show);
+        this._toggleGroupVariableHideUnset(groupDiv, false);
+      }
+    }, {
+      key: "clearHighlight",
+      value: function clearHighlight() {
+        this.container.querySelectorAll('div.namelist-input-variable.namelist-input-variable-highlight').forEach(function (div) {
+          div.classList.remove('namelist-input-variable-highlight');
+        });
+        this.container.querySelectorAll('div.namelist-input-group.namelist-input-group-highlight').forEach(function (div) {
+          div.classList.remove('namelist-input-group-highlight');
+        });
+      }
+    }, {
+      key: "goToVariable",
+      value: function goToVariable(variableName) {
+        this.clearHighlight();
+        if (variableName in this._variableSubstitutes) {
+          variableName = this._variableSubstitutes[variableName];
+        }
+        var variableDiv = this.container.querySelector("div.namelist-input-variable[data-variable=\"".concat(variableName, "\"]"));
+        if (!variableDiv) {
+          return;
+        }
+        variableDiv.classList.add('namelist-input-variable-highlight');
+        var collapsibleDiv = variableDiv.closest('div.namelist-input-variables.collapse');
+        var groupDiv = variableDiv.closest('div.namelist-input-group');
+        var expanded = collapsibleDiv.classList.contains('show');
+        if (expanded === false) {
+          $(collapsibleDiv).one('shown.bs.collapse', function (e) {
+            variableDiv.scrollIntoView();
+          });
+        }
+        this._expandGroup(groupDiv);
+        if (expanded === true) {
+          variableDiv.scrollIntoView();
+        }
+      }
+    }, {
+      key: "collapseGroups",
+      value: function collapseGroups() {
+        this._toggleAllGroupsCollapse(NamelistInputEditor.collpaseCommands.hide);
+      }
+    }, {
+      key: "expandGroups",
+      value: function expandGroups(command) {
+        this._toggleAllGroupsCollapse(NamelistInputEditor.collpaseCommands.show);
+      }
+    }, {
+      key: "hideUnsetVariables",
+      value: function hideUnsetVariables() {
+        this._toggleVariableHideUnset(true);
+      }
+    }, {
+      key: "showUnsetVariables",
+      value: function showUnsetVariables() {
+        this._toggleVariableHideUnset(false);
+      }
+    }, {
+      key: "hideUnsetGroups",
+      value: function hideUnsetGroups() {
+        this._toggleAllGroupsHideUnset(true);
+      }
+    }, {
+      key: "showUnsetGroups",
+      value: function showUnsetGroups() {
+        this._toggleAllGroupsHideUnset(false);
+      }
+    }, {
+      key: "_toggleGroupCollapse",
+      value: function _toggleGroupCollapse(variablesDiv, command) {
+        $(variablesDiv).collapse(command);
+        var groupHeader = variablesDiv.previousSibling;
+        var icon = groupHeader.querySelector('button[data-toggle="collapse"] i');
+        switch (command) {
+          case NamelistInputEditor.collpaseCommands.hide:
+            icon.classList.remove(NamelistInputEditor.iconClass.open);
+            icon.classList.add(NamelistInputEditor.iconClass.collapsed);
+            break;
+          case NamelistInputEditor.collpaseCommands.show:
+            icon.classList.remove(NamelistInputEditor.iconClass.collapsed);
+            icon.classList.add(NamelistInputEditor.iconClass.open);
+            break;
+        }
+      }
+    }, {
+      key: "_toggleAllGroupsCollapse",
+      value: function _toggleAllGroupsCollapse(command) {
+        var _this2 = this;
+        this.container.querySelectorAll('div.namelist-input-variables.collapse').forEach(function (element) {
+          _this2._toggleGroupCollapse(element, command);
+        });
+        for (var group in this.view.groups) {
+          this.view.groups[group].collapse = command === NamelistInputEditor.collpaseCommands.hide;
+        }
+        this._storeView();
+      }
+    }, {
+      key: "_toggleGroupHideUnset",
+      value: function _toggleGroupHideUnset(groupDiv, hideUnset) {
+        if (hideUnset === true) {
+          groupDiv.classList.add('namelist-input-hide-unset');
+        } else {
+          groupDiv.classList.remove('namelist-input-hide-unset');
+        }
+      }
+    }, {
+      key: "_toggleAllGroupsHideUnset",
+      value: function _toggleAllGroupsHideUnset(hideUnset) {
+        var _this3 = this;
+        this.container.querySelectorAll('div.namelist-input-group').forEach(function (groupDiv) {
+          _this3._toggleGroupHideUnset(groupDiv, hideUnset);
+        });
+        this.view.hideUnsetGroups = hideUnset;
+        this._storeView();
+      }
+    }, {
+      key: "_toggleGroupVariableHideUnset",
+      value: function _toggleGroupVariableHideUnset(groupDiv, hideUnset) {
+        var variables = groupDiv.querySelector('.namelist-input-variables');
+        if (hideUnset === true) {
+          variables.classList.add('namelist-input-hide-unset');
+        } else {
+          variables.classList.remove('namelist-input-hide-unset');
+        }
+        var header = groupDiv.querySelector('.namelist-input-group-header');
+        var hideUnsetSwitch = header.querySelector('input[name="switch-hide-unset"]');
+        hideUnsetSwitch.checked = hideUnset;
+      }
+    }, {
+      key: "_toggleVariableHideUnset",
+      value: function _toggleVariableHideUnset(hideUnset) {
+        var _this4 = this;
+        this.container.querySelectorAll('div.namelist-input-group').forEach(function (groupDiv) {
+          _this4._toggleGroupVariableHideUnset(groupDiv, hideUnset);
+        });
+        for (var group in this.view.groups) {
+          this.view.groups[group].hideUnsetVariables = hideUnset;
+        }
+        this._storeView();
+      }
+
+      // check whether variable namelist object value is set
+    }, {
+      key: "_isNamelistValueSet",
+      value: function _isNamelistValueSet(group, variable) {
+        return this.namelist[group] !== undefined && this.namelist[group][variable] !== undefined && this.namelist[group][variable] !== null;
+      }
+
+      // set variable namelist object value
+    }, {
+      key: "_setNamelistValue",
+      value: function _setNamelistValue(group, variable, value) {
+        var _this$namelist$group;
+        this.namelist[group] = (_this$namelist$group = this.namelist[group]) !== null && _this$namelist$group !== void 0 ? _this$namelist$group : {};
+        this.namelist[group][variable] = value;
+      }
+
+      // set namelist object value and flag variable as read-only
+    }, {
+      key: "_setReadOnlyNamelistValue",
+      value: function _setReadOnlyNamelistValue(group, variable, value) {
+        var _this$readOnly$group;
+        this._setNamelistValue(group, variable, value);
+        this.readOnly[group] = (_this$readOnly$group = this.readOnly[group]) !== null && _this$readOnly$group !== void 0 ? _this$readOnly$group : {};
+        this.readOnly[group][variable] = true;
+      }
+
+      // returns true when when a variable is flagged as read-only
+    }, {
+      key: "_isReadOnly",
+      value: function _isReadOnly(groupName, variableName) {
+        return this.readOnly[groupName] !== undefined && this.readOnly[groupName][variableName] === true;
+      }
+
+      // clear editor
+    }, {
+      key: "_empty",
+      value: function _empty() {
+        this._dateTimePickers = {};
+        while (this.container.firstChild && this.container.removeChild(this.container.firstChild));
+      }
+
+      // construct variable definition object
+    }, {
+      key: "_initVariablesAsync",
+      value: function () {
+        var _initVariablesAsync2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+          var _this5 = this;
+          var selectValues, userGuide, registry, readme, manual, group, variable, description, hasUserGuideEntry, defaultValue, entries, _group, _this$variables$_grou, _variable, allVariables, _i8, _Object$entries2, _Object$entries2$_i, _group2, _group3, _variable2, groupName, _iterator, _step, _variableName, _i9, _Object$values3, groupDateTimePickers, _i10, _Object$entries3, _Object$entries3$_i, dateTimePickerVariableName, dateTimePicker, _i11, _Object$values4, variableName;
+          return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+            while (1) switch (_context3.prev = _context3.next) {
+              case 0:
+                if (!(this.variables !== null)) {
+                  _context3.next = 2;
+                  break;
+                }
+                return _context3.abrupt("return");
+              case 2:
+                this.variables = {};
+
+                // load variable JSON files
+                _context3.next = 5;
+                return this._loadJsonAsync('namelist.input.select.values.json');
+              case 5:
+                selectValues = _context3.sent;
+                _context3.next = 8;
+                return this._loadJsonAsync('namelist.input.users.guide.json');
+              case 8:
+                userGuide = _context3.sent;
+                _context3.next = 11;
+                return this._loadJsonAsync('namelist.input.registry.json');
+              case 11:
+                registry = _context3.sent;
+                _context3.next = 14;
+                return this._loadJsonAsync('namelist.input.readme.json');
+              case 14:
+                readme = _context3.sent;
+                _context3.next = 17;
+                return this._loadJsonAsync('namelist.input.manual.json');
+              case 17:
+                manual = _context3.sent;
+                _context3.t0 = _regeneratorRuntime().keys(registry);
+              case 19:
+                if ((_context3.t1 = _context3.t0()).done) {
+                  _context3.next = 61;
+                  break;
+                }
+                group = _context3.t1.value;
+                this.variables[group] = {};
+                _context3.t2 = _regeneratorRuntime().keys(registry[group]);
+              case 23:
+                if ((_context3.t3 = _context3.t2()).done) {
+                  _context3.next = 59;
+                  break;
+                }
+                variable = _context3.t3.value;
+                description = null;
+                hasUserGuideEntry = userGuide[group] && userGuide[group][variable];
+                if (hasUserGuideEntry && userGuide[group][variable].description) {
+                  description = userGuide[group][variable].description;
+                } else if (variable['comments'] && variable['comments'].length > 0) {
+                  description = variable['comments'].join("; ");
+                }
+                defaultValue = registry[group][variable].defaultValue;
+                entries = null;
+                _context3.t4 = registry[group][variable].entries;
+                _context3.next = _context3.t4 === "max_domains" ? 33 : _context3.t4 === NamelistInputEditor.entries.single ? 35 : _context3.t4 === NamelistInputEditor.entries.maxEta ? 35 : _context3.t4 === NamelistInputEditor.entries.maxDom ? 35 : _context3.t4 === NamelistInputEditor.entries.maxBogus ? 35 : _context3.t4 === NamelistInputEditor.entries.maxMoves ? 35 : _context3.t4 === NamelistInputEditor.entries.maxOcean ? 35 : _context3.t4 === NamelistInputEditor.entries.maxPressureLevels ? 35 : _context3.t4 === NamelistInputEditor.entries.maxZLevels ? 35 : 37;
+                break;
+              case 33:
+                entries = NamelistInputEditor.entries.maxDom;
+                return _context3.abrupt("break", 39);
+              case 35:
+                entries = registry[group][variable].entries;
+                return _context3.abrupt("break", 39);
+              case 37:
+                console.warn("Unknown variable ".concat(variable, " number entries value ").concat(registry[group][variable].entries));
+                return _context3.abrupt("continue", 23);
+              case 39:
+                if (!(hasUserGuideEntry && userGuide[group][variable].entries !== entries)) {
+                  _context3.next = 54;
+                  break;
+                }
+                _context3.t5 = variable;
+                _context3.next = _context3.t5 === "dx" ? 43 : _context3.t5 === "dy" ? 43 : _context3.t5 === "eta_levels" ? 45 : _context3.t5 === "nssl_alphah" ? 47 : _context3.t5 === "nssl_alphahl" ? 47 : _context3.t5 === "nssl_cnoh" ? 47 : _context3.t5 === "nssl_cnohl" ? 47 : _context3.t5 === "nssl_cnor" ? 47 : _context3.t5 === "nssl_cnos" ? 47 : _context3.t5 === "nssl_rho_qh" ? 47 : _context3.t5 === "nssl_rho_qs" ? 47 : _context3.t5 === "topo_wind" ? 49 : _context3.t5 === "gph" ? 49 : _context3.t5 === "max_obs" ? 51 : 53;
+                break;
+              case 43:
+                entries = NamelistInputEditor.entries.single;
+                return _context3.abrupt("break", 54);
+              case 45:
+                entries = NamelistInputEditor.entries.maxEta;
+                return _context3.abrupt("break", 54);
+              case 47:
+                entries = NamelistInputEditor.entries.single;
+                return _context3.abrupt("break", 54);
+              case 49:
+                entries = NamelistInputEditor.entries.maxDom;
+                return _context3.abrupt("break", 54);
+              case 51:
+                entries = NamelistInputEditor.entries.single;
+                return _context3.abrupt("break", 54);
+              case 53:
+                console.warn("Variable ".concat(variable, " number of entries differ between registry ").concat(entries, " and users guide ").concat(userGuide[group][variable].entries));
+              case 54:
+                this.variables[group][variable] = {
+                  type: registry[group][variable].type,
+                  defaultValue: defaultValue,
+                  description: description,
+                  entries: entries
+                };
+                if (selectValues[group] && selectValues[group][variable] && selectValues[group][variable].values) {
+                  this.variables[group][variable].type = NamelistInputEditor.variableTypes.selection;
+                  this.variables[group][variable]['values'] = selectValues[group][variable].values;
+                }
+                if (group in NamelistInputEditor._dateTimePickers && variable in NamelistInputEditor._dateTimePickers[group]) {
+                  this.variables[group][variable].type = NamelistInputEditor.variableTypes.datetime;
+                }
+                _context3.next = 23;
+                break;
+              case 59:
+                _context3.next = 19;
+                break;
+              case 61:
+                for (_group in manual) {
+                  this.variables[_group] = (_this$variables$_grou = this.variables[_group]) !== null && _this$variables$_grou !== void 0 ? _this$variables$_grou : {};
+                  for (_variable in manual[_group]) {
+                    this.variables[_group][_variable] = manual[_group][_variable];
+                  }
+                }
+                allVariables = {};
+                for (_i8 = 0, _Object$entries2 = Object.entries(this.variables); _i8 < _Object$entries2.length; _i8++) {
+                  _Object$entries2$_i = _slicedToArray(_Object$entries2[_i8], 2), _Object$entries2$_i[0], _group2 = _Object$entries2$_i[1];
+                  Object.keys(_group2).forEach(function (key) {
+                    allVariables[key] = null;
+                  });
+                }
+                _context3.t6 = _regeneratorRuntime().keys(readme);
+              case 65:
+                if ((_context3.t7 = _context3.t6()).done) {
+                  _context3.next = 84;
+                  break;
+                }
+                _group3 = _context3.t7.value;
+                if (!(_group3 in this.variables)) {
+                  console.warn("README.namelist group ".concat(_group3, " not found in WRF registry files"));
+                }
+                _context3.t8 = _regeneratorRuntime().keys(readme[_group3]);
+              case 69:
+                if ((_context3.t9 = _context3.t8()).done) {
+                  _context3.next = 82;
+                  break;
+                }
+                _variable2 = _context3.t9.value;
+                _context3.t10 = _variable2;
+                _context3.next = _context3.t10 === "io_style_emiss" ? 74 : _context3.t10 === "inputout_begin_mo" ? 75 : _context3.t10 === "inputout_end_mo" ? 75 : _context3.t10 === "ntiedtke_dx_opt" ? 76 : 77;
+                break;
+              case 74:
+                return _context3.abrupt("continue", 69);
+              case 75:
+                return _context3.abrupt("continue", 69);
+              case 76:
+                return _context3.abrupt("continue", 69);
+              case 77:
+                if (_variable2 in allVariables) {
+                  _context3.next = 80;
+                  break;
+                }
+                console.warn("README.namelist variable ".concat(_variable2, " not found in WRF registry files"));
+                return _context3.abrupt("continue", 69);
+              case 80:
+                _context3.next = 69;
+                break;
+              case 82:
+                _context3.next = 65;
+                break;
+              case 84:
+                // set default values for variables with missing or invalid default value in auto-generated JSON data
+
+                // time_step default value not set in registry
+                this._setDefaultValue("domains", "time_step", 60);
+                for (groupName in userGuide) {
+                  this.userGuideLinks[groupName] = "https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html#".concat(groupName.replace("_", "-"));
+                }
+
+                // construct ignore variable lookup hash table
+                this._ignoreVariables = {};
+                _iterator = _createForOfIteratorHelper(NamelistInputEditor._ignoreVariables);
+                try {
+                  for (_iterator.s(); !(_step = _iterator.n()).done;) {
+                    _variableName = _step.value;
+                    if (!(_variableName in this._ignoreVariables)) {
+                      this._ignoreVariables[_variableName] = null;
+                    }
+                  }
+                } catch (err) {
+                  _iterator.e(err);
+                } finally {
+                  _iterator.f();
+                }
+                this._variableSubstitutes = {};
+                for (_i9 = 0, _Object$values3 = Object.values(NamelistInputEditor._dateTimePickers); _i9 < _Object$values3.length; _i9++) {
+                  groupDateTimePickers = _Object$values3[_i9];
+                  for (_i10 = 0, _Object$entries3 = Object.entries(groupDateTimePickers); _i10 < _Object$entries3.length; _i10++) {
+                    _Object$entries3$_i = _slicedToArray(_Object$entries3[_i10], 2), dateTimePickerVariableName = _Object$entries3$_i[0], dateTimePicker = _Object$entries3$_i[1];
+                    for (_i11 = 0, _Object$values4 = Object.values(dateTimePicker.variables); _i11 < _Object$values4.length; _i11++) {
+                      variableName = _Object$values4[_i11];
+                      if (typeof variableName === 'string' && !(variableName in this._ignoreVariables) && variableName !== dateTimePickerVariableName) {
+                        this._ignoreVariables[variableName] = null;
+                        this._variableSubstitutes[variableName] = dateTimePickerVariableName;
+                      }
+                    }
+                  }
+                }
+                if (typeof this.options.onInitialize === 'function') {
+                  this.options.onInitialize.call(this, {
+                    sender: this,
+                    variables: this.variables
+                  });
+                }
+
+                //set conditional values
+                this.dependencyMap = {};
+                // num_urban_ndm                       = 1! (=  2 if BEP or BEM active) maximum number of street dimensions (ndm in BEP or BEM header)
+                // num_urban_ng                        = 1! (= 10 if BEP or BEM active) number of grid levels in the ground (ng_u in BEP or BEM header)
+                // num_urban_nwr                       = 1! (= 10 if BEP or BEM active) number of grid levels in the walls or roof (nwr_u in BEP or BEM header)
+                // num_urban_nz                        = 1! (= 18 if BEP or BEM active) maximum number of vertical levels in the urban grid (nz_um in BEP or BEM header)
+                // num_urban_ngb                       = 1! (= 10 if BEM active)        number of grid levels in the ground below building (ngb_u in BEM header)
+                // num_urban_nf                        = 1! (= 10 if BEM active)        number of grid levels in the floors (nf_u in BEM header)
+                // num_urban_nbui                      = 1! (= 15 if BEM active)        maximum number of types of buildings in an urban class (nbui_max in BEM header)
+                this.dependencyMap['physics'] = {};
+                this.dependencyMap['physics']['sf_urban_physics'] = {
+                  updates: ['num_urban_ndm', 'num_urban_ng', 'num_urban_nwr', 'num_urban_nz', 'num_urban_ngb', 'num_urban_nf', 'num_urban_nbui']
+                };
+                this.variables['physics']['num_urban_ndm'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 2;
+                  }
+                  return 1;
+                };
+                this.variables['physics']['num_urban_ng'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 10;
+                  }
+                  return 1;
+                };
+                this.variables['physics']['num_urban_nwr'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 10;
+                  }
+                  return 1;
+                };
+                this.variables['physics']['num_urban_nz'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 18;
+                  }
+                  return 1;
+                };
+                this.variables['physics']['num_urban_ngb'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 10;
+                  }
+                  return 1;
+                };
+                this.variables['physics']['num_urban_nf'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 10;
+                  }
+                  return 1;
+                };
+                this.variables['physics']['num_urban_nbui'].defaultValue = function () {
+                  var sf_urban_physics = _this5.getValue('physics', 'sf_urban_physics')[0];
+                  if (sf_urban_physics === 2 || sf_urban_physics === 3) {
+                    return 15;
+                  }
+                  return 1;
+                };
+              case 102:
+              case "end":
+                return _context3.stop();
+            }
+          }, _callee3, this);
+        }));
+        function _initVariablesAsync() {
+          return _initVariablesAsync2.apply(this, arguments);
+        }
+        return _initVariablesAsync;
+      }() // load a JSON config file
+    }, {
+      key: "_loadJsonAsync",
+      value: function () {
+        var _loadJsonAsync2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(filename) {
+          var jsonUrl, response;
+          return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+            while (1) switch (_context4.prev = _context4.next) {
+              case 0:
+                jsonUrl = "".concat(this.options.jsonBaseUrl, "/").concat(filename);
+                _context4.next = 3;
+                return fetch(jsonUrl);
+              case 3:
+                response = _context4.sent;
+                _context4.next = 6;
+                return response.json();
+              case 6:
+                return _context4.abrupt("return", _context4.sent);
+              case 7:
+              case "end":
+                return _context4.stop();
+            }
+          }, _callee4, this);
+        }));
+        function _loadJsonAsync(_x5) {
+          return _loadJsonAsync2.apply(this, arguments);
+        }
+        return _loadJsonAsync;
+      }() // set variable definition default value
+    }, {
+      key: "_setDefaultValue",
+      value: function _setDefaultValue(group, variable, defaultValue) {
+        this.variables[group][variable].defaultValue = defaultValue;
+      }
+    }, {
+      key: "_getDefaultValue",
+      value: function _getDefaultValue(group, variable) {
+        switch (_typeof(this.variables[group][variable].defaultValue)) {
+          case "function":
+            return this.variables[group][variable].defaultValue.call(this);
+          default:
+            return this.variables[group][variable].defaultValue;
+        }
+      }
+      // create editor HTML
+    }, {
+      key: "_initEditorFields",
+      value: function _initEditorFields(options) {
+        var editorOptions = {};
+        if (options) {
+          editorOptions = Object.assign(editorOptions, options);
+        }
+        if (typeof editorOptions.hideUnsetGroups === 'boolean') {
+          this.view.hideUnsetGroups = editorOptions.hideUnsetGroups;
+        } else {
+          var _this$view$hideUnsetG;
+          this.view.hideUnsetGroups = (_this$view$hideUnsetG = this.view.hideUnsetGroups) !== null && _this$view$hideUnsetG !== void 0 ? _this$view$hideUnsetG : true;
+        }
+        for (var _i12 = 0, _Object$entries4 = Object.entries(this.variables); _i12 < _Object$entries4.length; _i12++) {
+          var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i12], 2),
+            groupName = _Object$entries4$_i[0],
+            groupVariables = _Object$entries4$_i[1];
+          if (Object.keys(groupVariables).length === 0) {
+            continue;
+          }
+          this._initVariableGroup(groupName, groupVariables, editorOptions);
+        }
+        $(this.container).find('*[title]').tooltip();
+        this._storeView();
+        this._updateGroupView();
+      }
+
+      // collapse icons
+    }, {
+      key: "_initVariableGroup",
+      value:
+      // create group variables 
+      function _initVariableGroup(groupName, groupVariables, editorOptions) {
+        var _this$view$groups,
+          _this$view$groups$gro,
+          _this6 = this,
+          _this$namelist$groupN;
+        var groupDiv = this._append(this.container, 'div');
+        groupDiv.classList.add('namelist-input-group');
+        if (this.view.hideUnsetGroups === true) {
+          groupDiv.classList.add('namelist-input-hide-unset');
+        }
+        groupDiv.dataset['group'] = groupName;
+
+        // initialize group view
+        this.view.groups = (_this$view$groups = this.view.groups) !== null && _this$view$groups !== void 0 ? _this$view$groups : {};
+        this.view.groups[groupName] = (_this$view$groups$gro = this.view.groups[groupName]) !== null && _this$view$groups$gro !== void 0 ? _this$view$groups$gro : {};
+        if (typeof editorOptions.collapseGroups === 'boolean') {
+          this.view.groups[groupName].collapse = editorOptions.collapseGroups;
+        } else {
+          var _this$view$groups$gro2;
+          this.view.groups[groupName].collapse = (_this$view$groups$gro2 = this.view.groups[groupName].collapse) !== null && _this$view$groups$gro2 !== void 0 ? _this$view$groups$gro2 : false;
+        }
+        if (typeof editorOptions.hideUnsetVariables === 'boolean') {
+          this.view.groups[groupName].hideUnsetVariables = editorOptions.hideUnsetVariables;
+        } else {
+          var _this$view$groups$gro3;
+          this.view.groups[groupName].hideUnsetVariables = (_this$view$groups$gro3 = this.view.groups[groupName].hideUnsetVariables) !== null && _this$view$groups$gro3 !== void 0 ? _this$view$groups$gro3 : true;
+        }
+        var iconClass = this.view.groups[groupName].collapse === true ? NamelistInputEditor.iconClass.collapsed : NamelistInputEditor.iconClass.open;
+        var headerDiv = this._append(groupDiv, 'div');
+        headerDiv.classList.add('namelist-input-group-header');
+        var headerDivHtml = '';
+
+        // collapse toggle
+        headerDivHtml = headerDivHtml + "<button class=\"btn btn-sm\" type=\"button\" data-toggle=\"collapse\" data-target=\"#".concat(groupName, "\" aria-expanded=\"false\" aria-controls=\"").concat(groupName, "\"><i class=\"fas ").concat(iconClass, "\"></i></button>");
+
+        // group title
+        headerDivHtml = headerDivHtml + "<h5>".concat(htmlEncode(groupName), "</h5>");
+
+        // number of set variables
+        headerDivHtml = headerDivHtml + '<span class="badge badge-pill namelist-input-set-variable-count" style="display: none;" title="Number of variables set in this group"></span>';
+
+        // users guide link
+        if (groupName in this.userGuideLinks) {
+          headerDivHtml = headerDivHtml + "<a href=\"".concat(htmlEncode(this.userGuideLinks[groupName]), "\" target=\"_blank\" class=\"namelist-input-variables-user-guide-link ml-3\" title=\"Open WRF User's Guide page for this group in a new tab\"><i class=\"fas fa-info-circle\"></i></a>");
+        }
+
+        // hide unset switch
+        headerDivHtml = headerDivHtml + '<div class="namelist-input-group-header-switch">';
+        headerDivHtml = headerDivHtml + '<label class="switch ml-2">';
+        headerDivHtml = headerDivHtml + "<input type=\"checkbox\" name=\"switch-hide-unset\" id=\"switch-hide-unset-".concat(htmlEncode(groupName), "\"");
+        if (this.view.groups[groupName].hideUnsetVariables === true) {
+          headerDivHtml = headerDivHtml + ' checked';
+        }
+        headerDivHtml = headerDivHtml + '><span class="slider round"></span>';
+        headerDivHtml = headerDivHtml + '</label>';
+        headerDivHtml = headerDivHtml + '<span>Hide Unset</span>';
+        headerDivHtml = headerDivHtml + '</div>';
+        headerDiv.innerHTML = headerDivHtml;
+        headerDiv.querySelector('button[data-toggle="collapse"]').addEventListener('click', function (e) {
+          var icon = e.currentTarget.querySelector('i');
+          var groupName = e.currentTarget.dataset['target'].replace('#', '');
+          if (icon.classList.contains(NamelistInputEditor.iconClass.open)) {
+            icon.classList.remove(NamelistInputEditor.iconClass.open);
+            icon.classList.add(NamelistInputEditor.iconClass.collapsed);
+            _this6.view.groups[groupName].collapse = true;
+          } else {
+            icon.classList.remove(NamelistInputEditor.iconClass.collapsed);
+            icon.classList.add(NamelistInputEditor.iconClass.open);
+            _this6.view.groups[groupName].collapse = false;
+          }
+          _this6._storeView();
+        });
+        headerDiv.querySelector("input#switch-hide-unset-".concat(groupName)).addEventListener('change', function (e) {
+          var group = e.currentTarget.closest('.namelist-input-group');
+          var groupName = group.dataset['group'];
+          var variables = group.querySelector('div.namelist-input-variables');
+          _this6.view.groups[groupName].hideUnsetVariables = e.currentTarget.checked;
+          if (e.currentTarget.checked === true) {
+            variables.classList.add('namelist-input-hide-unset');
+          } else {
+            variables.classList.remove('namelist-input-hide-unset');
+          }
+          _this6._storeView();
+        });
+        this.namelist[groupName] = (_this$namelist$groupN = this.namelist[groupName]) !== null && _this$namelist$groupN !== void 0 ? _this$namelist$groupN : {};
+        this._appendGroupVariableFields(groupDiv, groupName, groupVariables);
+      }
+    }, {
+      key: "_updateGroupView",
+      value: function _updateGroupView() {
+        this.container.querySelectorAll('div.namelist-input-group').forEach(function (group) {
+          var count = group.querySelectorAll('div.namelist-input-variable:not(.namelist-input-variable-unset)').length;
+          var badge = group.querySelector('div.namelist-input-group-header span.namelist-input-set-variable-count');
+          if (count > 0) {
+            badge.innerText = count;
+            badge.style.display = null;
+            group.classList.remove('namelist-input-group-unset');
+          } else {
+            badge.innerText = '0';
+            badge.style.display = 'none';
+            group.classList.add('namelist-input-group-unset');
+          }
+        });
+      }
+
+      // capture variable group collapse state
+    }, {
+      key: "_storeView",
+      value: function _storeView() {
+        localStorage.setItem("".concat(NamelistInputEditor._localStorageKey, "_view"), JSON.stringify(this.view));
+      }
+
+      // create and append group variables
+    }, {
+      key: "_appendGroupVariableFields",
+      value: function _appendGroupVariableFields(groupDiv, groupName, groupVariables) {
+        var variablesDiv = this._append(groupDiv, 'div');
+        variablesDiv.classList.add('namelist-input-variables');
+        variablesDiv.classList.add('collapse');
+        if (this.view.groups[groupName].collapse === false) {
+          variablesDiv.classList.add('show');
+        }
+        if (this.view.groups[groupName].hideUnsetVariables) {
+          variablesDiv.classList.add('namelist-input-hide-unset');
+        }
+        variablesDiv.id = groupName;
+        for (var _i13 = 0, _Object$entries5 = Object.entries(groupVariables); _i13 < _Object$entries5.length; _i13++) {
+          var _Object$entries5$_i = _slicedToArray(_Object$entries5[_i13], 2),
+            variableName = _Object$entries5$_i[0],
+            variable = _Object$entries5$_i[1];
+          this._appendVariableField(variablesDiv, groupName, variableName, variable);
+        }
+      }
+
+      // create and append variable input fields
+    }, {
+      key: "_appendVariableField",
+      value: function _appendVariableField(variablesDiv, groupName, variableName, variable) {
+        var _this7 = this;
+        if (variableName in this._ignoreVariables) {
+          console.debug("Skipping ignored variable ".concat(variableName));
+          return;
+        }
+        console.debug("Creating variable ".concat(variableName, " input"));
+        var variableDiv = this._append(variablesDiv, 'div');
+        variableDiv.classList.add('namelist-input-variable');
+        variableDiv.dataset['default'] = this._getDefaultValue(groupName, variableName);
+        variableDiv.dataset['variable'] = variableName;
+        var isSet = this._isNamelistValueSet(groupName, variableName);
+        var readOnly = this._isReadOnly(groupName, variableName);
+        var namelistGroup = this.namelist[groupName];
+        if (isSet === false) {
+          variableDiv.classList.add('namelist-input-variable-unset');
+        }
+        var html = '';
+
+        //<div class="input-group input-group-sm">';
+        //html += '<div class="input-group-prepend">';
+
+        // erase button HTML
+        html += '<button class="btn btn-sm btn-outline-secondary btn-namelist-input-erase" type="button"';
+        if (readOnly === true) {
+          variableDiv.classList.add('namelist-input-variable-readonly');
+          html += ' disabled';
+        }
+        html += '><i class="fas fa-eraser"></i></button>';
+
+        // variable name HTML
+        html += '<div class="namelist-input-variable-name">';
+        switch (variable.type) {
+          case NamelistInputEditor.variableTypes.datetime:
+            if (NamelistInputEditor._dateTimePickers[groupName][variableName].title) {
+              html += htmlEncode(NamelistInputEditor._dateTimePickers[groupName][variableName].title);
+            }
+            break;
+          default:
+            html += htmlEncode(variableName);
+            break;
+        }
+        html += '</div>';
+
+        // variable input field(s) HTML
+        switch (variable.entries) {
+          case NamelistInputEditor.entries.maxDom:
+            for (var i = 0; i < this.max_dom; i++) {
+              html += this._getInputFieldHtml(variableName, variable, isSet ? namelistGroup[variableName][i] : this._getDefaultValue(groupName, variableName), readOnly, i);
+            }
+            break;
+          case NamelistInputEditor.entries.single:
+            html += this._getInputFieldHtml(variableName, variable, isSet ? namelistGroup[variableName] : this._getDefaultValue(groupName, variableName), readOnly, null);
+            break;
+          case NamelistInputEditor.entries.maxEta:
+            break;
+        }
+
+        // variable description HTML
+        switch (variable.type) {
+          case NamelistInputEditor.variableTypes.datetime:
+            if (NamelistInputEditor._dateTimePickers[groupName][variableName].description) {
+              html += '<div class="namelist-input-variable-description">';
+              html += htmlEncode(NamelistInputEditor._dateTimePickers[groupName][variableName].description);
+              html += " (".concat(Object.values(NamelistInputEditor._dateTimePickers[groupName][variableName].variables).join(', '), ")");
+              html += '</div>';
+            }
+            break;
+          default:
+            if (variable.description) {
+              html += '<div class="namelist-input-variable-description">';
+              html += htmlEncode(variable.description);
+              html += '</div>';
+            }
+            break;
+        }
+        html += '</div>';
+        variableDiv.innerHTML = html;
+        if (readOnly === true) {
+          return;
+        }
+
+        // configure erase button click event handler
+        variableDiv.querySelector('button.btn-namelist-input-erase').addEventListener('click', function (e) {
+          var variableDiv = e.currentTarget.closest('div.namelist-input-variable');
+          var groupName = variableDiv.closest('div.namelist-input-group').dataset['group'];
+          var variableName = variableDiv.dataset['variable'];
+          variableDiv.classList.add('namelist-input-variable-unset');
+          switch (_this7.variables[groupName][variableName].type) {
+            case NamelistInputEditor.variableTypes.datetime:
+              for (var key in NamelistInputEditor._dateTimePickers[groupName][variableName].variables) {
+                _this7.namelist[groupName][NamelistInputEditor._dateTimePickers[groupName][variableName].variables[key]] = null;
+              }
+              _this7._dateTimePickers[groupName][variableName].forEach(function (dateTimePicker, index) {
+                dateTimePicker.valueUtc = _this7._getNamelistDateTimeValueUtc(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables, index);
+              });
+              break;
+            default:
+              _this7.namelist[groupName][variableName] = null;
+              _this7._updateVariableFieldValue(groupName, variableName);
+              _this7._updateDependentVariables(groupName, variableName);
+              break;
+          }
+          _this7._fireChange(groupName, variableName);
+        });
+
+        // configure variable input fields event listeners
+        switch (variable.type) {
+          case NamelistInputEditor.variableTypes.selection:
+            this._addVariableFieldListeners(variableDiv, 'select', variableName, 'change', function (select) {
+              return parseInt(select.value);
+            });
+            break;
+          case NamelistInputEditor.variableTypes.logical:
+            this._addVariableFieldListeners(variableDiv, 'input', variableName, 'change', function (input) {
+              return input.checked;
+            });
+            break;
+          case NamelistInputEditor.variableTypes.integer:
+            this._addVariableFieldListeners(variableDiv, 'input', variableName, 'change', function (input) {
+              return parseInt(input.value);
+            });
+            break;
+          case NamelistInputEditor.variableTypes.real:
+            this._addVariableFieldListeners(variableDiv, 'input', variableName, 'change', function (input) {
+              return parseFloat(input.value);
+            });
+            break;
+          case NamelistInputEditor.variableTypes.character:
+            this._addVariableFieldListeners(variableDiv, 'input', variableName, 'change', function (input) {
+              return input.value;
+            });
+            break;
+          case NamelistInputEditor.variableTypes.datetime:
+            variableDiv.querySelectorAll('div.namelist-input-datetime-picker').forEach(function (div, index) {
+              var _this7$_dateTimePicke, _this7$_dateTimePicke2;
+              var dateTimePicker = new NamelistDateTimePicker(div, {
+                onChange: function onChange(e) {
+                  var variableDiv = e.sender.widget.closest('div.namelist-input-variable');
+                  var variableName = variableDiv.dataset['variable'];
+                  var groupName = variableDiv.closest('div.namelist-input-group').dataset['group'];
+                  variableDiv.classList.remove('namelist-input-variable-unset');
+                  switch (_this7.variables[groupName][variableName].entries) {
+                    case NamelistInputEditor.entries.single:
+                      {
+                        var valueUtc = _this7._dateTimePickers[groupName][variableName][0].valueUtc;
+                        for (var key in NamelistInputEditor._dateTimePickers[groupName][variableName].variables) {
+                          _this7._setNamelistValue(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables[key], valueUtc[key]);
+                        }
+                      }
+                      break;
+                    case NamelistInputEditor.entries.maxDom:
+                      {
+                        var valuesUtc = _this7._dateTimePickers[groupName][variableName].map(function (x) {
+                          return x.valueUtc;
+                        });
+                        for (var key in NamelistInputEditor._dateTimePickers[groupName][variableName].variables) {
+                          _this7._setNamelistValue(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables[key], valuesUtc.map(function (x) {
+                            return x[key];
+                          }));
+                        }
+                      }
+                      break;
+                  }
+                  _this7._fireChange(groupName, variableName);
+                },
+                displayTimeZone: _this7.options.timeZone,
+                valueUtc: _this7._getNamelistDateTimeValueUtc(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables, index)
+              });
+              _this7._dateTimePickers[groupName] = (_this7$_dateTimePicke = _this7._dateTimePickers[groupName]) !== null && _this7$_dateTimePicke !== void 0 ? _this7$_dateTimePicke : {};
+              _this7._dateTimePickers[groupName][variableName] = (_this7$_dateTimePicke2 = _this7._dateTimePickers[groupName][variableName]) !== null && _this7$_dateTimePicke2 !== void 0 ? _this7$_dateTimePicke2 : [];
+              _this7._dateTimePickers[groupName][variableName].push(dateTimePicker);
+            });
+            break;
+        }
+      }
+    }, {
+      key: "_getNamelistDateTimeValueUtc",
+      value: function _getNamelistDateTimeValueUtc(groupName, dateTimeVariables, index) {
+        return {
+          year: this._getNamelistVariableValue(groupName, dateTimeVariables.year, this.variables[groupName][dateTimeVariables.year], index),
+          month: this._getNamelistVariableValue(groupName, dateTimeVariables.month, this.variables[groupName][dateTimeVariables.month], index),
+          day: this._getNamelistVariableValue(groupName, dateTimeVariables.day, this.variables[groupName][dateTimeVariables.day], index),
+          hour: this._getNamelistVariableValue(groupName, dateTimeVariables.hour, this.variables[groupName][dateTimeVariables.hour], index),
+          minute: this._getNamelistVariableValue(groupName, dateTimeVariables.minute, this.variables[groupName][dateTimeVariables.minute], index),
+          second: dateTimeVariables.second ? this._getNamelistVariableValue(groupName, dateTimeVariables.second, this.variables[groupName][dateTimeVariables.second], index) : null
+        };
+      }
+    }, {
+      key: "_getNamelistVariableValue",
+      value: function _getNamelistVariableValue(groupName, variableName, variable, index) {
+        if (this._isNamelistValueSet(groupName, variableName) === true) {
+          switch (variable.entries) {
+            case NamelistInputEditor.entries.maxDom:
+              return this.namelist[groupName][variableName][index];
+            case NamelistInputEditor.entries.single:
+              return this.namelist[groupName][variableName];
+          }
+        }
+        return this._getDefaultValue(groupName, variableName);
+      }
+    }, {
+      key: "getValue",
+      value: function getValue(groupName, variableName) {
+        if (this._isNamelistValueSet(groupName, variableName) === true) {
+          return this.namelist[groupName][variableName];
+        }
+        return this._getDefaultValue(groupName, variableName);
+      }
+
+      // set variable input fields value from current namelist object
+    }, {
+      key: "_updateVariableFieldValue",
+      value: function _updateVariableFieldValue(groupName, variableName) {
+        var variable = this.variables[groupName][variableName];
+        var isSet = this._isNamelistValueSet(groupName, variableName);
+        switch (variable.entries) {
+          case NamelistInputEditor.entries.maxDom:
+            for (var i = 0; i < this.max_dom; i++) {
+              this._setInputFieldValue(groupName, variableName, variable, isSet ? this.namelist[groupName][variableName][i] : this._getDefaultValue(groupName, variableName), i);
+            }
+            break;
+          case NamelistInputEditor.entries.single:
+            this._setInputFieldValue(groupName, variableName, variable, isSet ? this.namelist[groupName][variableName] : this._getDefaultValue(groupName, variableName), null);
+            break;
+          case NamelistInputEditor.entries.maxEta:
+            break;
+        }
+      }
+
+      // set variable input fields value
+    }, {
+      key: "_setInputFieldValue",
+      value: function _setInputFieldValue(groupName, variableName, variable, value, index) {
+        var fieldId = this._getInputFieldId(variableName, index);
+        switch (variable.type) {
+          case NamelistInputEditor.variableTypes.selection:
+            document.querySelector("select#".concat(fieldId)).value = value;
+            break;
+          case NamelistInputEditor.variableTypes.logical:
+            document.querySelector("input#".concat(fieldId)).checked = value;
+            break;
+          case NamelistInputEditor.variableTypes.integer:
+          case NamelistInputEditor.variableTypes.real:
+          case NamelistInputEditor.variableTypes.character:
+            document.querySelector("input#".concat(fieldId)).value = value;
+            break;
+          case NamelistInputEditor.variableTypes.datetime:
+            var dateTimePicker = this._dateTimePickers[groupName][variableName][index !== null && index !== void 0 ? index : 0];
+            dateTimePicker.valueUtc = this._getNamelistDateTimeValueUtc(groupName, NamelistInputEditor._dateTimePickers[groupName][variableName].variables, index);
+            break;
+        }
+      }
+
+      // configure event listeners for variable input fields
+    }, {
+      key: "_addVariableFieldListeners",
+      value: function _addVariableFieldListeners(variableDiv, fieldTag, variableName, eventType, getFieldValue) {
+        var _this8 = this;
+        variableDiv.querySelectorAll("".concat(fieldTag, "[name=\"").concat(variableName, "\"]")).forEach(function (field) {
+          field.addEventListener(eventType, function (e) {
+            var variableName = e.currentTarget.name;
+            var variableDiv = document.querySelector("div.namelist-input-variable[data-variable=\"".concat(variableName, "\"]"));
+            var groupName = variableDiv.closest('div.namelist-input-group').dataset['group'];
+            variableDiv.classList.remove('namelist-input-variable-unset');
+            switch (_this8.variables[groupName][variableName].entries) {
+              case NamelistInputEditor.entries.single:
+                _this8._setNamelistValue(groupName, variableName, getFieldValue.call(_this8, e.currentTarget));
+                break;
+              case NamelistInputEditor.entries.maxDom:
+                _this8._setNamelistValue(groupName, variableName, _this8._listVariableFields(groupName, variableName, fieldTag).map(function (input) {
+                  return getFieldValue.call(_this8, input);
+                }));
+                break;
+            }
+            _this8._updateDependentVariables(groupName, variableName);
+            _this8._fireChange(groupName, variableName);
+          });
+        });
+      }
+    }, {
+      key: "_updateDependentVariables",
+      value: function _updateDependentVariables(groupName, variableName) {
+        var _this9 = this;
+        if (groupName in this.dependencyMap && variableName in this.dependencyMap[groupName]) {
+          if (Array.isArray(this.dependencyMap[groupName][variableName].updates)) {
+            this.dependencyMap[groupName][variableName].updates.forEach(function (dependent) {
+              _this9._updateVariableFieldValue(groupName, dependent);
+            });
+          }
+        }
+      }
+
+      // fire change event
+    }, {
+      key: "_fireChange",
+      value: function _fireChange(groupName, variableName) {
+        if (typeof this.options.change === 'function') {
+          this.options.change.call(this, {
+            group: groupName,
+            variable: variableName
+          });
+        }
+        this._updateGroupView();
+      }
+
+      // select variable input fields and return them as an array
+    }, {
+      key: "_listVariableFields",
+      value: function _listVariableFields(groupName, variableName, fieldTag) {
+        var inputFields = [];
+        document.querySelectorAll("div.namelist-input-group[data-group=\"".concat(groupName, "\"] div.namelist-input-variable[data-variable=\"").concat(variableName, "\"] ").concat(fieldTag, "[name=").concat(variableName, "]")).forEach(function (input) {
+          inputFields.push(input);
+        });
+        return inputFields;
+      }
+
+      // get variable input field ID
+    }, {
+      key: "_getInputFieldId",
+      value: function _getInputFieldId(variableName, index) {
+        if (index !== null) {
+          return "".concat(variableName, "_").concat(index);
+        }
+        return variableName;
+      }
+
+      // generate variable input field HTML
+    }, {
+      key: "_getInputFieldHtml",
+      value: function _getInputFieldHtml(variableName, variable, value, readOnly, index) {
+        if (value === undefined || value === null) {
+          throw new Error("Variable ".concat(variableName, " value is not defined"));
+        }
+        var html = '<div class="namelist-input-variable-value">';
+        var fieldId = htmlEncode(this._getInputFieldId(variableName, index));
+        var fieldName = htmlEncode(variableName);
+        switch (variable.type) {
+          case NamelistInputEditor.variableTypes.selection:
+            html = html + "<select class=\"form-control form-control-sm\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"").concat(readOnly ? " readonly" : "", " required>");
+            for (var _i14 = 0, _Object$entries6 = Object.entries(variable['values']); _i14 < _Object$entries6.length; _i14++) {
+              var _Object$entries6$_i = _slicedToArray(_Object$entries6[_i14], 2),
+                key = _Object$entries6$_i[0],
+                _value = _Object$entries6$_i[1];
+              html = html + "<option value=\"".concat(key, "\"");
+              if (_value !== null && key.toString() === _value.toString()) {
+                html = html + ' selected';
+              }
+              html = html + ">".concat(key, ": ").concat(_value, "</option>");
+            }
+            html = html + '<select/>';
+            break;
+          case NamelistInputEditor.variableTypes.logical:
+            html = html + '<div class="namelist-input-variable-check">';
+            html = html + '<div class="form-check">';
+            html = html + "<input class=\"form-check-input\" type=\"checkbox\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"");
+            if (readOnly === true) {
+              html = html + ' readonly';
+            }
+            if (value === true) {
+              html = html + ' checked';
+            }
+            html = html + '/>';
+            html = html + '</div>';
+            html = html + '</div>';
+            break;
+          case NamelistInputEditor.variableTypes.integer:
+            html = html + "<input type=\"number\" class=\"form-control form-control-sm\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"");
+            html = html + " value=\"".concat(parseInt(value), "\"");
+            if (readOnly === true) {
+              html = html + ' readonly';
+            }
+            html = html + ' step="1" required/>';
+            break;
+          case NamelistInputEditor.variableTypes.real:
+            html = html + "<input type=\"number\" class=\"form-control form-control-sm\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"");
+            html = html + " value=\"".concat(value.toFixed(this.options.floatDigits), "\"");
+            if (readOnly === true) {
+              html = html + ' readonly';
+            }
+            html = html + ' step="0.001" required/>';
+            break;
+          case NamelistInputEditor.variableTypes.character:
+            html = html + "<input type=\"text\" class=\"form-control form-control-sm\" id=\"".concat(fieldId, "\" name=\"").concat(fieldName, "\"");
+            if (value !== null) {
+              html = html + " value=\"".concat(htmlEncode(value), "\"");
+            }
+            if (readOnly === true) {
+              html = html + ' readonly';
+            }
+            html = html + ' required />';
+            break;
+          case NamelistInputEditor.variableTypes.datetime:
+            html += "<div class=\"input-group input-group-sm namelist-input-datetime-picker\">";
+            html += "<input type=\"text\" class=\"form-control\" id=\"".concat(fieldId, "\"");
+            //html += ' required';
+            html += '>';
+            html += '<div class="input-group-addon input-group-append">';
+            html += '<div class="input-group-text">';
+            html += '<i class="far fa-calendar-alt"></i>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            break;
+          default:
+            throw new Error("Unknown variable data type ".concat(variable.type));
+        }
+        return html + '</div>';
+      }
+
+      // creates and appends a new child HTML element to parent element
+    }, {
+      key: "_append",
+      value: function _append(parent, tagName) {
+        var element = document.createElement(tagName);
+        parent.append(element);
+        return element;
+      }
+    }]);
+  }();
+  _defineProperty(NamelistInputEditor, "entries", _defineProperty(_defineProperty(_defineProperty({
+    maxDom: "max_dom",
+    single: "1",
+    maxEta: "max_eta",
+    maxBogus: "max_bogus",
+    maxMoves: "max_moves",
+    maxOcean: "max_ocean"
+  }, "maxOcean", "max_ocean"), "maxPressureLevels", "max_plevs"), "maxZLevels", "max_zlevs"));
+  _defineProperty(NamelistInputEditor, "variableTypes", {
+    integer: "integer",
+    logical: "logical",
+    real: "real",
+    character: "character",
+    selection: "selection",
+    datetime: "datetime"
+  });
+  _defineProperty(NamelistInputEditor, "_localStorageKey", '_wrf_domain_wizard_namelist_input_editor');
+  _defineProperty(NamelistInputEditor, "_dateTimePickers", {
+    'time_control': {
+      'start_year': {
+        variables: {
+          year: 'start_year',
+          month: 'start_month',
+          day: 'start_day',
+          hour: 'start_hour',
+          minute: 'start_minute',
+          second: 'start_second'
+        },
+        description: 'start time',
+        title: 'start time'
+      },
+      'end_year': {
+        variables: {
+          year: 'end_year',
+          month: 'end_month',
+          day: 'end_day',
+          hour: 'end_hour',
+          minute: 'end_minute',
+          second: 'end_second'
+        },
+        description: 'end time',
+        title: 'end time'
+      }
+    }
+  });
+  // variable to skip during editor field rendering
+  _defineProperty(NamelistInputEditor, "_ignoreVariables", ['julyr', 'julday', 'gmt']);
+  _defineProperty(NamelistInputEditor, "collpaseCommands", {
+    hide: 'hide',
+    show: 'show'
+  });
+  _defineProperty(NamelistInputEditor, "iconClass", {
+    collapsed: 'fa-chevron-right',
+    open: 'fa-chevron-down'
+  });
+
+  var NamelistInputDialog = /*#__PURE__*/function () {
+    function NamelistInputDialog(options) {
+      var _this = this;
+      _classCallCheck(this, NamelistInputDialog);
+      this.modal = document.getElementById('namelist-input-dialog');
+      this.header = this.modal.querySelector('div.modal-header');
+      this.body = this.modal.querySelector('div.modal-body');
+      this.footer = this.modal.querySelector('div.modal-footer');
+      this.editor = new NamelistInputEditor(this.body.querySelector('div#namelist-input-container'), Object.assign({
+        change: function change(e) {
+          _this._updateText();
+        },
+        timeZone: null,
+        onInitialize: function onInitialize(e) {
+          var goToGroup = _this.header.querySelector('select#go-to-group');
+          var goToVariable = _this.header.querySelector('select#go-to-variable');
+          var groups = [];
+          var variables = [];
+          for (var _i = 0, _Object$keys = Object.keys(e.variables); _i < _Object$keys.length; _i++) {
+            var groupName = _Object$keys[_i];
+            groups.push(groupName);
+            for (var _i2 = 0, _Object$keys2 = Object.keys(e.variables[groupName]); _i2 < _Object$keys2.length; _i2++) {
+              var variableName = _Object$keys2[_i2];
+              variables.push(variableName);
+            }
+          }
+          groups.sort();
+          variables.sort();
+          for (var _i3 = 0, _groups = groups; _i3 < _groups.length; _i3++) {
+            var _groupName = _groups[_i3];
+            var option = document.createElement('option');
+            option.value = _groupName;
+            option.innerText = _groupName;
+            goToGroup.append(option);
+          }
+          for (var _i4 = 0, _variables = variables; _i4 < _variables.length; _i4++) {
+            var _variableName = _variables[_i4];
+            var _option = document.createElement('option');
+            _option.value = _variableName;
+            _option.innerText = _variableName;
+            goToVariable.append(_option);
+          }
+          $(goToGroup).on('changed.bs.select', function (e) {
+            _this.editor.goToGroup(goToGroup.value);
+            goToVariable.value = null;
+            $(goToVariable).selectpicker('refresh');
+          });
+          $(goToGroup).selectpicker();
+          $(goToVariable).on('changed.bs.select', function (e) {
+            _this.editor.goToVariable(goToVariable.value);
+            goToGroup.value = null;
+            $(goToGroup).selectpicker('refresh');
+          });
+          $(goToVariable).selectpicker();
+        }
+      }, options));
+      this.header.querySelector('button#go-to-top').addEventListener('click', function (e) {
+        _this.editor.clearHighlight();
+        _this._scrollToTop();
+      });
+      this.text = this.body.querySelector('div#pane-namelist-input-text textarea');
+      this.original = this.body.querySelector('div#pane-namelist-input-original textarea');
+      this.footer.querySelector('#button-copy').addEventListener('click', function (e) {
+        navigator.clipboard.writeText(_this.editor.toText());
+      });
+      this.footer.querySelector('#button-save').addEventListener('click', function (e) {
+        var blob = new Blob([_this.editor.toText()], {
+          type: "text/plain;charset=utf-8"
+        });
+        saveAs(blob, "namelist.input", {
+          autoBom: true
+        });
+      });
+      this.tabErrors = document.getElementById('tab-namelist-input-errors').parentNode;
+      this.tabOriginal = document.getElementById('tab-namelist-input-original').parentNode;
+      var value = localStorage.getItem("".concat(NamelistInputDialog._localStorageKey, "_view"));
+      if (value) {
+        this.view = JSON.parse(value);
+      } else {
+        this.view = {
+          collapseGroups: false,
+          hideUnsetGroups: true,
+          hideUnsetVariables: true
+        };
+      }
+
+      // group view actions
+      this.viewActions = {
+        collapseGroups: this.header.querySelector('#view-group-collapse-all'),
+        expandGroups: this.header.querySelector('#view-group-expand-all'),
+        showUnsetGroups: this.header.querySelector('#view-group-show-unset'),
+        hideUnsetGroups: this.header.querySelector('#view-group-hide-unset'),
+        showUnsetVariables: this.header.querySelector('#view-variables-show-unset'),
+        hideUnsetVariables: this.header.querySelector('#view-variables-hide-unset')
+      };
+      this.viewActions.collapseGroups.addEventListener('click', function (e) {
+        _this.view.collapseGroups = true;
+        _this.editor.collapseGroups();
+        _this._updateViewMenu();
+      });
+      this.viewActions.expandGroups.addEventListener('click', function (e) {
+        _this.view.collapseGroups = false;
+        _this.editor.expandGroups();
+        _this._updateViewMenu();
+      });
+      this.viewActions.showUnsetGroups.addEventListener('click', function (e) {
+        _this.view.hideUnsetGroups = false;
+        _this.editor.showUnsetGroups();
+        _this._updateViewMenu();
+      });
+      this.viewActions.hideUnsetGroups.addEventListener('click', function (e) {
+        _this.view.hideUnsetGroups = true;
+        _this.editor.hideUnsetGroups();
+        _this._updateViewMenu();
+      });
+
+      // variable view actions
+      this.viewActions.showUnsetVariables.addEventListener('click', function (e) {
+        _this.view.hideUnsetVariables = false;
+        _this.editor.showUnsetVariables();
+        _this._updateViewMenu();
+      });
+      this.viewActions.hideUnsetGroups.addEventListener('click', function (e) {
+        _this.view.hideUnsetVariables = true;
+        _this.editor.hideUnsetVariables();
+        _this._updateViewMenu();
+      });
+      this._updateViewMenu();
+      this.header.querySelector('#view-all').addEventListener('click', function (e) {
+        _this.viewActions.expandGroups.click();
+        _this.viewActions.showUnsetGroups.click();
+        _this.viewActions.showUnsetVariables.click();
+      });
+      this.header.querySelector('#view-min').addEventListener('click', function (e) {
+        _this.viewActions.collapseGroups.click();
+        _this.viewActions.hideUnsetGroups.click();
+        _this.viewActions.hideUnsetVariables.click();
+      });
+      this.header.querySelector('#view-compact').addEventListener('click', function (e) {
+        _this.viewActions.expandGroups.click();
+        _this.viewActions.hideUnsetGroups.click();
+        _this.viewActions.hideUnsetVariables.click();
+      });
+
+      // timezone select
+      var timeZoneSelect = this.header.querySelector('select#select-timezone');
+      listTimeZoneNames().forEach(function (name) {
+        var localTimeZone = getLocalTimeZone();
+        var option = document.createElement('option');
+        option.value = name;
+        option.innerText = name;
+        if (name == localTimeZone) {
+          option.selected = true;
+        }
+        timeZoneSelect.append(option);
+      });
+      $(timeZoneSelect).on('changed.bs.select', function (e) {
+        _this.editor.timeZone = timeZoneSelect.value;
+      });
+    }
+    return _createClass(NamelistInputDialog, [{
+      key: "_scrollToTop",
+      value: function _scrollToTop() {
+        this.body.scrollTop = 0;
+      }
+    }, {
+      key: "_storeView",
+      value: function _storeView() {
+        localStorage.setItem("".concat(NamelistInputDialog._localStorageKey, "_view"), JSON.stringify(this.view));
+      }
+    }, {
+      key: "_updateViewMenu",
+      value: function _updateViewMenu() {
+        if (this.view.collapseGroups === true) {
+          this.viewActions.collapseGroups.classList.add('dropdown-selected');
+          this.viewActions.expandGroups.classList.remove('dropdown-selected');
+        } else {
+          this.viewActions.collapseGroups.classList.remove('dropdown-selected');
+          this.viewActions.expandGroups.classList.add('dropdown-selected');
+        }
+        if (this.view.hideUnsetGroups === true) {
+          this.viewActions.hideUnsetGroups.classList.add('dropdown-selected');
+          this.viewActions.showUnsetGroups.classList.remove('dropdown-selected');
+        } else {
+          this.viewActions.hideUnsetGroups.classList.remove('dropdown-selected');
+          this.viewActions.showUnsetGroups.classList.add('dropdown-selected');
+        }
+        if (this.view.hideUnsetVariables === true) {
+          this.viewActions.hideUnsetVariables.classList.add('dropdown-selected');
+          this.viewActions.showUnsetVariables.classList.remove('dropdown-selected');
+        } else {
+          this.viewActions.hideUnsetVariables.classList.remove('dropdown-selected');
+          this.viewActions.showUnsetVariables.classList.add('dropdown-selected');
+        }
+        this._storeView();
+      }
+    }, {
+      key: "_openDialog",
+      value: function _openDialog() {
+        $(this.modal).modal('show');
+        this._scrollToTop();
+      }
+    }, {
+      key: "openNamelistWpsAsync",
+      value: function () {
+        var _openNamelistWpsAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(namelistWps) {
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) switch (_context.prev = _context.next) {
+              case 0:
+                this._resetTabs();
+                _context.next = 3;
+                return this.editor.openNamelistWpsAsync(namelistWps);
+              case 3:
+                this._updateText();
+                this._openDialog();
+              case 5:
+              case "end":
+                return _context.stop();
+            }
+          }, _callee, this);
+        }));
+        function openNamelistWpsAsync(_x) {
+          return _openNamelistWpsAsync.apply(this, arguments);
+        }
+        return openNamelistWpsAsync;
+      }()
+    }, {
+      key: "openNamelistInputAsync",
+      value: function () {
+        var _openNamelistInputAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data) {
+          var result;
+          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+            while (1) switch (_context2.prev = _context2.next) {
+              case 0:
+                this._resetTabs();
+                this.original.value = data;
+                this.tabOriginal.style['display'] = null;
+                _context2.next = 5;
+                return this.editor.openNamelistInputAsync(data, this.view);
+              case 5:
+                result = _context2.sent;
+                this._openDialog();
+                this._updateText();
+                if (result.hasErrors) {
+                  this._showErrors(result.errors);
+                }
+              case 9:
+              case "end":
+                return _context2.stop();
+            }
+          }, _callee2, this);
+        }));
+        function openNamelistInputAsync(_x2) {
+          return _openNamelistInputAsync.apply(this, arguments);
+        }
+        return openNamelistInputAsync;
+      }()
+    }, {
+      key: "_resetTabs",
+      value: function _resetTabs() {
+        this.tabErrors.style['display'] = 'none';
+        this.tabOriginal.style['display'] = 'none';
+        $('#tab-namelist-input-editor').tab('show');
+      }
+    }, {
+      key: "_updateText",
+      value: function _updateText() {
+        this.text.value = this.editor.toText();
+      }
+    }, {
+      key: "_showErrors",
+      value: function _showErrors(errors) {
+        this.tabErrors.style['display'] = null;
+        this.tabErrors.querySelector('button').innerHTML = "<span class=\"mr-1\">Errors</span><span class=\"badge rounded-pill bg-danger text-white\">".concat(errors.length, "</span>");
+        var list = document.getElementById('pane-namelist-input-errors').querySelector('ul');
+        list.innerHTML = '';
+        errors.forEach(function (error) {
+          var li = document.createElement('li');
+          li.classList.add('list-group-item');
+          li.innerHTML = "<i class=\"fas fa-exclamation-circle text-danger\"></i><span class=\"ml-1\">".concat(error, "</span>");
+          list.append(li);
+        });
+      }
+    }]);
+  }();
+  _defineProperty(NamelistInputDialog, "_localStorageKey", '_wrf_domain_wizard_namelist_input_dialog');
+
   var SidebarDomains = /*#__PURE__*/function () {
     function SidebarDomains(map, sidebar, options) {
       var _this = this;
@@ -11490,8 +13919,9 @@
       var container, wpsNamelist, domain, wpsPanel, newDomainContext;
       var buttonNew, buttonSave, buttonOpen, buttonReset, inputFile, captureImageDialog;
 
-      // defaul settings
+      // default settings
       this.options = {
+        jsonBaseUrl: 'json',
         sampleBaseUrl: 'samples',
         allowAnyFilename: true,
         autoImageView: false
@@ -11605,6 +14035,22 @@
           captureImageDialog.modal('hide');
         });
       });
+      var buttonNamelistInput = container[0].querySelector('button#button-namelist-input');
+      var dialogNamelistInput = new NamelistInputDialog({
+        jsonBaseUrl: this.options.jsonBaseUrl
+      });
+      buttonNamelistInput.addEventListener('click', /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return dialogNamelistInput.openNamelistWpsAsync(domain.getWPSNamelist());
+            case 2:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee);
+      })));
       function removeDomain() {
         if (domain) {
           domain.remove();
@@ -12233,7 +14679,193 @@
     L.DomUtil.addClass(map._container, 'cursor-crosshair');
   });
 
+  var NamelistInputPage = /*#__PURE__*/function () {
+    function NamelistInputPage(options) {
+      var _this = this;
+      _classCallCheck(this, NamelistInputPage);
+      this.loader = document.getElementById('page-loader');
+      this.dialog = new NamelistInputDialog(options);
+      this.githubExampleList = document.getElementById('github-examples');
+      this.buttonOpen = document.getElementById('button-open');
+      this.buttonOpen.addEventListener('click', function (e) {
+        _this.inputFile.value = null;
+        _this.inputFile.click();
+      });
+      this.inputFile = document.getElementById('file-open');
+      this.inputFile.addEventListener('change', function (e) {
+        if (!e.target.files || e.target.files.length == 0) {
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = /*#__PURE__*/function () {
+          var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(e) {
+            return _regeneratorRuntime().wrap(function _callee$(_context) {
+              while (1) switch (_context.prev = _context.next) {
+                case 0:
+                  _context.prev = 0;
+                  _context.next = 3;
+                  return _this.dialog.openNamelistInputAsync(e.target.result);
+                case 3:
+                  _context.next = 8;
+                  break;
+                case 5:
+                  _context.prev = 5;
+                  _context.t0 = _context["catch"](0);
+                  errorMessageBox("Error", "Error opening namelist.input file '".concat(e.target.files[0], "'."));
+                case 8:
+                case "end":
+                  return _context.stop();
+              }
+            }, _callee, null, [[0, 5]]);
+          }));
+          return function (_x) {
+            return _ref.apply(this, arguments);
+          };
+        }();
+        reader.readAsText(e.target.files[0]);
+        _this.inputFile.value = null;
+      });
+    }
+    return _createClass(NamelistInputPage, [{
+      key: "loadGitHubExamplesAsync",
+      value: function () {
+        var _loadGitHubExamplesAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+          var _location$hash,
+            _this2 = this;
+          var url, response, gitTree, row, _iterator, _step, item, button, file, _button;
+          return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+            while (1) switch (_context3.prev = _context3.next) {
+              case 0:
+                this.loader.style['display'] = 'block';
+                this.githubExampleList.style['display'] = 'none';
+                this.githubExampleList.querySelectorAll('button').forEach(function (button) {
+                  return button.remove();
+                });
+                url = "https://api.github.com/repos/wrf-model/WRF/git/trees/master?recursive=1";
+                _context3.next = 6;
+                return fetch(url);
+              case 6:
+                response = _context3.sent;
+                _context3.next = 9;
+                return response.json();
+              case 9:
+                gitTree = _context3.sent;
+                row = 0;
+                _iterator = _createForOfIteratorHelper(gitTree["tree"]);
+                _context3.prev = 12;
+                _iterator.s();
+              case 14:
+                if ((_step = _iterator.n()).done) {
+                  _context3.next = 32;
+                  break;
+                }
+                item = _step.value;
+                if (!(item["type"] === undefined || item["path"] === undefined || item["type"].toLowerCase() !== "blob" || !item["path"].toLowerCase().startsWith('test/em_real/namelist.input'))) {
+                  _context3.next = 18;
+                  break;
+                }
+                return _context3.abrupt("continue", 30);
+              case 18:
+                button = document.createElement('button');
+                this.githubExampleList.append(button);
+                button.type = "button";
+                button.dataset['path'] = item['path'];
+                button.dataset['file'] = item['path'].substring(item['path'].lastIndexOf('/') + 1).toLowerCase();
+                button.dataset['url'] = item['url'];
+                button.innerText = item['path'];
+                button.classList.add("list-group-item");
+                button.classList.add("list-group-item-action");
+                if (row % 2 == 0) ; else {
+                  button.classList.add('list-group-item-secondary');
+                }
+                row += 1;
+                button.addEventListener('click', /*#__PURE__*/function () {
+                  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
+                    var _e$currentTarget;
+                    var button, content, _url, _response, blob;
+                    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+                      while (1) switch (_context2.prev = _context2.next) {
+                        case 0:
+                          button = (_e$currentTarget = e.currentTarget) !== null && _e$currentTarget !== void 0 ? _e$currentTarget : e.target;
+                          content = button.dataset['content'];
+                          if (!(content === undefined)) {
+                            _context2.next = 12;
+                            break;
+                          }
+                          _url = button.dataset['url'];
+                          _context2.next = 6;
+                          return fetch(_url);
+                        case 6:
+                          _response = _context2.sent;
+                          _context2.next = 9;
+                          return _response.json();
+                        case 9:
+                          blob = _context2.sent;
+                          content = blob['content'];
+                          button.dataset['content'] = content;
+                        case 12:
+                          _context2.prev = 12;
+                          _context2.next = 15;
+                          return _this2.dialog.openNamelistInputAsync(atob(content));
+                        case 15:
+                          _context2.next = 21;
+                          break;
+                        case 17:
+                          _context2.prev = 17;
+                          _context2.t0 = _context2["catch"](12);
+                          console.error(_context2.t0);
+                          errorMessageBox("Error", "Error opening example namelist.input file '".concat(button.dataset['path'], "'."));
+                        case 21:
+                        case "end":
+                          return _context2.stop();
+                      }
+                    }, _callee2, null, [[12, 17]]);
+                  }));
+                  return function (_x2) {
+                    return _ref2.apply(this, arguments);
+                  };
+                }());
+              case 30:
+                _context3.next = 14;
+                break;
+              case 32:
+                _context3.next = 37;
+                break;
+              case 34:
+                _context3.prev = 34;
+                _context3.t0 = _context3["catch"](12);
+                _iterator.e(_context3.t0);
+              case 37:
+                _context3.prev = 37;
+                _iterator.f();
+                return _context3.finish(37);
+              case 40:
+                this.githubExampleList.style['display'] = 'block';
+                this.loader.style['display'] = 'none';
+                file = (_location$hash = location.hash) === null || _location$hash === void 0 ? void 0 : _location$hash.toLowerCase();
+                if (file && file.startsWith("#namelist.")) {
+                  _button = this.githubExampleList.querySelector("button[data-file=\"".concat(file.substring(1), "\"]"));
+                  _button === null || _button === void 0 || _button.click();
+                }
+              case 44:
+              case "end":
+                return _context3.stop();
+            }
+          }, _callee3, this, [[12, 34, 37, 40]]);
+        }));
+        function loadGitHubExamplesAsync() {
+          return _loadGitHubExamplesAsync.apply(this, arguments);
+        }
+        return loadGitHubExamplesAsync;
+      }()
+    }]);
+  }();
+
   exports.DomainWizard = DomainWizard;
+  exports.NamelistDateTimePicker = NamelistDateTimePicker;
+  exports.NamelistInputPage = NamelistInputPage;
+  exports.enableGlobalErrorHandler = enableGlobalErrorHandler;
+  exports.errorMessageBox = errorMessageBox;
 
 }));
 //# sourceMappingURL=wrf-domain-wizard.js.map

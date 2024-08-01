@@ -1,0 +1,3587 @@
+{
+    "time_control": {
+        "run_days": {
+            "defaultValue": "0",
+            "description": "Simulation length in days, hours, minutes, and seconds; Use any combination of  run_* settings to obtain the full desired  simulation length. run_* parameters take  precedence over start_* and end_* times  when running wrf.exe; real.exe does not use  run_* settings.",
+            "entries": "1"
+        },
+        "run_hours": {
+            "defaultValue": "0",
+            "description": "Simulation length in days, hours, minutes, and seconds; Use any combination of  run_* settings to obtain the full desired  simulation length. run_* parameters take  precedence over start_* and end_* times  when running wrf.exe; real.exe does not use  run_* settings.",
+            "entries": "1"
+        },
+        "run_minutes": {
+            "defaultValue": "0",
+            "description": "Simulation length in days, hours, minutes, and seconds; Use any combination of  run_* settings to obtain the full desired  simulation length. run_* parameters take  precedence over start_* and end_* times  when running wrf.exe; real.exe does not use  run_* settings.",
+            "entries": "1"
+        },
+        "run_seconds": {
+            "defaultValue": "0",
+            "description": "Simulation length in days, hours, minutes, and seconds; Use any combination of  run_* settings to obtain the full desired  simulation length. run_* parameters take  precedence over start_* and end_* times  when running wrf.exe; real.exe does not use  run_* settings.",
+            "entries": "1"
+        },
+        "start_year": {
+            "defaultValue": "2019",
+            "description": "4 digit year of starting time",
+            "entries": "max_dom"
+        },
+        "start_month": {
+            "defaultValue": "9",
+            "description": "2 digit month of starting time",
+            "entries": "max_dom"
+        },
+        "start_day": {
+            "defaultValue": "4",
+            "description": "2 digit day of starting time",
+            "entries": "max_dom"
+        },
+        "start_hour": {
+            "defaultValue": "12",
+            "description": "2 digit hour of starting time",
+            "entries": "max_dom"
+        },
+        "start_minute": {
+            "defaultValue": "0",
+            "description": "2 digit minute of starting time",
+            "entries": "max_dom"
+        },
+        "start_second": {
+            "defaultValue": "0",
+            "description": "2 digit second of starting time",
+            "entries": "max_dom"
+        },
+        "end_year": {
+            "defaultValue": "2019",
+            "description": "4 digit year of ending time",
+            "entries": "max_dom"
+        },
+        "end_month": {
+            "defaultValue": "9",
+            "description": "2 digit month of ending time",
+            "entries": "max_dom"
+        },
+        "end_day": {
+            "defaultValue": "6",
+            "description": "2 digit day of ending time",
+            "entries": "max_dom"
+        },
+        "end_hour": {
+            "defaultValue": "0",
+            "description": "2 digit hour of ending time",
+            "entries": "max_dom"
+        },
+        "end_minute": {
+            "defaultValue": "0",
+            "description": "2 digit minute of ending time",
+            "entries": "max_dom"
+        },
+        "end_second": {
+            "defaultValue": "0",
+            "description": "2 digit second of ending time",
+            "entries": "max_dom"
+        },
+        "interval_seconds": {
+            "defaultValue": "10800",
+            "description": "time interval between incoming data from  WPS, which is the interval (secs) between  times in the lateral boundary condition file;   em_real only",
+            "entries": "1"
+        },
+        "input_from_file": {
+            "defaultValue": ".true.",
+            "description": "whether to use input files for nest domains",
+            "entries": "max_dom"
+        },
+        "fine_input_stream": {
+            "defaultValue": "0",
+            "description": "option to select fields to use from nest  input for initialization;",
+            "entries": "max_dom"
+        },
+        "history_interval": {
+            "defaultValue": "60",
+            "description": "Frequency (in simulation minutes) that  data are written/recorded to history output  file(s) (wrfout_d0); can also use  history_interval_d, history_interval_h,  history_interval_m, history_interval_s,  alternatively to set the frequency in days, hours, mins, secs, respectfully",
+            "entries": "max_dom"
+        },
+        "history_begin": {
+            "defaultValue": "0",
+            "description": "Number of mins from the start of the run in which the history output file (wrfout) is written; can also use history_begin_d,  history_begin_h, history_begin_m,  history_begin_s alternatively to set the  frequency in days, hours, mins, secs,  respectfully",
+            "entries": "max_dom"
+        },
+        "frames_per_outfile": {
+            "defaultValue": "1",
+            "description": "number of history output times bulked into  each history file; used to split output files  into smaller pieces",
+            "entries": "max_dom"
+        },
+        "restart": {
+            "defaultValue": ".false.",
+            "description": "whether this run is a restart simulation",
+            "entries": "1"
+        },
+        "restart_interval": {
+            "defaultValue": "1440",
+            "description": "restart output file interval in minutes",
+            "entries": "1"
+        },
+        "override_restart_intervals": {
+            "defaultValue": ".false.",
+            "description": ".false. : uses all output intervals (including history) given by the wrfrst file;",
+            "entries": "1"
+        },
+        "write_hist_at_0h_rst": {
+            "defaultValue": ".false.",
+            "description": ".false. = no history file written at restart initial time (prevents overwriting original history file at this time);",
+            "entries": "1"
+        },
+        "output_ready_flag": {
+            "defaultValue": ".true.",
+            "description": "tells the model to write out an empty file with the name wrfoutReady_d<domain>;  useful in production runs so post-processing code can check on run completeness,  using this file",
+            "entries": "1"
+        },
+        "force_use_old_data": {
+            "defaultValue": ".false.",
+            "description": ".false. = model stops when it detects input data prior to version 4;",
+            "entries": "1"
+        },
+        "reset_simulation_start": {
+            "defaultValue": ".false.",
+            "description": "whether to overwrite the simulation start date with the forecast start time",
+            "entries": "1"
+        },
+        "auxinput1_inname": {
+            "defaultValue": "met_em.d<domain>.<date>",
+            "description": "name of input file from WPS; only necessary if not using the default file names",
+            "entries": "1"
+        },
+        "auxinput4_inname": {
+            "defaultValue": "wrflowinp_d<domain>",
+            "description": "name of input file for lower boundary file; created by real.exe when sst_update=1",
+            "entries": "1"
+        },
+        "auxinput4_interval": {
+            "defaultValue": "360",
+            "description": "interval in mins for lower boundary file;  only used when sst_update=1",
+            "entries": "max_dom"
+        },
+        "io_form_auxinput4": {
+            "defaultValue": "2",
+            "description": "I/O format for wrflowinp files; only used when sst_update=1 (2 = netCDF)",
+            "entries": "1"
+        },
+        "io_form_history": {
+            "defaultValue": "2",
+            "description": "I/O format of history output file(s);",
+            "entries": "1"
+        },
+        "io_form_restart": {
+            "defaultValue": "2",
+            "description": "I/O format of restart output files (wrfrst);",
+            "entries": "1"
+        },
+        "io_form_input": {
+            "defaultValue": "2",
+            "description": "I/O format of input (met_em) files;",
+            "entries": "1"
+        },
+        "io_form_boundary": {
+            "defaultValue": "2",
+            "description": "I/O format of the wrfbdy file;",
+            "entries": "1"
+        },
+        "ncd_nofill": {
+            "defaultValue": ".true.",
+            "description": "when set to .true., only gives a single 'write' as opposed to 'write/read/write' sequence; could potentially improve I/O speed",
+            "entries": "1"
+        },
+        "io_form_auxinput2": {
+            "defaultValue": "2",
+            "description": "IO format for input stream 2 data;",
+            "entries": "1"
+        },
+        "diag_print": {
+            "defaultValue": "0",
+            "description": "option to print out time series of model diagnostics;",
+            "entries": "1"
+        },
+        "debug_level": {
+            "defaultValue": "0",
+            "description": "giving this a larger value (50, 200, etc.)  increases debugging print-outs when  running;",
+            "entries": "1"
+        },
+        "auxhist2_outname": {
+            "defaultValue": "auxhist2_d<domain>_<date>",
+            "description": "file name for extra output when using auxhist2. Only the first part can be  changed (e.g., rainfall_d<domain>_<date>)",
+            "entries": "1"
+        },
+        "auxhist2_interval": {
+            "defaultValue": "10",
+            "description": "interval (in mins) for output when using  auxhist2",
+            "entries": "max_dom"
+        },
+        "io_form_auxhist2": {
+            "defaultValue": null,
+            "description": "output file format when using auxhist2;",
+            "entries": "1"
+        },
+        "frames_per_auxhist2": {
+            "defaultValue": "1000",
+            "description": "how many history output times are in each auxhist2 output file",
+            "entries": "max_dom"
+        },
+        "auxinput11_interval": {
+            "defaultValue": "10",
+            "description": "interval (mins) for obs nudging input;  should be set at the same (or greater)  frequency as 'obs_ionf' (with the unit of coarse domain time step)",
+            "entries": "max_dom"
+        },
+        "auxinput11_end_h": {
+            "defaultValue": "6",
+            "description": "end of the observation time (in hrs) when using obs nudging",
+            "entries": "max_dom"
+        },
+        "nocolons": {
+            "defaultValue": ".false.",
+            "description": "set to .true. to replace colons with underscores in output file names",
+            "entries": "1"
+        },
+        "all_ic_times": {
+            "defaultValue": ".false.",
+            "description": "set to .true. to output a 'wrfinput' file for all time periods",
+            "entries": "1"
+        },
+        "adjust_output_times": {
+            "defaultValue": ".false.",
+            "description": "adjust output times to the nearest hour",
+            "entries": "1"
+        },
+        "output_diagnostics": {
+            "defaultValue": "0",
+            "description": "set to =1 to add 48 sfc diagnostic arrays (max/min/mean/std) in the specified time interval",
+            "entries": "1"
+        },
+        "nwp_diagnostics": {
+            "defaultValue": "0",
+            "description": "set to =1 to add 'history_interval'  diagnostic fileds (10m wind sp, 2-5 km  max helicity, max vert. velocity in updraft and downdraft below 400mb, 2-5 km mean  vert. velocity, max column graupel; must also turn on 'do_radar_ref'",
+            "entries": "1"
+        },
+        "write_input": {
+            "defaultValue": ".false.",
+            "description": "set to .true. to write input-formatted data  as output for 3DVAR application",
+            "entries": "1"
+        },
+        "inputout_interval": {
+            "defaultValue": "0",
+            "description": "interval (in mins) when using the  'write_input' option",
+            "entries": "max_dom"
+        },
+        "input_outname": {
+            "defaultValue": "wrf_3dvar_input_d<domain>_<date>",
+            "description": "output file name from 3DVAR",
+            "entries": "1"
+        },
+        "inputout_begin_y": {
+            "defaultValue": "0",
+            "description": "beginning year, day, hour, minute, and second (respectively) to write 3DVAR data",
+            "entries": "max_dom"
+        },
+        "inputout_begin_d": {
+            "defaultValue": "0",
+            "description": "beginning year, day, hour, minute, and second (respectively) to write 3DVAR data",
+            "entries": "max_dom"
+        },
+        "inputout_begin_h": {
+            "defaultValue": "0",
+            "description": "beginning year, day, hour, minute, and second (respectively) to write 3DVAR data",
+            "entries": "max_dom"
+        },
+        "inputout_begin_m": {
+            "defaultValue": "0",
+            "description": "beginning year, day, hour, minute, and second (respectively) to write 3DVAR data",
+            "entries": "max_dom"
+        },
+        "inputout_begin_s": {
+            "defaultValue": "0",
+            "description": "beginning year, day, hour, minute, and second (respectively) to write 3DVAR data",
+            "entries": "max_dom"
+        },
+        "inputout_end_y": {
+            "defaultValue": "0",
+            "description": "ending year, day, hour, minute, and second (respectively) to write 3DVAR data",
+            "entries": "max_dom"
+        },
+        "inputout_end_d": {
+            "defaultValue": "0",
+            "description": "ending year, day, hour, minute, and second (respectively) to write 3DVAR data",
+            "entries": "max_dom"
+        },
+        "inputout_end_h": {
+            "defaultValue": "0",
+            "description": "ending year, day, hour, minute, and second (respectively) to write 3DVAR data",
+            "entries": "max_dom"
+        },
+        "inputout_end_m": {
+            "defaultValue": "0",
+            "description": "ending year, day, hour, minute, and second (respectively) to write 3DVAR data",
+            "entries": "max_dom"
+        },
+        "inputout_end_s": {
+            "defaultValue": "0",
+            "description": "ending year, day, hour, minute, and second (respectively) to write 3DVAR data",
+            "entries": "max_dom"
+        },
+        "input_from_hires": {
+            "defaultValue": ".false.",
+            "description": "set to .true. to use high-resolution terrain and landuse in the nests; this requires special input data, and WRF must be compiled with environment variable setting TERRAIN_AND_LANDUSE",
+            "entries": "max_dom"
+        },
+        "rsmas_data_path": {
+            "defaultValue": "path-to-high-res-data-director",
+            "description": "path the directory when the high-res data can be found",
+            "entries": "1"
+        },
+        "iofields_filename": {
+            "defaultValue": "my_iofields_list.txt",
+            "description": "option to output additional variables, or  remove variables from output; must create a text file (e.g., my_iofields_list.txt) in which variables to add/remove are declared.",
+            "entries": "max_dom"
+        },
+        "ignore_iofields_warning": {
+            "defaultValue": ".true.",
+            "description": "the model will continue if an error is encountered in the user-specified file above;  set to .false. to abort the model if an error is encountered",
+            "entries": "1"
+        }
+    },
+    "domains": {
+        "time_step": {
+            "defaultValue": null,
+            "description": "time step for model integration seconds;  No more than 6xDX in km",
+            "entries": "1"
+        },
+        "time_step_fract_num": {
+            "defaultValue": "0",
+            "description": "numerator if using a fractional time step",
+            "entries": "1"
+        },
+        "time_step_fract_den": {
+            "defaultValue": "1",
+            "description": "denominator if using a fractional time step;  (e.g., if you want a time step of 60.3 secs,  set time_step=60; time_step_fract_num=3; and time_step_fract_den=10)",
+            "entries": "1"
+        },
+        "time_step_dfi": {
+            "defaultValue": null,
+            "description": "time step when using 'dfi_opt=1' (may be different than regular time step)",
+            "entries": "1"
+        },
+        "max_dom": {
+            "defaultValue": "1",
+            "description": "the number of domains you are simulating",
+            "entries": "1"
+        },
+        "s_we": {
+            "defaultValue": "1",
+            "description": "start index in x (east-west), y (south- north), and z (vertical) directions,  respectively. DO NOT change these values",
+            "entries": "max_dom"
+        },
+        "s_sn": {
+            "defaultValue": "1",
+            "description": "start index in x (east-west), y (south- north), and z (vertical) directions,  respectively. DO NOT change these values",
+            "entries": "max_dom"
+        },
+        "s_vert": {
+            "defaultValue": "1",
+            "description": "start index in x (east-west), y (south- north), and z (vertical) directions,  respectively. DO NOT change these values",
+            "entries": "max_dom"
+        },
+        "e_we": {
+            "defaultValue": "32",
+            "description": "end index in x (east-west), and y (south- north) direction, respectively; staggered dimension",
+            "entries": "max_dom"
+        },
+        "e_sn": {
+            "defaultValue": "32",
+            "description": "end index in x (east-west), and y (south- north) direction, respectively; staggered dimension",
+            "entries": "max_dom"
+        },
+        "e_vert": {
+            "defaultValue": "31",
+            "description": "end index in z (vertical) direction;  staggered dimension for full levels (most variables are on unstaggered levels);  vertical dimensions must be the same for all domains",
+            "entries": "max_dom"
+        },
+        "dx": {
+            "defaultValue": "200",
+            "description": "grid length (resolution) in the x and y directions (in meters)",
+            "entries": "1"
+        },
+        "dy": {
+            "defaultValue": "200",
+            "description": "grid length (resolution) in the x and y directions (in meters)",
+            "entries": "1"
+        },
+        "ztop": {
+            "defaultValue": "15000",
+            "description": "height (in meters) used to define model top for idealized cases",
+            "entries": "max_dom"
+        },
+        "grid_id": {
+            "defaultValue": "1",
+            "description": "domain identifier",
+            "entries": "max_dom"
+        },
+        "parent_id": {
+            "defaultValue": "1",
+            "description": "ID of the domain's parent domain",
+            "entries": "max_dom"
+        },
+        "i_parent_start": {
+            "defaultValue": "1",
+            "description": "j-indice of the nest within its parent domain",
+            "entries": "max_dom"
+        },
+        "j_parent_start": {
+            "defaultValue": "1",
+            "description": "j-indice of the nest within its parent domain",
+            "entries": "max_dom"
+        },
+        "parent_grid_ratio": {
+            "defaultValue": "1",
+            "description": "parent-to-nest grid size ratio; recommend odd ratios (3:1 or 5:1); can be even if 'feedback=0'",
+            "entries": "max_dom"
+        },
+        "parent_time_step_ratio": {
+            "defaultValue": "1",
+            "description": "parent-to-nest time step ratio; typically the same as 'parent_grid_ratio,' but it doesn't have to be the same",
+            "entries": "max_dom"
+        },
+        "feedback": {
+            "defaultValue": "1",
+            "description": "feedback data from nest to parent domain; set to =0 to turn off",
+            "entries": "1"
+        },
+        "smooth_option": {
+            "defaultValue": "2",
+            "description": "smoothing option for parent domain;  feedback must be turned on to use this option (feedback=1);",
+            "entries": "1"
+        },
+        "hypsometric_opt": {
+            "defaultValue": "2",
+            "description": "When set to =2, computes height in real.exe and pressure in the model by using the hypsometric equation (less biased when compared against input data); set to =1 to use a form of the hydrostatic equation that depends on air density",
+            "entries": "1"
+        },
+        "max_ts_locs": {
+            "defaultValue": "5",
+            "description": "maximum number of time series locations when using the time series (tslist) option",
+            "entries": "1"
+        },
+        "max_ts_level": {
+            "defaultValue": "15",
+            "description": "highest model level for profile output when using the time series option",
+            "entries": "1"
+        },
+        "wif_input_opt": {
+            "defaultValue": "0",
+            "description": "option for additional data processing when using 'mp_physics=28;",
+            "entries": "1"
+        },
+        "num_wif_levels": {
+            "defaultValue": "30",
+            "description": "number of levels in the Thompson Water Ice Friendly Aerosols; use with 'mp_physics=28'; see run/README.namelist for additional info",
+            "entries": "1"
+        },
+        "num_metgrid_levels": {
+            "defaultValue": "27",
+            "description": "number of vertical levels available in met_em* input; to check, use command ncdump -h met_em.d0* (using the full name of one of the met_em* files)",
+            "entries": "1"
+        },
+        "num_metgrid_soil_levels": {
+            "defaultValue": "4",
+            "description": "number of soil levels or layers available in met_em* input; use the same command as above to check this value",
+            "entries": "1"
+        },
+        "eta_levels": {
+            "defaultValue": "(for example) 1.0, 0.99, ...0.0",
+            "description": "model eta levels from 1 to 0. If not specified real.exe provides a reasonable set of numbers",
+            "entries": "1"
+        },
+        "auto_levels_opt": {
+            "defaultValue": "2",
+            "description": "option to determine how vertical levels are determined;",
+            "entries": "1"
+        },
+        "max_dz": {
+            "defaultValue": "1000",
+            "description": "max level thickness (in meters) allowed when 'auto_levels_opt=2'",
+            "entries": "1"
+        },
+        "dzbot": {
+            "defaultValue": "50",
+            "description": "thickness (in meters) of lowest layer when 'auto_levels_opt=2'",
+            "entries": "1"
+        },
+        "dzstretch_s": {
+            "defaultValue": "1.3",
+            "description": "surface stretch factor when using 'auto_levels_opt=2'",
+            "entries": "1"
+        },
+        "dzstretch_u": {
+            "defaultValue": "1.1",
+            "description": "upper stretch factor when using 'auto_levels_opt=2'",
+            "entries": "1"
+        },
+        "ideal_init_method": {
+            "defaultValue": "1",
+            "description": "method to compute albedo for idealized cases (in start_em.F file);",
+            "entries": "1"
+        },
+        "interp_method_type": {
+            "defaultValue": "2",
+            "description": "horizontal interpolation method, coarse grid to fine grid; note: for all options (except option 2), the fine-grid lateral boundaries use the same horizontal scheme for lateral BC computations;",
+            "entries": "1"
+        },
+        "force_sfc_in_vinterp": {
+            "defaultValue": "1",
+            "description": "use the sfc level as the lower boundary when interpolating through the set value number of eta levels;",
+            "entries": "1"
+        },
+        "maxw_horiz_pres_diff": {
+            "defaultValue": "5000",
+            "description": "pressure threshold (Pa); for using level of max winds when pressure difference  between neighboring values exceeds this maximum, the variable is NOT inserted into the column for vertical interpolation;  real-data simulations only",
+            "entries": "1"
+        },
+        "trop_horiz_press_diff": {
+            "defaultValue": "5000",
+            "description": "pressure threshold (Pa); for using the tropopause level when pressure difference  between neighboring values exceeds this maximum, the variable is NOT inserted into the column for vertical interpolation;  real-data simulations only",
+            "entries": "1"
+        },
+        "maxw_above_this_level": {
+            "defaultValue": "30000",
+            "description": "minimum pressure level (Pa) to allow using the level of max wind information in real;  e.g., if setting this to 3000 (i.e., 300 hPa),  a max wind value at 500 hPa is ignored;  real-data simulations only",
+            "entries": "1"
+        },
+        "use_trop_level": {
+            "defaultValue": "0",
+            "description": "set to =1 for the same as above, but with tropopause level data",
+            "entries": "1"
+        },
+        "interp_theta": {
+            "defaultValue": ".false.",
+            "description": "which 'temperature' variable to vertically interpolate;",
+            "entries": "1"
+        },
+        "p_top_requested": {
+            "defaultValue": "5000",
+            "description": "pressure top (in Pa) to use in the model;  this level must be available in WPS data",
+            "entries": "1"
+        },
+        "interp_type": {
+            "defaultValue": "2",
+            "description": "type of vertical interpolation;",
+            "entries": "1"
+        },
+        "extrap_type": {
+            "defaultValue": "2",
+            "description": "type of vertical extrapolation for non- temperature variables;",
+            "entries": "1"
+        },
+        "t_extrap_type": {
+            "defaultValue": "2",
+            "description": "type of vertical extrapolation for potential temperature;",
+            "entries": "1"
+        },
+        "use_levels_below_ground": {
+            "defaultValue": ".true.",
+            "description": "whether to use levels below input sfc level for vertical interpolation;",
+            "entries": "1"
+        },
+        "use_surface": {
+            "defaultValue": ".true.",
+            "description": "use input sfc level data in vertical  interpolation",
+            "entries": "1"
+        },
+        "lagrange_order": {
+            "defaultValue": "2",
+            "description": "type of vertical interpolation order;",
+            "entries": "1"
+        },
+        "zap_close_levels": {
+            "defaultValue": "500",
+            "description": "ignore isobaric levels above sfc if delta p (Pa) < 'zap_close_levels'",
+            "entries": "1"
+        },
+        "lowest_lev_from_sfc": {
+            "defaultValue": ".false.",
+            "description": "how to interpolate eta levels;",
+            "entries": "1"
+        },
+        "sfcp_to_sfcp": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to compute model's sfc pressure when incoming data only has sfc pressure and terrain, but not sea-level pressure",
+            "entries": "1"
+        },
+        "use_tavg_for_tsk": {
+            "defaultValue": ".false.",
+            "description": "uses diurnally-averaged sfc temp (can be computed using WPS utility 'avg_tsfc.exe') as skin temp; can use when SKINTEMP is not present",
+            "entries": "1"
+        },
+        "rh2qv_wrt_liquid": {
+            "defaultValue": ".true.",
+            "description": "computes qv with respect to liquid water; set to .false. to compute with respect to ice",
+            "entries": "1"
+        },
+        "rh2qv_method": {
+            "defaultValue": "1",
+            "description": "method for computing mixing ratio from relative humidity (RH);",
+            "entries": "1"
+        },
+        "smooth_cg_topo": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to smooth the outer rows and columns of the domain 1 topography with respect to the input data",
+            "entries": "1"
+        },
+        "vert_refine_fact": {
+            "defaultValue": "1",
+            "description": "vertical refinement factor for ndown; not used for concurrent vertical grid refinement;",
+            "entries": "1"
+        },
+        "vert_refine_method": {
+            "defaultValue": "0",
+            "description": "vertical refinement method;",
+            "entries": "max_dom"
+        },
+        "num_moves": {
+            "defaultValue": "0",
+            "description": "total number of moves for all domains",
+            "entries": "1"
+        },
+        "move_id": {
+            "defaultValue": "(for example)",
+            "description": "a list of the nest domain ID for each move",
+            "entries": "1"
+        },
+        "move_interval": {
+            "defaultValue": "(for example)",
+            "description": "time (in mins) since the nest simulation began (for each domain)",
+            "entries": "1"
+        },
+        "move_cd_x": {
+            "defaultValue": "(for example)",
+            "description": "the number of parent domain grid cells to move in the i and j directions (respectfully)",
+            "entries": "1"
+        },
+        "move_cd_y": {
+            "defaultValue": "(for example)",
+            "description": "the number of parent domain grid cells to move in the i and j directions (respectfully)",
+            "entries": "1"
+        },
+        "vortex_interval": {
+            "defaultValue": "15",
+            "description": "how often the new vortex position is computed (in mins)",
+            "entries": "max_dom"
+        },
+        "max_vortex_speed": {
+            "defaultValue": "40",
+            "description": "used to compute the search radius for the new vortex position (in m/s)",
+            "entries": "max_dom"
+        },
+        "corral_dist": {
+            "defaultValue": "8",
+            "description": "how close (in number of grid cells) the moving nest is allowed to get to the coarse grid boundary, before the coarse grid moves",
+            "entries": "max_dom"
+        },
+        "track_level": {
+            "defaultValue": "50000",
+            "description": "pressure level value (in Pa) at which the  tropical storm vortex is tracked",
+            "entries": "1"
+        },
+        "time_to_move": {
+            "defaultValue": "0",
+            "description": "time (in mins) to start moving the nest",
+            "entries": "max_dom"
+        },
+        "use_adaptive_time_step": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to turn on adaptive time step",
+            "entries": "1"
+        },
+        "step_to_output_time": {
+            "defaultValue": ".true.",
+            "description": "adjusts the time step so the exact history time is reached",
+            "entries": "1"
+        },
+        "target_cfl": {
+            "defaultValue": "1.2",
+            "description": "if vertical CFL <= to this value suggests no need to reduce the time step,  and therefore the time step is increased",
+            "entries": "max_dom"
+        },
+        "target_hcfl": {
+            "defaultValue": "0.84",
+            "description": "if horizontal CFL <= to this value suggests no need to reduce the time step,  and therefore the time step is increased",
+            "entries": "max_dom"
+        },
+        "max_step_increase_pct": {
+            "defaultValue": "5",
+            "description": "percentage of the previous time step to  increase; if the max(vert CFL, horiz CFL)  <= target_cfl, then the time step will  increase by this percentage; use something much larger for nests (e.g. = 5, 51, 51)",
+            "entries": "max_dom"
+        },
+        "starting_time_step": {
+            "defaultValue": "-1",
+            "description": "any positive integer specifies the starting  time_step (in seconds); the default value  (-1) indicates 4*DX is used as the starting  time step; note: when  use_adaptive_time_step=.true., the value specified for time_step is ignored",
+            "entries": "max_dom"
+        },
+        "starting_time_step_den": {
+            "defaultValue": "0",
+            "description": "denominator for starting_time_step in the case that a fractional time step is needed",
+            "entries": "max_dom"
+        },
+        "max_time_step": {
+            "defaultValue": "-1",
+            "description": "any positive integer specifies the maximum  time_step (in seconds) that will ever be used during the simulation; the default  value (-1) indicates 8*DX is used as the  maximum time step",
+            "entries": "max_dom"
+        },
+        "max_time_step_den": {
+            "defaultValue": "0",
+            "description": "denominator for max_time_step in the case that a fractional time step is needed",
+            "entries": "max_dom"
+        },
+        "min_time_step": {
+            "defaultValue": "-1",
+            "description": "any positive integer specifies the minimum  time_step (in seconds) that will ever be used during the simulation; the default  value (-1) indicates 3*DX is used as the  minimum time step",
+            "entries": "max_dom"
+        },
+        "min_time_step_den": {
+            "defaultValue": "0",
+            "description": "denominator for min_time_step in the case that a fractional time step is needed",
+            "entries": "max_dom"
+        },
+        "adaptation_domain": {
+            "defaultValue": "1",
+            "description": "specifies which domain to use to drive adaptive time stepping",
+            "entries": "1"
+        },
+        "tile_sz_x\ntile_sz_y": {
+            "defaultValue": "0",
+            "description": "number of points in the x and y directions for OpenMP processing",
+            "entries": "1"
+        },
+        "numtiles": {
+            "defaultValue": "1",
+            "description": "number of tiles per patch (an alternative option to tile_sz_x and tile_sz_y) for OpenMP processing",
+            "entries": "1"
+        },
+        "nproc_x\nnproc_y": {
+            "defaultValue": "-1",
+            "description": "number of processors in the x and y directions for decomposition when using MPI processing; default value of -1 = turned off - code will use automatic decomposition",
+            "entries": "1"
+        },
+        "ocean_levels": {
+            "defaultValue": "30",
+            "description": "number of ocean levels",
+            "entries": "1"
+        },
+        "ocean_z": {
+            "defaultValue": null,
+            "description": "vertical profile of layer depths for the ocean (in meters); for e.g., if ocean_levels=30, ocean_z should have 30 settings; see  run/README.namelist for details",
+            "entries": "1"
+        },
+        "ocean_t": {
+            "defaultValue": null,
+            "description": "vertical profile of ocean temps (in K);  for e.g., if ocean_levels=30, ocean_t should have 30 settings; see  run/README.namelist for details",
+            "entries": "1"
+        },
+        "ocean_s": {
+            "defaultValue": null,
+            "description": "vertical profile of ocean salinity;  for e.g., if ocean_levels=30, ocean_s should have 30 settings; see  run/README.namelist for details",
+            "entries": "1"
+        }
+    },
+    "physics": {
+        "mp_physics": {
+            "defaultValue": null,
+            "description": "microphysics setting; all domains should be  set to the same value;",
+            "entries": "max_dom"
+        },
+        "ccnty": {
+            "defaultValue": "0",
+            "description": "Aerosol options for NTU microphysics  (mp_physics=56);",
+            "entries": "max_dom"
+        },
+        "do_radar_ref": {
+            "defaultValue": "0",
+            "description": "set to =1 to allow radar reflectivity to be computed using mp-scheme-specific parameters; only works for mp_physics= 2,4,6,7,8,10,14,16,24,26",
+            "entries": "1"
+        },
+        "mp_zero_out": {
+            "defaultValue": "0",
+            "description": "set to =1 to keep moisture variables above a threshold value >=0; an alternative (and better) method to keep moisture variables positive is to use the moist_adv_opt;",
+            "entries": "1"
+        },
+        "mp_zero_out_thresh": {
+            "defaultValue": "1.e-8",
+            "description": "critical value for moisture variable threshold below which moisture arrays (except Qv) are set to zero when using mp_zero_out;  unit: kg/kg",
+            "entries": "1"
+        },
+        "mp_tend_lim": {
+            "defaultValue": "10",
+            "description": "limit on temperature tendency from microphysics latent heating when radar data assimilation is used",
+            "entries": "1"
+        },
+        "ccn_conc": {
+            "defaultValue": "1.00E+08",
+            "description": "CCN concentrations; used by WDM microphysics schemes",
+            "entries": "1"
+        },
+        "hail_opt": {
+            "defaultValue": "0",
+            "description": "hail/graupel switch for WSM6 and WDM6 microphysics schemes (options 6 and 16);",
+            "entries": "1"
+        },
+        "morr_rimed_ice": {
+            "defaultValue": "1",
+            "description": "hail/graupel switch for Morrison  microphysics schemes (options 10 and 40);",
+            "entries": "1"
+        },
+        "clean_atm_diag": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on clean sky diagnostics; for WRF-Chem",
+            "entries": "1"
+        },
+        "acc_phy_tend": {
+            "defaultValue": "0",
+            "description": "set to =1 to output 16 accumulated physics tendencies for potential temperature, water vapor mixing ratio, and u/v wind components; new since V4.4",
+            "entries": "max_dom"
+        },
+        "progn": {
+            "defaultValue": "0",
+            "description": "set to =1 to use mix-activate scheme; only works with mp_physics=10,14,16,17,18",
+            "entries": "max_dom"
+        },
+        "no_mp_heating": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on latent heating from a microphysics scheme",
+            "entries": "1"
+        },
+        "use_mp_re": {
+            "defaultValue": "1",
+            "description": "when using RRTMG radiation, use effective radii computed in microphysics schemes;  only works with mp_physics=3,4,6,7,8,10, 14,16,17-21,24,26,28,50-53,55",
+            "entries": "1"
+        },
+        "dust_emis": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on surface dust emission scheme to enter mp_physics=28 QNIFA (ice-friendly aerosol variable)",
+            "entries": "1"
+        },
+        "erosion_dim": {
+            "defaultValue": "3",
+            "description": "includes erodibility information when using dust_emis=1",
+            "entries": "1"
+        },
+        "write_thompson_mp38table": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to compute  file qr_acr_qg_mp38V1.dat instead of using the downloaded version",
+            "entries": "1"
+        },
+        "nssl_alphah": {
+            "defaultValue": "0",
+            "description": "shape parameter for graupel",
+            "entries": "max_dom"
+        },
+        "nssl_alphahl": {
+            "defaultValue": "1",
+            "description": "shape parameter for hail",
+            "entries": "max_dom"
+        },
+        "nssl_cnoh": {
+            "defaultValue": "4.e5",
+            "description": "graupel intercept",
+            "entries": "max_dom"
+        },
+        "nssl_cnohl": {
+            "defaultValue": "4.e4",
+            "description": "hail intercept",
+            "entries": "max_dom"
+        },
+        "nssl_cnor": {
+            "defaultValue": "8.e5",
+            "description": "rain intercept",
+            "entries": "max_dom"
+        },
+        "nssl_cnos": {
+            "defaultValue": "3.e6",
+            "description": "snow intercept",
+            "entries": "max_dom"
+        },
+        "nssl_rho_qh": {
+            "defaultValue": "500",
+            "description": "graupel density",
+            "entries": "max_dom"
+        },
+        "nssl_rho_ghl": {
+            "defaultValue": "900",
+            "description": "hail density",
+            "entries": "max_dom"
+        },
+        "nssl_rho_qs": {
+            "defaultValue": "100",
+            "description": "snow density",
+            "entries": "max_dom"
+        },
+        "ra_lw_physics": {
+            "defaultValue": "-1",
+            "description": "longwave radiation option; all domains should be set to the same value;",
+            "entries": "max_dom"
+        },
+        "ra_sw_physics": {
+            "defaultValue": null,
+            "description": "shortwave radiation option; all domains should be set to the same value;",
+            "entries": "max_dom"
+        },
+        "radt": {
+            "defaultValue": "0",
+            "description": "minutes between radiation physics calls;  recommend 1 minute per km of dx (e.g.,  set to 10 for a 10 km grid); set to the same value for all domains",
+            "entries": "max_dom"
+        },
+        "swint_opt": {
+            "defaultValue": "0",
+            "description": "interpolation options for shortwave  radiation;",
+            "entries": "1"
+        },
+        "couple_farms": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use FARMS shortwave radiation to drive the LSM; when set to  .false., uses shortwave radiation from ra_sw_physics",
+            "entries": "1"
+        },
+        "ra_call_offset": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on radiation offset to call radiation just before output time, instead of after output time",
+            "entries": "1"
+        },
+        "co2tf": {
+            "defaultValue": "1",
+            "description": "CO2 transmission function flag for GFDL radiation only, which allows generation of CO2 function internally",
+            "entries": "1"
+        },
+        "cldovrlp": {
+            "defaultValue": "2",
+            "description": "cloud overlapping option for RRTMG  radiation;",
+            "entries": "1"
+        },
+        "idcor": {
+            "defaultValue": "0",
+            "description": "decorrelation length flag for use with cldovrlp=4 or 5; new since V4.4;",
+            "entries": "1"
+        },
+        "ra_sw_eclipse": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on eclipse effect on shortwave radiation; only works with RRTMG, Goddard, old Goddard, and Dudhia radiation schemes",
+            "entries": "1"
+        },
+        "ghg_input": {
+            "defaultValue": "1",
+            "description": "option to read CAMtr_volume_mixing_ratio files of greenhouse gas values; new since V4.4;",
+            "entries": "1"
+        },
+        "03input": {
+            "defaultValue": "2",
+            "description": "ozone input option for RRTMG radiation;",
+            "entries": "1"
+        },
+        "aer_opt": {
+            "defaultValue": "0",
+            "description": "aerosol input option for RRTMG radiation;",
+            "entries": "1"
+        },
+        "alevsiz": {
+            "defaultValue": "1",
+            "description": "number of vertical levels in aerosol data;  value is set automatically",
+            "entries": "1"
+        },
+        "no_src_types": {
+            "defaultValue": "1",
+            "description": "number of aerosol species in Tegen global aerosol data; organic and black carbon,  sea salt, sulfate, dust, and stratospheric aerosol (volcanic ash - currently 0); value is set automatically",
+            "entries": "1"
+        },
+        "use_rap_aero_icbc": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to ingest real-time data containing aerosols; new since V4.4",
+            "entries": "1"
+        },
+        "qna_update": {
+            "defaultValue": "0",
+            "description": "set to =1 to update time-varying surface  aerosol emission from climatology or real-time data when using mp_physics=28; use with input file wrfqnainp_d0; must set auxinput17_interval and  io_form_auxinput17; new since V4.4",
+            "entries": "1"
+        },
+        "wif_fire_emit": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to include biomass burning organic and black carbon aerosols with mp_physics=28; new since V4.4",
+            "entries": "1"
+        },
+        "wif_fire_inj": {
+            "defaultValue": "1",
+            "description": "turns on vertical distribution of biomass burning emissions when using mp_physics=28; new since V4.4",
+            "entries": "max_dom"
+        },
+        "icloud": {
+            "defaultValue": "1",
+            "description": "cloud effect to the optical depth in radiation and controls the cloud fraction options; only works with ra_sw/lw_physics=1 or 4;",
+            "entries": "1"
+        },
+        "insert_init_cloud": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to estimate initial model cloud when using icloud=3; cold start only",
+            "entries": "1"
+        },
+        "swrad_scat": {
+            "defaultValue": "1",
+            "description": "scattering tuning parameter;  default is 1.e-5 m2 kg-1;  increase for more scattering; only works with ra_sw_physics=1",
+            "entries": "1"
+        },
+        "slope_rad": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on slope-dependent radiation for ra_sw_physics",
+            "entries": "max_dom"
+        },
+        "topo_shading": {
+            "defaultValue": "0",
+            "description": "applies neighboring-point shadow effects for ra_sw_physics",
+            "entries": "max_dom"
+        },
+        "shadlen": {
+            "defaultValue": "25000",
+            "description": "maximum length (in m) of orographic shadow ; only works when topo_shading=1",
+            "entries": "1"
+        },
+        "aer_aod550_opt": {
+            "defaultValue": "1",
+            "description": "option to determine input value for AOD at 550 nm;",
+            "entries": "max_dom"
+        },
+        "aer_aod550_val": {
+            "defaultValue": "0.12",
+            "description": "value used when aer_aod550_opt=1",
+            "entries": "max_dom"
+        },
+        "aer_angexp_opt": {
+            "defaultValue": "1",
+            "description": "option to determine input value for Angstrom exponent;",
+            "entries": "max_dom"
+        },
+        "aer_angexp_val": {
+            "defaultValue": "1.3",
+            "description": "value used when aer_angexp_opt=1",
+            "entries": "max_dom"
+        },
+        "aer_ssa_opt": {
+            "defaultValue": "1",
+            "description": "option to determine input value for single scattering albedo;",
+            "entries": "max_dom"
+        },
+        "aer_ssa_val": {
+            "defaultValue": "0.85",
+            "description": "value used when aer_ssa_opt=1",
+            "entries": "max_dom"
+        },
+        "aer_asy_opt": {
+            "defaultValue": "1",
+            "description": "option to determine input value for asymmetry parameter;",
+            "entries": "max_dom"
+        },
+        "aer_asy_val": {
+            "defaultValue": "0.90",
+            "description": "value used when aer_asy_opt=1",
+            "entries": "max_dom"
+        },
+        "aer_type": {
+            "defaultValue": "1",
+            "description": "aerosol type used with the above aer*  options;",
+            "entries": "max_dom"
+        },
+        "cam_abs_freq_s": {
+            "defaultValue": "21600",
+            "description": "default CAM radiation clear sky longwave absorption calculation frequency (in secs);  recommend minimum value to speed-up scheme",
+            "entries": "1"
+        },
+        "levsiz": {
+            "defaultValue": "1",
+            "description": "number of ozone data levels for CAM  radiation",
+            "entries": "1"
+        },
+        "paerlev": {
+            "defaultValue": "1",
+            "description": "numer of aerosol data levels for CAM radiation",
+            "entries": "1"
+        },
+        "cam_abs_dim1": {
+            "defaultValue": "1",
+            "description": "dimension for absnxt (absorption save array) in CAM radiation",
+            "entries": "1"
+        },
+        "cam_abs_dim2": {
+            "defaultValue": "1",
+            "description": "dimension for abstot (2nd absorption save array) in CAM radiation",
+            "entries": "1"
+        },
+        "sf_sfclay_physics": {
+            "defaultValue": null,
+            "description": "surface layer physics option; the same value should be used for all domains;",
+            "entries": "max_dom"
+        },
+        "iz0tlnd": {
+            "defaultValue": "0",
+            "description": "switch to control land thermal roughness length;",
+            "entries": "1"
+        },
+        "sf_surface_physics": {
+            "defaultValue": null,
+            "description": "land surface option; set this before running real.exe; the same value should be used for all domains;",
+            "entries": "max_dom"
+        },
+        "sf_urban_physics": {
+            "defaultValue": "0",
+            "description": "activate urban canopy model; use with Noah LSM only; the same value should be used for all domains;",
+            "entries": "max_dom"
+        },
+        "use_wudapt_lcz": {
+            "defaultValue": "0",
+            "description": "type of urban landuse categories to use;",
+            "entries": "1"
+        },
+        "ua_phys": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to activate UA Noah LSM changes for a different snow-cover physics;  aimed to improve treatment of snow as it relates to the vegetation canopy",
+            "entries": "1"
+        },
+        "num_soil_layers": {
+            "defaultValue": "5",
+            "description": "number of soil layers in land surface model; set before running real.exe;",
+            "entries": "1"
+        },
+        "ideal_xland": {
+            "defaultValue": "1",
+            "description": "sets XLAND for idealized cases with no input land-use run-time switch for wrf.exe physics_init;",
+            "entries": "1"
+        },
+        "ifsnow": {
+            "defaultValue": "1",
+            "description": "use snow-cover effects; only works with sf_surface_physics=1",
+            "entries": "1"
+        },
+        "surface_input_source": {
+            "defaultValue": "3",
+            "description": "the source for landuse and soil category;",
+            "entries": "1"
+        },
+        "pxlsm_smois_init": {
+            "defaultValue": "1",
+            "description": "Pleim-Xiu land surface model soil moisture initialization option;",
+            "entries": "max_dom"
+        },
+        "num_land_cat": {
+            "defaultValue": "21",
+            "description": "number of land categories from input data;",
+            "entries": "1"
+        },
+        "num_soil_cat": {
+            "defaultValue": "16",
+            "description": "number of soil categories in the input data",
+            "entries": "1"
+        },
+        "usemonalb": {
+            "defaultValue": ".false.",
+            "description": "set to =.true.  to use monthly albedo map instead of table values; recommended when sst_update=1",
+            "entries": "1"
+        },
+        "rdmaxalb": {
+            "defaultValue": ".true.",
+            "description": "use snow albedo from geogrid, instead of from table",
+            "entries": "1"
+        },
+        "rdlai2d": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use leaf area index (LAI) from input data, instead of from table; when  sst_udpate=1, LAI will also be included in  wrflowinp file",
+            "entries": "1"
+        },
+        "sst_update": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on time-varying sea-surface temperature, seaice, vegetation fraction, and albedo during a wrf.exe simulation; must be set prior to running real.exe; real.exe creates file(s) (wrflowinp_d0x) that include(s) SST,  XICE, ALBEDO, and VEGFRA, which wrf.exe will  update at the same interval as the wrfbdy_d01 file; must set the following in &time_control in namelist.input: auxinput4_interval,  auxinput4_end_h, io_form_auxinput4, and auxinput4_inname=wrflowinp_d<domain>",
+            "entries": "1"
+        },
+        "tmn_update": {
+            "defaultValue": "0",
+            "description": "set to =1 to update deep layer soil  temperature; useful for long (multi-year)  simulations",
+            "entries": "1"
+        },
+        "lagday": {
+            "defaultValue": "150",
+            "description": "number of days over which TMN (deep layer soil temperature) is computed using skin temperature",
+            "entries": "1"
+        },
+        "sst_skin": {
+            "defaultValue": "0",
+            "description": "set to =1 to calculate skin SST; useful for long (multi-year) simulations",
+            "entries": "1"
+        },
+        "shalwater_z0": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on shallow water roughness scheme; only works with sf_sfclay_physics=1; new since V4.4",
+            "entries": "max_dom"
+        },
+        "shalwater_depth": {
+            "defaultValue": "-1.0",
+            "description": "option to set constant depth (in meters) when shalwater_z0=1, if no bathymetry data is available; intended for depths between 10.0 and 100.0 m; depths outside this range are rounded to the nearest limit value; new  since V4.4",
+            "entries": "1"
+        },
+        "bl_pbl_physics": {
+            "defaultValue": null,
+            "description": "boundary layer option; the same value  should be used for all domains (except when running  an LES simulation);",
+            "entries": "max_dom"
+        },
+        "mfshconv": {
+            "defaultValue": "1",
+            "description": "use day-time EDMF for QNSE; set to =0 to turn off",
+            "entries": "max_dom"
+        },
+        "bldt": {
+            "defaultValue": "0",
+            "description": "minutes between boundary-layer physics  calls; recommend =0 (call every time step) for all domains",
+            "entries": "max_dom"
+        },
+        "topo_wind": {
+            "defaultValue": "0",
+            "description": "topographic surface wind correction;  requires extra input from geogrid; only works with bl_pbl_physics=1;",
+            "entries": "1"
+        },
+        "bl_mynn_tkebudget": {
+            "defaultValue": "0",
+            "description": "adds MYNN TKE budget terms to output",
+            "entries": "max_dom"
+        },
+        "bl_mynn_tkeadvect": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to turn on MYNN TKE  advection to couple subgrid-scale clouds from MYNN PBL to radiation schemes",
+            "entries": "max_dom"
+        },
+        "bl_mynn_cloudmix": {
+            "defaultValue": "1",
+            "description": "activate mixing of qc and qi in MYNN;  qnd and qni are mixed when",
+            "entries": "max_dom"
+        },
+        "bl_mynn_mixlength": {
+            "defaultValue": "1",
+            "description": "option to change mixing length formulation in MYNN;",
+            "entries": "1"
+        },
+        "bl_mynn_cloudpdf": {
+            "defaultValue": "2",
+            "description": "option to switch to different cloud PDFs to represent subgrid clouds in MYNN;",
+            "entries": "1"
+        },
+        "bl_mynn_edmf": {
+            "defaultValue": "1",
+            "description": "option to activate mass-flux scheme in MYNN;",
+            "entries": "max_dom"
+        },
+        "bl_mynn_edmf_mom": {
+            "defaultValue": "1",
+            "description": "option to activate momentum transport in MYNN; assuming bl_mynn_edmf > 0",
+            "entries": "max_dom"
+        },
+        "bl_mynn_edmf_tke": {
+            "defaultValue": "0",
+            "description": "set to =1 to activate TKE transport in MYNN; assuming bl_mynn_edmf > 0",
+            "entries": "max_dom"
+        },
+        "scalar_pblmix": {
+            "defaultValue": "0",
+            "description": "set to =1 to mix scalar fields consistent  with PBL option (exch_h)",
+            "entries": "max_dom"
+        },
+        "tracer_pblmix": {
+            "defaultValue": "1",
+            "description": "mix tracer fields consistent with PBL  option (exch_h)",
+            "entries": "max_dom"
+        },
+        "shinhong_tke_diag": {
+            "defaultValue": "1",
+            "description": "Use diagnostic TKE and mixing length from  Shin-Hong PBL",
+            "entries": "max_dom"
+        },
+        "opt_thcnd": {
+            "defaultValue": "1",
+            "description": "how to treat thermal conductivity in  Noah LSM;",
+            "entries": "1"
+        },
+        "sf_surface_mosaic": {
+            "defaultValue": "0",
+            "description": "set to =1 to use mosaic landuse categories  for Noah LSM",
+            "entries": "1"
+        },
+        "mosaic_lu": {
+            "defaultValue": "0",
+            "description": "set to =1 to specify landuse parameters based on a mosaic approach; only works with RUC LSM (sf_surface_physics=3)",
+            "entries": "1"
+        },
+        "mosaic_soil": {
+            "defaultValue": "0",
+            "description": "set to =1 to specify soil parameters based on a mosaic approach; only works with RUC LSM (sf_surface_physics=3)",
+            "entries": "1"
+        },
+        "mosaic_cat": {
+            "defaultValue": "3",
+            "description": "number of mosaid landuse categories in a grid cell when sf_surface_mosaic=1",
+            "entries": "1"
+        },
+        "grav_settling": {
+            "defaultValue": "0",
+            "description": "gravitational settling of fog/cloud droplets;",
+            "entries": "max_dom"
+        },
+        "ysu_topdown_pblmix": {
+            "defaultValue": "1",
+            "description": "turns on top-down radiation-driven mixing",
+            "entries": "1"
+        },
+        "isfflx": {
+            "defaultValue": "1",
+            "description": "heat and moisture fluxes from the surface for real-data cases when a PBL option is used; only works with sf_sfclay_physics=1,5,7,11;",
+            "entries": "1"
+        },
+        "cu_physics": {
+            "defaultValue": null,
+            "description": "cumulus parameterication option; the same value should be used for all domains that have cu_physics turned on;",
+            "entries": "max_dom"
+        },
+        "cudt": {
+            "defaultValue": "0",
+            "description": "minutes between cumulus physics calls;  set to 0 (call every time step) when using  all cu_physics options except Kain-Fritsch; set all domains to the same value",
+            "entries": "max_dom"
+        },
+        "kfeta_trigger": {
+            "defaultValue": "1",
+            "description": "the method to determine whether a grid point is convective; only works with  cu_physics=1;",
+            "entries": "1"
+        },
+        "ishallow": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on shallow convection; only works with cu_physics=3 or 5",
+            "entries": "1"
+        },
+        "cu_diag": {
+            "defaultValue": "0",
+            "description": "set to =1 to compute time-averaged time-step surface rainfall and cloud  water/ice when using cu_physics=3,5,93; only for WRF-Chem use",
+            "entries": "max_dom"
+        },
+        "shcu_physics": {
+            "defaultValue": "0",
+            "description": "independent shallow cumulus option;  not tied to deep convection;",
+            "entries": "max_dom"
+        },
+        "cugd_avedx": {
+            "defaultValue": "1",
+            "description": "number of grid boxes over which  subsidence is spread;",
+            "entries": "1"
+        },
+        "nsas_dx_factor": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on NSAS grid distance dependent option",
+            "entries": "1"
+        },
+        "kf_edrates": {
+            "defaultValue": "0",
+            "description": "set to =1 to output entrainment/ detrainment rates and convective timescale output variables for KF-based cumulus schemes; only works with cu_physics=1,11,99",
+            "entries": "max_dom"
+        },
+        "convtrans_avglen_m": {
+            "defaultValue": "30",
+            "description": "averaging time (in mins) for convective transport output variables; only works with cu_physics=3,5,93",
+            "entries": "1"
+        },
+        "cu_rad_feedback": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use sub-grid cloud effect to the optical depth in radiation; only works with cu_physics=1,3,5,10,11,93,99; if using cu_physics=3,5,93 must set cu_diag=1",
+            "entries": "max_dom"
+        },
+        "maxiens": {
+            "defaultValue": "1",
+            "description": "only works with cu_physics=3,5,93",
+            "entries": "1"
+        },
+        "maxens": {
+            "defaultValue": "3",
+            "description": "only works with cu_physics=3,5,93",
+            "entries": "1"
+        },
+        "maxens2": {
+            "defaultValue": "3",
+            "description": "only works with cu_physics=3,5,93",
+            "entries": "1"
+        },
+        "maxens3": {
+            "defaultValue": "16",
+            "description": "only works with cu_physics=3,5,93",
+            "entries": "1"
+        },
+        "ensdim": {
+            "defaultValue": "144",
+            "description": "only works with cu_physics=3,5,93",
+            "entries": "1"
+        },
+        "shallowcu_forced_ra": {
+            "defaultValue": ".false.",
+            "description": "radiative impact of shallow cumulus by a prescribed max cloud fraction of 0.36",
+            "entries": "max_dom"
+        },
+        "numbins": {
+            "defaultValue": "1",
+            "description": "number of perturbations for potential temperature and mixing ratio in the CuP PDF; should be an odd number;  recommended value is 21",
+            "entries": "max_dom"
+        },
+        "thBinSize": {
+            "defaultValue": "1",
+            "description": "bin size of potential temperature perturbation increment (0.01 K)",
+            "entries": "max_dom"
+        },
+        "minDeepFreq": {
+            "defaultValue": "1",
+            "description": "minimum frequency required before deep convection is allowed (0.333)",
+            "entries": "max_dom"
+        },
+        "minShallowFreq": {
+            "defaultValue": "1",
+            "description": "minimum frequency required before shallow convection is allowed (1.0e-2)",
+            "entries": "max_dom"
+        },
+        "shcu_aerosols_opt": {
+            "defaultValue": "0",
+            "description": "set to =2 to use this prognostic option to  include aerosols in the shallow cumulus scheme; only works for WRF-Chem",
+            "entries": "max_dom"
+        },
+        "aercu_opt": {
+            "defaultValue": "0",
+            "description": "option to control aerosol interaction;",
+            "entries": "1"
+        },
+        "aercu_fct": {
+            "defaultValue": "1.0",
+            "description": "factor to multiply with aerosol amount",
+            "entries": "1"
+        },
+        "no_src_types_cu": {
+            "defaultValue": "1",
+            "description": "number of aerosol species in global aerosol data (10 for CESM input); value is set automatically",
+            "entries": "1"
+        },
+        "alevsiz_cu": {
+            "defaultValue": "1",
+            "description": "number of levels in global aerosol data (30 for CESM input); value is set automatically",
+            "entries": "1"
+        },
+        "sf_ocean_physics": {
+            "defaultValue": "0",
+            "description": "activates ocean model;",
+            "entries": "1"
+        },
+        "omdt": {
+            "defaultValue": "1",
+            "description": "time step (mins) when sf_ocean_physics=2;  can be set the same as the WRF time step in  corresponding nested grids, but should be no  less than 1.0 minute",
+            "entries": "1"
+        },
+        "oml_hml0": {
+            "defaultValue": "50",
+            "description": "initial mixed layer depth value when  sf_ocean_physics=1;",
+            "entries": "1"
+        },
+        "oml_gamma": {
+            "defaultValue": "0.14",
+            "description": "lapse rate (K m-1) in deep water (below the  mixed layer) when sf_ocean_physics=1",
+            "entries": "1"
+        },
+        "oml_relaxation_time": {
+            "defaultValue": "0",
+            "description": "relaxation time (seconds) when  sf_ocean_physics=1 back to original values;  e.g., a setting of 259200 seconds = 3 days",
+            "entries": "1"
+        },
+        "ocean_levels": {
+            "defaultValue": "30",
+            "description": "number of vertical levels when  sf_ocean_physics=2",
+            "entries": "1"
+        },
+        "seaice_threshold": {
+            "defaultValue": "100",
+            "description": "if skin temperature (TSK) is < this value, water points are changed to sea ice; only works with sf_surface_physics=1,2,3,4,8",
+            "entries": "1"
+        },
+        "fractional_seaice": {
+            "defaultValue": "0",
+            "description": "set to =1 to treat seaice as a fractional field;  only works with sf_sfclay_physics=1,2,3,4,5,7,91;  must also set seaice_threshold=0; if set to 0,  uses flag for ice or no ice",
+            "entries": "1"
+        },
+        "seaice_albedo_opt": {
+            "defaultValue": "0",
+            "description": "option to set albedo over sea ice;",
+            "entries": "1"
+        },
+        "seaice_albedo_default": {
+            "defaultValue": "0.65",
+            "description": "default value of seaice albedo when seaice_albedo_opt=0",
+            "entries": "1"
+        },
+        "seaice_snowdepth_opt": {
+            "defaultValue": "0",
+            "description": "method for how snow depth on seaice is treated;",
+            "entries": "1"
+        },
+        "seaice_snowdepth_min": {
+            "defaultValue": "0.001",
+            "description": "minimum snow depth (in meters) on sea ice",
+            "entries": "1"
+        },
+        "seaice_snowdepth_max": {
+            "defaultValue": "1.e10",
+            "description": "maximum allowed accumulation of snow (in meters) on sea ice",
+            "entries": "1"
+        },
+        "seaice_thickness_opt": {
+            "defaultValue": "0",
+            "description": "seaice thickness method;",
+            "entries": "1"
+        },
+        "seaice_thickness_default": {
+            "defaultValue": "3.0",
+            "description": "default value of seaice thickness when seaice_thickness_opt=0",
+            "entries": "1"
+        },
+        "sf_lake_physics": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on the lake model",
+            "entries": "max_dom"
+        },
+        "lakedepth_default": {
+            "defaultValue": "50",
+            "description": "lake depth (in meters); if no lake depth information is available in the input data,  this value is set to 50 m",
+            "entries": "max_dom"
+        },
+        "lake_min_elev": {
+            "defaultValue": "5",
+            "description": "minimum elevation of lakes; can be used to determine whether a water point is a lake in the absence of a lake category; if the landuse type includes 'lake' (e.g., Modis_lake and USGS_LAKE), this variables is ignored",
+            "entries": "max_dom"
+        },
+        "use_lakedepth": {
+            "defaultValue": "1",
+            "description": "option to use lake depth data provided by the geogrid program",
+            "entries": "max_dom"
+        },
+        "lightning_option": {
+            "defaultValue": "0",
+            "description": "lightning parameterization option to allow flash rate prediction without chemistry;  must set do_radar_ref=1;",
+            "entries": "max_dom"
+        },
+        "lightning_dt": {
+            "defaultValue": "0",
+            "description": "time interval (in seconds) for calling lightning parameterization when lightning_option>0; when set to 0, model time step is used",
+            "entries": "max_dom"
+        },
+        "lightning_start_seconds": {
+            "defaultValue": "0",
+            "description": "start time for calling lightning parameterization when lightning_option>0; recommend at least 10 minutes for spin-up",
+            "entries": "max_dom"
+        },
+        "flashrate_factor": {
+            "defaultValue": "1.0",
+            "description": "factor to adjust the predicted number of flashes;",
+            "entries": "max_dom"
+        },
+        "cellcount_method": {
+            "defaultValue": "0",
+            "description": "method for counting storm cells when lightning_option=1 or 2;",
+            "entries": "max_dom"
+        },
+        "cldtop_adjustment": {
+            "defaultValue": "0",
+            "description": "adjustment from LNB (in km) when  lightning_option=11; recommend =2",
+            "entries": "max_dom"
+        },
+        "iccg_method": {
+            "defaultValue": "0",
+            "description": "intra-cloud (IC) : cloud-to-ground (CG) partitioning method;",
+            "entries": "max_dom"
+        },
+        "iccg_prescribed_num": {
+            "defaultValue": "0.0",
+            "description": "numerator of the user-specified prescribed  IC:CG",
+            "entries": "max_dom"
+        },
+        "iccg_prescribed_den": {
+            "defaultValue": "1.0",
+            "description": "denomenator of the user-specified prescribed  IC:CG",
+            "entries": "max_dom"
+        },
+        "windfarm_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on the effects of wind  turbines in the atmospheric evolution",
+            "entries": "max_dom"
+        },
+        "windfarm_ij": {
+            "defaultValue": "0",
+            "description": "specifies to type of coordinate to use for wind turbine locations;",
+            "entries": "1"
+        },
+        "hailcast_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on hailcasting option",
+            "entries": "max_dom"
+        },
+        "haildt": {
+            "defaultValue": "0",
+            "description": "seconds between WRF-HAILCAST call(s) when hailcast_opt=1",
+            "entries": "max_dom"
+        },
+        "sf_surf_irr_scheme": {
+            "defaultValue": "0",
+            "description": "option to turn on surface irrigation scheme;",
+            "entries": "max_dom"
+        },
+        "irr_daily_amount": {
+            "defaultValue": "0",
+            "description": "the daily irrigation water amount (mm/day) applied",
+            "entries": "max_dom"
+        },
+        "irr_start_hour": {
+            "defaultValue": "0",
+            "description": "the local application start time for each  day (UTC value)",
+            "entries": "max_dom"
+        },
+        "irr_num_hours": {
+            "defaultValue": "0",
+            "description": "the number of hours to irrigate",
+            "entries": "max_dom"
+        },
+        "irr_start_julianday": {
+            "defaultValue": "0",
+            "description": "Julian day to start irrigation (included)",
+            "entries": "max_dom"
+        },
+        "irr_end_julianday": {
+            "defaultValue": "0",
+            "description": "Julian day to end irrigation (not included)",
+            "entries": "max_dom"
+        },
+        "irr_freq": {
+            "defaultValue": "1",
+            "description": "frequency (in days) of irrigation",
+            "entries": "max_dom"
+        },
+        "irr_ph": {
+            "defaultValue": "0",
+            "description": "phase of irrigation;",
+            "entries": "max_dom"
+        },
+        "bucket_mm": {
+            "defaultValue": "-1",
+            "description": "bucket reset value for water accumulation (in mm); useful for long (multi-year) simulations; default value of -1 means inactive",
+            "entries": "1"
+        },
+        "bucket_j": {
+            "defaultValue": "-1",
+            "description": "bucket reset value for energy accumulation (in Joules); useful for long (multi-year) simulations; default value of -1 means inactive",
+            "entries": "1"
+        },
+        "isftcflx": {
+            "defaultValue": "0",
+            "description": "alternative Ck (exchange coefficient for temperature and moisture) and Cd (drag coefficient for momentum) forulation for tropical storm application;",
+            "entries": "1"
+        },
+        "traj_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to activate forward trajectories",
+            "entries": "1"
+        },
+        "num_traj": {
+            "defaultValue": "1000",
+            "description": "number of trajectories to be released when traj_opt=1",
+            "entries": "1"
+        }
+    },
+    "stoch": {
+        "nens": {
+            "defaultValue": "1",
+            "description": "seed for random number stream; for  ensemble forecasts this parameter needs to be different for each member; the seed is a  function of initial start time to ensure  different random number streams are created  for forecasts starting from different intial  times; changing this seed changes the random  number streams for all activated stochastic  parameterization schemes",
+            "entries": "1"
+        },
+        "rand_perturb": {
+            "defaultValue": "0",
+            "description": "set to =1 to create a random perturbation field",
+            "entries": "max_dom"
+        },
+        "lengthscale_rand_pert": {
+            "defaultValue": "500000",
+            "description": "perturbation correlation lengthscale (meters)",
+            "entries": "max_dom"
+        },
+        "timescale_rand_pert": {
+            "defaultValue": "21600.0",
+            "description": "temporal decorrelation of random field (in seconds)",
+            "entries": "max_dom"
+        },
+        "gridpt_stddev_rand_pert": {
+            "defaultValue": "0.03",
+            "description": "standard deviation of random perturbation field at each grid point",
+            "entries": "max_dom"
+        },
+        "stddev_cutoff_rand_pert": {
+            "defaultValue": "3.0",
+            "description": "cutoff tails of perturbation pattern above this threshold standard deviation",
+            "entries": "max_dom"
+        },
+        "rand_pert_vertstruc": {
+            "defaultValue": "0",
+            "description": "vertical structure for random perturbation field;",
+            "entries": "1"
+        },
+        "iseed_rand_pert": {
+            "defaultValue": "17",
+            "description": "seed for random number stream; this is  combined with seed nens, signifying  ensemble member number and initial  start time to ensure different random  number streams are created for forecasts  starting from different initial times and for  different ensemble members",
+            "entries": "1"
+        },
+        "sppt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on stochastically-perturbed physics tendences (SPPT)",
+            "entries": "max_dom"
+        },
+        "lengthscale_sppt": {
+            "defaultValue": "150000",
+            "description": "random perturbation lengthscale (in meters)",
+            "entries": "max_dom"
+        },
+        "timescale_sppt": {
+            "defaultValue": "21600",
+            "description": "temporal decorrelation of random field (in seconds)",
+            "entries": "max_dom"
+        },
+        "sppt_vertstruc": {
+            "defaultValue": "0",
+            "description": "vertical structure for SPPT;",
+            "entries": "1"
+        },
+        "gridpt_stddev_sppt": {
+            "defaultValue": "0.5",
+            "description": "standard deviation of random perturbation field at each grid point",
+            "entries": "max_dom"
+        },
+        "stddev_cutoff_sppt": {
+            "defaultValue": "2.0",
+            "description": "cutoff tails of perturbation pattern above this threshold standard deviation",
+            "entries": "max_dom"
+        },
+        "iseed_sppt": {
+            "defaultValue": "53",
+            "description": "seed for random number stream for SPPT;  This is combined with parameter nens,  signifying ensemble member number and  initial start time to ensure different random  number streams for forecasts starting from  different initial times and for different  ensemble members",
+            "entries": "1"
+        },
+        "skebs": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on stochastic kinetic-energy backscatter scheme (SKEBS)",
+            "entries": "max_dom"
+        },
+        "tot_backscat_psi": {
+            "defaultValue": "1.0e-05",
+            "description": "total backscattered dissipation rate for streamfunction; controls amplitude of rotational wind perturbations (in m2/s2)",
+            "entries": "max_dom"
+        },
+        "tot_backscat_t": {
+            "defaultValue": "1.0e-06",
+            "description": "total backscattered dissipation rate for potential temperature; controls amplitude of potential temperature perturbations  (in m2/s2)",
+            "entries": "max_dom"
+        },
+        "ztau_psi": {
+            "defaultValue": "10800.0",
+            "description": "decorrelation time (in seconds) for streamfunction perturbations",
+            "entries": "1"
+        },
+        "ztau_t": {
+            "defaultValue": "10800.0",
+            "description": "decorrelation time (in seconds) for potential temperature perturbations",
+            "entries": "1"
+        },
+        "rexponent_psi": {
+            "defaultValue": "-1.83",
+            "description": "spectral slope for streamfunction  perturbations; -1.83 is default for a kinetic- energy forcing spectrum with slope -5/3)",
+            "entries": "1"
+        },
+        "rexponent_t": {
+            "defaultValue": "-1.83",
+            "description": "spectral slope for potential temperature perturbations; -1.83 is default for a potential energy forcing spectrum with slope -1.832)",
+            "entries": "1"
+        },
+        "kminforc": {
+            "defaultValue": "1",
+            "description": "minimal forcing wavenumber in longitude for  streamfunction perturbations",
+            "entries": "1"
+        },
+        "lminforc": {
+            "defaultValue": "1",
+            "description": "minimal forcing wavenumber in latitude for  streamfunction perturbations",
+            "entries": "1"
+        },
+        "kminforct": {
+            "defaultValue": "1",
+            "description": "minimal forcing wavenumber in longitude for  potential temperature perturbations",
+            "entries": "1"
+        },
+        "lminforct": {
+            "defaultValue": "1",
+            "description": "minimal forcing wavenumber in latitude for  potential temperature perturbations",
+            "entries": "1"
+        },
+        "kmaxforc": {
+            "defaultValue": "1000000",
+            "description": "maximal forcing wavenumber in longitude for  streamfunction perturbations; default is  maximal possible wavenumbers determined  by number of gridpoints in longitude",
+            "entries": "1"
+        },
+        "lmaxforc": {
+            "defaultValue": "1000000",
+            "description": "maximal forcing wavenumber in latitude for  streamfunction perturbations; default is  maximal possible wavenumbers determined  by number of gridpoints in latitude",
+            "entries": "1"
+        },
+        "kmaxforct": {
+            "defaultValue": "1000000",
+            "description": "maximal forcing wavenumber in longitude for  potential temperature perturbations; default  is maximal possible wavenumbers determined  by number of gridpoints in longitude",
+            "entries": "1"
+        },
+        "lmaxforct": {
+            "defaultValue": "1000000",
+            "description": "maximal forcing wavenumber in latitude for  potential temperature perturbations; default  is maximal possible wavenumbers determined  by number of gridpoints in latitude",
+            "entries": "1"
+        },
+        "zsigma2_eps": {
+            "defaultValue": "0.0833",
+            "description": "noise variance in autoregressive process  defining streamfunction perturbations",
+            "entries": "1"
+        },
+        "zsigma2_eta": {
+            "defaultValue": "0.0833",
+            "description": "noise variance in autoregressive process  defining potential temperature perturbations",
+            "entries": "1"
+        },
+        "skebs_vertstruc": {
+            "defaultValue": "0",
+            "description": "defines the vertical structure of random  pattern generator;",
+            "entries": "1"
+        },
+        "iseed_skebs": {
+            "defaultValue": "811",
+            "description": "seed for random number stream for skebs; this is combined with seed nens, signifying ensemble member number and  initial start time to ensure different random number streams for forecasts starting from different initial times and for different ensemble members",
+            "entries": "1"
+        },
+        "spp": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on stochastically-perturbed parameter scheme (SPP); only works with Grell Freitas convective scheme (cu_physics=3),  MYNN PBL scheme (bl_pbl_physics=5 or 6),  & RUC surface scheme (sf_surface_physics=3)",
+            "entries": "max_dom"
+        },
+        "spp_conv": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on perturbation of  parameters for Grell Freitas convective scheme (cu_physics=3)",
+            "entries": "max_dom"
+        },
+        "lengthscale_spp_conv": {
+            "defaultValue": "150000",
+            "description": "perturbation length scale (in meters); for Grell Freitas convective scheme (cu_physics=3)",
+            "entries": "max_dom"
+        },
+        "timescale_spp_conv": {
+            "defaultValue": "21600",
+            "description": "temporal decorrelation of random field  (in seconds); for Grell Freitas convective scheme (cu_physics=3)",
+            "entries": "max_dom"
+        },
+        "gridpt_stddev_spp_conv": {
+            "defaultValue": "0.3",
+            "description": "standard deviation of random perturbation  field at each grid point; for Grell Freitas convective scheme (cu_physics=3)",
+            "entries": "max_dom"
+        },
+        "stddev_cutoff_spp_conv": {
+            "defaultValue": "3.0",
+            "description": "cutoff tails of perturbation pattern above this  threshold standard deviation; for Grell Freitas convective scheme (cu_physics=3)",
+            "entries": "max_dom"
+        },
+        "vertstruc_spp_conv": {
+            "defaultValue": "1",
+            "description": "determines vertical structure for random perturbation; for Grell Freitas convective scheme (cu_physics=3)",
+            "entries": "1"
+        },
+        "iseed_spp_conv": {
+            "defaultValue": "171",
+            "description": "seed for random number stream for spp_conv; for Grell Freitas convective scheme (cu_physics=3)",
+            "entries": "1"
+        },
+        "spp_pbl": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on perturbation of  parameters for MYNN PBL scheme (bl_pbl_physics=5 or 6)",
+            "entries": "max_dom"
+        },
+        "lengthscale_spp_pbl": {
+            "defaultValue": "700000.0",
+            "description": "perturbation length scale (in meters); for MYNN PBL scheme (bl_pbl_physics=5 or 6)",
+            "entries": "max_dom"
+        },
+        "timescale_spp_pbl": {
+            "defaultValue": "21600.0",
+            "description": "temporal decorrelation of random field  (in seconds); for MYNN PBL scheme (bl_pbl_physics=5 or 6)",
+            "entries": "max_dom"
+        },
+        "gridpt_stddev_spp_pbl": {
+            "defaultValue": "0.15",
+            "description": "standard deviation of random perturbation  field at each grid point; for MYNN PBL scheme (bl_pbl_physics=5 or 6)",
+            "entries": "max_dom"
+        },
+        "stddev_cutoff_spp_pbl": {
+            "defaultValue": "2.0",
+            "description": "cutoff tails of perturbation pattern above this  threshold standard deviation; for MYNN PBL scheme (bl_pbl_physics=5 or 6)",
+            "entries": "max_dom"
+        },
+        "vertstruc_spp_pbl": {
+            "defaultValue": "1",
+            "description": "determines vertical structure for random perturbation; for MYNN PBL scheme (bl_pbl_physics=5 or 6)",
+            "entries": "1"
+        },
+        "iseed_spp_pbl": {
+            "defaultValue": "217",
+            "description": "seed for random number stream for spp_pbl; for MYNN PBL scheme (bl_pbl_physics=5 or 6)",
+            "entries": "1"
+        },
+        "spp_lsm": {
+            "defaultValue": "1",
+            "description": "Turns on perturbation of parameters for RUC LSM (sf_surface_physics=3)",
+            "entries": "max_dom"
+        },
+        "lengthscale_spp_lsm": {
+            "defaultValue": "50000",
+            "description": "perturbation length scale (in meters); for RUC LSM (sf_surface_physics=3)",
+            "entries": "max_dom"
+        },
+        "timescale_spp_lsm": {
+            "defaultValue": "86400",
+            "description": "temporal decorrelation of random field  (in seconds); for RUC LSM (sf_surface_physics=3)",
+            "entries": "max_dom"
+        },
+        "gridpt_stddev_spp_lsm": {
+            "defaultValue": "0.3",
+            "description": "standard deviation of random perturbation  field at each grid point; for RUC LSM (sf_surface_physics=3)",
+            "entries": "max_dom"
+        },
+        "stddev_cutoff_spp_lsm": {
+            "defaultValue": "3.0",
+            "description": "cutoff tails of perturbation pattern above this  threshold standard deviation; for RUC LSM (sf_surface_physics=3)",
+            "entries": "max_dom"
+        },
+        "vertstruc_spp_lsm": {
+            "defaultValue": "1",
+            "description": "determines vertical structure for random perturbation; for RUC LSM (sf_surface_physics=3)",
+            "entries": "1"
+        },
+        "iseed_spp_lsm": {
+            "defaultValue": "317",
+            "description": "seed for random number stream for spp_lsm; for RUC LSM (sf_surface_physics=3)",
+            "entries": "1"
+        },
+        "multi_perturb": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on stochastic perturbations  tailored for solar energy applications",
+            "entries": "max_dom"
+        },
+        "spdt": {
+            "defaultValue": "-1.0",
+            "description": "frequency to update stochastic perturbations  (in minutes); negative value indicates every  time step",
+            "entries": "max_dom"
+        },
+        "pert_farms": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to activate perturbations to  FARMS parameterization",
+            "entries": "max_dom"
+        },
+        "pert_farms_albedo": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb albedo",
+            "entries": "max_dom"
+        },
+        "pert_farms_aod": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb aod (aerosol optical depth)",
+            "entries": "max_dom"
+        },
+        "pert_farms_angexp": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb angexp (aerosol Angstrom exponent)",
+            "entries": "max_dom"
+        },
+        "pert_farms_aerasy": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb aerasy",
+            "entries": "max_dom"
+        },
+        "pert_farms_qv": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qv (water vapor mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_farms_qc": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qc (cloud water mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_farms_qs": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qs (snow mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_deng": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to activate perturbations to  Deng's shallow cumulus parameterization scheme (shcu_physics=5)",
+            "entries": "max_dom"
+        },
+        "pert_deng_qv": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qv (water vapor mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_deng_qc": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qc (cloud water mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_deng_t": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb temperature",
+            "entries": "max_dom"
+        },
+        "pert_deng_w": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb w (vertical velocity)",
+            "entries": "max_dom"
+        },
+        "pert_mynn": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to activate perturbations for  MYNN PBL schemes (bl_pbl_physics=5 or 6)",
+            "entries": "max_dom"
+        },
+        "pert_mynn_qv": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qv (water vapor mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_mynn_qc": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qc (cloud water mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_mynn_t": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb temperature",
+            "entries": "max_dom"
+        },
+        "pert_mynn_qke": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb w (vertical velocity)",
+            "entries": "max_dom"
+        },
+        "pert_noah": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to activate perturbations to  Noah LSM (sf_surface_physics=2)",
+            "entries": "max_dom"
+        },
+        "pert_noah_qv": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qv (water vapor mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_noah_smois": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb smois (soil moisture)",
+            "entries": "max_dom"
+        },
+        "pert_noah_t": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb temperature",
+            "entries": "max_dom"
+        },
+        "pert_noah_tslb": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb tslb (soil temperature)",
+            "entries": "max_dom"
+        },
+        "pert_thom": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to activate perturbations to  Thompson microphysics (mp_physics=8)",
+            "entries": "max_dom"
+        },
+        "pert_thom_qv": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qv (water vapor mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_thom_qc": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qc (cloud water mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_thom_qi": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qi (ice mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_thom_qs": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qs (snow mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_thom_ni": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb ni (ice number concentration)",
+            "entries": "max_dom"
+        },
+        "pert_cld3": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to activate perturbations to  clouds generated with icloud=3",
+            "entries": "max_dom"
+        },
+        "pert_cld3_qv": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb qv (water vapor mixing ratio)",
+            "entries": "max_dom"
+        },
+        "pert_cld3_t": {
+            "defaultValue": "0",
+            "description": "set to =1 to perturb temperature",
+            "entries": "max_dom"
+        },
+        "num_pert_3d": {
+            "defaultValue": "15",
+            "description": "Number of entries in STOCHPERT.TBL; no need to modify",
+            "entries": "1"
+        }
+    },
+    "dynamics": {
+        "hybrid_opt": {
+            "defaultValue": "2",
+            "description": "dynamical coordinate option;",
+            "entries": "1"
+        },
+        "etac": {
+            "defaultValue": "0.2",
+            "description": "znw(k) < etac; eta surfaces are isobaric; 0.2 is a good default value",
+            "entries": "1"
+        },
+        "rk_ord": {
+            "defaultValue": "3",
+            "description": "time integration scheme;",
+            "entries": "1"
+        },
+        "diff_opt": {
+            "defaultValue": "-1",
+            "description": "turbulence and mixing option;",
+            "entries": "max_dom"
+        },
+        "km_opt": {
+            "defaultValue": "-1",
+            "description": "eddy coefficient option;",
+            "entries": "max_dom"
+        },
+        "diff_6th_opt": {
+            "defaultValue": "0",
+            "description": "6th-order numerical diffusion option;",
+            "entries": "max_dom"
+        },
+        "diff_6th_factor": {
+            "defaultValue": "0.12",
+            "description": "6th-order numerical diffusion  non-dimensional rate; max value 1.0  corresponds to complete removal of 2dx  wave in one timestep",
+            "entries": "max_dom"
+        },
+        "diff_6th_slopeopt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on 6th-order numerical  diffusion - terrain-slope tapering",
+            "entries": "max_dom"
+        },
+        "diff_6th_thresh": {
+            "defaultValue": "0.1",
+            "description": "slope threshold (m/m) that turns off 6th  order diff in steep terrain",
+            "entries": "max_dom"
+        },
+        "damp_opt": {
+            "defaultValue": "3",
+            "description": "upper-level damping flag;",
+            "entries": "1"
+        },
+        "use_theta_m": {
+            "defaultValue": "1",
+            "description": "use moist theta(1+1.61Qv); set to 0 to turn off",
+            "entries": "1"
+        },
+        "use_q_diabatic": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on inclusion of QV and QC  tendencies in advection; helps to produce  correct solution in an idealized 'moist  benchmark' test case (Bryan, 2014); in  real-data testing, reduce time_step to  maintain stability",
+            "entries": "1"
+        },
+        "c_s": {
+            "defaultValue": "0.25",
+            "description": "Smagorinsky coefficient",
+            "entries": "max_dom"
+        },
+        "c_k": {
+            "defaultValue": "0.15",
+            "description": "TKE coefficient",
+            "entries": "max_dom"
+        },
+        "zdamp": {
+            "defaultValue": "5000",
+            "description": "damping depth (in meters) from model top",
+            "entries": "max_dom"
+        },
+        "dampcoef": {
+            "defaultValue": "0.2",
+            "description": "damping coefficient; see damp_opt",
+            "entries": "max_dom"
+        },
+        "w_damping": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on vertical velocity  damping flag; for operational use",
+            "entries": "1"
+        },
+        "w_crit_cfl": {
+            "defaultValue": "1",
+            "description": "default vertical courant number where  vertical damping begins",
+            "entries": "1"
+        },
+        "zadvect_implicit": {
+            "defaultValue": "0",
+            "description": "set to =1 to use implicit/explicit vertical  advection (IEVA) scheme",
+            "entries": "1"
+        },
+        "base_pres": {
+            "defaultValue": "100000",
+            "description": "base state surface pressure (in Pa);  real-data cases only; not recommended to  change default value",
+            "entries": "1"
+        },
+        "base_temp": {
+            "defaultValue": "290",
+            "description": "base state temperature (in K); real-data cases only",
+            "entries": "1"
+        },
+        "base_lapse": {
+            "defaultValue": "50",
+            "description": "lapse rate (in K); not recommended to  change default value; real-data cases only",
+            "entries": "1"
+        },
+        "iso_temp": {
+            "defaultValue": "200",
+            "description": "isothermal temperature in the statosphere;  enables the model to be extended to 5 mb;  real-data cases only",
+            "entries": "1"
+        },
+        "base_pres_strat": {
+            "defaultValue": "0",
+            "description": "base state pressure (in Pa) at the bottom  of the stratosphere; US Standard  atmosphere 55 hPa; real-data cases only",
+            "entries": "1"
+        },
+        "base_lapse_strat": {
+            "defaultValue": "-11",
+            "description": "base state lapse rate (dT/d(lnP)) in the  stratosphere; approximate to US standard  atmosphere -12K; real-data cases only",
+            "entries": "1"
+        },
+        "use_baseparm_fr_nml": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. for backward compatibility;  to use with wrfinput files produced prior to  V3.4",
+            "entries": "1"
+        },
+        "use_input_w": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use vertical velocity from  the input file",
+            "entries": "1"
+        },
+        "khdif": {
+            "defaultValue": "0",
+            "description": "horizontal diffusion constant (m2/s)",
+            "entries": "max_dom"
+        },
+        "kvdif": {
+            "defaultValue": "0",
+            "description": "vertical diffusion constant (m2/s)",
+            "entries": "max_dom"
+        },
+        "smdiv": {
+            "defaultValue": "0.1",
+            "description": "divergence damping; 0.1 is typical",
+            "entries": "max_dom"
+        },
+        "emdiv": {
+            "defaultValue": "0.01",
+            "description": "external-mode filter coef for mass  coordinate model; 0.01 is typical for  real-data cases",
+            "entries": "max_dom"
+        },
+        "epssm": {
+            "defaultValue": "0.1",
+            "description": "time off-centering (slightly forward) for  vertical pressure gradient (or sound waves) in an effort to damp 3-d divergence; set no greater than 0.5",
+            "entries": "max_dom"
+        },
+        "non-hydrostatic": {
+            "defaultValue": ".true.",
+            "description": "model is run in non-hydrostatic mode;  set to .false. to run in hydrostatic mode",
+            "entries": "max_dom"
+        },
+        "pert_coriolis": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to have coriolis only act on  wind perturbation; only for idealized cases",
+            "entries": "max_dom"
+        },
+        "top_lid": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. for zero vertical motion at the top of domain; only for idealized cases",
+            "entries": "max_dom"
+        },
+        "mix_full_fields": {
+            "defaultValue": ".false.",
+            "description": "used with diff_opt=2; recommended setting is .true. except for highly-idealized numerical tests; damp_opt must not =1; a setting of .false. subtracts 1D base-state profile before mixing",
+            "entries": "max_dom"
+        },
+        "mix_isotropic": {
+            "defaultValue": "0",
+            "description": "if =0 : anistropic vertical/horizontal diffusion",
+            "entries": "max_dom"
+        },
+        "mix_upper_bound": {
+            "defaultValue": "0.1",
+            "description": "non-dimensional upper limit for diffusion  coefficients; only works with km_opt=2, 3",
+            "entries": "max_dom"
+        },
+        "h_mom_adv_order": {
+            "defaultValue": "5",
+            "description": "horizontal momentum advection order;  5=5th, etc.",
+            "entries": "max_dom"
+        },
+        "v_mom_adv_order": {
+            "defaultValue": "3",
+            "description": "vertical momentum advection order;  3=3rd, etc.",
+            "entries": "max_dom"
+        },
+        "h_sca_adv_order": {
+            "defaultValue": "5",
+            "description": "horizontal scalar advection order; 5=5th, etc.",
+            "entries": "max_dom"
+        },
+        "v_sca_adv_order": {
+            "defaultValue": "3",
+            "description": "vertical scalar advection order; 3=3rd, etc.",
+            "entries": "max_dom"
+        },
+        "time_step_sound": {
+            "defaultValue": "0",
+            "description": "number of sound steps per timestep;  if using a time_step much larger than  6xDX (in km), increase number of  sound steps",
+            "entries": "max_dom"
+        },
+        "moist_adv_opt": {
+            "defaultValue": "1",
+            "description": "advection option for moisture;",
+            "entries": "max_dom"
+        },
+        "scalar_adv_opt": {
+            "defaultValue": "1",
+            "description": "advection option for scalars;",
+            "entries": "max_dom"
+        },
+        "tke_adv_opt": {
+            "defaultValue": "1",
+            "description": "advection option for TKE;",
+            "entries": "max_dom"
+        },
+        "phi_adv_z": {
+            "defaultValue": "1",
+            "description": "vertical advection option for geopotential;",
+            "entries": "max_dom"
+        },
+        "chem_adv_opt": {
+            "defaultValue": "1",
+            "description": "advection option for variables;",
+            "entries": "max_dom"
+        },
+        "tracer_adv_opt": {
+            "defaultValue": "1",
+            "description": "advection option for tracer variables;",
+            "entries": "max_dom"
+        },
+        "momentum_adv_opt": {
+            "defaultValue": "1",
+            "description": "advection option for momentum;",
+            "entries": "max_dom"
+        },
+        "tke_drag_coefficient": {
+            "defaultValue": "0",
+            "description": "surface drag coefficient (Cd, dimensionless); only works with diff_opt=2",
+            "entries": "max_dom"
+        },
+        "tke_heat_flux": {
+            "defaultValue": "0",
+            "description": "surface thermal flux (H/rho x cp); (K ms-1);  only work with diff_opt=2",
+            "entries": "max_dom"
+        },
+        "fft_filter_lat": {
+            "defaultValue": "91",
+            "description": "the latitude (in degrees) above which the  polar filter is turned on for a global model simulation; -45 is a reasonable latitude  to start using polar filters",
+            "entries": "1"
+        },
+        "coupled_filtering": {
+            "defaultValue": ".true.",
+            "description": "a setting of =.true. means mu coupled  scalar arrays are run through the polar filters",
+            "entries": "1"
+        },
+        "pos_def": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to remove negative values of  scalar arrays by setting minimum value to  zero",
+            "entries": "1"
+        },
+        "swap_pole_with_next_j": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to replace the entire  j=1 (jds-1) with the values from j=2 (jds-2)",
+            "entries": "1"
+        },
+        "actual_distance_average": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to average the field at each  i location in the j-loop with a number of  grid points based on a map-factor ratio",
+            "entries": "1"
+        },
+        "gwd_opt": {
+            "defaultValue": "0",
+            "description": "gravity wave drag option; can be used for  all grid sizes with appropriate input fields  from geogrid;",
+            "entries": "max_dom"
+        },
+        "do_avgflx_em": {
+            "defaultValue": "0",
+            "description": "set to =1 to output time-averaged  mass-coupled advective velocities",
+            "entries": "max_dom"
+        },
+        "do_avgflx_cugd": {
+            "defaultValue": "0",
+            "description": "set to =1 to output time-averaged  convective mass-fluxes from the  Grell-Devenyi ensemble scheme; only works when do_avgflx_em =1 and cu_physics=93",
+            "entries": "max_dom"
+        },
+        "sfs_opt": {
+            "defaultValue": "0",
+            "description": "nonlinear backscatter and anisotrophy  (NBA);",
+            "entries": "max_dom"
+        },
+        "m_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to add output of Mij stress terms when NBA is not used",
+            "entries": "max_dom"
+        },
+        "tracer_opt": {
+            "defaultValue": "0",
+            "description": "set to =2 to activate eight pre-defined tracers (found in the Registry file)",
+            "entries": "max_dom"
+        },
+        "rad_nudge": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on nudging toward initial sounding in the TC idealized case",
+            "entries": "1"
+        },
+        "moist_mix2_off": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to deactivate 2nd-order  horizontal mixing for moisture",
+            "entries": "max_dom"
+        },
+        "chem_mix2_off": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to deactivate 2nd-order  horizontal mixing for chem species",
+            "entries": "max_dom"
+        },
+        "tracer_mix2_off": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to deactivate 2nd-order  horizontal mixing for tracers",
+            "entries": "max_dom"
+        },
+        "scalar_mix2_off": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to deactivate 2nd-order  horizontal mixing for scalars",
+            "entries": "max_dom"
+        },
+        "tke_mix2_off": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to deactivate 2nd-order  horizontal mixing for TKE",
+            "entries": "max_dom"
+        },
+        "moist_mix6_off": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to deactivate 6th-order  horizontal mixing for moisture",
+            "entries": "max_dom"
+        },
+        "chem_mix6_off": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to deactivate 6th-order  horizontal mixing for chem species",
+            "entries": "max_dom"
+        },
+        "tracer_mix6_off": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to deactivate 6th-order  horizontal mixing for tracers",
+            "entries": "max_dom"
+        },
+        "scalar_mix6_off": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to deactivate 6th-order  horizontal mixing for scalars",
+            "entries": "max_dom"
+        },
+        "tke_mix6_off": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to deactivate 6th-order  horizontal mixing for TKE",
+            "entries": "max_dom"
+        }
+    },
+    "bdy_control": {
+        "spec_bdy_width": {
+            "defaultValue": "5",
+            "description": "total number of rows for specified boundary  value nudging; only for real-data cases",
+            "entries": "1"
+        },
+        "spec_zone": {
+            "defaultValue": "1",
+            "description": "number of points in specified zone when specified=.true.; only for real-data cases",
+            "entries": "1"
+        },
+        "relax_zone": {
+            "defaultValue": "4",
+            "description": "number of points in relaxation zone when specified=.true.; only for real-data cases",
+            "entries": "1"
+        },
+        "specified": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use a specified boundary  condition; can only be used for domain 1; only for real-data cases",
+            "entries": "max_dom"
+        },
+        "spec_exp": {
+            "defaultValue": "0",
+            "description": "exponential multiplier for relaxation zone  ramp when specified=.true.; 0 = linear ramp;  0.33 = ~3*DX exp decay factor; only for real-data cases",
+            "entries": "1"
+        },
+        "multi_bdy_files": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to instruct real.exe to generate multiple wrfbdy files (one time period per  file, using bdy_inname=wrfbdy_d01_<date>)",
+            "entries": "1"
+        },
+        "periodic_x": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use periodic boundary  conditions in the x-direction",
+            "entries": "max_dom"
+        },
+        "symmetric_xs": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use symmetric boundary  conditions on the x start side (west side)",
+            "entries": "max_dom"
+        },
+        "symmetric_xe": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use symmetric boundary  conditions on the x end side (east side)",
+            "entries": "max_dom"
+        },
+        "open_xs": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use open boundary  conditions on the x start side (west side)",
+            "entries": "max_dom"
+        },
+        "open_xe": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use open boundary  conditions on the x end side (east side)",
+            "entries": "max_dom"
+        },
+        "periodic_y": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use periodic boundary  conditions in the y-direction",
+            "entries": "max_dom"
+        },
+        "symmetric_ys": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use symmetric boundary  conditions on the y start side (south side)",
+            "entries": "max_dom"
+        },
+        "symmetric_ye": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use symmetric boundary  conditions on the y end side (north side)",
+            "entries": "max_dom"
+        },
+        "open_ys": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use open boundary  conditions on the y start side (south side)",
+            "entries": "max_dom"
+        },
+        "open_ye": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use open boundary  conditions on the y end side (north side)",
+            "entries": "max_dom"
+        },
+        "nested": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use nested boundary  conditions; must be set to .true. for nests",
+            "entries": "max_dom"
+        },
+        "polar": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use a polar boundary  condition (v=0 at polarward-most v-point);  use for global application",
+            "entries": "max_dom"
+        },
+        "constant_bc": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use a constant boundary  condition; for dfi_opt>0",
+            "entries": "1"
+        },
+        "have_bcs_moist": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use the microphysics  variables from the wrfbdy file in wrf.exe after running ndown",
+            "entries": "max_dom"
+        },
+        "have_bcs_scalar": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to use scalar variables from  the wrfbdy file in wrf.exe after running  ndown",
+            "entries": "max_dom"
+        }
+    },
+    "fdda": {
+        "grid_fdda": {
+            "defaultValue": "0",
+            "description": "option to turn on grid nudging;",
+            "entries": "max_dom"
+        },
+        "gfdda_inname": {
+            "defaultValue": "wrffdda_d<domain>",
+            "description": "defined name of grid nudging input file  that is produced when running real.exe",
+            "entries": "1"
+        },
+        "gfdda_interval_m": {
+            "defaultValue": "0",
+            "description": "time interval (in mins) between analysis times",
+            "entries": "max_dom"
+        },
+        "gfdda_end_h": {
+            "defaultValue": "0",
+            "description": "time (in hours) from the initial forecast time, to stop nudging",
+            "entries": "max_dom"
+        },
+        "io_form_gfdda": {
+            "defaultValue": "2",
+            "description": "output format for grid analysis data;",
+            "entries": "1"
+        },
+        "fgdt": {
+            "defaultValue": "0",
+            "description": "calculation frequency (in mins) for analysis nudging; 0=every time step, which is recommended",
+            "entries": "max_dom"
+        },
+        "if_no_pbl_nudging_uv": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn off nudging of u and v in the PBL",
+            "entries": "max_dom"
+        },
+        "if_no_pbl_nudging_t": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn off nudging of temperature in the PBL",
+            "entries": "max_dom"
+        },
+        "if_no_pbl_nudging_q": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn off nudging of qvapor in the PBL",
+            "entries": "max_dom"
+        },
+        "guv": {
+            "defaultValue": "0",
+            "description": "nudging coefficient for u and v (s-1); a  reasonable value is 0.0003",
+            "entries": "max_dom"
+        },
+        "gt": {
+            "defaultValue": "0",
+            "description": "nudging coefficient for temperature (s-1);  a reasonable value is 0.0003",
+            "entries": "max_dom"
+        },
+        "gq": {
+            "defaultValue": "0",
+            "description": "nudging coefficient for qvapor (s-1); a  reasonable value is 0.0003",
+            "entries": "max_dom"
+        },
+        "if_ramping": {
+            "defaultValue": "0",
+            "description": "the method for ending nudging;",
+            "entries": "1"
+        },
+        "dtramp_min": {
+            "defaultValue": "0",
+            "description": "timestep (in mins) for ramping function",
+            "entries": "1"
+        },
+        "grid_sfdda": {
+            "defaultValue": "0",
+            "description": "type of surface grid nudging;",
+            "entries": "max_dom"
+        },
+        "sgfdda_inname": {
+            "defaultValue": "wrfsfdda_d<domain>",
+            "description": "defined name of surface nudging input file  that comes from the OBSGRID program",
+            "entries": "1"
+        },
+        "sgfdda_interval_m": {
+            "defaultValue": "0",
+            "description": "time interval (in mins) between surface  analysis times",
+            "entries": "max_dom"
+        },
+        "sgfdda_end_h": {
+            "defaultValue": "0",
+            "description": "time (in hours) from the initial forecast time, to stop surface nudging",
+            "entries": "max_dom"
+        },
+        "io_form_sgfdda": {
+            "defaultValue": "2",
+            "description": "surface analysis output format;",
+            "entries": "1"
+        },
+        "guv_sfc": {
+            "defaultValue": "0",
+            "description": "surface nudging coefficient for u and v (s-1); a reasonable value is 0.0003",
+            "entries": "max_dom"
+        },
+        "gt_sfc": {
+            "defaultValue": "0",
+            "description": "(s-1); a reasonable value is 0.0003",
+            "entries": "max_dom"
+        },
+        "gq_sfc": {
+            "defaultValue": "0",
+            "description": "surface nudging coefficient for qvapor (s-1); a reasonable value is 0.00001",
+            "entries": "max_dom"
+        },
+        "rinblw": {
+            "defaultValue": "0",
+            "description": "radius of influence used to determine the confidence (or weights) for analysis, which is based on the distance between the grid point to the nearest observation; analysis for grid points without nearvy observations is used at a reduced weight",
+            "entries": "max_dom"
+        },
+        "fgdtzero": {
+            "defaultValue": "0",
+            "description": "set to =1 to nudge tendencies to zero in between fdda calls",
+            "entries": "max_dom"
+        },
+        "if_no_pbl_nudging_ph": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn off nudging of perturbation geopotential (ph) in the PBL",
+            "entries": "max_dom"
+        },
+        "if_zfac_uv": {
+            "defaultValue": "0",
+            "description": "determines which layers nudging will occur  for u and v;",
+            "entries": "max_dom"
+        },
+        "k_zfac_uv": {
+            "defaultValue": "0",
+            "description": "below this model level, nudging is turned  off for u and v",
+            "entries": "max_dom"
+        },
+        "dk_zfac_uv": {
+            "defaultValue": "1",
+            "description": "depth (in k dimension) between  k_zfac_uv to dk_zfac_uv where nudging increases linearly to full strength",
+            "entries": "max_dom"
+        },
+        "if_zfac_t": {
+            "defaultValue": "0",
+            "description": "determines which layers nudging will occur  for temperature;",
+            "entries": "max_dom"
+        },
+        "k_zfac_t": {
+            "defaultValue": "0",
+            "description": "below this model level, nudging is turned  off for temperature",
+            "entries": "max_dom"
+        },
+        "dk_zfac_t": {
+            "defaultValue": "1",
+            "description": "depth (in k dimension) between  k_zfac_t to dk_zfac_t where nudging increases linearly to full strength",
+            "entries": "max_dom"
+        },
+        "if_zfac_ph": {
+            "defaultValue": "0",
+            "description": "determines which layers nudging will occur  for perturbation geopotential (ph);",
+            "entries": "max_dom"
+        },
+        "k_zfac_ph": {
+            "defaultValue": "0",
+            "description": "below this model level, nudging is turned  off for perturbation geopotential (ph)",
+            "entries": "max_dom"
+        },
+        "dk_zfac_ph": {
+            "defaultValue": "1",
+            "description": "depth (in k dimension) between  k_zfac_ph to dk_zfac_ph where nudging increases linearly to full strength",
+            "entries": "max_dom"
+        },
+        "if_zfac_q": {
+            "defaultValue": "0",
+            "description": "determines which layers nudging will occur  for qvapor;",
+            "entries": "max_dom"
+        },
+        "k_zfac_q": {
+            "defaultValue": "0",
+            "description": "below this model level, nudging is turned  off for qvapor",
+            "entries": "max_dom"
+        },
+        "dk_zfac_q": {
+            "defaultValue": "1",
+            "description": "depth (in k dimension) between  k_zfac_q to dk_zfac_q where nudging increases linearly to full strength",
+            "entries": "max_dom"
+        },
+        "gph": {
+            "defaultValue": "0",
+            "description": "nudging coefficient for perturbation geopotential (ph); a reasonable value is 0.0003",
+            "entries": "1"
+        },
+        "ktrop": {
+            "defaultValue": "0",
+            "description": "option to cap spectral nudging of potential temperature and water vapor mixing ratio at a user-defined layer above the PBL; nominally selected to represent the tropopause",
+            "entries": "1"
+        },
+        "xwavenum": {
+            "defaultValue": "0",
+            "description": "top wave number to nudge in the x-direction; a reasonable value is 3",
+            "entries": "max_dom"
+        },
+        "ywavenum": {
+            "defaultValue": "0",
+            "description": "top wave number to nudge in the y-direction; a reasonable value is 3",
+            "entries": "max_dom"
+        },
+        "obs_nudge_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on observational nudging;  must also set auxinput11_invterval and  auxinput11_end_h under &time_control in namelist.input",
+            "entries": "max_dom"
+        },
+        "max_obs": {
+            "defaultValue": "0",
+            "description": "maximum number of observations used for a domain during any given time window",
+            "entries": null
+        },
+        "fdda_start": {
+            "defaultValue": "0",
+            "description": "observational nudging start time (in mins)",
+            "entries": "max_dom"
+        },
+        "fdda_end": {
+            "defaultValue": "0",
+            "description": "observational nudging end time (in mins)",
+            "entries": "max_dom"
+        },
+        "obs_nudge_wind": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on wind nudging",
+            "entries": "max_dom"
+        },
+        "obs_coef_wind": {
+            "defaultValue": "0",
+            "description": "nudging coefficient for wind (s-1)",
+            "entries": "max_dom"
+        },
+        "obs_nudge_temp": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on temperature nudging",
+            "entries": "max_dom"
+        },
+        "obs_coef_temp": {
+            "defaultValue": "0",
+            "description": "nudging coefficient for temperature (s-1)",
+            "entries": "max_dom"
+        },
+        "obs_nudge_mois": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on vapor mixing ratio nudging",
+            "entries": "max_dom"
+        },
+        "obs_coef_mois": {
+            "defaultValue": "0",
+            "description": "nudging coefficient for vapor mixing ratio (s-1)",
+            "entries": "max_dom"
+        },
+        "obs_rinxy": {
+            "defaultValue": "0",
+            "description": "horizontal radius of influence (in km)",
+            "entries": "max_dom"
+        },
+        "obs_rinsig": {
+            "defaultValue": "0",
+            "description": "vertical radius of influence (in eta)",
+            "entries": "1"
+        },
+        "obs_twindo": {
+            "defaultValue": "0",
+            "description": "half-period time window over which an  observation is used for nudging (in hours)",
+            "entries": "max_dom"
+        },
+        "obs_npfi": {
+            "defaultValue": "0",
+            "description": "frequency in coarse grid timesteps for diagnostic prints",
+            "entries": "1"
+        },
+        "obs_ionf": {
+            "defaultValue": "1",
+            "description": "frequency in coarse grid timesteps for observational input and error calculation",
+            "entries": "max_dom"
+        },
+        "obs_idynin": {
+            "defaultValue": "0",
+            "description": "for dynamic initialization, turns on  ramping-down function to gradually turn off FDDA before the pure forecast",
+            "entries": "1"
+        },
+        "obs_dtramp": {
+            "defaultValue": "0",
+            "description": "time period (in mins) over which the  nudging is ramped down from one to zero",
+            "entries": "1"
+        },
+        "obs_prt_max": {
+            "defaultValue": "1000",
+            "description": "maximum allowed obs entries in diagnostic  printout",
+            "entries": "1"
+        },
+        "obs_prt_freq": {
+            "defaultValue": "1000",
+            "description": "frequency in observation index for  diagnostic printout",
+            "entries": "max_dom"
+        },
+        "obs_ipf_in4dob": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to print observational input  diagnostics",
+            "entries": "1"
+        },
+        "obs_ipf_errob": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to print observational error  diagnostics",
+            "entries": "1"
+        },
+        "obs_ipf_nudob": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to print observational nudging  diagnostics",
+            "entries": "1"
+        },
+        "obs_ipf_init": {
+            "defaultValue": ".true.",
+            "description": "enables observational printed warning  messages",
+            "entries": "1"
+        },
+        "obs_no_pbl_nudge_uv": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn off wind nudging within  the PBL",
+            "entries": "max_dom"
+        },
+        "obs_no_pbl_nudge_t": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn off temperature nudging  within the PBL",
+            "entries": "max_dom"
+        },
+        "obs_no_pbl_nudge_q": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn off moisture nudging within  the PBL",
+            "entries": "max_dom"
+        },
+        "obs_nudgezfullr1_uv\nobs_nudgezfullr1_t\nobs_nudgezfullr1_q": {
+            "defaultValue": "50",
+            "description": "vertical influence of full weight height for  lowest model level observations, PBL   regime 1, winds (uv), temperature (t), and moisture (q)",
+            "entries": "1"
+        },
+        "obs_nudgezrampr1_uv\nobs_nudgezrampr1_t\nobs_nudgezrampr1_q": {
+            "defaultValue": "50",
+            "description": "vertical influence of ramp-to-zero height  for lowest model level observations,  regime 1, winds (uv), temperature (t), and moisture (q)",
+            "entries": "1"
+        },
+        "obs_nudgezfullr2_uv\nobs_nudgezfullr2_t\nobs_nudgezfullr2_q": {
+            "defaultValue": "50",
+            "description": "Vertical influence of full weight height for  lowest model level observations, regime 2,  winds (uv), temperature (t), and moisture (q)",
+            "entries": "1"
+        },
+        "obs_nudgezrampr2_uv\nobs_nudgezrampr2_t\nobs_nudgezrampr2_q": {
+            "defaultValue": "50",
+            "description": "vertical influence of ramp-to-zero height  for lowest model level observations,  regime 2, winds (uv), temperature (t), and moisture (q)",
+            "entries": "1"
+        },
+        "obs_nudgezfullr4_uv\nobs_nudgezfullr4_t\nobs_nudgezfullr4_q": {
+            "defaultValue": "-5000",
+            "description": "Vertical influence of full weight height for  lowest model level observations, regime 4,  winds (uv), temperature (t), and moisture (q)",
+            "entries": "1"
+        },
+        "obs_nudgezrampr4_uv\nobs_nudgezrampr4_t\nobs_nudgezrampr4_q": {
+            "defaultValue": "50",
+            "description": "vertical influence of ramp-to-zero height  for lowest model level observations,  regime 4, winds (uv), temperature (t), and moisture (q)",
+            "entries": "1"
+        },
+        "obs_nudgezfullmin": {
+            "defaultValue": "50",
+            "description": "minimum depth (in meters) through which  the vertical influence function remains 1.0",
+            "entries": "1"
+        },
+        "obs_nudgezrampmin": {
+            "defaultValue": "50",
+            "description": "minimum depth (in meters) through which  the vertical influence function decreases  from 1 to 0",
+            "entries": "1"
+        },
+        "obs_nudgezmax": {
+            "defaultValue": "3000",
+            "description": "max depth (in meters) in which vertical  influence function is non-zero",
+            "entries": "1"
+        },
+        "obs_sfcfact": {
+            "defaultValue": "1.0",
+            "description": "scale factor applied to the time window  for surface observations",
+            "entries": "1"
+        },
+        "obs_sfcfacr": {
+            "defaultValue": "1.0",
+            "description": "scale factor applied to horizontal radius  of influence for surface observations",
+            "entries": "1"
+        },
+        "obs_dpsmx": {
+            "defaultValue": "7.5",
+            "description": "max pressure change ( in cb) allowed within  the horizontal radius of influence",
+            "entries": "1"
+        },
+        "obs_sfc_scheme_horiz": {
+            "defaultValue": "0",
+            "description": "horizontal spreading scheme for surface  observations;",
+            "entries": "1"
+        },
+        "obs_sfc_scheme_vert": {
+            "defaultValue": "0",
+            "description": "vertical spreading scheme for surface  observations;",
+            "entries": "1"
+        },
+        "obs_max_sndng_gap": {
+            "defaultValue": "20",
+            "description": "max allowed pressure gap (in cb) between  soundings for interpolation",
+            "entries": "1"
+        },
+        "obs_scl_neg_qv_innov": {
+            "defaultValue": "0",
+            "description": "set to =1 to prevent nudging toward  negative Qv",
+            "entries": "1"
+        }
+    },
+    "noah_mp": {
+        "dveg": {
+            "defaultValue": "4",
+            "description": "LAI = leaf area index FVEG = vegetation fraction  SHDFAC = model variable for veg fraction",
+            "entries": "1"
+        },
+        "opt_crs": {
+            "defaultValue": "1",
+            "description": "stomatal resistance option;",
+            "entries": "1"
+        },
+        "opt_sfc": {
+            "defaultValue": "1",
+            "description": "surface layer drag coefficient calculation;",
+            "entries": "1"
+        },
+        "opt_btr": {
+            "defaultValue": "1",
+            "description": "soil moisture factor for stomatal resistance;",
+            "entries": "1"
+        },
+        "opt_run": {
+            "defaultValue": "3",
+            "description": "runoff and groundwater option;",
+            "entries": "1"
+        },
+        "opt_infdv": {
+            "defaultValue": "0",
+            "description": "infiltration option in dynamic VIC runoff scheme; only works when opt_run=8; works  in V4.4+;",
+            "entries": "1"
+        },
+        "opt_frz": {
+            "defaultValue": "1",
+            "description": "supercooled liquid water option;",
+            "entries": "1"
+        },
+        "opt_inf": {
+            "defaultValue": "1",
+            "description": "soil permeability option;",
+            "entries": "1"
+        },
+        "opt_rad": {
+            "defaultValue": "3",
+            "description": "radiative transfer option;",
+            "entries": "1"
+        },
+        "opt_alb": {
+            "defaultValue": "2",
+            "description": "ground surface albedo option;",
+            "entries": "1"
+        },
+        "opt_snf": {
+            "defaultValue": "1",
+            "description": "precipitation partitioning between snow and rain;",
+            "entries": "1"
+        },
+        "opt_tbot": {
+            "defaultValue": "2",
+            "description": "soil temperature lower boundary condition;",
+            "entries": "1"
+        },
+        "opt_stc": {
+            "defaultValue": "1",
+            "description": "snow/soil temperature time scheme;",
+            "entries": "1"
+        },
+        "opt_gla": {
+            "defaultValue": "1",
+            "description": "glacier treatment option;",
+            "entries": "1"
+        },
+        "opt_rsf": {
+            "defaultValue": "1",
+            "description": "surface evaporation resistence option;",
+            "entries": "1"
+        },
+        "opt_soil": {
+            "defaultValue": "1",
+            "description": "options for defining soil properties; geogrid  must have been run with GEOGRID.TBL.ARW.noahmp; use with caution",
+            "entries": "1"
+        },
+        "opt_pedo": {
+            "defaultValue": "1",
+            "description": "option for pedotransfer functions; only works  when opt_soil=3; geogrid must have been  run with GEOGRID.TBL.ARW.noahmp; use  with caution;",
+            "entries": "1"
+        },
+        "opt_crop": {
+            "defaultValue": "0",
+            "description": "options for crop model;",
+            "entries": "1"
+        },
+        "opt_irr": {
+            "defaultValue": "0",
+            "description": "irrigation option; geogrid must have been run with GEOGRID.TBL.ARW.noahmp; use with caution",
+            "entries": "1"
+        },
+        "opt_irrm": {
+            "defaultValue": "0",
+            "description": "options for irrigation method; only works when opt_irr>0; geogrid must have been run with GEOGRID.TBL.ARW.noahmp; use with caution;",
+            "entries": "1"
+        },
+        "opt_tdrn": {
+            "defaultValue": "0",
+            "description": "tile drainage option; only confirmed to work with opt_run=3; geogrid must have been run with GEOGRID.TBL.ARW.noahmp; use with caution; new since V4.4;",
+            "entries": "1"
+        },
+        "soiltstep": {
+            "defaultValue": null,
+            "description": "soil process timestep (in seconds) for solving soil water and temperature; new since V4.4;",
+            "entries": "1"
+        },
+        "noahmp_output": {
+            "defaultValue": "1",
+            "description": "Noah-MP output levels; new since V4.4;",
+            "entries": "1"
+        },
+        "noahmp_acc_dt": {
+            "defaultValue": null,
+            "description": "bucket reset time interval (mins) between outputs for accumulation; only works with noahmp_output=3",
+            "entries": "1"
+        }
+    },
+    "dfi_control": {
+        "dfi_opt": {
+            "defaultValue": "0",
+            "description": "digital filter initialization option; supports nesting with no feedback;",
+            "entries": "1"
+        },
+        "dfi_nfilter": {
+            "defaultValue": "7",
+            "description": "type of digital filter to use when dfi_opt>0;",
+            "entries": "1"
+        },
+        "dfi_write_filtered_input": {
+            "defaultValue": ".true.",
+            "description": "when set to =.true., writes a wfinput file with a filtered model state before beginning a forecast",
+            "entries": "1"
+        },
+        "dfi_write_dfi_history": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to write wrfout files during filtering integration",
+            "entries": "1"
+        },
+        "dfi_cutoff_seconds": {
+            "defaultValue": "3600",
+            "description": "cutoff period (in seconds) for the filter;  should not be longer than the filter window",
+            "entries": "1"
+        },
+        "dfi_time_dim": {
+            "defaultValue": "1000",
+            "description": "maximum number of time steps for the filtering period; this value can be larger than necessary",
+            "entries": "1"
+        },
+        "dfi_bckstop_year": {
+            "defaultValue": "2004",
+            "description": "4-digit year of stop time for backward DFI  integration",
+            "entries": "1"
+        },
+        "dfi_bckstop_month": {
+            "defaultValue": "3",
+            "description": "2-digit month of stop time for backward DFI  integration",
+            "entries": "1"
+        },
+        "dfi_bckstop_day": {
+            "defaultValue": "13",
+            "description": "2-digit day of stop time for backward DFI  integration",
+            "entries": "1"
+        },
+        "dfi_bckstop_hour": {
+            "defaultValue": "11",
+            "description": "2-digit hour of stop time for backward DFI  integration",
+            "entries": "1"
+        },
+        "dfi_bckstop_minute": {
+            "defaultValue": "0",
+            "description": "2-digit minute of stop time for backward DFI  integration",
+            "entries": "1"
+        },
+        "dfi_bckstop_second": {
+            "defaultValue": "0",
+            "description": "2-digit second of stop time for backward DFI  integration",
+            "entries": "1"
+        },
+        "dfi_fwdstop_year": {
+            "defaultValue": "2004",
+            "description": "4-digit year of stop time for forward DFI  integration",
+            "entries": "1"
+        },
+        "dfi_fwdstop_month": {
+            "defaultValue": "3",
+            "description": "2-digit month of stop time for forward DFI  integration",
+            "entries": "1"
+        },
+        "dfi_fwdstop_day": {
+            "defaultValue": "13",
+            "description": "2-digit day of stop time for forward DFI  integration",
+            "entries": "1"
+        },
+        "dfi_fwdstop_hour": {
+            "defaultValue": "12",
+            "description": "2-digit hour of stop time for forward DFI  integration",
+            "entries": "1"
+        },
+        "dfi_fwdstop_minute": {
+            "defaultValue": "30",
+            "description": "2-digit minute of stop time for forward DFI  integration",
+            "entries": "1"
+        },
+        "dfi_fwdstop_second": {
+            "defaultValue": "0",
+            "description": "2-digit second of stop time for forward DFI  integration",
+            "entries": "1"
+        },
+        "dfi_savehydmeteors": {
+            "defaultValue": "0",
+            "description": "Option for radar data assimilation:",
+            "entries": "1"
+        }
+    },
+    "grib2": {
+        "background_proc_id": {
+            "defaultValue": "255",
+            "description": "background generating process identifier  (typically defined by the originating data  center) to identify background data used in  creating the data; this is octet 13 of  Section 4 in the grib2 message",
+            "entries": "1"
+        },
+        "forecast_proc_id": {
+            "defaultValue": "255",
+            "description": "analysis or generating forecast process  identifier (typically defined by the  originating data center) to identify the  forecast process used to generate the  data; this is octet 14 of Section 4 in the  grib2 message",
+            "entries": "1"
+        },
+        "production_status": {
+            "defaultValue": "255",
+            "description": "production status of processed data in the  grib2 message; see Code Table 1.3 of the  grib2 manual; this is octect 20 of  Section 1 in the grib2 record",
+            "entries": "1"
+        },
+        "compression": {
+            "defaultValue": "40",
+            "description": "the compression method to encode the  output grib2 message; only supported types are:",
+            "entries": "1"
+        }
+    },
+    "scm": {
+        "scm_force": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on single column forcing",
+            "entries": "1"
+        },
+        "scm_force_dx": {
+            "defaultValue": "4000",
+            "description": "DX for SCM forcing (in meters)",
+            "entries": "1"
+        },
+        "num_force_layers": {
+            "defaultValue": "8",
+            "description": "number of SCM input forcing layers",
+            "entries": "1"
+        },
+        "scm_lu_index": {
+            "defaultValue": "2",
+            "description": "SCM landuse category; 2= dryland,  cropland, and pasture; others can be found  in the LANDUSE.TBL file in the run/ or test/em_real/ directory",
+            "entries": "1"
+        },
+        "scm_isltyp": {
+            "defaultValue": "4",
+            "description": "SCM soil category; 4= silt loam; others can  be found in the SOILPARM.TBL file in the  run/ or test/em_real/ directory",
+            "entries": "1"
+        },
+        "scm_vegfra": {
+            "defaultValue": "50",
+            "description": "SCM vegetation fraction (%)",
+            "entries": "1"
+        },
+        "scm_canwat": {
+            "defaultValue": "0",
+            "description": "SCM canopy water (kg m-2)",
+            "entries": "1"
+        },
+        "scm_lat": {
+            "defaultValue": "36.605",
+            "description": "SCM latitude",
+            "entries": "1"
+        },
+        "scm_lon": {
+            "defaultValue": "-97.485",
+            "description": "SCM longitude",
+            "entries": "1"
+        },
+        "scm_th_adv": {
+            "defaultValue": ".true.",
+            "description": "turns on theta advection in SCM",
+            "entries": "1"
+        },
+        "scm_wind_adv": {
+            "defaultValue": ".true.",
+            "description": "turns on wind advection in SCM",
+            "entries": "1"
+        },
+        "scm_qv_adv": {
+            "defaultValue": ".true.",
+            "description": "turns on moisture advection in SCM",
+            "entries": "1"
+        },
+        "scm_vert_adv": {
+            "defaultValue": ".true.",
+            "description": "turns on vertical advection in SCM",
+            "entries": "1"
+        },
+        "scm_ql_adv": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to turn on liquid advection  in SCM",
+            "entries": "1"
+        },
+        "scm_force_skintemp": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on SCM forcing by  skin temp",
+            "entries": "1"
+        },
+        "scm_force_flux": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on SCM forcing by  surface fluxes",
+            "entries": "1"
+        },
+        "num_force_soil_layers": {
+            "defaultValue": "5",
+            "description": "number of SCM soil forcing layers",
+            "entries": "1"
+        },
+        "scm_soilt_force": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to turn on soil temperature  forcing in SCM",
+            "entries": "1"
+        },
+        "scm_soilq_force": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to turn on moisture forcing  in SCM",
+            "entries": "1"
+        },
+        "scm_force_th_largescale": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to turn on large-scale theta  forcing in SCM",
+            "entries": "1"
+        },
+        "scm_force_qv_largescale": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to turn on large-scale qv  forcing in SCM",
+            "entries": "1"
+        },
+        "scm_force_ql_largescale": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to turn on large-scale ql  forcing in SCM",
+            "entries": "1"
+        },
+        "scm_force_wind_largescale": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to turn on large-scale wind forcing in SCM",
+            "entries": "1"
+        }
+    },
+    "tc": {
+        "insert_bogus_storm": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to insert a bogus tropical  cyclone",
+            "entries": "1"
+        },
+        "remove_storm": {
+            "defaultValue": ".false.",
+            "description": "set to =.true. to remove the original tropical cyclone; does not work if a TC did not  already exist",
+            "entries": "1"
+        },
+        "num_storm": {
+            "defaultValue": "1",
+            "description": "the number of bogus TCs in the domain",
+            "entries": "1"
+        },
+        "latc_loc": {
+            "defaultValue": "-999",
+            "description": "center latitude of the bogus TC",
+            "entries": "1"
+        },
+        "lonc_loc": {
+            "defaultValue": "-999",
+            "description": "center longitude of the bogus TC",
+            "entries": "1"
+        },
+        "vmax_meters_per_second": {
+            "defaultValue": "-999",
+            "description": "wind max of bogus storm (m s-1)",
+            "entries": "1"
+        },
+        "rmax": {
+            "defaultValue": "-999",
+            "description": "maximum radius outward from storm center  of bogus TC",
+            "entries": "1"
+        },
+        "vmax_ratio": {
+            "defaultValue": "-999",
+            "description": "ratio for representative maximum winds;  0.75 for 45 km grid, and 0.9 for 15 kim grid",
+            "entries": "1"
+        },
+        "rankine_lid": {
+            "defaultValue": "-999",
+            "description": "top pressure limit for the TC bogus scheme",
+            "entries": "1"
+        }
+    },
+    "diags": {
+        "p_lev_diags": {
+            "defaultValue": "0",
+            "description": "set to =1 to output pressure level diagnostics",
+            "entries": "1"
+        },
+        "num_press_levels": {
+            "defaultValue": "0",
+            "description": "number of pressure levels",
+            "entries": "1"
+        },
+        "press_levels": {
+            "defaultValue": "0",
+            "description": "specifically state the desired pressure  levels (in Pa); one per num_press_levels",
+            "entries": "1"
+        },
+        "use_tot_or_hyd_p": {
+            "defaultValue": "2",
+            "description": "pressure option;    1:use total pressure 2:use hydrostatic pressure",
+            "entries": "1"
+        },
+        "p_lev_missing": {
+            "defaultValue": "-999",
+            "description": "missing value below ground",
+            "entries": "1"
+        },
+        "z_lev_diags": {
+            "defaultValue": "0",
+            "description": "set to =1 to vertically interpolate  diagnostics to z-levels",
+            "entries": "1"
+        },
+        "num_z_levels": {
+            "defaultValue": "0",
+            "description": "number of height levels to interpolate to",
+            "entries": "1"
+        },
+        "z_levels": {
+            "defaultValue": "0",
+            "description": "list of height values (in meters) to  interpolate data to; positive numbers are  for heights above mean sea level  (i.e., a flight level); negative numbers are  for levels above ground",
+            "entries": "1"
+        },
+        "z_lev_missing": {
+            "defaultValue": "-999",
+            "description": "missing value below ground",
+            "entries": "1"
+        },
+        "extrap_below_grnd": {
+            "defaultValue": "1",
+            "description": "method used for extrapolating below  ground;",
+            "entries": "1"
+        },
+        "solar_diagnostics": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on solar forecasting  diagnostics for additional solar-related  outputs; see full description in the  output diagnostics section of the WRF Users' Guide; new since V4.2",
+            "entries": "1"
+        }
+    },
+    "afwa": {
+        "afwa_diag_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on AFWA diagnostics",
+            "entries": "max_dom"
+        },
+        "afwa_ptype_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on precipitation type option",
+            "entries": "max_dom"
+        },
+        "afwa_vil_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on vertical int liquid option",
+            "entries": "max_dom"
+        },
+        "afwa_radar_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on radar option",
+            "entries": "max_dom"
+        },
+        "afwa_severe_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on severe weather option",
+            "entries": "max_dom"
+        },
+        "afwa_icing_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on icing option",
+            "entries": "max_dom"
+        },
+        "afwa_vis_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on visibility option",
+            "entries": "max_dom"
+        },
+        "afwa_cloud_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on cloud option",
+            "entries": "max_dom"
+        },
+        "afwa_therm_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on thermal indices option",
+            "entries": "max_dom"
+        },
+        "afwa_turb_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on turbulence option",
+            "entries": "max_dom"
+        },
+        "afwa_buoy_opt": {
+            "defaultValue": "0",
+            "description": "set to =1 to turn on buoyancy option",
+            "entries": "max_dom"
+        },
+        "afwa_ptype_ccn_tmp": {
+            "defaultValue": "264.15",
+            "description": "CCN temperature for precipitation type  calculation",
+            "entries": "1"
+        },
+        "afwa_ptype_tot_melt": {
+            "defaultValue": "50",
+            "description": "total melting energy for precipitation type  calculation",
+            "entries": "1"
+        }
+    },
+    "ideal": {
+        "ideal_case": {
+            "defaultValue": "0",
+            "description": "set to =1 to indicate this is an idealized test case; mandatory for all idealized cases",
+            "entries": "1"
+        }
+    }
+}

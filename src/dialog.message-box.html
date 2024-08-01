@@ -1,0 +1,39 @@
+﻿<div id="message-box-dialog" class="modal fade" role="dialog">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-circle text-danger"></i>
+                    <span class="ml-1"></span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="message-box-text"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="message-box-dialog-templates" style="display: none;">
+    <div template="global-error">
+        <div class="global-error">
+            <p>
+                The WRF domain wizard encountered an unexpected error. To help improve this tool, consider creating an <a href="https://github.com/JiriRichter/WRFDomainWizard/issues" target="_blank">issue on this project's GitHub page</a>. If you decide to create an issue, please, follow these steps: 
+                <ul>
+                    <li>Check an issue for this error has not already been created. If you are not sure, creating a duplicate issue is ok.</li>
+                    <li>If the error happened while opening a namelist file, please, attach the file to the issue. Make sure the file does not contain any personal information.</li>
+                    <li>Add brief description of steps taken before this error occured.</li>
+                </ul>
+            </p>
+            <h6>Error Details:</h6>
+            <textarea class="form-control" readonly></textarea>
+            <a id="create-github-issue" class="btn btn-primary my-2" href="#" role="button" target="_blank">Create Issue</a>
+        </div>
+    </div>
+</div>

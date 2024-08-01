@@ -26,7 +26,7 @@ export class SidebarDomainsPanelGrid {
             tableCornerNE,
             tableCornerNW;
 
-        // defaul settings
+        // default settings
         this.options = {
             minGridDistanceMeters: 100,
             minGridDistanceDegrees: 0

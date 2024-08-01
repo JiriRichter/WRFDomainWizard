@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>WRF Namelist.Input Editor Test</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="WRF Namelist.Input Editor Test" />
+    <meta name="keywords" content="WRF,WPS,WRF Domain Wizard, namelist.input" />
+    <meta name="author" content="Jiri Richter" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="build/lib/bootstrap.min.css" />
+    <link rel="stylesheet" href="build/lib/all.min.css" />
+    <link rel="stylesheet" href="build/lib/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="build/lib/bootstrap-select.min.css" />
+
+    <link rel="stylesheet" href="build/css/wrf-domain-wizard.css?1722511779399" />
+
+    <link rel="icon" href="build/img/globe_32x32.png" />
+</head>
+<body>
+
+    <div class="d-flex" style="height: 100%; width: 100%;">
+        <div id ="main" class="m-auto d-flex flex-column">
+
+            <div id="page-loader" class="loader-1 m-auto" style="width: 100px; height: 100px; display: none;"></div>
+
+            <div id="github-examples" class="list-group" style="display: none;">
+                <div class="list-group-item list-group-item-primary d-flex flex-row">
+                    <div>EM_REAL Examples</div>
+                    <div class="ml-auto">
+                        <a href="https://github.com/wrf-model/WRF/tree/master/test/em_real" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="open-namelist" class="d-flex m-2">
+                <button type="button" id="button-open" class="btn btn-outline-secondary m-auto"><i class="far fa-folder-open"></i><span class="ml-2">Open namelist.input</span></button>
+                <input id="file-open" type="file" style="display: none;" />
+            </div>
+        </div>
+    </div>
+
+    <div id="message-box-dialog" class="modal fade" role="dialog">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-circle text-danger"></i>
+                    <span class="ml-1"></span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="message-box-text"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="message-box-dialog-templates" style="display: none;">
+    <div template="global-error">
+        <div class="global-error">
+            <p>
+                The WRF domain wizard encountered an unexpected error. To help improve this tool, consider creating an <a href="https://github.com/JiriRichter/WRFDomainWizard/issues" target="_blank">issue on this project's GitHub page</a>. If you decide to create an issue, please, follow these steps: 
+                <ul>
+                    <li>Check an issue for this error has not already been created. If you are not sure, creating a duplicate issue is ok.</li>
+                    <li>If the error happened while opening a namelist file, please, attach the file to the issue. Make sure the file does not contain any personal information.</li>
+                    <li>Add brief description of steps taken before this error occured.</li>
+                </ul>
+            </p>
+            <h6>Error Details:</h6>
+            <textarea class="form-control" readonly></textarea>
+            <a id="create-github-issue" class="btn btn-primary my-2" href="#" role="button" target="_blank">Create Issue</a>
+        </div>
+    </div>
+</div>
+
+    <div id="namelist-input-dialog" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <span class="navbar-brand">namelist.input</span>
+
+                    <ul class="navbar-nav">
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">View</a>
+                            <div class="dropdown-menu dropdown-namelist-input-view" aria-labelledby="dropdown-view">
+                                <h6 class="dropdown-header">Groups</h6>
+                                <a id="view-group-collapse-all" class="dropdown-item dropdown-selected" href="#"><i class="fas fa-check"></i><span class="ml-1">Collapse All</span></a>
+                                <a id="view-group-expand-all" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Expand All</span></a>
+                                <a id="view-group-show-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Unset</span></a>
+                                <a id="view-group-hide-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Hide Unset</span></a>
+                                <div class="dropdown-divider"></div>
+                                <h6 class="dropdown-header">Variables</h6>
+                                <a id="view-variables-show-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Show Unset</span></a>
+                                <a id="view-variables-hide-unset" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Hide Unset</span></a>
+                                <div class="dropdown-divider"></div>
+                                <h6 class="dropdown-header">Views</h6>
+                                <a id="view-all" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">All</span></a>
+                                <a id="view-compact" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Compact</span></a>
+                                <a id="view-min" class="dropdown-item" href="#"><i class="fas fa-check"></i><span class="ml-1">Minimized</span></a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                    <span class="navbar-text mr-1">Timezone:</span>
+                    <form class="form-inline">
+                        <select class="selectpicker" aria-label="Timezone" id="select-timezone" data-live-search="true"></select>
+                    </form>
+
+                    <span class="navbar-text mr-1 ml-2">Go To:</span>
+                    <form class="form-inline">
+                        <button class="btn btn-sm btn-outline-secondary" id="go-to-top" type="button" title="Go to Top"><i class="fas fa-angle-double-up"></i></button>
+                        <select class="" aria-label="Group" id="go-to-group" data-live-search="true" title="Group"></select>
+                        <select class="" aria-label="Group" id="go-to-variable" data-live-search="true" title="Variable"></select>
+                    </form>
+
+                </nav>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <ul class="nav nav-tabs" id="namelist-input-dialog-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <button class="nav-link active" id="tab-namelist-input-editor" data-toggle="tab" data-target="#pane-namelist-input-editor" type="button" role="tab" aria-controls="pane-namelist-input-editor" aria-selected="true">Editor</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-namelist-input-text" data-toggle="tab" data-target="#pane-namelist-input-text" type="button" role="tab" aria-controls="pane-namelist-input-text" aria-selected="false">Text</button>
+                      </li>
+                    <li class="nav-item" role="presentation" style="display: none;">
+                      <button class="nav-link" id="tab-namelist-input-errors" data-toggle="tab" data-target="#pane-namelist-input-errors" type="button" role="tab" aria-controls="pane-namelist-input-errors" aria-selected="false">Errors</button>
+                    </li>
+                    <li class="nav-item" role="presentation" style="display: none;">
+                        <button class="nav-link" id="tab-namelist-input-original" data-toggle="tab" data-target="#pane-namelist-input-original" type="button" role="tab" aria-controls="pane-namelist-input-original" aria-selected="false">Original</button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-namelist-input-info" data-toggle="tab" data-target="#pane-namelist-input-info" type="button" role="tab" aria-controls="pane-namelist-input-info" aria-selected="false">Documentation</button>
+                      </li>
+                  </ul>
+                
+                <div class="tab-content" id="namelist-input-dialog-tab-content">
+                    <div class="tab-pane fade show active" id="pane-namelist-input-editor" role="tabpanel" aria-labelledby="tab-namelist-input-editor">
+                        <div id="namelist-input-container" class="namelist-input-editor"></div>
+                    </div>
+                    <div class="tab-pane fade" id="pane-namelist-input-text" role="namelist-input-text" aria-labelledby="tab-namelist-input-text">
+                        <textarea class="form-control font-namelist resize-none" readonly></textarea>
+                    </div>
+                    <div class="tab-pane fade" id="pane-namelist-input-errors" role="namelist-input-errors" aria-labelledby="tab-namelist-input-errors">
+                        <div class="alert alert-info" role="alert">
+                            A list of error(s) encountered while opening a namelist.input file. An error can happen, for example, when the file is not formatted correctly or contains unrecognized variables. To help improve this tool, please, consider reporting false-positives via the project's <a href="https://github.com/JiriRichter/WRFDomainWizard/issues" target="_blank">issues on GitHub</a>.
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <i class="fas fa-exclamation-circle text-danger"></i>
+                                <span class="ml-1">Error</span>
+                            </li>
+                          </ul>
+                    </div>
+                    <div class="tab-pane fade" id="pane-namelist-input-original" role="namelist-input-original" aria-labelledby="tab-namelist-input-original">
+                        <textarea class="form-control font-namelist resize-none" readonly></textarea>
+                    </div>
+                    <div class="tab-pane fade" id="pane-namelist-input-info" role="namelist-input-info" aria-labelledby="tab-namelist-input-info">
+                        <div class="container">
+                            <div class="my-2">
+                                <h5>WRF Users Guide</h5>
+                                <div class="list-group">
+                                    <a href="https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/namelist_variables.html" class="list-group-item list-group-item-action" target="_blank">Namelist Variables</a>
+                                </div>
+                            </div>
+                            <div class="my-2">
+                                <h5>GitHub: wrf-model/WRF</h5>
+                                <div class="list-group">
+                                    <a href="https://github.com/wrf-model/WRF/tree/master/Registry" class="list-group-item list-group-item-action" target="_blank">Registry files</a>
+                                    <a href="https://github.com/wrf-model/WRF/blob/master/run/README.namelist" class="list-group-item list-group-item-action" target="_blank">run/README.namelist</a>
+                                    <a href="https://github.com/wrf-model/WRF/blob/master/test/em_real/examples.namelist" class="list-group-item list-group-item-action" target="_blank">test/em_real/examples.namelist</a>
+                                </div>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button id="button-save" type="button" class="btn btn-primary btn-sm"><i class="far fa-save"></i><span class="ml-1">Save</span></button>
+                <button id="button-copy" type="button" class="btn btn-primary btn-sm"><i class="fas fa-copy"></i><span class="ml-1">Copy</span></button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="build/lib/jquery.min.js"></script>
+    <script src="build/lib/bootstrap.bundle.min.js"></script>
+    <script src="https://spin.js.org/spin.umd.js"></script>
+    <script src="build/lib/immediate.min.js"></script>
+    <script src="build/lib/proj4.js"></script>
+    <script src="build/lib/leaflet.js"></script>
+    <script src="build/lib/leaflet.spin.min.js"></script>
+    <script src="build/lib/leaflet-sidebar.min.js"></script>
+    <script src="build/lib/leaflet-providers.js"></script>
+    <script src="build/lib/Blob.js"></script>
+    <script src="build/lib/FileSaver.min.js"></script>
+    <script src="build/lib/html-to-image.js"></script>
+    <script src="build/lib/leaflet.textpath.js"></script>
+    <script src="build/lib/moment.min.js"></script>
+    <script src="build/lib/moment-timezone-with-data.min.js"></script>
+    <script src="build/lib/bootstrap-datetimepicker.min.js"></script>
+    <script src="build/lib/bootstrap-select.min.js"></script>
+
+    <script src="build/js/wrf-domain-wizard.js"></script>
+
+    <script type="module">
+
+        WRF.enableGlobalErrorHandler();
+
+        var page = new WRF.NamelistInputPage({
+            jsonBaseUrl: 'build/json'
+        });
+
+        if (location.hash && (location.hash === "#test" || location.hash.startsWith("#namelist."))) {
+            await page.loadGitHubExamplesAsync();
+        }
+    </script>
+</body>
+</html>

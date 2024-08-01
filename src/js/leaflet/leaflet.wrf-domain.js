@@ -1,5 +1,5 @@
 import { WrfProjections } from "../utils/constants";
-import { degreesToMeters } from "../utils/math";
+import { distanceToMeters } from "../utils/math";
 import { WPSNamelist } from "../utils/namelist.wps";
 import { WRFDomainGrid } from "./leaflet.wrf-grid"
 
@@ -331,16 +331,12 @@ Object.defineProperties(WRFDomain.prototype, {
     },
     'dxInMeters': {
         get() {
-            return this.map_proj === WrfProjections.latlon ? 
-                degreesToMeters(this.dx) : 
-                this.dx;
+            return distanceToMeters(this.map_proj, this.dx);
         }
     },
     'dyInMeters': {
         get() {
-            return this.map_proj === WrfProjections.latlon ? 
-                degreesToMeters(this.dy) : 
-                this.dy;
+            return distanceToMeters(this.map_proj, this.dy);
         }
     }
 });

@@ -1,0 +1,2436 @@
+{
+    "time_control": {
+        "run_days": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "run_hours": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "run_minutes": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "run_seconds": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "start_year": {
+            "entries": "max_dom",
+            "defaultValue": "2001,"
+        },
+        "start_month": {
+            "entries": "max_dom",
+            "defaultValue": "06,"
+        },
+        "start_day": {
+            "entries": "max_dom",
+            "defaultValue": "11,"
+        },
+        "start_hour": {
+            "entries": "max_dom",
+            "defaultValue": "12,"
+        },
+        "start_minute": {
+            "entries": "max_dom",
+            "defaultValue": "00,"
+        },
+        "start_second": {
+            "entries": "max_dom",
+            "defaultValue": "00,"
+        },
+        "end_year": {
+            "entries": "max_dom",
+            "defaultValue": "2001,"
+        },
+        "end_month": {
+            "entries": "max_dom",
+            "defaultValue": "06,"
+        },
+        "end_day": {
+            "entries": "max_dom",
+            "defaultValue": "12,"
+        },
+        "end_hour": {
+            "entries": "max_dom",
+            "defaultValue": "12,"
+        },
+        "end_minute": {
+            "entries": "max_dom",
+            "defaultValue": "00,"
+        },
+        "end_second": {
+            "entries": "max_dom",
+            "defaultValue": "00,"
+        },
+        "interval_seconds": {
+            "entries": "1",
+            "defaultValue": "10800,"
+        },
+        "input_from_file": {
+            "entries": "max_dom",
+            "defaultValue": "T,"
+        },
+        "fine_input_stream": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "history_interval": {
+            "entries": "max_dom",
+            "defaultValue": "60,"
+        },
+        "frames_per_outfile": {
+            "entries": "max_dom",
+            "defaultValue": "1,"
+        },
+        "restart": {
+            "entries": "1",
+            "defaultValue": "F,"
+        },
+        "cycling": {
+            "entries": "1",
+            "defaultValue": "F,"
+        },
+        "reset_simulation_start": {
+            "entries": "1",
+            "defaultValue": "F,"
+        },
+        "io_form_history": {
+            "entries": "1",
+            "defaultValue": "2,"
+        },
+        "io_form_restart": {
+            "entries": "1",
+            "defaultValue": "2,"
+        },
+        "io_form_input": {
+            "entries": "1",
+            "defaultValue": "2,"
+        },
+        "io_form_boundary": {
+            "entries": "1",
+            "defaultValue": "2,"
+        },
+        "ncd_nofill": {
+            "entries": "1",
+            "defaultValue": ".true.,"
+        },
+        "frames_per_emissfile": {
+            "entries": "1",
+            "defaultValue": "12,"
+        },
+        "io_style_emiss": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "debug_level": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "diag_print": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "all_ic_times": {
+            "entries": "1",
+            "defaultValue": ".false.,"
+        },
+        "adjust_output_times": {
+            "entries": "1",
+            "defaultValue": ".false.,"
+        },
+        "override_restart_timers": {
+            "entries": "1",
+            "defaultValue": ".false.,"
+        },
+        "force_use_old_data": {
+            "entries": "1",
+            "defaultValue": ".false.,"
+        },
+        "nwp_diagnostics": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "output_diagnostics": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "iofields_filename": {
+            "entries": "max_dom",
+            "defaultValue": "\"my_iofields_list.txt\","
+        },
+        "ignore_iofields_warning": {
+            "entries": "1",
+            "defaultValue": ".true.,"
+        },
+        "nocolons": {
+            "entries": "1",
+            "defaultValue": ".false.,"
+        },
+        "write_input": {
+            "entries": "1",
+            "defaultValue": "t,"
+        },
+        "inputout_interval": {
+            "entries": "max_dom",
+            "defaultValue": "180,"
+        },
+        "input_outname": {
+            "entries": "1",
+            "defaultValue": "'wrfinput_d<domain>_<date>'"
+        },
+        "inputout_begin_y": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "inputout_begin_mo": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "inputout_begin_d": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "inputout_begin_h": {
+            "entries": "max_dom",
+            "defaultValue": "3"
+        },
+        "inputout_begin_m": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "inputout_begin_s": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "inputout_end_y": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "inputout_end_mo": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "inputout_end_d": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "inputout_end_h": {
+            "entries": "max_dom",
+            "defaultValue": "12"
+        },
+        "inputout_end_m": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "inputout_end_s": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "input_from_hires": {
+            "entries": "max_dom",
+            "defaultValue": ".true.,"
+        },
+        "rsmas_data_path": {
+            "entries": "1",
+            "defaultValue": "\"path-to-terrain-and-landuse-dataset\""
+        }
+    },
+    "domains": {
+        "time_step": {
+            "entries": "1",
+            "defaultValue": "60,"
+        },
+        "time_step_fract_num": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "time_step_fract_den": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "time_step_dfi": {
+            "entries": "1",
+            "defaultValue": "60,"
+        },
+        "reasonable_time_step_ratio": {
+            "entries": "1",
+            "defaultValue": "6.,"
+        },
+        "max_dom": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "s_we": {
+            "entries": "max_dom",
+            "defaultValue": "1,"
+        },
+        "e_we": {
+            "entries": "max_dom",
+            "defaultValue": "91,"
+        },
+        "s_sn": {
+            "entries": "max_dom",
+            "defaultValue": "1,"
+        },
+        "e_sn": {
+            "entries": "max_dom",
+            "defaultValue": "82,"
+        },
+        "s_vert": {
+            "entries": "max_dom",
+            "defaultValue": "1,"
+        },
+        "e_vert": {
+            "entries": "max_dom",
+            "defaultValue": "30,"
+        },
+        "dx": {
+            "entries": "max_dom",
+            "defaultValue": "10000,"
+        },
+        "dy": {
+            "entries": "max_dom",
+            "defaultValue": "10000,"
+        },
+        "ztop": {
+            "entries": "max_dom",
+            "defaultValue": "19000."
+        },
+        "grid_id": {
+            "entries": "max_dom",
+            "defaultValue": "1,"
+        },
+        "parent_id": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "i_parent_start": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "j_parent_start": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "parent_grid_ratio": {
+            "entries": "max_dom",
+            "defaultValue": "1,"
+        },
+        "parent_time_step_ratio": {
+            "entries": "max_dom",
+            "defaultValue": "1,"
+        },
+        "feedback": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "smooth_option": {
+            "entries": "1",
+            "defaultValue": "2"
+        },
+        "num_metgrid_soil_levels": {
+            "entries": "1",
+            "defaultValue": "4"
+        },
+        "num_metgrid_levels": {
+            "entries": "1",
+            "defaultValue": "27"
+        },
+        "interp_type": {
+            "entries": "1",
+            "defaultValue": "2"
+        },
+        "extrap_type": {
+            "entries": "1",
+            "defaultValue": "2"
+        },
+        "t_extrap_type": {
+            "entries": "1",
+            "defaultValue": "2"
+        },
+        "use_levels_below_ground": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "use_surface": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "lagrange_order": {
+            "entries": "1",
+            "defaultValue": "2"
+        },
+        "zap_close_levels": {
+            "entries": "1",
+            "defaultValue": "500"
+        },
+        "lowest_lev_from_sfc": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "force_sfc_in_vinterp": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "maxw_horiz_pres_diff": {
+            "entries": "1",
+            "defaultValue": "5000"
+        },
+        "trop_horiz_pres_diff": {
+            "entries": "1",
+            "defaultValue": "5000"
+        },
+        "maxw_above_this_level": {
+            "entries": "1",
+            "defaultValue": "30000"
+        },
+        "sfcp_to_sfcp": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "use_tavg_for_tsk": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "aggregate_lu": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "use_sh_qv": {
+            "entries": "1",
+            "defaultValue": ".false.,"
+        },
+        "interp_theta": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "hypsometric_opt": {
+            "entries": "1",
+            "defaultValue": "2,"
+        },
+        "wif_input_opt": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "num_wif_levels": {
+            "entries": "1",
+            "defaultValue": "30"
+        },
+        "p_top_requested": {
+            "entries": "1",
+            "defaultValue": "5000"
+        },
+        "vert_refine_fact": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "vert_refine_method": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "rebalance": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "ts_buf_size": {
+            "entries": "1",
+            "defaultValue": "200"
+        },
+        "max_ts_locs": {
+            "entries": "1",
+            "defaultValue": "5,"
+        },
+        "max_ts_level": {
+            "entries": "1",
+            "defaultValue": "15,"
+        },
+        "tslist_unstagger_winds": {
+            "entries": "1",
+            "defaultValue": ".false.,"
+        },
+        "max_dz": {
+            "entries": "1",
+            "defaultValue": "1000."
+        },
+        "auto_levels_opt": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "dzbot": {
+            "entries": "1",
+            "defaultValue": "50."
+        },
+        "dzstretch_s": {
+            "entries": "1",
+            "defaultValue": "1.3"
+        },
+        "dzstretch_u": {
+            "entries": "1",
+            "defaultValue": "1.1"
+        },
+        "eta_levels": {
+            "entries": "1",
+            "defaultValue": "1.000,"
+        },
+        "interp_method_type": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "ocean_levels": {
+            "entries": "1",
+            "defaultValue": "30,"
+        },
+        "num_moves": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "track_level": {
+            "entries": "1",
+            "defaultValue": "50000"
+        },
+        "tile_sz_x": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "tile_sz_y": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "numtiles": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "nproc_x": {
+            "entries": "1",
+            "defaultValue": "-1,"
+        },
+        "nproc_y": {
+            "entries": "1",
+            "defaultValue": "-1,"
+        },
+        "use_adaptive_time_step": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "step_to_output_time": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "adaptation_domain": {
+            "entries": "1",
+            "defaultValue": "1"
+        }
+    },
+    "physics": {
+        "sf_ocean_physics": {
+            "entries": "1",
+            "defaultValue": "activate"
+        },
+        "chem_opt": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "use_rap_aero_icbc": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "qna_update": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "wif_fire_emit": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "wif_fire_inj": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "ccnty": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "mp_zero_out": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "mp_zero_out_thresh": {
+            "entries": "1",
+            "defaultValue": "1.e-8"
+        },
+        "mp_zero_out_all": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "gsfcgce_hail": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "hail_opt": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "morr_rimed_ice": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "clean_atm_diag": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "acc_phy_tend": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "progn": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "ccn_conc": {
+            "entries": "1",
+            "defaultValue": "1.E8"
+        },
+        "no_mp_heating": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "use_mp_re": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "force_read_thompson": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "write_thompson_tables": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "radt": {
+            "entries": "max_dom",
+            "defaultValue": "30,"
+        },
+        "cldovrlp": {
+            "entries": "1",
+            "defaultValue": "2,"
+        },
+        "idcor": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "ra_sw_eclipse": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "ghg_input": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "couple_farms": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "cam_abs_freq_s": {
+            "entries": "1",
+            "defaultValue": "21600"
+        },
+        "levsiz": {
+            "entries": "1",
+            "defaultValue": "59"
+        },
+        "paerlev": {
+            "entries": "1",
+            "defaultValue": "29"
+        },
+        "aer_opt": {
+            "entries": "1",
+            "defaultValue": "aerosol"
+        },
+        "alevsiz": {
+            "entries": "1",
+            "defaultValue": "12"
+        },
+        "no_src_types": {
+            "entries": "1",
+            "defaultValue": "6"
+        },
+        "aer_angexp_opt": {
+            "entries": "max_dom",
+            "defaultValue": "[1,2,3]"
+        },
+        "aer_angexp_val": {
+            "entries": "max_dom",
+            "defaultValue": "1.3"
+        },
+        "aer_ssa_opt": {
+            "entries": "max_dom",
+            "defaultValue": "[1,2,3]"
+        },
+        "aer_ssa_val": {
+            "entries": "max_dom",
+            "defaultValue": "0.85"
+        },
+        "aer_asy_opt": {
+            "entries": "max_dom",
+            "defaultValue": "[1,2,3]"
+        },
+        "aer_asy_val": {
+            "entries": "max_dom",
+            "defaultValue": "0.9"
+        },
+        "aer_type": {
+            "entries": "max_dom",
+            "defaultValue": "[1,2,3]"
+        },
+        "num_urban_ndm": {
+            "entries": "1",
+            "defaultValue": "1!"
+        },
+        "num_urban_ng": {
+            "entries": "1",
+            "defaultValue": "1!"
+        },
+        "num_urban_nwr": {
+            "entries": "1",
+            "defaultValue": "1!"
+        },
+        "num_urban_nz": {
+            "entries": "1",
+            "defaultValue": "1!"
+        },
+        "num_urban_ngb": {
+            "entries": "1",
+            "defaultValue": "1!"
+        },
+        "num_urban_nf": {
+            "entries": "1",
+            "defaultValue": "1!"
+        },
+        "num_urban_nbui": {
+            "entries": "1",
+            "defaultValue": "1!"
+        },
+        "sf_surf_irr_scheme": {
+            "entries": "max_dom",
+            "defaultValue": "0:"
+        },
+        "irr_daily_amount": {
+            "entries": "max_dom",
+            "defaultValue": "daily"
+        },
+        "irr_start_hour": {
+            "entries": "max_dom",
+            "defaultValue": "UTC"
+        },
+        "irr_num_hours": {
+            "entries": "max_dom",
+            "defaultValue": "number"
+        },
+        "irr_start_julianday": {
+            "entries": "max_dom",
+            "defaultValue": "Julian"
+        },
+        "irr_end_julianday": {
+            "entries": "max_dom",
+            "defaultValue": "Julian"
+        },
+        "irr_ph": {
+            "entries": "max_dom",
+            "defaultValue": "0:"
+        },
+        "irr_freq": {
+            "entries": "max_dom",
+            "defaultValue": "irrigation"
+        },
+        "bl_mynn_closure": {
+            "entries": "1",
+            "defaultValue": "2.5:"
+        },
+        "bldt": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "ysu_topdown_pblmix": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "mfshconv": {
+            "entries": "max_dom",
+            "defaultValue": "1,"
+        },
+        "topo_wind": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "tke_budget": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "bl_mynn_tkeadvect": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "bl_mynn_cloudmix": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "bl_mynn_edmf": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "bl_mynn_edmf_mom": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "bl_mynn_edmf_tke": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "bl_mynn_output": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "bl_mynn_mixscalars": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "bl_mynn_mixqt": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "scalar_pblmix": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "tracer_pblmix": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "shinhong_tke_diag": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "mosaic_cat": {
+            "entries": "1",
+            "defaultValue": "3"
+        },
+        "mosaic_lu": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "mosaic_soil": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "flag_sm_adj": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "ishallow": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "clos_choice": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "cu_diag": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "kf_edrates": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "convtrans_avglen_m": {
+            "entries": "1",
+            "defaultValue": "30,"
+        },
+        "cu_rad_feedback": {
+            "entries": "max_dom",
+            "defaultValue": ".false."
+        },
+        "bmj_rad_feedback": {
+            "entries": "max_dom",
+            "defaultValue": ".false."
+        },
+        "cudt": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "nsas_dx_factor": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "ntiedtke_dx_opt": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "no_src_types_cu": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "alevsiz_cu": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "isfflx": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "ideal_xland": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "ifsnow": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "icloud": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "insert_init_cloud": {
+            "entries": "1",
+            "defaultValue": ".false.,"
+        },
+        "swrad_scat": {
+            "entries": "1",
+            "defaultValue": "1."
+        },
+        "surface_input_source": {
+            "entries": "1",
+            "defaultValue": "3,"
+        },
+        "num_soil_layers": {
+            "entries": "1",
+            "defaultValue": "5,"
+        },
+        "num_land_cat": {
+            "entries": "1",
+            "defaultValue": "21,"
+        },
+        "use_wudapt_lcz": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "slucm_distributed_drag": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "distributed_ahe_opt": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "num_soil_cat": {
+            "entries": "1",
+            "defaultValue": "16,"
+        },
+        "pxlsm_modis_veg": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "maxiens": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "maxens": {
+            "entries": "1",
+            "defaultValue": "3,"
+        },
+        "ensdim": {
+            "entries": "1",
+            "defaultValue": "144"
+        },
+        "seaice_threshold": {
+            "entries": "1",
+            "defaultValue": "100."
+        },
+        "sst_update": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "usemonalb": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "rdmaxalb": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "dust_emis": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "erosion_dim": {
+            "entries": "1",
+            "defaultValue": "3"
+        },
+        "bucket_mm": {
+            "entries": "1",
+            "defaultValue": "-1."
+        },
+        "tmn_update": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "lagday": {
+            "entries": "1",
+            "defaultValue": "150"
+        },
+        "sst_skin": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "slope_rad": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "topo_shading": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "shadlen": {
+            "entries": "1",
+            "defaultValue": "25000."
+        },
+        "oml_gamma": {
+            "entries": "1",
+            "defaultValue": "0.14"
+        },
+        "oml_relaxation_time": {
+            "entries": "1",
+            "defaultValue": "0."
+        },
+        "omdt": {
+            "entries": "1",
+            "defaultValue": "1."
+        },
+        "ocean_levels": {
+            "entries": "1",
+            "defaultValue": "30"
+        },
+        "traj_opt": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "num_traj": {
+            "entries": "1",
+            "defaultValue": "1000"
+        },
+        "isftcflx": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "fractional_seaice": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "seaice_albedo_opt": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "seaice_snowdepth_opt": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "seaice_snowdepth_max": {
+            "entries": "1",
+            "defaultValue": "1.E10"
+        },
+        "seaice_snowdepth_min": {
+            "entries": "1",
+            "defaultValue": "0.001"
+        },
+        "seaice_thickness_opt": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "seaice_thickness_default": {
+            "entries": "1",
+            "defaultValue": "3.0"
+        },
+        "mp_tend_lim": {
+            "entries": "1",
+            "defaultValue": "10.,"
+        },
+        "prec_acc_dt": {
+            "entries": "max_dom",
+            "defaultValue": "0.,"
+        },
+        "ua_phys": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "do_radar_ref": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "hailcast_opt": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "haildt": {
+            "entries": "max_dom",
+            "defaultValue": "0.,"
+        },
+        "use_lakedepth": {
+            "entries": "max_dom",
+            "defaultValue": "1,"
+        },
+        "shalwater_depth": {
+            "entries": "1",
+            "defaultValue": "0.0,"
+        },
+        "lightning_start_seconds": {
+            "entries": "max_dom",
+            "defaultValue": "0."
+        },
+        "cldtop_adjustment": {
+            "entries": "max_dom",
+            "defaultValue": "0."
+        },
+        "iccg_prescribed_num": {
+            "entries": "max_dom",
+            "defaultValue": "0."
+        },
+        "iccg_prescribed_den": {
+            "entries": "max_dom",
+            "defaultValue": "1."
+        },
+        "ltng_temp_upper": {
+            "entries": "1",
+            "defaultValue": "-45."
+        },
+        "ltng_temp_lower": {
+            "entries": "1",
+            "defaultValue": "-15."
+        },
+        "windfarm_opt": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "windfarm_ij": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "windfarm_wake_model": {
+            "entries": "1",
+            "defaultValue": "2"
+        },
+        "windfarm_overlap_method": {
+            "entries": "1",
+            "defaultValue": "4"
+        },
+        "windfarm_deg": {
+            "entries": "1",
+            "defaultValue": "0."
+        },
+        "windfarm_tke_factor": {
+            "entries": "1",
+            "defaultValue": "0.25"
+        },
+        "rand_perturb": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "gridpt_stddev_rand_pert": {
+            "entries": "max_dom",
+            "defaultValue": "0.03"
+        },
+        "lengthscale_rand_pert": {
+            "entries": "max_dom",
+            "defaultValue": "500000.0"
+        },
+        "timescale_rand_pert": {
+            "entries": "max_dom",
+            "defaultValue": "21600.0"
+        },
+        "stddev_cutoff_rand_pert": {
+            "entries": "max_dom",
+            "defaultValue": "3.0"
+        },
+        "rand_pert_vertstruc": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "sppt": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "gridpt_stddev_sppt": {
+            "entries": "max_dom",
+            "defaultValue": "0.5"
+        },
+        "lengthscale_sppt": {
+            "entries": "max_dom",
+            "defaultValue": "150000.0"
+        },
+        "timescale_sppt": {
+            "entries": "max_dom",
+            "defaultValue": "21600.0"
+        },
+        "sppt_vertstruc": {
+            "entries": "1",
+            "defaultValue": "0."
+        },
+        "stddev_cutoff_sppt": {
+            "entries": "max_dom",
+            "defaultValue": "2.0"
+        },
+        "skebs": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "tot_backscat_psi": {
+            "entries": "max_dom",
+            "defaultValue": "1.0E-05"
+        },
+        "tot_backscat_t": {
+            "entries": "max_dom",
+            "defaultValue": "1.0E-06"
+        },
+        "ztau_psi": {
+            "entries": "1",
+            "defaultValue": "10800.0"
+        },
+        "ztau_t": {
+            "entries": "1",
+            "defaultValue": "10800.0"
+        },
+        "rexponent_psi": {
+            "entries": "1",
+            "defaultValue": "-1.83"
+        },
+        "rexponent_t": {
+            "entries": "1",
+            "defaultValue": "-1.83"
+        },
+        "kminforc": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "lminforc": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "kminforct": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "lminforct": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "kmaxforc": {
+            "entries": "1",
+            "defaultValue": "1000000"
+        },
+        "lmaxforc": {
+            "entries": "1",
+            "defaultValue": "1000000"
+        },
+        "kmaxforct": {
+            "entries": "1",
+            "defaultValue": "1000000"
+        },
+        "lmaxforct": {
+            "entries": "1",
+            "defaultValue": "1000000"
+        },
+        "skebs_vertstruc": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "spp_conv": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "gridpt_stddev_spp_conv": {
+            "entries": "max_dom",
+            "defaultValue": "0.3"
+        },
+        "lengthscale_spp_conv": {
+            "entries": "max_dom",
+            "defaultValue": "150000.0"
+        },
+        "timescale_spp_conv": {
+            "entries": "max_dom",
+            "defaultValue": "21600.0"
+        },
+        "stddev_cutoff_spp_conv": {
+            "entries": "max_dom",
+            "defaultValue": "3.0"
+        },
+        "spp_pbl": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "gridpt_stddev_spp_pbl": {
+            "entries": "max_dom",
+            "defaultValue": "0.15"
+        },
+        "lengthscale_spp_pbl": {
+            "entries": "max_dom",
+            "defaultValue": "70000.0"
+        },
+        "timescale_spp_pbl": {
+            "entries": "max_dom",
+            "defaultValue": "21600.0"
+        },
+        "stddev_cutoff_spp_pbl": {
+            "entries": "max_dom",
+            "defaultValue": "2.0"
+        },
+        "spp_lsm": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "gridpt_stddev_spp_lsm": {
+            "entries": "max_dom",
+            "defaultValue": "0.3"
+        },
+        "lengthscale_spp_lsm": {
+            "entries": "max_dom",
+            "defaultValue": "50000.0"
+        },
+        "timescale_spp_lsm": {
+            "entries": "max_dom",
+            "defaultValue": "86400.0"
+        },
+        "stddev_cutoff_spp_lsm": {
+            "entries": "max_dom",
+            "defaultValue": "3.0"
+        },
+        "multi_perturb": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "spdt": {
+            "entries": "1",
+            "defaultValue": "-1.0"
+        },
+        "pert_farms": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "pert_farms_albedo": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_farms_aod": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_farms_angexp": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_farms_aerasy": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_farms_qv": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_farms_qc": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_farms_qs": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_deng": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "pert_deng_qv": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_deng_qc": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_deng_t": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_deng_w": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_mynn": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "pert_mynn_qv": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_mynn_qc": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_mynn_t": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_mynn_qke": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_noah": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "pert_noah_qv": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_noah_t": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_noah_smois": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_noah_tslb": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_thom": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "pert_thom_qv": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_thom_qc": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_thom_qi": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_thom_qs": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "pert_thom_ni": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "perturb_bdy": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "dveg": {
+            "entries": "1",
+            "defaultValue": "4,"
+        },
+        "opt_crs": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "opt_sfc": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "opt_btr": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "opt_run": {
+            "entries": "1",
+            "defaultValue": "3,"
+        },
+        "opt_infdv": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "opt_frz": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "opt_inf": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "opt_rad": {
+            "entries": "1",
+            "defaultValue": "3,"
+        },
+        "opt_alb": {
+            "entries": "1",
+            "defaultValue": "2,"
+        },
+        "opt_snf": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "opt_tbot": {
+            "entries": "1",
+            "defaultValue": "2,"
+        },
+        "opt_stc": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "opt_gla": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "opt_rsf": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "opt_soil": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "opt_pedo": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "opt_crop": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "opt_irr": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "opt_irrm": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "opt_tdrn": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "soiltstep": {
+            "entries": "1",
+            "defaultValue": "0.0,"
+        },
+        "noahmp_output": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "noahmp_acc_dt": {
+            "entries": "1",
+            "defaultValue": "0.0,"
+        },
+        "physics_suite": {
+            "entries": "1",
+            "defaultValue": "'tropical'"
+        },
+        "cu_physics": {
+            "entries": "1",
+            "defaultValue": "-1,"
+        },
+        "hybrid_opt": {
+            "entries": "1",
+            "defaultValue": "2,"
+        }
+    },
+    "dfi_control": {
+        "dfi_opt": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "dfi_nfilter": {
+            "entries": "1",
+            "defaultValue": "7"
+        },
+        "dfi_write_filtered_input": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "dfi_write_dfi_history": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "dfi_cutoff_seconds": {
+            "entries": "1",
+            "defaultValue": "3600"
+        },
+        "dfi_time_dim": {
+            "entries": "1",
+            "defaultValue": "1000"
+        },
+        "dfi_bckstop_year": {
+            "entries": "1",
+            "defaultValue": "2004"
+        },
+        "dfi_bckstop_month": {
+            "entries": "1",
+            "defaultValue": "03"
+        },
+        "dfi_bckstop_day": {
+            "entries": "1",
+            "defaultValue": "14"
+        },
+        "dfi_bckstop_hour": {
+            "entries": "1",
+            "defaultValue": "12"
+        },
+        "dfi_bckstop_minute": {
+            "entries": "1",
+            "defaultValue": "00"
+        },
+        "dfi_bckstop_second": {
+            "entries": "1",
+            "defaultValue": "00"
+        },
+        "dfi_fwdstop_year": {
+            "entries": "1",
+            "defaultValue": "2004"
+        },
+        "dfi_fwdstop_month": {
+            "entries": "1",
+            "defaultValue": "03"
+        },
+        "dfi_fwdstop_day": {
+            "entries": "1",
+            "defaultValue": "13"
+        },
+        "dfi_fwdstop_hour": {
+            "entries": "1",
+            "defaultValue": "12"
+        },
+        "dfi_fwdstop_minute": {
+            "entries": "1",
+            "defaultValue": "00"
+        },
+        "dfi_fwdstop_second": {
+            "entries": "1",
+            "defaultValue": "00"
+        },
+        "dfi_savehydmeteors": {
+            "entries": "1",
+            "defaultValue": "0"
+        }
+    },
+    "fdda": {
+        "grid_fdda": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "gfdda_inname": {
+            "entries": "1",
+            "defaultValue": "\"wrffdda_d<domain>\""
+        },
+        "gfdda_interval_m": {
+            "entries": "max_dom",
+            "defaultValue": "360"
+        },
+        "gfdda_end_h": {
+            "entries": "max_dom",
+            "defaultValue": "6"
+        },
+        "io_form_gfdda": {
+            "entries": "1",
+            "defaultValue": "2"
+        },
+        "fgdt": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "if_no_pbl_nudging_uv": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "if_no_pbl_nudging_t": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "if_no_pbl_nudging_q": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "if_zfac_uv": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "if_zfac_t": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "if_zfac_q": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "guv": {
+            "entries": "max_dom",
+            "defaultValue": "0.0003"
+        },
+        "gt": {
+            "entries": "max_dom",
+            "defaultValue": "0.0003"
+        },
+        "gq": {
+            "entries": "max_dom",
+            "defaultValue": "0.00001"
+        },
+        "if_ramping": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "dtramp_min": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "grid_sfdda": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "sgfdda_inname": {
+            "entries": "1",
+            "defaultValue": "\"wrfsfdda_d<domain>\""
+        },
+        "sgfdda_end_h": {
+            "entries": "max_dom",
+            "defaultValue": "6"
+        },
+        "sgfdda_interval_m": {
+            "entries": "max_dom",
+            "defaultValue": "180"
+        },
+        "io_form_sgfdda": {
+            "entries": "1",
+            "defaultValue": "2"
+        },
+        "guv_sfc": {
+            "entries": "max_dom",
+            "defaultValue": "0.0003"
+        },
+        "gt_sfc": {
+            "entries": "max_dom",
+            "defaultValue": "0.0003"
+        },
+        "gq_sfc": {
+            "entries": "max_dom",
+            "defaultValue": "0.00001"
+        },
+        "rinblw": {
+            "entries": "max_dom",
+            "defaultValue": "0."
+        },
+        "fgdtzero": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "if_no_pbl_nudging_ph": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "dk_zfac_uv": {
+            "entries": "max_dom",
+            "defaultValue": "1,"
+        },
+        "if_zfac_ph": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "gph": {
+            "entries": "max_dom",
+            "defaultValue": "0.0003,"
+        },
+        "ktrop": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "xwavenum": {
+            "entries": "max_dom",
+            "defaultValue": "3,"
+        },
+        "ywavenum": {
+            "entries": "max_dom",
+            "defaultValue": "3,"
+        },
+        "obs_nudge_opt": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "max_obs": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "fdda_start": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "fdda_end": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "obs_nudge_wind": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "obs_coef_wind": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "obs_nudge_temp": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "obs_coef_temp": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "obs_nudge_mois": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "obs_coef_mois": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "obs_nudge_pstr": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "obs_coef_pstr": {
+            "entries": "max_dom",
+            "defaultValue": "0."
+        },
+        "obs_rinxy": {
+            "entries": "max_dom",
+            "defaultValue": "0."
+        },
+        "obs_rinsig": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "obs_twindo": {
+            "entries": "max_dom",
+            "defaultValue": "0.66667"
+        },
+        "obs_npfi": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "obs_ionf": {
+            "entries": "max_dom",
+            "defaultValue": "2"
+        },
+        "obs_idynin": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "obs_dtramp": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "obs_prt_freq": {
+            "entries": "max_dom",
+            "defaultValue": "10,"
+        },
+        "obs_prt_max": {
+            "entries": "1",
+            "defaultValue": "1000,"
+        },
+        "obs_ipf_errob": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "obs_ipf_nudob": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "obs_ipf_init": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "obs_no_pbl_nudge_uv": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "obs_no_pbl_nudge_t": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "obs_no_pbl_nudge_q": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "obs_sfc_scheme_horiz": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "obs_sfc_scheme_vert": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "obs_max_sndng_gap": {
+            "entries": "1",
+            "defaultValue": "20"
+        },
+        "obs_nudgezfullmin": {
+            "entries": "1",
+            "defaultValue": "50"
+        },
+        "obs_nudgezrampmin": {
+            "entries": "1",
+            "defaultValue": "50"
+        },
+        "obs_nudgezmax": {
+            "entries": "1",
+            "defaultValue": "3000"
+        },
+        "obs_sfcfact": {
+            "entries": "1",
+            "defaultValue": "1.0"
+        },
+        "obs_sfcfacr": {
+            "entries": "1",
+            "defaultValue": "1.0"
+        },
+        "obs_dpsmx": {
+            "entries": "1",
+            "defaultValue": "7.5"
+        },
+        "obs_scl_neg_qv_innov": {
+            "entries": "1",
+            "defaultValue": "0"
+        }
+    },
+    "scm": {
+        "scm_force": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "scm_force_dx": {
+            "entries": "1",
+            "defaultValue": "4000."
+        },
+        "num_force_layers": {
+            "entries": "1",
+            "defaultValue": "8"
+        },
+        "scm_lu_index": {
+            "entries": "1",
+            "defaultValue": "2"
+        },
+        "scm_isltyp": {
+            "entries": "1",
+            "defaultValue": "4"
+        },
+        "scm_vegfra": {
+            "entries": "1",
+            "defaultValue": "0.5"
+        },
+        "scm_canwat": {
+            "entries": "1",
+            "defaultValue": "0.0"
+        },
+        "scm_lat": {
+            "entries": "1",
+            "defaultValue": "36.605"
+        },
+        "scm_lon": {
+            "entries": "1",
+            "defaultValue": "-97.485"
+        },
+        "scm_th_adv": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "scm_wind_adv": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "scm_qv_adv": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "scm_ql_adv": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "scm_vert_adv": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "num_force_soil_layers": {
+            "entries": "1",
+            "defaultValue": "5,"
+        },
+        "scm_soilq_force": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "scm_force_th_largescale": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "scm_force_qv_largescale": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "scm_force_ql_largescale": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "scm_force_wind_largescale": {
+            "entries": "1",
+            "defaultValue": ".false."
+        }
+    },
+    "dynamics": {
+        "hybrid_opt": {
+            "entries": "1",
+            "defaultValue": "2,"
+        },
+        "etac": {
+            "entries": "1",
+            "defaultValue": "0.2"
+        },
+        "rk_ord": {
+            "entries": "1",
+            "defaultValue": "3,"
+        },
+        "zadvect_implicit": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "w_crit_cfl": {
+            "entries": "1",
+            "defaultValue": "1.2"
+        },
+        "zdamp": {
+            "entries": "max_dom",
+            "defaultValue": "5000.,"
+        },
+        "w_damping": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "damp_opt": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "use_theta_m": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "use_q_diabatic": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "c_s": {
+            "entries": "max_dom",
+            "defaultValue": "0.25"
+        },
+        "c_k": {
+            "entries": "max_dom",
+            "defaultValue": "0.15"
+        },
+        "dampcoef": {
+            "entries": "max_dom",
+            "defaultValue": "0.,"
+        },
+        "base_temp": {
+            "entries": "1",
+            "defaultValue": "290.,"
+        },
+        "base_pres": {
+            "entries": "1",
+            "defaultValue": "10^5"
+        },
+        "base_lapse": {
+            "entries": "1",
+            "defaultValue": "50.,"
+        },
+        "iso_temp": {
+            "entries": "1",
+            "defaultValue": "200.,"
+        },
+        "base_pres_strat": {
+            "entries": "1",
+            "defaultValue": "0."
+        },
+        "base_lapse_strat": {
+            "entries": "1",
+            "defaultValue": "-11."
+        },
+        "use_baseparam_fr_nml": {
+            "entries": "1",
+            "defaultValue": ".f.,"
+        },
+        "use_input_w": {
+            "entries": "1",
+            "defaultValue": ".f.,"
+        },
+        "khdif": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "kvdif": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "smdiv": {
+            "entries": "max_dom",
+            "defaultValue": "0.1,"
+        },
+        "emdiv": {
+            "entries": "max_dom",
+            "defaultValue": "0.01,"
+        },
+        "epssm": {
+            "entries": "max_dom",
+            "defaultValue": ".1,"
+        },
+        "non_hydrostatic": {
+            "entries": "max_dom",
+            "defaultValue": ".true.,"
+        },
+        "pert_coriolis": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "top_lid": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "h_mom_adv_order": {
+            "entries": "max_dom",
+            "defaultValue": "5,"
+        },
+        "v_mom_adv_order": {
+            "entries": "max_dom",
+            "defaultValue": "3,"
+        },
+        "h_sca_adv_order": {
+            "entries": "max_dom",
+            "defaultValue": "5,"
+        },
+        "v_sca_adv_order": {
+            "entries": "max_dom",
+            "defaultValue": "3,"
+        },
+        "moist_adv_opt": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "moist_adv_dfi_opt": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "scalar_adv_opt": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "chem_adv_opt": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "tracer_adv_opt": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "tke_adv_opt": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "phi_adv_z": {
+            "entries": "max_dom",
+            "defaultValue": "1"
+        },
+        "time_step_sound": {
+            "entries": "max_dom",
+            "defaultValue": "4"
+        },
+        "do_avgflx_em": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "do_avgflx_cugd": {
+            "entries": "max_dom",
+            "defaultValue": "0,"
+        },
+        "do_coriolis": {
+            "entries": "max_dom",
+            "defaultValue": ".true.,"
+        },
+        "do_curvature": {
+            "entries": "max_dom",
+            "defaultValue": ".true.,"
+        },
+        "do_gradp": {
+            "entries": "max_dom",
+            "defaultValue": ".true.,"
+        },
+        "fft_filter_lat": {
+            "entries": "1",
+            "defaultValue": "91."
+        },
+        "coupled_filtering": {
+            "entries": "1",
+            "defaultValue": ".true."
+        },
+        "pos_def": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "swap_pole_with_next_j": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "actual_distance_average": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "gwd_opt": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "gwd_diags": {
+            "entries": "1",
+            "defaultValue": "0"
+        },
+        "sfs_opt": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "m_opt": {
+            "entries": "max_dom",
+            "defaultValue": "0"
+        },
+        "rad_nudge": {
+            "entries": "1",
+            "defaultValue": "1"
+        }
+    },
+    "bdy_control": {
+        "spec_bdy_width": {
+            "entries": "1",
+            "defaultValue": "5,"
+        },
+        "spec_zone": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "relax_zone": {
+            "entries": "1",
+            "defaultValue": "4,"
+        },
+        "specified": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "spec_exp": {
+            "entries": "1",
+            "defaultValue": "0."
+        },
+        "constant_bc": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "periodic_x": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "symmetric_xs": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "symmetric_xe": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "open_xs": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "open_xe": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "periodic_y": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "symmetric_ys": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "symmetric_ye": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "open_ys": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "open_ye": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "nested": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "polar": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "have_bcs_moist": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "have_bcs_scalar": {
+            "entries": "max_dom",
+            "defaultValue": ".false.,"
+        },
+        "multi_bdy_files": {
+            "entries": "1",
+            "defaultValue": ".false.,"
+        }
+    },
+    "ideal": {
+        "ideal_case": {
+            "entries": "1",
+            "defaultValue": "0"
+        }
+    },
+    "tc": {
+        "insert_bogus_storm": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "remove_storm": {
+            "entries": "1",
+            "defaultValue": ".false."
+        },
+        "num_storm": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "latc_loc": {
+            "entries": "1",
+            "defaultValue": "-999."
+        },
+        "lonc_loc": {
+            "entries": "1",
+            "defaultValue": "-999."
+        },
+        "rmax": {
+            "entries": "1",
+            "defaultValue": "-999."
+        },
+        "rankine_lid": {
+            "entries": "1",
+            "defaultValue": "-999."
+        }
+    },
+    "namelist_quilt": {
+        "nio_tasks_per_group": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "nio_groups": {
+            "entries": "1",
+            "defaultValue": "1,"
+        }
+    },
+    "grib2": {
+        "background_proc_id": {
+            "entries": "1",
+            "defaultValue": "255,"
+        },
+        "forecast_proc_id": {
+            "entries": "1",
+            "defaultValue": "255,"
+        },
+        "production_status": {
+            "entries": "1",
+            "defaultValue": "255,"
+        },
+        "compression": {
+            "entries": "1",
+            "defaultValue": "40,"
+        }
+    },
+    "diags": {
+        "p_lev_diags": {
+            "entries": "1",
+            "defaultValue": "1,"
+        },
+        "num_press_levels": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "press_levels": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "use_tot_or_hyd_p": {
+            "entries": "1",
+            "defaultValue": "2"
+        },
+        "z_lev_diags": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "num_z_levels": {
+            "entries": "1",
+            "defaultValue": "2,"
+        },
+        "z_levels": {
+            "entries": "1",
+            "defaultValue": "0,"
+        },
+        "num_wif_levels": {
+            "entries": "1",
+            "defaultValue": "30"
+        },
+        "wif_input_opt": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "num_gca_levels": {
+            "entries": "1",
+            "defaultValue": "13"
+        },
+        "gca_input_opt": {
+            "entries": "1",
+            "defaultValue": "1"
+        },
+        "mp_physics": {
+            "entries": "1",
+            "defaultValue": "8,"
+        },
+        "cu_physics": {
+            "entries": "1",
+            "defaultValue": "6,"
+        },
+        "ra_lw_physics": {
+            "entries": "1",
+            "defaultValue": "4,"
+        },
+        "ra_sw_physics": {
+            "entries": "1",
+            "defaultValue": "4,"
+        },
+        "bl_pbl_physics": {
+            "entries": "1",
+            "defaultValue": "2,"
+        },
+        "sf_sfclay_physics": {
+            "entries": "1",
+            "defaultValue": "2,"
+        }
+    }
+}

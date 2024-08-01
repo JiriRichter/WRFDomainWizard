@@ -87,31 +87,30 @@ export class WPSNamelist {
 
         if ('share' in ns) {
             Object.assign(this.share, ns['share']);
-            WPSNamelist._convertToArray(this.geogrid, 'start_year');
-            WPSNamelist._convertToArray(this.geogrid, 'start_month');
-            WPSNamelist._convertToArray(this.geogrid, 'start_day');
-            WPSNamelist._convertToArray(this.geogrid, 'start_hour');
-            WPSNamelist._convertToArray(this.geogrid, 'end_year');
-            WPSNamelist._convertToArray(this.geogrid, 'end_month');
-            WPSNamelist._convertToArray(this.geogrid, 'end_day');
-            WPSNamelist._convertToArray(this.geogrid, 'end_hour');
-            WPSNamelist._convertToArray(this.geogrid, 'start_date');
-            WPSNamelist._convertToArray(this.geogrid, 'end_date');
-            WPSNamelist._convertToArray(this.geogrid, 'active_grid');
+            Namelist.convertToArray(this.geogrid, 'start_year');
+            Namelist.convertToArray(this.geogrid, 'start_month');
+            Namelist.convertToArray(this.geogrid, 'start_day');
+            Namelist.convertToArray(this.geogrid, 'start_hour');
+            Namelist.convertToArray(this.geogrid, 'end_year');
+            Namelist.convertToArray(this.geogrid, 'end_month');
+            Namelist.convertToArray(this.geogrid, 'end_day');
+            Namelist.convertToArray(this.geogrid, 'end_hour');
+            Namelist.convertToArray(this.geogrid, 'start_date');
+            Namelist.convertToArray(this.geogrid, 'end_date');
+            Namelist.convertToArray(this.geogrid, 'active_grid');
         }
 
         if ('geogrid' in ns) {
             Object.assign(this.geogrid, ns['geogrid']);
-            WPSNamelist._convertToArray(this.geogrid, 'parent_id');
-            WPSNamelist._convertToArray(this.geogrid, 'parent_grid_ratio');
-            WPSNamelist._convertToArray(this.geogrid, 'i_parent_start');
-            WPSNamelist._convertToArray(this.geogrid, 'J_parent_start');
-            WPSNamelist._convertToArray(this.geogrid, 's_we');
-            WPSNamelist._convertToArray(this.geogrid, 'e_we');
-            WPSNamelist._convertToArray(this.geogrid, 's_sn');
-            WPSNamelist._convertToArray(this.geogrid, 'e_sn');
-            WPSNamelist._convertToArray(this.geogrid, 'geog_data_res');
-            WPSNamelist._convertToArray(this.geogrid, 'e_we');
+            Namelist.convertToArray(this.geogrid, 'parent_id');
+            Namelist.convertToArray(this.geogrid, 'parent_grid_ratio');
+            Namelist.convertToArray(this.geogrid, 'i_parent_start');
+            Namelist.convertToArray(this.geogrid, 'J_parent_start');
+            Namelist.convertToArray(this.geogrid, 's_we');
+            Namelist.convertToArray(this.geogrid, 'e_we');
+            Namelist.convertToArray(this.geogrid, 's_sn');
+            Namelist.convertToArray(this.geogrid, 'e_sn');
+            Namelist.convertToArray(this.geogrid, 'geog_data_res');
         }
 
         if ('ungrib' in ns) {
@@ -120,12 +119,6 @@ export class WPSNamelist {
 
         if ('metgrid' in ns) {
             Object.assign(this.metgrid, ns['metgrid']);
-        }
-    }
-
-    static _convertToArray(section, paramName) {
-        if (section[paramName] && !Array.isArray(section[paramName])) {
-            section[paramName] = [].concat(section[paramName]);
         }
     }
 
@@ -199,57 +192,9 @@ export class WPSNamelist {
         this.metgrid.opt_metgrid_tbl_path = '/home/wrf';
     }
 
-    static _isInteger(val) {
-        return typeof val === "number" 
-            && isFinite(val) 
-            && val > -9007199254740992 
-            && val < 9007199254740992 
-            && Math.floor(val) === val;
-    }
-
-    static _formatValue(val) {
-        if (Array.isArray(val)) {
-            var strVal = WPSNamelist._formatValue(val[0]);
-            for (var i = 1; i < val.length; i++) {
-                strVal += ', ' + WPSNamelist._formatValue(val[i]);
-            }
-            return strVal;
-        }
-        else if (typeof val == "string") {
-            return "'" + val + "'";
-        }
-        else if (typeof val == "boolean") {
-            return (val) ? '.true.' : '.false.';
-        }
-        else if (!WPSNamelist._isInteger(val)) {
-            return val.toFixed(3);
-        }
-        return val.toString();
-    }    
-
     static _formarDate(d) {
         return (d.getFullYear().toString() + '-' + d.getMonth().toString().padStart(2, '0') + '-' + d.getDay().toString().padStart(2, '0'));
     }    
-
-    static _formatSection(section, properties, values) {
-        var content = '&' + section + '\n';
-
-        for (var i = 0; i < properties.length; i++) {
-
-            if (values[i] === null) {
-                // property not set - continue
-                continue;                
-            }
-            else if (typeof(values[i]) === 'undefined') {
-                throw new Error(`Property ${properties[i]} is not defined`);
-            }
-            else {
-                content += ' ' + properties[i].padEnd(20) + ' = ' + WPSNamelist._formatValue(values[i]) + '\n';
-            }
-        }
-
-        return content + '/\n\n';
-    };   
 
     _setDefaults() {
         // set default values
@@ -293,12 +238,12 @@ export class WPSNamelist {
 
         let content = '';
 
-        content += WPSNamelist._formatSection(
+        content += Namelist.formatSection(
             'share',
             ['wrf_core', 'max_dom', 'start_date', 'end_date', 'interval_seconds', 'io_form_geogrid', 'debug_level'],
             [this.share.wrf_core, this.share.max_dom, this.share.start_date, this.share.end_date, this.share.interval_seconds, this.share.io_form_geogrid, this.share.debug_level]);
 
-        content += WPSNamelist._formatSection(
+        content += Namelist.formatSection(
             'geogrid',
             [
                 'parent_id',
@@ -342,11 +287,11 @@ export class WPSNamelist {
                 this.geogrid.geog_data_path,
                 this.geogrid.opt_geogrid_tbl_path
             ]);
-        content += WPSNamelist._formatSection(
+        content += Namelist.formatSection(
             'ungrib',
             ['out_format', 'prefix'],
             [this.ungrib.out_format, this.ungrib.prefix]);
-        content += WPSNamelist._formatSection(
+        content += Namelist.formatSection(
             'metgrid',
             ['fg_name', 'io_form_metgrid', 'opt_metgrid_tbl_path'],
             [this.metgrid.fg_name, this.metgrid.io_form_metgrid, this.metgrid.opt_metgrid_tbl_path]);

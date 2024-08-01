@@ -11,9 +11,13 @@
     "grunt": "grunt",
     "uglify": "uglifyjs build/js/wrf-domain-wizard.js -c -m -o build/js/wrf-domain-wizard.min.js --source-map filename=build/js/wrf-domain-wizard.min.js.map --comments",
     "serve": "live-server . --open=index.html#lat-lon_region --verbose --watch=build,index.html --wait=1000",
+    "serve-namelist": "live-server . --open=namelist.input.html#test --verbose --watch=build,index.html --wait=1000",
+    "serve-test": "live-server . --open=test/test.html --verbose --watch=build,test.html --wait=1000",
     "watch-js": "rollup --config rollup.config.mjs --watch",
     "watch-less": "npm run grunt watch",
     "dev": "npm run build && concurrently \"npm:watch-js\" \"npm:watch-less\" \"npm:serve\"",
+    "devnl": "npm run build && concurrently \"npm:watch-js\" \"npm:watch-less\" \"npm:serve-namelist\"",
+    "devtest": "npm run build && concurrently \"npm:watch-js\" \"npm:watch-less\" \"npm:serve-test\"",
     "check-env": "dotenv -- cross-var echo \"$SWA_CLI_DEPLOYMENT_TOKEN\"",
     "deploy": "dotenv -- npx @azure/static-web-apps-cli deploy ./build --env production"
   },
@@ -47,6 +51,8 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "blob-polyfill": "^7.0.20220408",
     "bootstrap": "^4.6.1",
+    "bootstrap-select": "^1.13.18",
+    "bootstrap5": "npm:bootstrap@^5.3.3",
     "file-saver": "^2.0.5",
     "html-to-image": "^1.11.11",
     "immediate": "^3.3.0",
@@ -56,6 +62,8 @@
     "leaflet-sidebar-v2": "^3.2.3",
     "leaflet-spin": "^1.1.2",
     "leaflet-textpath": "^1.2.3",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
     "proj4": "^2.9.0",
     "spin.js": "^4.1.1"
   }

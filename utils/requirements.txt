@@ -1,0 +1,4 @@
+netCDF4
+beautifulsoup4
+requests
+requests_cache

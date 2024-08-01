@@ -12,61 +12,13 @@ div.modal div.modal-footer {
 }
 div#wps-save-dialog textarea {
   height: 70vh;
+}
+.font-namelist {
   font-family: 'Courier New';
   font-size: small;
 }
-div#geog-data-res-dialog div.modal-footer {
-  font-size: 14px;
-}
-div#geog-data-res-dialog div.modal-footer a,
-div#geog-data-res-dialog div.modal-footer i {
-  color: #383d41;
-}
-div#geog-data-res-dialog table.geog-categories {
-  border-collapse: separate;
-  border-spacing: 0;
-  width: 100%;
-  font-size: 11px;
-}
-div#geog-data-res-dialog table.geog-categories > thead > tr > th {
-  font-weight: bold;
-  background-color: white;
-  border-top: 1px solid #ced4da;
-  padding: 2px 4px;
-}
-div#geog-data-res-dialog table.geog-categories > thead > tr > th:first-child {
-  border-left: 1px solid #ced4da;
-  border-top-left-radius: 0.2rem;
-}
-div#geog-data-res-dialog table.geog-categories > thead > tr > th:last-child {
-  border-right: 1px solid #ced4da;
-  border-top-right-radius: 0.2rem;
-}
-div#geog-data-res-dialog table.geog-categories > tbody > tr > td {
-  background: #e9ecef;
-  padding: 2px 4px;
-}
-div#geog-data-res-dialog table.geog-categories > tbody > tr > td:first-child {
-  border-left: 1px solid #ced4da;
-  width: 100px;
-}
-div#geog-data-res-dialog table.geog-categories > tbody > tr > td > select {
-  width: 100%;
-  border-radius: 0.2rem;
-  line-height: 1;
-}
-div#geog-data-res-dialog table.geog-categories > tbody > tr > td:last-child {
-  width: 150px;
-  border-right: 1px solid #ced4da;
-}
-div#geog-data-res-dialog table.geog-categories > tbody > tr:last-child > td {
-  border-bottom: 1px solid #ced4da;
-}
-div#geog-data-res-dialog table.geog-categories > tbody > tr:last-child > td:first-child {
-  border-bottom-left-radius: 0.2rem;
-}
-div#geog-data-res-dialog table.geog-categories > tbody > tr:last-child > td:last-child {
-  border-bottom-right-radius: 0.2rem;
+.resize-none {
+  resize: none;
 }
 .leaflet-control-coordinates {
   background: rgba(255, 255, 255, 0.7);
@@ -174,6 +126,125 @@ div#geog-data-res-dialog table.geog-categories > tbody > tr:last-child > td:last
 }
 .wrf-domain-grid-tooltip table > tbody > tr > td:nth-child(1) {
   border-right: 1px solid #f5f5f5;
+}
+.loader-1 {
+  transform: rotateZ(45deg);
+  perspective: 1000px;
+  border-radius: 50%;
+  color: #0810a3;
+}
+.loader-1:before,
+.loader-1:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: inherit;
+  height: inherit;
+  border-radius: 50%;
+  transform: rotateX(70deg);
+  animation: 1s spin linear infinite;
+}
+.loader-1:after {
+  color: #FF3D00;
+  transform: rotateY(70deg);
+  animation-delay: 0.4s;
+}
+@keyframes rotate {
+  0% {
+    transform: translate(-50%, -50%) rotateZ(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotateZ(360deg);
+  }
+}
+@keyframes rotateccw {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+@keyframes spin {
+  0%,
+  100% {
+    box-shadow: 0.2em 0px 0 0px currentcolor;
+  }
+  12% {
+    box-shadow: 0.2em 0.2em 0 0 currentcolor;
+  }
+  25% {
+    box-shadow: 0 0.2em 0 0px currentcolor;
+  }
+  37% {
+    box-shadow: -0.2em 0.2em 0 0 currentcolor;
+  }
+  50% {
+    box-shadow: -0.2em 0 0 0 currentcolor;
+  }
+  62% {
+    box-shadow: -0.2em -0.2em 0 0 currentcolor;
+  }
+  75% {
+    box-shadow: 0px -0.2em 0 0 currentcolor;
+  }
+  87% {
+    box-shadow: 0.2em -0.2em 0 0 currentcolor;
+  }
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 31px;
+  height: 15px;
+  margin-bottom: 0;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: none;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  transition: 0.4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 10px;
+  width: 10px;
+  left: 2px;
+  bottom: 2px;
+  background-color: rgba(0, 0, 0, 0.25);
+  transition: 0.4s;
+}
+input:checked + .slider {
+  background-color: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(0, 0, 0, 0.35);
+}
+input:focus + .slider {
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.35);
+}
+input:checked + .slider:before {
+  transform: translateX(16px);
+  background-color: white;
+}
+/* Rounded sliders */
+.slider.round {
+  border-radius: 10px;
+}
+.slider.round:before {
+  border-radius: 50%;
 }
 div.leaflet-sidebar {
   z-index: 1000;
@@ -361,6 +432,318 @@ div.leaflet-sidebar-pane#domains div.container-grid div.grid-header label {
 }
 div.leaflet-sidebar-pane#domains div.container-grid div.grid-header button {
   padding: 2px 6px;
+}
+div.modal-dialog.modal-fullscreen {
+  margin: 0;
+  max-width: 100%;
+  height: 100%;
+}
+div.modal-dialog.modal-fullscreen div.modal-content {
+  height: 100%;
+}
+div.modal-dialog.modal-fullscreen div.modal-content div.modal-body {
+  height: 100%;
+  overflow: auto;
+}
+div#geog-data-res-dialog div.modal-footer {
+  font-size: 14px;
+}
+div#geog-data-res-dialog div.modal-footer a,
+div#geog-data-res-dialog div.modal-footer i {
+  color: #383d41;
+}
+div#geog-data-res-dialog table.geog-categories {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  font-size: 11px;
+}
+div#geog-data-res-dialog table.geog-categories > thead > tr > th {
+  font-weight: bold;
+  background-color: white;
+  border-top: 1px solid #ced4da;
+  padding: 2px 4px;
+}
+div#geog-data-res-dialog table.geog-categories > thead > tr > th:first-child {
+  border-left: 1px solid #ced4da;
+  border-top-left-radius: 0.2rem;
+}
+div#geog-data-res-dialog table.geog-categories > thead > tr > th:last-child {
+  border-right: 1px solid #ced4da;
+  border-top-right-radius: 0.2rem;
+}
+div#geog-data-res-dialog table.geog-categories > tbody > tr > td {
+  background: #e9ecef;
+  padding: 2px 4px;
+}
+div#geog-data-res-dialog table.geog-categories > tbody > tr > td:first-child {
+  border-left: 1px solid #ced4da;
+  width: 100px;
+}
+div#geog-data-res-dialog table.geog-categories > tbody > tr > td > select {
+  width: 100%;
+  border-radius: 0.2rem;
+  line-height: 1;
+}
+div#geog-data-res-dialog table.geog-categories > tbody > tr > td:last-child {
+  width: 150px;
+  border-right: 1px solid #ced4da;
+}
+div#geog-data-res-dialog table.geog-categories > tbody > tr:last-child > td {
+  border-bottom: 1px solid #ced4da;
+}
+div#geog-data-res-dialog table.geog-categories > tbody > tr:last-child > td:first-child {
+  border-bottom-left-radius: 0.2rem;
+}
+div#geog-data-res-dialog table.geog-categories > tbody > tr:last-child > td:last-child {
+  border-bottom-right-radius: 0.2rem;
+}
+div#message-box-dialog {
+  z-index: 2050;
+}
+div#message-box-dialog div.global-error textarea {
+  height: 350px;
+  overflow: auto;
+  resize: none;
+  font-family: 'Courier New';
+  font-size: small;
+}
+body.modal-open div.modal-backdrop ~ div.modal-backdrop {
+  z-index: 2040;
+}
+div.namelist-input-editor div.namelist-input-group.namelist-input-group-highlight div.namelist-input-group-header {
+  background-color: #ffeb3b7d;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  align-items: center;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header h5 {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 5px;
+  margin-right: 0;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header button {
+  outline: none !important;
+  box-shadow: none;
+  width: 30px;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header button:hover {
+  border-color: #e1e1e1;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header div.namelist-input-group-header-switch {
+  display: flex;
+  align-items: center;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header div.namelist-input-group-header-switch > span {
+  font-size: small;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header span.badge.badge-pill.namelist-input-set-variable-count {
+  color: #212529;
+  background-color: #89ff007a;
+  font-size: 65%;
+  margin-left: 1rem;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header a.namelist-input-variables-user-guide-link {
+  margin-left: 1rem;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-group-header a.namelist-input-variables-user-guide-link i {
+  color: #2196f3bd;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap !important;
+  margin-top: -1px;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable button.btn.btn-namelist-input-erase {
+  border: none;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable button.btn.btn-namelist-input-erase:focus {
+  box-shadow: none;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-name {
+  width: 200px;
+  border-radius: 0;
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value {
+  width: 200px;
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  border-top: 1px solid #ced4da;
+  border-bottom: 1px solid #ced4da;
+  border-right: 1px solid #ced4da;
+  border-left: none;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value input.form-control,
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value select.form-control {
+  border-radius: 0;
+  border: none;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value input.form-control:invalid,
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value select.form-control:invalid {
+  background-color: #ff8080;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value input.form-control:focus,
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value select.form-control:focus {
+  box-shadow: none;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value div.input-group.namelist-input-datetime-picker div.input-group-text {
+  border-radius: 0;
+  border-top: none;
+  border-bottom: none;
+  border-right: none;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value div.namelist-input-variable-check {
+  height: 100%;
+  width: 100%;
+  background-color: #e9ecef;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value div.namelist-input-variable-check div.form-check {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-value div.namelist-input-variable-check div.form-check input.form-check-input {
+  position: relative;
+  margin: auto;
+  padding: 0;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable div.namelist-input-variable-description {
+  font-size: 0.75rem;
+  align-self: center;
+  padding-left: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #495057;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-highlight {
+  background-color: #ffeb3b7d;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover {
+  background-color: aliceblue;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover div.namelist-input-variable-name {
+  font-weight: bold;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover div.namelist-input-variable-value input,
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover div.namelist-input-variable-value select {
+  font-weight: bold;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable:hover div.namelist-input-variable-description {
+  font-weight: bold;
+  color: #495057;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset button.btn.btn-namelist-input-erase {
+  visibility: hidden;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.namelist-input-variable-name {
+  font-style: italic;
+  color: #8794a1;
+  background-color: #eff2f5;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.namelist-input-variable-value input,
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.namelist-input-variable-value select {
+  font-style: italic;
+  color: #8794a1;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables div.namelist-input-variable.namelist-input-variable-unset div.namelist-input-variable-description {
+  color: #8794a1;
+}
+div.namelist-input-editor div.namelist-input-group div.namelist-input-variables.namelist-input-hide-unset div.namelist-input-variable.namelist-input-variable-unset {
+  display: none;
+}
+div.namelist-input-editor div.namelist-input-group.namelist-input-group-unset.namelist-input-hide-unset {
+  display: none;
+}
+#namelist-input-dialog div.modal-body {
+  display: flex;
+  flex-direction: column;
+}
+#namelist-input-dialog div.modal-body div.tab-content {
+  flex-grow: 1;
+}
+#namelist-input-dialog div.modal-body div.tab-content div.tab-pane {
+  height: 100%;
+  overflow: auto;
+}
+#namelist-input-dialog div.modal-body div.tab-content div.tab-pane textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  overflow: auto;
+}
+#namelist-input-dialog div.modal-header {
+  align-items: center !important;
+}
+#namelist-input-dialog div.modal-header nav.navbar ul.navbar-nav li.nav-item.dropdown a.nav-link.dropdown-toggle {
+  font-size: 0.875rem;
+}
+#namelist-input-dialog div.modal-header nav.navbar ul.navbar-nav li.nav-item.dropdown div.dropdown-menu a.dropdown-item {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+#namelist-input-dialog div.modal-header nav.navbar ul.navbar-nav li.nav-item.dropdown div.dropdown-namelist-input-view {
+  margin-left: 2rem;
+}
+#namelist-input-dialog div.modal-header nav.navbar ul.navbar-nav li.nav-item.dropdown div.dropdown-namelist-input-view a.dropdown-item i {
+  visibility: hidden;
+}
+#namelist-input-dialog div.modal-header nav.navbar ul.navbar-nav li.nav-item.dropdown div.dropdown-namelist-input-view a.dropdown-item.dropdown-selected i {
+  visibility: visible;
+}
+#namelist-input-dialog div.modal-header nav.navbar span.navbar-text {
+  font-size: 0.875rem;
+}
+#namelist-input-dialog div.modal-header nav.navbar form.form-inline > button {
+  border: none;
+}
+#namelist-input-dialog div.modal-header nav.navbar form.form-inline > button:focus {
+  box-shadow: none;
+}
+#namelist-input-dialog div.modal-header nav.navbar form.form-inline div.bootstrap-select button.btn.dropdown-toggle {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  background-color: #eff2f5;
+}
+#namelist-input-dialog div.modal-header nav.navbar form.form-inline div.bootstrap-select button.btn.dropdown-toggle:focus {
+  outline: none !important;
+  box-shadow: none;
+}
+#namelist-input-dialog div.modal-header nav.navbar form.form-inline div.bootstrap-select .dropdown-item,
+#namelist-input-dialog div.modal-header nav.navbar form.form-inline div.bootstrap-select .no-results {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+#namelist-input-dialog div.modal-header nav.navbar form.form-inline div.bootstrap-select input.form-control {
+  height: calc(1.5em + 0.5rem + 2px);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
 }
 .leaflet-container.cursor-crosshair {
   cursor: crosshair;

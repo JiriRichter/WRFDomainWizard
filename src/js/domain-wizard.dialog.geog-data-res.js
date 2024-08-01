@@ -2,7 +2,7 @@ export class GeogDataResDialog {
 
     constructor(options) {
 
-        // defaul settings
+        // default settings
         this.options = {
             jsonBaseUrl: 'json'
         };

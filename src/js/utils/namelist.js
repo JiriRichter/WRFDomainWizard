@@ -6,14 +6,45 @@
  *              index: index for array
  *             }
  */
-/**
- * @constructor
- * @dict
- * */
 export class Namelist {
+
+    // regular expression for each item	
+    static _re_comment = /(!.*)\n\s*/;
+
+    static _re_group = /(?:&|\$)\s*([a-zA-Z_][\w]*)\s*/;
+
+    static _re_array = /([a-zA-Z_][\w]*)\s*(\(\s*((\s*:\s*(\-|\+)?\d*){1,2}|((\-|\+)?\d+(\s*:\s*(\-|\+)?\d*){0,2}))(\s*,\s*(((\-|\+)?\d*(\s*:\s*(\-|\+)?\d*){0,2})))*\s*\)(\s*\(\s*(:\s*\d*|\d+(\s*:\s*\d*)?)\s*\))?)\s*=\s*/;
+
+    static _re_object = /([a-zA-Z_][\w]*)\s*=\s*/;
+
+    static _re_repeat = /([0-9]+)\s*\*\s*/;
+
+    static _re_complex_start = /\(\s*/;
+    static _re_complex_end = /\)\s*,?\s*/;
+
+    static _re_string = /('((?:[^']+|'')*)'|"((?:[^"]+|"")*)")\s*,?\s*/;
+
+    static _re_nondelimited_c = /([^'"\*\s,\/!&\$(=%\.][^\*\s,\/!&\$(=%\.]*)\s*,?\s*/;
+    static _re_nondelimited_d = /(\d+[^\*\s\d,\/!&\$\(=%\.][^\s,\/!&\$\(=%\.]*)\s*,?\s*/;
+
+    static _re_real = /(((\-|\+)?\d*\.\d*([eEdDqQ](\-|\+)?\d+)?)|((\-|\+)?\d+[eEdDqQ](\-|\+)?\d+))\s*,?\s*/;
+
+    static _re_integer = /((\-|\+)?\d+)\b\s*,?\s*/;
+
+    static _re_logical_c = /([tT][rR][uU][eE]|[tT]|[fF][aA][lL][sS][eE]|[fF])\s*,?\s*/;
+    static _re_logical_p = /(\.(([tT][rR][uU][eE]|[[fF][aA][lL][sS][eE])\.?|[tTfF]\w*))\s*,?\s*/;
+
+    static _re_null = /\s*\b|\s*,\s*/;
+
+    static _re_orphan = /[^&]*/;
+
     constructor(data) {
 
-        var tokens = this._parse(data), 
+        if (!data) {
+            throw new Error("Invalid data");
+        }
+
+        var tokens = Namelist._tokenize(data), 
             current_group = null,
             current_prop = null,
             i,
@@ -51,7 +82,7 @@ export class Namelist {
     }
 
     // parse namelist data to tokens
-    _parse(data) {
+    static _tokenize(data) {
         var tokens = [];
 
         function addElement(pos, name, value, index = null) {
@@ -70,36 +101,6 @@ export class Namelist {
         var subst;
         var i = 0;
 
-        // regular expression for each item	
-        var re_comment = /(!.*)\n\s*/;
-
-        var re_group = /(?:&|\$)\s*([a-zA-Z_][\w]*)\s*/;
-
-        var re_array = /([a-zA-Z_][\w]*)\s*(\(\s*((\s*:\s*(\-|\+)?\d*){1,2}|((\-|\+)?\d+(\s*:\s*(\-|\+)?\d*){0,2}))(\s*,\s*(((\-|\+)?\d*(\s*:\s*(\-|\+)?\d*){0,2})))*\s*\)(\s*\(\s*(:\s*\d*|\d+(\s*:\s*\d*)?)\s*\))?)\s*=\s*/;
-
-        var re_object = /([a-zA-Z_][\w]*)\s*=\s*/;
-
-        var re_repeat = /([0-9]+)\s*\*\s*/;
-
-        var re_complex_start = /\(\s*/;
-        var re_complex_end = /\)\s*,?\s*/;
-
-        var re_string = /('((?:[^']+|'')*)'|"((?:[^"]+|"")*)")\s*,?\s*/;
-
-        var re_nondelimited_c = /([^'"\*\s,\/!&\$(=%\.][^\*\s,\/!&\$(=%\.]*)\s*,?\s*/;
-        var re_nondelimited_d = /(\d+[^\*\s\d,\/!&\$\(=%\.][^\s,\/!&\$\(=%\.]*)\s*,?\s*/;
-
-        var re_real = /(((\-|\+)?\d*\.\d*([eEdDqQ](\-|\+)?\d+)?)|((\-|\+)?\d+[eEdDqQ](\-|\+)?\d+))\s*,?\s*/;
-
-        var re_integer = /((\-|\+)?\d+)\b\s*,?\s*/;
-
-        var re_logical_c = /([tT][rR][uU][eE]|[tT]|[fF][aA][lL][sS][eE]|[fF])\s*,?\s*/;
-        var re_logical_p = /(\.(([tT][rR][uU][eE]|[[fF][aA][lL][sS][eE])\.?|[tTfF]\w*))\s*,?\s*/;
-
-        var re_null = /\s*\b|\s*,\s*/;
-
-        var re_orphan = /[^&]*/;
-
         while (i < data.length) {
             cur = data[i];
             curstr = data.substr(i);
@@ -107,7 +108,7 @@ export class Namelist {
             // (1-1) a comment
             if (cur.match(/!/)) {
                 // COMMENT
-                str = re_comment.exec(curstr);
+                str = Namelist._re_comment.exec(curstr);
                 if (str && (str.index == 0)) {
                     //console.log("found comment: " + str);
                     //addElement(i, "comment", str);
@@ -127,7 +128,7 @@ export class Namelist {
             // (2-1) a character constant
             else if (cur.match(/['"]/)) {
                 // CHARACTER CONSTANT
-                str = re_string.exec(curstr);
+                str = Namelist._re_string.exec(curstr);
                 if (str && (str.index == 0)) {
                     //console.log("found character: " + str[1]);
                     addElement(i, "character", str[2]);
@@ -158,7 +159,7 @@ export class Namelist {
             // (4-1) the start or the end of a group
             else if (cur.match(/[$&]/)) {
                 // GROUP
-                str = re_group.exec(curstr);
+                str = Namelist._re_group.exec(curstr);
                 if (str && (str.index == 0)) {
                     if (str[1].match(/^end$/i)) {
                         if (prev == "object") {
@@ -185,7 +186,7 @@ export class Namelist {
             // (5-2) a real constant
             else if (cur.match(/\./)) {
                 // LOGICAL CONSTANT
-                str = re_logical_p.exec(curstr);
+                str = Namelist._re_logical_p.exec(curstr);
                 if (str && (str.index == 0)) {
                     //console.log("found logical: " + str[1]);
                     addElement(i, "logical", str[1]);
@@ -194,7 +195,7 @@ export class Namelist {
                 }
                 else {
                     // REAL			
-                    str = re_real.exec(curstr);
+                    str = Namelist._re_real.exec(curstr);
                     if (str && (str.index == 0)) {
                         //console.log("found real: " + str[1]);
                         addElement(i, "real", parseFloat(str[1]));
@@ -215,7 +216,7 @@ export class Namelist {
             // (6-4) a nondelimited character constant
             else if (cur.match(/[[a-zA-Z_]/)) {
                 if (prev == "group_end" || prev == "initial") {
-                    str = re_orphan.exec(curstr);
+                    str = Namelist._re_orphan.exec(curstr);
                     if (str && (str.index == 0)) {
                         //console.log("found orphan: " + str[0]);
                         addElement(i, "orphan", str[0]);
@@ -225,7 +226,7 @@ export class Namelist {
                 }
                 else {
                     // OBJECT
-                    str = re_object.exec(curstr);
+                    str = Namelist._re_object.exec(curstr);
                     if (str && (str.index == 0)) {
                         if (prev == "object") {
                             addElement(i - 1, "null", "");
@@ -238,7 +239,7 @@ export class Namelist {
                     }
                     else {
                         // ARRAY
-                        str = re_array.exec(curstr);
+                        str = Namelist._re_array.exec(curstr);
                         if (str && (str.index == 0)) {
                             //console.log("found array: " + str[1] + " index: " + str[2]);
                             addElement(i, "array", str[1], str[2]);
@@ -247,7 +248,7 @@ export class Namelist {
                         }
                         else {
                             // LOGICAL CONSTANT
-                            str = re_logical_c.exec(curstr);
+                            str = Namelist._re_logical_c.exec(curstr);
                             if (str && (str.index == 0)) {
                                 //console.log("found logical: " + str[1]);
                                 addElement(i, "logical", str[1]);
@@ -256,7 +257,7 @@ export class Namelist {
                             }
                             else {
                                 // NONDELIMITED CHARACTER CONSTANT
-                                str = re_nondelimited_c.exec(curstr);
+                                str = Namelist._re_nondelimited_c.exec(curstr);
                                 if (str && (str.index == 0)) {
                                     //console.log("found nondelimited: " + str[1]);
                                     addElement(i, "nondelimited", str[1]);
@@ -277,7 +278,7 @@ export class Namelist {
             // [7] LEFT PARENTHESIS
             // (7-1) the start of a complex number
             else if (cur.match(/\(/)) {
-                str = re_complex_start.exec(curstr);
+                str = Namelist._re_complex_start.exec(curstr);
                 if (str && (str.index == 0)) {
                     // COMPLEX START
                     //console.log("found complex start");
@@ -294,7 +295,7 @@ export class Namelist {
             // [8] RIGHT PARENTHESIS
             // (8-1) the end of a complex number
             else if (cur.match(/\)/)) {
-                str = re_complex_end.exec(curstr);
+                str = Namelist._re_complex_end.exec(curstr);
                 if (str && (str.index == 0)) {
                     // COMPLEX END
                     //console.log("found complex end");
@@ -312,7 +313,7 @@ export class Namelist {
             // (9-1) a real constant
             // (9-2) an integer constant
             else if (cur.match(/[\+\-]/)) {
-                str = re_real.exec(curstr);
+                str = Namelist._re_real.exec(curstr);
                 if (str && (str.index == 0)) {
                     // REAL
                     //console.log("found real: " + str[1]);
@@ -321,7 +322,7 @@ export class Namelist {
                     prev = "real";
                 }
                 else {
-                    str = re_integer.exec(curstr);
+                    str = Namelist._re_integer.exec(curstr);
                     if (str && (str.index == 0)) {
                         // INTEGER
                         //console.log("found integer: " + str[1]);
@@ -342,7 +343,7 @@ export class Namelist {
             // (10-3) a real constant
             // (10-4) an integer constant
             else if (cur.match(/[\d]/)) {
-                str = re_repeat.exec(curstr);
+                str = Namelist._re_repeat.exec(curstr);
                 if (str && (str.index == 0)) {
                     // REPEAT
                     //console.log("found repeat: " + str[1]);
@@ -351,7 +352,7 @@ export class Namelist {
                     prev = "repeat";
                 }
                 else {
-                    str = re_real.exec(curstr);
+                    str = Namelist._re_real.exec(curstr);
                     if (str && (str.index == 0)) {
                         // REAL
                         //console.log("found real: " + str[1]);
@@ -360,7 +361,7 @@ export class Namelist {
                         prev = "real";
                     }
                     else {
-                        str = re_integer.exec(curstr);
+                        str = Namelist._re_integer.exec(curstr);
                         if (str && (str.index == 0)) {
                             // INTEGER
                             //console.log("found integer: " + str[1]);
@@ -369,7 +370,7 @@ export class Namelist {
                             prev = "integer";
                         }
                         else {
-                            str = re_nondelimited_d.exec(curstr);
+                            str = Namelist._re_nondelimited_d.exec(curstr);
                             if (str && (str.index == 0)) {
                                 // NONDELIMITED CHARACTER CONSTANT
                                 //console.log("found nondelimited: " + str[1]);
@@ -390,7 +391,7 @@ export class Namelist {
             // (11-1) null
             else {
                 // NULL
-                str = re_null.exec(curstr);
+                str = Namelist._re_null.exec(curstr);
                 if (str && (str.index == 0)) {
                     //console.log("found null #4");
                     addElement(i, "null", "");
@@ -403,5 +404,99 @@ export class Namelist {
             }
         }
         return tokens;
+    }
+
+    static isReal(str) {
+        const match = Namelist._re_real.exec(str);
+        return match !== null && (match.index == 0);
+    }
+
+    static isInteger(str) {
+        const match = Namelist._re_integer.exec(str);
+        return match !== null && (match.index == 0);
+    }
+
+    static isLogical(str) {
+        const match = Namelist._re_logical_p.exec(str);
+        return match !== null && (match.index == 0);
+    }
+
+    static parseLogicalValue(str) {
+        return str.toLowerCase() === '.true.';
+    }
+
+    static parseValue(str) {
+        if (Namelist.isLogical(str)) {
+            return Namelist.parseLogicalValue(str);
+        }
+        else if (Namelist.isReal(str)) {
+            return parseFloat(str);
+        }
+        else if (Namelist.isInteger(str)) {
+            return parseInt(str);
+        }
+        else {
+            return str;
+        }
+    }  
+
+    static _formatValue(val) {
+        if (val == undefined) {
+            throw new Error('Undefined value');
+        }
+        else if (Array.isArray(val)) {
+            var strVal = Namelist._formatValue(val[0]);
+            for (var i = 1; i < val.length; i++) {
+                strVal += ', ' + Namelist._formatValue(val[i]);
+            }
+            return strVal;
+        }
+        else if (typeof val == "string") {
+            return "'" + val + "'";
+        }
+        else if (typeof val == "boolean") {
+            return (val) ? '.true.' : '.false.';
+        }
+        else if (!Namelist._isInteger(val)) {
+            return val.toFixed(3);
+        }
+        return val.toString();
+    }  
+
+    static _isInteger(val) {
+        return typeof val === "number" 
+            && isFinite(val) 
+            && val > -9007199254740992 
+            && val < 9007199254740992 
+            && Math.floor(val) === val;
+    }
+
+    static formatSection(section, properties, values) {
+        var content = '&' + section + '\n';
+        console.debug(`format namelist section ${section}`);
+
+        for (var i = 0; i < properties.length; i++) {
+
+            console.debug(`   ${properties[i]}: ${values[i]}`);
+
+            if (values[i] === null) {
+                // property not set - continue
+                continue;                
+            }
+            else if (values[i] === undefined) {
+                throw new Error(`Property ${properties[i]} is not defined`);
+            }
+            else {
+                content += ' ' + properties[i].padEnd(20) + ' = ' + Namelist._formatValue(values[i]) + '\n';
+            }
+        }
+
+        return content + '/\n\n';
+    };   
+
+    static convertToArray(section, paramName) {
+        if (section[paramName] != undefined && !Array.isArray(section[paramName])) {
+            section[paramName] = [].concat(section[paramName]);
+        }
     }
 }
