@@ -1,4 +1,4 @@
-import { NamelistInputEditor } from "./domain-wizard.editor.namelist.input";
+import { NamelistInputEditor } from "./namelist.input/namelist.input.editor";
 import { getLocalTimeZone, listTimeZoneNames } from "./utils/time";
 
 export class NamelistInputDialog {

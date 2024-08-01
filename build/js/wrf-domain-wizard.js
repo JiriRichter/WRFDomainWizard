@@ -12039,6 +12039,13 @@
     });
   }
 
+  function getLocalTimeZone() {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
+  function listTimeZoneNames() {
+    return moment.tz.names();
+  }
+
   var NamelistDateTimePicker = /*#__PURE__*/function () {
     function NamelistDateTimePicker(inputGroup, options) {
       _classCallCheck(this, NamelistDateTimePicker);
@@ -12054,7 +12061,7 @@
 
       // set default timezone
       if (!this._options.displayTimeZone) {
-        this._options.displayTimeZone = NamelistDateTimePicker.localTimeZone;
+        this._options.displayTimeZone = getLocalTimeZone();
       }
       this._input = inputGroup.querySelector('input');
       this._widget = inputGroup;
@@ -12160,16 +12167,6 @@
           minute: values[4],
           second: values[5]
         };
-      }
-    }], [{
-      key: "localTimeZone",
-      get: function get() {
-        return Intl.DateTimeFormat().resolvedOptions().timeZone;
-      }
-    }, {
-      key: "timeZoneNames",
-      get: function get() {
-        return moment.tz.names();
       }
     }]);
   }();
@@ -13772,8 +13769,8 @@
 
       // timezone select
       var timeZoneSelect = this.header.querySelector('select#select-timezone');
-      NamelistDateTimePicker.timeZoneNames.forEach(function (name) {
-        var localTimeZone = NamelistDateTimePicker.localTimeZone;
+      listTimeZoneNames().forEach(function (name) {
+        var localTimeZone = getLocalTimeZone();
         var option = document.createElement('option');
         option.value = name;
         option.innerText = name;

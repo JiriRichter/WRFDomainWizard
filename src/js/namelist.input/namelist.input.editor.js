@@ -1,7 +1,7 @@
-import { htmlEncode } from "./utils/html";
-import { Namelist } from "./utils/namelist";
-import { distanceToMeters } from "./utils/math";
-import { NamelistDateTimePicker } from './controls/control.datetime-picker';
+import { htmlEncode } from "../utils/html";
+import { Namelist } from "../utils/namelist";
+import { NamelistDateTimePicker } from '../controls/control.datetime-picker';
+import { distanceToMeters } from "../utils/math";
 
 export class NamelistInputEditor {
 
