@@ -1,7 +1,7 @@
 import { htmlEncode } from "./utils/html";
 import { Namelist } from "./utils/namelist";
 import { distanceToMeters } from "./utils/math";
-import { NamelistDateTimePicker } from './domain-wizard.control.namelist-datetime-picker';
+import { NamelistDateTimePicker } from './controls/control.datetime-picker';
 
 export class NamelistInputEditor {
 

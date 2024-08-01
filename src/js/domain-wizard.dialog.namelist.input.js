@@ -1,5 +1,5 @@
 import { NamelistInputEditor } from "./domain-wizard.editor.namelist.input";
-import { NamelistDateTimePicker } from './domain-wizard.control.namelist-datetime-picker';
+import { getLocalTimeZone, listTimeZoneNames } from "./utils/time";
 
 export class NamelistInputDialog {
 
@@ -164,9 +164,9 @@ export class NamelistInputDialog {
 
         // timezone select
         const timeZoneSelect = this.header.querySelector('select#select-timezone');
-        NamelistDateTimePicker.timeZoneNames.forEach((name) => {
+        listTimeZoneNames().forEach((name) => {
 
-            var localTimeZone = NamelistDateTimePicker.localTimeZone;
+            var localTimeZone = getLocalTimeZone();
 
             const option = document.createElement('option');
             option.value = name;

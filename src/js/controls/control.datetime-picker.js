@@ -1,3 +1,5 @@
+import { getLocalTimeZone } from "../utils/time";
+
 export class NamelistDateTimePicker {
 
     static _format = "YYYY-MM-DD_HH:mm:ss";
@@ -18,7 +20,7 @@ export class NamelistDateTimePicker {
 
         // set default timezone
         if (!this._options.displayTimeZone) {
-            this._options.displayTimeZone = NamelistDateTimePicker.localTimeZone;
+            this._options.displayTimeZone = getLocalTimeZone();
         }
 
         this._input = inputGroup.querySelector('input');
@@ -70,14 +72,6 @@ export class NamelistDateTimePicker {
 
     get widget() {
         return this._widget;
-    }
-
-    static get localTimeZone() {
-        return Intl.DateTimeFormat().resolvedOptions().timeZone;
-    }
-
-    static get timeZoneNames() {
-        return moment.tz.names();
     }
 
     get _dateTimePickerObject() {
