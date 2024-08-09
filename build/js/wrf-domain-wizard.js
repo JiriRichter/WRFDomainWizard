@@ -10949,7 +10949,7 @@
       inputJParentStart,
       inputEWE,
       inputESN,
-      inputGeogDataRes,
+      spanGeogDataRes,
       iSelected,
       tableCornerSW,
       tableCornerSE,
@@ -10981,7 +10981,7 @@
     inputJParentStart = $('input[name="j_parent_start"]', gridContainer);
     inputEWE = $('input[name="e_we"]', gridContainer);
     inputESN = $('input[name="e_sn"]', gridContainer);
-    inputGeogDataRes = $('span[data-name="geog_data_res"]', gridContainer);
+    spanGeogDataRes = $('span[data-name="geog_data_res"]', gridContainer);
     tableCornerNW = $('table tbody tr:nth-child(1) td:nth-child(2)', gridContainer);
     tableCornerNE = $('table tbody tr:nth-child(1) td:nth-child(3)', gridContainer);
     tableCornerSW = $('table tbody tr:nth-child(2) td:nth-child(2)', gridContainer);
@@ -10995,8 +10995,8 @@
     buttonGeogDataResEdit.on('click', function (e) {
       SidebarDomainsPanelGrid._geogDataResDialog.show(grid.geog_data_res, function (e) {
         grid.geog_data_res = e.geog_data_res;
-        inputGeogDataRes.text(e.geog_data_res);
-        inputGeogDataRes.attr('title', e.geog_data_res);
+        spanGeogDataRes.text(e.geog_data_res);
+        spanGeogDataRes.attr('title', e.geog_data_res);
       });
     });
     grid.on('wps:remove', function (e) {
@@ -11080,9 +11080,9 @@
       inputJParentStart.val(grid.j_parent_start);
       inputEWE.val(grid.e_we);
       inputESN.val(grid.e_sn);
-      inputGeogDataRes.text(grid.geog_data_res);
-      inputGeogDataRes.attr('title', grid.geog_data_res);
-      inputGeogDataRes.tooltip();
+      spanGeogDataRes.text(grid.geog_data_res);
+      spanGeogDataRes.attr('title', grid.geog_data_res);
+      spanGeogDataRes.tooltip();
       tableCornerSW.text(grid.corners.sw.lat.toFixed(3) + ', ' + grid.corners.sw.lng.toFixed(3));
       tableCornerSE.text(grid.corners.se.lat.toFixed(3) + ', ' + grid.corners.se.lng.toFixed(3));
       tableCornerNE.text(grid.corners.ne.lat.toFixed(3) + ', ' + grid.corners.ne.lng.toFixed(3));
@@ -11211,7 +11211,7 @@
       grid.j_parent_start = parseInt(inputJParentStart.val(), 10);
       grid.e_we = parseInt(inputEWE.val(), 10);
       grid.e_sn = parseInt(inputESN.val(), 10);
-      grid.geog_data_res = inputGeogDataRes.val();
+      grid.geog_data_res = spanGeogDataRes.text();
       for (var i = 0; i < grid.nests.length; i++) {
         grid.nests[i].gridPanel.setGridValues();
       }
