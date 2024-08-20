@@ -1,6 +1,6 @@
 import { sidebarElevationData } from './domain-wizard.sidebar.elevation-data';
 import { sidebarSettings } from './domain-wizard.sidebar.settings';
-import { sidebarWaypoints } from './domain-wizard.sidebar.waypoints';
+import { SidebarGeographicFiles } from './domain-wizard.sidebar.geographic-files';
 import { sidebarWPS } from './domain-wizard.sidebar.wps';
 import { persistentLayers } from './leaflet/leaflet.control.persistent-layers'
 import { elevationDataALOS } from './leaflet/leaflet.elevation-data.alos';
@@ -95,7 +95,7 @@ export class DomainWizard {
                 jsonBaseUrl: settings.jsonBaseUrl
             });
 
-        sidebar['waypoints'] = sidebarWaypoints(map, sidebar);
+        sidebar['geographic-files'] = new SidebarGeographicFiles(map, sidebar.getContainer().querySelector('#geographic-files'));
 
         sidebar['elevation'] = sidebarElevationData(map, sidebar);
         sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (5x5,TIFF)', elevationDataSRTMCSI(`${settings.jsonBaseUrl}/srtm/csi/srtm30_5x5.json`, 'TIFF', 5));

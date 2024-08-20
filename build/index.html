@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="/lib/bootstrap-datetimepicker.min.css" />
     <link rel="stylesheet" href="/lib/bootstrap-select.min.css" />
     
-    <link rel="stylesheet" href="/css/wrf-domain-wizard.css?1723228437219" />
+    <link rel="stylesheet" href="/css/wrf-domain-wizard.css?1724124987304" />
 
     <link rel="icon" href="/img/globe_32x32.png" />
 
@@ -45,7 +45,7 @@ cfg: { // Application Insights Configuration
                 <ul role="tablist"> <!-- top aligned tabs -->
                     <li title="WRF domains"><a href="#domains" role="tab"><i class="fas fa-vector-square"></i></a></li>
                     <li title="Satellite elevation data overlay"><a href="#elevation-data" role="tab"><i class="fas fa-satellite"></i></a></li>
-                    <li title="Waypoint overlay"><a href="#waypoints" role="tab"><i class="fas fa-map-marker-alt"></i></a></li>
+                    <li title="Geographic files"><a href="#geographic-files" role="tab"><i class="fas fa-map-marked-alt"></i></a></li>
                     <li title="Domain wizard settings"><a href="#settings" role="tab"><i class="fas fa-cog"></i></a></li>
                     <li title="About domain wizard"><a href="#about" role="tab"><i class="fas fa-info-circle"></i></a></li>
                 </ul>
@@ -65,10 +65,10 @@ cfg: { // Application Insights Configuration
                         WRF Domain Wizard is a single-page application to simplify creation, visualization and modification of <a href="https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html#" target="_blank">WRF Preprocessing System (WPS)</a> namelist.wps input file.
                     </p>
                     <p>
-                        <a href="https://github.com/JiriRichter/WRFDomainWizard"><i class="fab fa-github mr-1"></i>Project Home</a>
+                        <a href="https://github.com/JiriRichter/WRFDomainWizard" target="_blank"><i class="fab fa-github mr-1"></i>Project Home</a>
                     </p>
                     <p>
-                        <a href="https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html#wps-namelist-variables">WPS Namelist Variables</a>
+                        <a href="https://www2.mmm.ucar.edu/wrf/users/wrf_users_guide/build/html/wps.html#wps-namelist-variables" target="_blank">WPS Namelist Variables</a>
                     </p>
                 </div>
         
@@ -267,17 +267,22 @@ cfg: { // Application Insights Configuration
                     </div>
                 </div>
 
-                <div class="leaflet-sidebar-pane" id="waypoints">
+                <div class="leaflet-sidebar-pane" id="geographic-files">
                     <h1 class="leaflet-sidebar-header">
-                        Waypoints
+                        Geographic Files
                         <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
                     </h1>
-                    <div class="my-2">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="button-waypoints-remove"><i class="fas fa-trash-alt mr-1"></i>Remove All</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="button-waypoints-add"><i class="fas fa-folder-open mr-1"></i>Add File</button>
-                        <input id="file-waypoints" type="file" style="display: none;" />
+                    <div class="alert alert-sm alert-info mt-2" role="alert">
+                        Use this tab to display geographic features from various data files. 
+                        This is meant to aid in designing WRF domains based on the locations of the displayed features. 
+                        Currently, the tool only supports GeoJSON, GPX (waypoint only), and WPT file formats. If additional file format is needed, please, submit a feature request on the project <a href="https://github.com/JiriRichter/WRFDomainWizard/issues" target="_blank">GitHub issues page</a>.
                     </div>
-                    <div id="waypoints-layers" class="">
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="button-geographic-file-remove"><i class="fas fa-trash-alt mr-1"></i>Remove All</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="button-geographic-file-add"><i class="fas fa-folder-open mr-1"></i>Add File</button>
+                        <input id="input-geographic-file" type="file" style="display: none;" />
+                    </div>
+                    <div id="geographic-file-layers" class="mt-2">
                     </div>
                 </div>
 

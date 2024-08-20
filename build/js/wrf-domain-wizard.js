@@ -1087,81 +1087,526 @@
     };
   }
 
-  var SidebarWaypoints = function SidebarWaypoints(map, sidebar) {
-    var container,
-      buttonAdd,
-      buttonRemoveAll,
-      inputFile,
-      containerLayers,
-      layers = {},
-      layerCount = 0;
-    container = $('#waypoints', sidebar.getContainer());
-    buttonAdd = $('button#button-waypoints-add', container);
-    buttonRemoveAll = $('button#button-waypoints-remove', container);
-    inputFile = $('input#file-waypoints', container);
-    containerLayers = $('#waypoints-layers', container);
-    function addWaypoints(filename, data) {
-      var id = 'waypoints-layer-' + layerCount,
-        checkboxHtml;
-      if (layers[filename] !== undefined) {
-        errorMessageBox('File Open Error', 'File name ' + filename + ' already loaded');
-        return;
+  var FileGroup = L.GeoJSON.extend({
+    options: {},
+    initialize: function initialize(data, options) {
+      L.GeoJSON.prototype.initialize.call(this, null, options);
+      if (data) {
+        this.parseData(data);
       }
-      try {
-        layers[filename] = L.waypoints(L.Waypoints.parse(data)).addTo(map);
-        map.fitBounds(layers[filename].getBounds());
-      } catch (e) {
-        errorMessageBox('File Open Error', 'Unable to parse file ' + filename + ': ' + e);
-        return;
+    },
+    parseData: function parseData(data) {},
+    addWaypoint: function addWaypoint(name, latitude, longitude, altitude, description) {
+      if (latitude == null || latitude == undefined) {
+        throw new Error("Waypoint latitude is missing");
       }
-      layerCount++;
-      checkboxHtml = '<div class="custom-control custom-checkbox">' + '<input type="checkbox" class="custom-control-input" id="' + id + '" data-filename="' + filename + '" checked>' + '<label class="custom-control-label" for="' + id + '">' + filename + '</label>' + '</div>';
-      containerLayers.append($(checkboxHtml));
-      $('input#' + id, containerLayers).on('click', {
-        layer: layers[filename],
-        map: map
-      }, function (e) {
-        if (this.checked) {
-          e.data.layer.addTo(e.data.map);
-        } else {
-          e.data.layer.remove();
-        }
+      if (longitude == null || longitude == undefined) {
+        throw new Error("Waypoint longitude is missing");
+      }
+      var marker = L.marker(L.latLng(latitude, longitude));
+      marker.bindTooltip(name);
+      this.addLayer(marker);
+    }
+  });
+
+  var GeoJsonFileGroup = FileGroup.extend({
+    initialize: function initialize(data, options) {
+      FileGroup.prototype.initialize.call(this, data, options);
+    },
+    parseData: function parseData(data) {
+      this.addData(JSON.parse(data));
+    }
+  });
+
+  var __defProp = Object.defineProperty;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: !0, configurable: !0, writable: !0, value }) : obj[key] = value;
+  var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
+  var __publicField = (obj, key, value) => (__defNormalProp(obj, typeof key != "symbol" ? key + "" : key, value), value);
+  const calculateDistance = /* @__PURE__ */ __name((points) => {
+    const cumulativeDistance = [0];
+    for (let i = 0; i < points.length - 1; i++) {
+      const currentTotalDistance = cumulativeDistance[i] + haversineDistance(points[i], points[i + 1]);
+      cumulativeDistance.push(currentTotalDistance);
+    }
+    return {
+      cumulative: cumulativeDistance,
+      total: cumulativeDistance[cumulativeDistance.length - 1]
+    };
+  }, "calculateDistance"), haversineDistance = /* @__PURE__ */ __name((point1, point2) => {
+    const toRadians = /* @__PURE__ */ __name((degrees) => degrees * Math.PI / 180, "toRadians"), lat1Radians = toRadians(point1.latitude), lat2Radians = toRadians(point2.latitude), sinDeltaLatitude = Math.sin(
+      toRadians(point2.latitude - point1.latitude) / 2
+    ), sinDeltaLongitude = Math.sin(
+      toRadians(point2.longitude - point1.longitude) / 2
+    ), a = sinDeltaLatitude ** 2 + Math.cos(lat1Radians) * Math.cos(lat2Radians) * sinDeltaLongitude ** 2;
+    return 6371e3 * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+  }, "haversineDistance"), calculateElevation = /* @__PURE__ */ __name((points) => {
+    var _a, _b;
+    let dp = 0, dn = 0;
+    const elevation = [];
+    let sum = 0;
+    for (let i = 0; i < points.length - 1; i++) {
+      const nextElevation = (_a = points[i + 1]) == null ? void 0 : _a.elevation, currentElevation = (_b = points[i]) == null ? void 0 : _b.elevation;
+      if (nextElevation !== null && currentElevation !== null) {
+        const diff = nextElevation - currentElevation;
+        diff < 0 ? dn += diff : diff > 0 && (dp += diff);
+      }
+    }
+    for (const point of points)
+      point.elevation !== null && (elevation.push(point.elevation), sum += point.elevation);
+    return {
+      maximum: elevation.length ? Math.max(...elevation) : null,
+      minimum: elevation.length ? Math.min(...elevation) : null,
+      positive: Math.abs(dp) || null,
+      negative: Math.abs(dn) || null,
+      average: elevation.length ? sum / elevation.length : null
+    };
+  }, "calculateElevation"), calculateSlopes = /* @__PURE__ */ __name((points, cumulativeDistance) => {
+    var _a, _b;
+    const slopes = [];
+    for (let i = 0; i < points.length - 1; i++) {
+      const nextElevation = (_a = points[i + 1]) == null ? void 0 : _a.elevation, currentElevation = (_b = points[i]) == null ? void 0 : _b.elevation;
+      if (nextElevation !== null && currentElevation !== null) {
+        const elevationDifference = nextElevation - currentElevation, displacement = cumulativeDistance[i + 1] - cumulativeDistance[i], slope = elevationDifference * 100 / displacement;
+        slopes.push(slope);
+      }
+    }
+    return slopes;
+  }, "calculateSlopes"), parseGPX = /* @__PURE__ */ __name((gpxSource, removeEmptyFields = !0) => parseGPXWithCustomParser(gpxSource, /* @__PURE__ */ __name((gpxSource2) => typeof document == null ? null : new window.DOMParser().parseFromString(gpxSource2, "text/xml"), "parseMethod"), removeEmptyFields), "parseGPX"), parseGPXWithCustomParser = /* @__PURE__ */ __name((gpxSource, parseGPXToXML, removeEmptyFields = !0) => {
+    const parsedSource = parseGPXToXML(gpxSource);
+    if (parsedSource === null)
+      return [null, new Error("Provided parsing method failed.")];
+    const output = {
+      xml: parsedSource,
+      metadata: {
+        name: "",
+        description: "",
+        time: "",
+        author: null,
+        link: null
+      },
+      waypoints: [],
+      tracks: [],
+      routes: []
+    }, metadata = output.xml.querySelector("metadata");
+    if (metadata !== null) {
+      output.metadata.name = getElementValue(metadata, "name"), output.metadata.description = getElementValue(metadata, "desc"), output.metadata.time = getElementValue(metadata, "time");
+      const authorElement = metadata.querySelector("author");
+      if (authorElement !== null) {
+        const emailElement = authorElement.querySelector("email"), linkElement2 = authorElement.querySelector("link");
+        output.metadata.author = {
+          name: getElementValue(authorElement, "name"),
+          email: emailElement !== null ? {
+            id: emailElement.getAttribute("id") ?? "",
+            domain: emailElement.getAttribute("domain") ?? ""
+          } : null,
+          link: linkElement2 !== null ? {
+            href: linkElement2.getAttribute("href") ?? "",
+            text: getElementValue(linkElement2, "text"),
+            type: getElementValue(linkElement2, "type")
+          } : null
+        };
+      }
+      const linkElement = querySelectDirectDescendant(metadata, "link");
+      linkElement !== null && (output.metadata.link = {
+        href: linkElement.getAttribute("href") ?? "",
+        text: getElementValue(linkElement, "text"),
+        type: getElementValue(linkElement, "type")
       });
     }
-    buttonAdd.on('click', function (e) {
-      inputFile.click();
-    });
-    buttonRemoveAll.on('click', function (e) {
-      object.keys(layers).forEach(function (filename) {
-        layers[filename].remove();
+    const waypoints = Array.from(output.xml.querySelectorAll("wpt"));
+    for (const waypoint of waypoints) {
+      const point = {
+        name: getElementValue(waypoint, "name"),
+        symbol: getElementValue(waypoint, "sym"),
+        latitude: parseFloat(waypoint.getAttribute("lat") ?? ""),
+        longitude: parseFloat(waypoint.getAttribute("lon") ?? ""),
+        elevation: null,
+        comment: getElementValue(waypoint, "cmt"),
+        description: getElementValue(waypoint, "desc"),
+        time: null
+      }, rawElevation = parseFloat(getElementValue(waypoint, "ele") ?? "");
+      point.elevation = isNaN(rawElevation) ? null : rawElevation;
+      const rawTime = getElementValue(waypoint, "time");
+      point.time = rawTime == null ? null : new Date(rawTime), output.waypoints.push(point);
+    }
+    const routes = Array.from(output.xml.querySelectorAll("rte"));
+    for (const routeElement of routes) {
+      const route = {
+        name: getElementValue(routeElement, "name"),
+        comment: getElementValue(routeElement, "cmt"),
+        description: getElementValue(routeElement, "desc"),
+        src: getElementValue(routeElement, "src"),
+        number: getElementValue(routeElement, "number"),
+        type: null,
+        link: null,
+        points: [],
+        distance: {
+          cumulative: [],
+          total: 0
+        },
+        elevation: {
+          maximum: null,
+          minimum: null,
+          average: null,
+          positive: null,
+          negative: null
+        },
+        slopes: []
+      }, type = querySelectDirectDescendant(routeElement, "type");
+      route.type = (type == null ? void 0 : type.innerHTML) ?? (type == null ? void 0 : type.textContent) ?? null;
+      const linkElement = routeElement.querySelector("link");
+      linkElement !== null && (route.link = {
+        href: linkElement.getAttribute("href") ?? "",
+        text: getElementValue(linkElement, "text"),
+        type: getElementValue(linkElement, "type")
       });
-      layers = {};
-      containerLayers.empty();
-    });
-    inputFile.on('change', function (e) {
-      var reader, filename;
-      if (!e.target.files || e.target.files.length == 0) {
+      const routePoints = Array.from(routeElement.querySelectorAll("rtept"));
+      for (const routePoint of routePoints) {
+        const point = {
+          latitude: parseFloat(routePoint.getAttribute("lat") ?? ""),
+          longitude: parseFloat(routePoint.getAttribute("lon") ?? ""),
+          elevation: null,
+          time: null,
+          extensions: null
+        }, rawElevation = parseFloat(
+          getElementValue(routePoint, "ele") ?? ""
+        );
+        point.elevation = isNaN(rawElevation) ? null : rawElevation;
+        const rawTime = getElementValue(routePoint, "time");
+        point.time = rawTime == null ? null : new Date(rawTime), route.points.push(point);
+      }
+      route.distance = calculateDistance(route.points), route.elevation = calculateElevation(route.points), route.slopes = calculateSlopes(route.points, route.distance.cumulative), output.routes.push(route);
+    }
+    const tracks = Array.from(output.xml.querySelectorAll("trk"));
+    for (const trackElement of tracks) {
+      const track = {
+        name: getElementValue(trackElement, "name"),
+        comment: getElementValue(trackElement, "cmt"),
+        description: getElementValue(trackElement, "desc"),
+        src: getElementValue(trackElement, "src"),
+        number: getElementValue(trackElement, "number"),
+        type: null,
+        link: null,
+        points: [],
+        distance: {
+          cumulative: [],
+          total: 0
+        },
+        elevation: {
+          maximum: null,
+          minimum: null,
+          average: null,
+          positive: null,
+          negative: null
+        },
+        slopes: []
+      }, type = querySelectDirectDescendant(trackElement, "type");
+      track.type = (type == null ? void 0 : type.innerHTML) ?? (type == null ? void 0 : type.textContent) ?? null;
+      const linkElement = trackElement.querySelector("link");
+      linkElement !== null && (track.link = {
+        href: linkElement.getAttribute("href") ?? "",
+        text: getElementValue(linkElement, "text"),
+        type: getElementValue(linkElement, "type")
+      });
+      const trackPoints = Array.from(trackElement.querySelectorAll("trkpt"));
+      for (const trackPoint of trackPoints) {
+        const point = {
+          latitude: parseFloat(trackPoint.getAttribute("lat") ?? ""),
+          longitude: parseFloat(trackPoint.getAttribute("lon") ?? ""),
+          elevation: null,
+          time: null,
+          extensions: null
+        }, extensionsElement = trackPoint.querySelector("extensions");
+        if (extensionsElement !== null) {
+          let extensions = {};
+          extensions = parseExtensions(
+            extensions,
+            extensionsElement.childNodes
+          ), point.extensions = extensions;
+        }
+        const rawElevation = parseFloat(getElementValue(trackPoint, "ele") ?? "");
+        point.elevation = isNaN(rawElevation) ? null : rawElevation;
+        const rawTime = getElementValue(trackPoint, "time");
+        point.time = rawTime == null ? null : new Date(rawTime), track.points.push(point);
+      }
+      track.distance = calculateDistance(track.points), track.elevation = calculateElevation(track.points), track.slopes = calculateSlopes(track.points, track.distance.cumulative), output.tracks.push(track);
+    }
+    return removeEmptyFields && (deleteNullFields(output.metadata), deleteNullFields(output.waypoints), deleteNullFields(output.tracks), deleteNullFields(output.routes)), [new ParsedGPX(output, removeEmptyFields), null];
+  }, "parseGPXWithCustomParser"), parseExtensions = /* @__PURE__ */ __name((extensions, extensionChildrenCollection) => (Array.from(extensionChildrenCollection).filter((child) => child.nodeType === 1).forEach((child) => {
+    var _a;
+    const tagName = child.nodeName;
+    if (((_a = child.childNodes) == null ? void 0 : _a.length) === 1 && child.childNodes[0].nodeType === 3 && child.childNodes[0].textContent) {
+      const textContent = child.childNodes[0].textContent.trim(), value = isNaN(+textContent) ? textContent : parseFloat(textContent);
+      extensions[tagName] = value;
+    } else
+      extensions[tagName] = {}, extensions[tagName] = parseExtensions(
+        extensions[tagName],
+        child.childNodes
+      );
+  }), extensions), "parseExtensions"), getElementValue = /* @__PURE__ */ __name((parent, tag) => {
+    var _a;
+    const element = parent.querySelector(tag);
+    return element !== null ? ((_a = element.firstChild) == null ? void 0 : _a.textContent) ?? element.innerHTML ?? null : null;
+  }, "getElementValue"), querySelectDirectDescendant = /* @__PURE__ */ __name((parent, tag) => {
+    try {
+      return parent.querySelector(`:scope > ${tag}`);
+    } catch {
+      return parent.childNodes ? Array.from(parent.childNodes).find(
+        (element) => element.tagName == tag
+      ) ?? null : null;
+    }
+  }, "querySelectDirectDescendant"), deleteNullFields = /* @__PURE__ */ __name((object) => {
+    if (!(typeof object != "object" || object === null || object === void 0)) {
+      if (Array.isArray(object)) {
+        object.forEach(deleteNullFields);
         return;
       }
-      if (!e.target.files[0].name.endsWith('.wpt') && !e.target.files[0].name.endsWith('.cup') && !e.target.files[0].name.endsWith('.gpx')) {
-        errorMessageBox('File Open Error', 'Only files with extensions .wpt, .cup and .gpx are allowed!');
-        return;
+      for (const [key, value] of Object.entries(object))
+        value == null || value == null ? delete object[key] : deleteNullFields(value);
+    }
+  }, "deleteNullFields"), _ParsedGPX = class _ParsedGPX {
+    constructor({ xml, metadata, waypoints, tracks, routes }, removeEmptyFields = !0) {
+      __publicField(this, "xml");
+      __publicField(this, "metadata");
+      __publicField(this, "waypoints");
+      __publicField(this, "tracks");
+      __publicField(this, "routes");
+      __publicField(this, "removeEmptyFields");
+      this.xml = xml, this.metadata = metadata, this.waypoints = waypoints, this.tracks = tracks, this.routes = routes, this.removeEmptyFields = removeEmptyFields;
+    }
+    /**
+     * Outputs the GPX data as GeoJSON, returning a JavaScript Object.
+     *
+     * @returns The GPX data converted to the GeoJSON format
+     */
+    toGeoJSON() {
+      const GeoJSON2 = {
+        type: "FeatureCollection",
+        features: [],
+        properties: this.metadata
+      }, addFeature = /* @__PURE__ */ __name((track) => {
+        const {
+          name,
+          comment,
+          description,
+          src,
+          number,
+          link,
+          type,
+          points
+        } = track, feature = {
+          type: "Feature",
+          geometry: { type: "LineString", coordinates: [] },
+          properties: {
+            name,
+            comment,
+            description,
+            src,
+            number,
+            link,
+            type
+          }
+        };
+        for (const point of points) {
+          const { longitude, latitude, elevation } = point;
+          feature.geometry.coordinates.push([
+            longitude,
+            latitude,
+            elevation
+          ]);
+        }
+        GeoJSON2.features.push(feature);
+      }, "addFeature");
+      for (const track of [...this.tracks, ...this.routes])
+        addFeature(track);
+      for (const waypoint of this.waypoints) {
+        const {
+          name,
+          symbol,
+          comment,
+          description,
+          longitude,
+          latitude,
+          elevation
+        } = waypoint, feature = {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [longitude, latitude, elevation]
+          },
+          properties: { name, symbol, comment, description }
+        };
+        GeoJSON2.features.push(feature);
       }
-      reader = new FileReader();
-      filename = e.target.files[0].name;
-      reader.onerror = function (e) {
-        errorMessageBox('File Open Error', 'Unable to read file!');
-      };
-      reader.onload = function (e) {
-        addWaypoints(filename, e.target.result);
-      };
-      reader.readAsText(e.target.files[0]);
-      inputFile.val(null);
-    });
+      return this.removeEmptyFields && deleteNullFields(GeoJSON2), GeoJSON2;
+    }
   };
-  function sidebarWaypoints(map, sidebar) {
-    return new SidebarWaypoints(map, sidebar);
-  }
+  __name(_ParsedGPX, "ParsedGPX");
+  let ParsedGPX = _ParsedGPX;
+
+  var GpxFileGroup = FileGroup.extend({
+    initialize: function initialize(data, options) {
+      FileGroup.prototype.initialize.call(this, data, options);
+    },
+    parseData: function parseData(data) {
+      var _this = this;
+      var gpx = parseGPX(data);
+      for (var i = 0; i < gpx.length; i++) {
+        if (gpx[i] === null) {
+          continue;
+        }
+
+        // waypoints
+        if (Array.isArray(gpx[i].waypoints) && gpx[i].waypoints.length > 0) {
+          gpx[i].waypoints.forEach(function (waypoint) {
+            return _this.addWaypoint(waypoint.name, waypoint.latitude, waypoint.longitude, waypoint.altitude);
+          });
+        }
+      }
+      return;
+    }
+  });
+
+  // https://www.oziexplorer4.com/eng/help/fileformats.html
+  var WptFileGroup = FileGroup.extend({
+    initialize: function initialize(data, options) {
+      FileGroup.prototype.initialize.call(this, data, options);
+    },
+    parseData: function parseData(data) {
+      var lines = data.split('\n');
+      for (var i = 4; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (line.length == 0) {
+          continue;
+        }
+        var fields = line.split(',');
+        if (fields.length < 4) {
+          continue;
+        }
+        this.addWaypoint(this.getFieldValue(fields[1]), this.getFieldFloatValue(fields[2]), this.getFieldFloatValue(fields[3]), this.getFieldFloatValue(fields[14]), this.getFieldValue(fields[10]));
+      }
+    },
+    getFieldValue: function getFieldValue(field) {
+      if (field === undefined) {
+        return null;
+      }
+      return field.trim();
+    },
+    getFieldFloatValue: function getFieldFloatValue(field) {
+      var val = parseFloat(this.getFieldValue(field));
+      if (isNaN(val)) {
+        return null;
+      }
+      return val;
+    }
+  });
+
+  var SidebarGeographicFiles = /*#__PURE__*/function () {
+    function SidebarGeographicFiles(map, container) {
+      var _this = this;
+      _classCallCheck(this, SidebarGeographicFiles);
+      this.container = container;
+      this.map = map;
+      this.layers = [];
+      var buttonAdd = container.querySelector('button#button-geographic-file-add');
+      var buttonRemoveAll = container.querySelector('button#button-geographic-file-remove');
+      var inputFile = container.querySelector('input#input-geographic-file');
+      this.containerLayers = container.querySelector('#geographic-file-layers');
+      buttonAdd.addEventListener('click', function (e) {
+        inputFile.click();
+      });
+      buttonRemoveAll.addEventListener('click', function (e) {
+        _this.layers.forEach(function (layer) {
+          layer.remove();
+        });
+        _this.layers = [];
+        _this.containerLayers.innerHTML = '';
+      });
+      inputFile.addEventListener('change', function (e) {
+        if (!e.target.files || e.target.files.length == 0) {
+          return;
+        }
+        var filename = e.target.files[0].name;
+        var extension = filename.substring(filename.lastIndexOf('.') + 1, filename.length) || '';
+        if (!extension.toLowerCase() in SidebarGeographicFiles.extensions) {
+          errorMessageBox('File Open Error', 'Unsupported file extension');
+          return;
+        }
+        var reader = new FileReader();
+        reader.onerror = function (e) {
+          errorMessageBox('File Open Error', 'Unable to read file!');
+        };
+        reader.onload = function (e) {
+          _this.addFile(filename, extension, e.target.result);
+        };
+        reader.readAsText(e.target.files[0]);
+        inputFile.value = null;
+      });
+    }
+    return _createClass(SidebarGeographicFiles, [{
+      key: "addFile",
+      value: function addFile(filename, extension, data) {
+        var _this2 = this;
+        var id = this.layers.length;
+        var layer = null;
+        try {
+          switch (extension) {
+            case SidebarGeographicFiles.extensions.wpt.extension:
+              layer = new WptFileGroup(data);
+              break;
+            case SidebarGeographicFiles.extensions.gpx.extension:
+              layer = new GpxFileGroup(data);
+              break;
+            case SidebarGeographicFiles.extensions.json.extension:
+            case SidebarGeographicFiles.extensions.geojson.extension:
+              layer = new GeoJsonFileGroup(data);
+              break;
+            default:
+              errorMessageBox('File Open Error', 'Unsupported file format');
+              return;
+          }
+          this.layers.push(layer);
+          layer.addTo(this.map);
+          this.map.fitBounds(layer.getBounds());
+        } catch (e) {
+          errorMessageBox('File Open Error', 'Unable to parse file ' + filename + ': ' + e);
+          return;
+        }
+        var fileDiv = document.createElement("div");
+        fileDiv.classList.add("custom-control");
+        fileDiv.classList.add("custom-checkbox");
+        var fileDivHtml = "<input type=\"checkbox\" class=\"custom-control-input\" id=\"file-group-".concat(id, "\" data-filename=\"").concat(filename, "\" data-id=\"").concat(id, "\" checked>");
+        fileDivHtml = fileDivHtml + "<label class=\"custom-control-label\" for=\"file-group-".concat(id, "\">").concat(filename, "</label></div>");
+        fileDiv.innerHTML = fileDivHtml;
+        this.containerLayers.appendChild(fileDiv);
+        fileDiv.querySelector("input#file-group-".concat(id)).addEventListener('click', function (e) {
+          var id = e.currentTarget.dataset.id;
+          if (e.currentTarget.checked) {
+            _this2.layers[id].addTo(_this2.map);
+          } else {
+            _this2.layers[id].remove();
+          }
+        });
+      }
+    }]);
+  }();
+  SidebarGeographicFiles.extensions = {
+    gpx: {
+      extension: 'gpx'
+    },
+    wpt: {
+      extension: 'wpt'
+    },
+    cup: {
+      extension: 'cup'
+    },
+    json: {
+      extension: 'json'
+    },
+    geojson: {
+      extension: 'geojson'
+    }
+  };
 
   /*
    * Tokenize namelist and return as JavaScript object
@@ -14825,7 +15270,7 @@
     sidebar['settings'] = sidebarSettings(map, sidebar, {
       jsonBaseUrl: settings.jsonBaseUrl
     });
-    sidebar['waypoints'] = sidebarWaypoints(map, sidebar);
+    sidebar['geographic-files'] = new SidebarGeographicFiles(map, sidebar.getContainer().querySelector('#geographic-files'));
     sidebar['elevation'] = sidebarElevationData(map, sidebar);
     sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (5x5,TIFF)', elevationDataSRTMCSI("".concat(settings.jsonBaseUrl, "/srtm/csi/srtm30_5x5.json"), 'TIFF', 5));
     sidebar['elevation'].addElevationDataOverlay('SRTM-CSI 90m (30x30,TIFF)', elevationDataSRTMCSI("".concat(settings.jsonBaseUrl, "/srtm/csi/srtm30_30x30.json"), 'TIFF', 30));

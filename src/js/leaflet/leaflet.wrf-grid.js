@@ -1,7 +1,6 @@
 import { WPSNamelist } from "../utils/namelist.wps";
 import { nearestIntToZero } from "../utils/math";
 import { Geogrid } from "../utils/geogrid";
-import { WrfProjections } from "../utils/constants";
 
 export var WRFDomainGrid = L.Polygon.extend({
 
