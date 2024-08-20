@@ -19,7 +19,7 @@ export var SidebarSettings = L.Class.extend({
         },
         showGeographicLines : {
             id: 'showGeographicLines',
-            value: true,
+            value: false,
             dataType: 'boolean'
         }
     },

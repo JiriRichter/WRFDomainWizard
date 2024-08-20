@@ -3,12 +3,12 @@ import { FileGroup } from "./leaflet.layer.file-group";
 // https://www.oziexplorer4.com/eng/help/fileformats.html
 export var WptFileGroup = FileGroup.extend({
 
-    initialize: function (data, options) {
-        FileGroup.prototype.initialize.call(this, data, options);
+    initialize: function (options) {
+        FileGroup.prototype.initialize.call(this, options);
     },
 
-    parseData: function(data) {
-        const lines = data.split('\n');
+    loadDataAsync: async function(data) {
+        const lines = this.toString(data).split('\n');
 
         for (let i = 4; i < lines.length; i++) {
 
@@ -47,4 +47,19 @@ export var WptFileGroup = FileGroup.extend({
         }
         return val;
     },
+
+    addWaypoint: function(name, latitude, longitude, altitude, description) {
+
+        if (latitude == null || latitude == undefined) {
+            throw new Error("Waypoint latitude is missing");
+        }
+
+        if (longitude == null || longitude == undefined) {
+            throw new Error("Waypoint longitude is missing");
+        }
+
+        const marker = L.marker(L.latLng(latitude, longitude));
+        marker.bindTooltip(name);
+        this.addLayer(marker);
+    }
 });
