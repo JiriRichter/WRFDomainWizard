@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "@tmcw/togeojson": "^5.8.1",
     "@we-gold/gpxjs": "^1.0.11",
     "blob-polyfill": "^7.0.20220408",
     "bootstrap": "^4.6.1",
@@ -58,6 +59,7 @@
     "html-to-image": "^1.11.11",
     "immediate": "^3.3.0",
     "jquery": "^3.7.1",
+    "jszip": "^3.10.1",
     "leaflet": "^1.9.4",
     "leaflet-providers": "^2.0.0",
     "leaflet-sidebar-v2": "^3.2.3",

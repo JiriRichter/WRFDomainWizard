@@ -1,7 +1,10 @@
 import { errorMessageBox } from "./domain-wizard.dialog.message-box";
 import { GeoJsonFileGroup } from "./leaflet/leaflet.layer.geojson-file-group";
 import { GpxFileGroup } from "./leaflet/leaflet.layer.gpx-file-group";
+import { KmlFileGroup } from "./leaflet/leaflet.layer.kml-file-group";
+import { KmzFileGroup } from "./leaflet/leaflet.layer.kmz-file-group";
 import { WptFileGroup } from "./leaflet/leaflet.layer.wpt-file-group";
+import { getFileExtension } from "./utils/file";
 
 export class SidebarGeographicFiles {
 
@@ -36,7 +39,7 @@ export class SidebarGeographicFiles {
             }
 
             const filename = e.target.files[0].name;
-            const extension = filename.substring(filename.lastIndexOf('.')+1, filename.length) || '';
+            const extension =  getFileExtension(filename);
     
             if (!extension.toLowerCase() in SidebarGeographicFiles.extensions)
             {
@@ -50,16 +53,16 @@ export class SidebarGeographicFiles {
                 errorMessageBox('File Open Error', 'Unable to read file!');
             }
     
-            reader.onload = (e) => {
-                this.addFile(filename, extension, e.target.result);
+            reader.onloadend = async (e) => {
+                await this.addFile(filename, extension, reader.result);
             };
 
-            reader.readAsText(e.target.files[0]);
+            reader.readAsArrayBuffer(e.target.files[0]);
             inputFile.value = null;
         });        
     }
 
-    addFile(filename, extension, data) {
+    async addFile(filename, extension, data) {
 
         const id = this.layers.length;
         let layer = null;
@@ -68,16 +71,24 @@ export class SidebarGeographicFiles {
 
             switch(extension) {
                 case SidebarGeographicFiles.extensions.wpt.extension:
-                    layer = new WptFileGroup(data);
+                    layer = new WptFileGroup();
                     break;
 
                 case SidebarGeographicFiles.extensions.gpx.extension:
-                    layer = new GpxFileGroup(data);
+                    layer = new GpxFileGroup();
                     break;
                 
                 case SidebarGeographicFiles.extensions.json.extension:
                 case SidebarGeographicFiles.extensions.geojson.extension:
-                    layer = new GeoJsonFileGroup(data);
+                    layer = new GeoJsonFileGroup();
+                    break;
+
+                case SidebarGeographicFiles.extensions.kml.extension:
+                    layer = new KmlFileGroup();
+                    break;
+
+                case SidebarGeographicFiles.extensions.kmz.extension:
+                    layer = new KmzFileGroup();
                     break;
 
                 default:
@@ -85,6 +96,7 @@ export class SidebarGeographicFiles {
                     return;
             }
 
+            await layer.loadDataAsync(data);
             this.layers.push(layer);
             layer.addTo(this.map);
             this.map.fitBounds(layer.getBounds());
@@ -133,5 +145,11 @@ SidebarGeographicFiles.extensions = {
     }, 
     geojson: {
         extension: 'geojson'
+    }, 
+    kmz: {
+        extension: 'kmz'
+    }, 
+    kml: {
+        extension: 'kml'
     }
 };
