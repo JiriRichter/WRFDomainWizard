@@ -8,6 +8,40 @@
  *   See https://github.com/eligrey/Blob.js/blob/master/LICENSE.md
  */
 
+function array2base64 (input) {
+	var byteToCharMap = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+
+	var output = [];
+
+	for (var i = 0; i < input.length; i += 3) {
+		var byte1 = input[i];
+		var haveByte2 = i + 1 < input.length;
+		var byte2 = haveByte2 ? input[i + 1] : 0;
+		var haveByte3 = i + 2 < input.length;
+		var byte3 = haveByte3 ? input[i + 2] : 0;
+
+		var outByte1 = byte1 >> 2;
+		var outByte2 = ((byte1 & 0x03) << 4) | (byte2 >> 4);
+		var outByte3 = ((byte2 & 0x0F) << 2) | (byte3 >> 6);
+		var outByte4 = byte3 & 0x3F;
+
+		if (!haveByte3) {
+			outByte4 = 64;
+
+			if (!haveByte2) {
+				outByte3 = 64;
+			}
+		}
+
+		output.push(
+			byteToCharMap[outByte1], byteToCharMap[outByte2],
+			byteToCharMap[outByte3], byteToCharMap[outByte4]
+		);
+	}
+
+	return output.join("");
+}
+
 (function(global) {
 	(function (factory) {
 		if (typeof define === "function" && define.amd) {
@@ -51,8 +85,7 @@
 			// Check if Blob constructor supports ArrayBufferViews
 			// Fails in Safari 6, so we need to map to ArrayBuffers there.
 			blobSupportsArrayBufferView = new Blob([new Uint8Array([1, 2])]).size === 2;
-		} catch (e) {/**/}
-
+		} catch (e) {/* eslint-disable-line no-unused-vars */}
 
 		// Helper function that maps ArrayBufferViews to ArrayBuffers
 		// Used by BlobBuilder constructor and old browsers that didn't
@@ -93,8 +126,8 @@
 		}
 
 		if (global.Blob) {
-			BlobBuilderConstructor.prototype = Blob.prototype;
-			BlobConstructor.prototype = Blob.prototype;
+			BlobBuilderConstructor.prototype = global.Blob.prototype;
+			BlobConstructor.prototype = global.Blob.prototype;
 		}
 
 		/********************************************************/
@@ -263,39 +296,6 @@
 				}
 				return view;
 			}
-			function array2base64 (input) {
-				var byteToCharMap = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-
-				var output = [];
-
-				for (var i = 0; i < input.length; i += 3) {
-					var byte1 = input[i];
-					var haveByte2 = i + 1 < input.length;
-					var byte2 = haveByte2 ? input[i + 1] : 0;
-					var haveByte3 = i + 2 < input.length;
-					var byte3 = haveByte3 ? input[i + 2] : 0;
-
-					var outByte1 = byte1 >> 2;
-					var outByte2 = ((byte1 & 0x03) << 4) | (byte2 >> 4);
-					var outByte3 = ((byte2 & 0x0F) << 2) | (byte3 >> 6);
-					var outByte4 = byte3 & 0x3F;
-
-					if (!haveByte3) {
-						outByte4 = 64;
-
-						if (!haveByte2) {
-							outByte3 = 64;
-						}
-					}
-
-					output.push(
-						byteToCharMap[outByte1], byteToCharMap[outByte2],
-						byteToCharMap[outByte3], byteToCharMap[outByte4]
-					);
-				}
-
-				return output.join("");
-			}
 
 			var create = Object.create || function (a) {
 				function c () {}
@@ -384,6 +384,7 @@
 					this.type = this.type.toLowerCase();
 				}
 			}
+			Blob.isPolyfill = true;
 
 			Blob.prototype.arrayBuffer = function () {
 				return Promise.resolve(this._buffer.buffer || this._buffer);
@@ -415,6 +416,7 @@
 				return a;
 			}
 
+			File.isPolyfill = true;
 			File.prototype = create(Blob.prototype);
 			File.prototype.constructor = File;
 
@@ -423,7 +425,7 @@
 			} else {
 				try {
 					File.__proto__ = Blob;
-				} catch (e) {/**/}
+				} catch (e) {/* eslint-disable-line no-unused-vars */}
 			}
 
 			File.prototype.toString = function () {
@@ -431,78 +433,20 @@
 			};
 
 			/********************************************************/
-			/*                FileReader constructor                */
-			/********************************************************/
-			function FileReader () {
-				if (!(this instanceof FileReader)) {
-					throw new TypeError("Failed to construct 'FileReader': Please use the 'new' operator, this DOM object constructor cannot be called as a function.");
-				}
-
-				var delegate = document.createDocumentFragment();
-				this.addEventListener = delegate.addEventListener;
-				this.dispatchEvent = function (evt) {
-					var local = this["on" + evt.type];
-					if (typeof local === "function") local(evt);
-					delegate.dispatchEvent(evt);
-				};
-				this.removeEventListener = delegate.removeEventListener;
-			}
-
-			function _read (fr, blob, kind) {
-				if (!(blob instanceof Blob)) {
-					throw new TypeError("Failed to execute '" + kind + "' on 'FileReader': parameter 1 is not of type 'Blob'.");
-				}
-
-				fr.result = "";
-
-				setTimeout(function () {
-					this.readyState = FileReader.LOADING;
-					fr.dispatchEvent(new Event("load"));
-					fr.dispatchEvent(new Event("loadend"));
-				});
-			}
-
-			FileReader.EMPTY = 0;
-			FileReader.LOADING = 1;
-			FileReader.DONE = 2;
-			FileReader.prototype.error = null;
-			FileReader.prototype.onabort = null;
-			FileReader.prototype.onerror = null;
-			FileReader.prototype.onload = null;
-			FileReader.prototype.onloadend = null;
-			FileReader.prototype.onloadstart = null;
-			FileReader.prototype.onprogress = null;
-
-			FileReader.prototype.readAsDataURL = function (blob) {
-				_read(this, blob, "readAsDataURL");
-				this.result = "data:" + blob.type + ";base64," + array2base64(blob._buffer);
-			};
-
-			FileReader.prototype.readAsText = function (blob) {
-				_read(this, blob, "readAsText");
-				this.result = textDecode(blob._buffer);
-			};
-
-			FileReader.prototype.readAsArrayBuffer = function (blob) {
-				_read(this, blob, "readAsText");
-				// return ArrayBuffer when possible
-				this.result = (blob._buffer.buffer || blob._buffer).slice();
-			};
-
-			FileReader.prototype.abort = function () {};
-
-			/********************************************************/
 			/*                         URL                          */
 			/********************************************************/
+
 			URL.createObjectURL = function (blob) {
 				return blob instanceof Blob
 					? "data:" + blob.type + ";base64," + array2base64(blob._buffer)
 					: createObjectURL.call(URL, blob);
 			};
+			URL.createObjectURL.isPolyfill = true;
 
 			URL.revokeObjectURL = function (url) {
 				revokeObjectURL && revokeObjectURL.call(URL, url);
 			};
+			URL.revokeObjectURL.isPolyfill = true;
 
 			/********************************************************/
 			/*                         XHR                          */
@@ -521,12 +465,10 @@
 
 			exports.Blob = Blob;
 			exports.File = File;
-			exports.FileReader = FileReader;
-			exports.URL = URL;
 		}
 
 		function fixFileAndXHR () {
-			var isIE = !!global.ActiveXObject || (
+			var isIE = !!global.ActiveXObject || (typeof document !== "undefined" &&
 				"-ms-scroll-limit" in document.documentElement.style &&
 				"-ms-ime-align" in document.documentElement.style
 			);
@@ -549,8 +491,7 @@
 			try {
 				new File([], "");
 				exports.File = global.File;
-				exports.FileReader = global.FileReader;
-			} catch (e) {
+			} catch (e) { // eslint-disable-line no-unused-vars
 				try {
 					exports.File = new Function("class File extends Blob {" +
 						"constructor(chunks, name, opts) {" +
@@ -562,8 +503,8 @@
 						"}};" +
 						"return new File([], \"\"), File"
 					)();
-				} catch (e) {
-					exports.File = function (b, d, c) {
+				} catch (e) { // eslint-disable-line no-unused-vars
+					exports.File = function File(b, d, c) {
 						var blob = new Blob(b, c);
 						var t = c && void 0 !== c.lastModified ? new Date(c.lastModified) : new Date();
 
@@ -581,6 +522,7 @@
 						return blob;
 					};
 				}
+				exports.File.isPolyfill = true;
 			}
 		}
 
@@ -593,6 +535,70 @@
 		} else {
 			FakeBlobBuilder();
 		}
+
+		/********************************************************/
+		/*                FileReader constructor                */
+		/********************************************************/
+		function FileReader () {
+			if (!(this instanceof FileReader)) {
+				throw new TypeError("Failed to construct 'FileReader': Please use the 'new' operator, this DOM object constructor cannot be called as a function.");
+			}
+
+			var delegate = document.createDocumentFragment();
+			this.addEventListener = delegate.addEventListener;
+			this.dispatchEvent = function (evt) {
+				var local = this["on" + evt.type];
+				if (typeof local === "function") local(evt);
+				delegate.dispatchEvent(evt);
+			};
+			this.removeEventListener = delegate.removeEventListener;
+		}
+
+		function _read (fr, blob, kind) {
+			if (!(blob instanceof exports.Blob)) {
+				throw new TypeError("Failed to execute '" + kind + "' on 'FileReader': parameter 1 is not of type 'Blob'.");
+			}
+
+			fr.result = "";
+
+			setTimeout(function () {
+				this.readyState = FileReader.LOADING;
+				fr.dispatchEvent(new Event("load"));
+				fr.dispatchEvent(new Event("loadend"));
+			});
+		}
+
+		FileReader.EMPTY = 0;
+		FileReader.LOADING = 1;
+		FileReader.DONE = 2;
+		FileReader.prototype.error = null;
+		FileReader.prototype.onabort = null;
+		FileReader.prototype.onerror = null;
+		FileReader.prototype.onload = null;
+		FileReader.prototype.onloadend = null;
+		FileReader.prototype.onloadstart = null;
+		FileReader.prototype.onprogress = null;
+
+		FileReader.prototype.readAsDataURL = function (blob) {
+			_read(this, blob, "readAsDataURL");
+			this.result = "data:" + blob.type + ";base64," + array2base64(blob._buffer);
+		};
+
+		FileReader.prototype.readAsText = function (blob) {
+			_read(this, blob, "readAsText");
+			this.result = textDecode(blob._buffer);
+		};
+
+		FileReader.prototype.readAsArrayBuffer = function (blob) {
+			_read(this, blob, "readAsText");
+			// return ArrayBuffer when possible
+			this.result = (blob._buffer.buffer || blob._buffer).slice();
+		};
+
+		FileReader.prototype.abort = function () {};
+
+		exports.FileReader = global.FileReader || FileReader;
+		exports.URL = global.URL || URL;
 
 		if (strTag) {
 			if (!exports.File.prototype[strTag]) exports.File.prototype[strTag] = "File";
@@ -631,7 +637,7 @@
 					}
 				});
 			};
-		} catch (e) {
+		} catch (e) { // eslint-disable-line no-unused-vars
 			try {
 				new ReadableStream({});
 				stream = function stream(blob){
@@ -652,13 +658,13 @@
 						}
 					});
 				};
-			} catch (e) {
+			} catch (e) { // eslint-disable-line no-unused-vars
 				try {
 					new Response("").body.getReader().read();
 					stream = function stream() {
 						return (new Response(this)).body;
 					};
-				} catch (e) {
+				} catch (e) { // eslint-disable-line no-unused-vars
 					stream = function stream() {
 						throw new Error("Include https://github.com/MattiasBuelens/web-streams-polyfill");
 					};
@@ -680,7 +686,7 @@
 
 		if (!blob.arrayBuffer) {
 			blob.arrayBuffer = function arrayBuffer() {
-				var fr = new FileReader();
+				var fr = new exports.FileReader();
 				fr.readAsArrayBuffer(this);
 				return promisify(fr);
 			};
@@ -688,7 +694,7 @@
 
 		if (!blob.text) {
 			blob.text = function text() {
-				var fr = new FileReader();
+				var fr = new exports.FileReader();
 				fr.readAsText(this);
 				return promisify(fr);
 			};
