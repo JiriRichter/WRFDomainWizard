@@ -25889,18 +25889,21 @@
       // minimum pixel per grid to show grid lines
       minPixelsPerGrid: 7,
       IAxisOpt: Object.freeze({
-        I_PARENT_START: 0,
-        E_WE: 1
+        NONE: 0,
+        I_PARENT_START: 1,
+        E_WE: 2
       }),
       JAxisOpt: Object.freeze({
-        J_PARENT_START: 0,
-        E_SN: 1
+        NONE: 0,
+        J_PARENT_START: 1,
+        E_SN: 2
       })
     },
     options: {
-      showTooltip: true,
+      showTooltip: false,
       showGridLines: false,
       editable: true,
+      showResizeMarkers: true,
       opacity: 0.8,
       weight: 2,
       color: '#FF0000',
@@ -25940,6 +25943,7 @@
     },
     // corner markers
     _cornerMarkers: null,
+    _resizeMarkers: null,
     _corners: null,
     // grid state
     _isSelected: false,
@@ -25969,6 +25973,14 @@
         se: L.latLng(this.geogrid.corners.se),
         ne: L.latLng(this.geogrid.corners.ne),
         nw: L.latLng(this.geogrid.corners.nw)
+      };
+    },
+    _getResizeMarkerLocations: function _getResizeMarkerLocations() {
+      return {
+        n: L.latLng(this.geogrid.unstaggered_ij_to_latlon((this.geogrid.e_we - 1) / 2, this.geogrid.e_sn - 1)),
+        s: L.latLng(this.geogrid.unstaggered_ij_to_latlon((this.geogrid.e_we - 1) / 2, 0)),
+        e: L.latLng(this.geogrid.unstaggered_ij_to_latlon(this.geogrid.e_we - 1, (this.geogrid.e_sn - 1) / 2)),
+        w: L.latLng(this.geogrid.unstaggered_ij_to_latlon(0, (this.geogrid.e_sn - 1) / 2))
       };
     },
     // on map zoomeend handler
@@ -26009,7 +26021,7 @@
       }
     },
     _bindTooltip: function _bindTooltip(e) {
-      if (this.options.showTooltip) {
+      if (this.options.showTooltip === true) {
         this.on('mousemove', this._updateTooltip, this);
         L.Polygon.prototype.bindTooltip.call(this, e && e.latlng ? this._getTooltipContent(e.latlng) : '', {
           'sticky': true,
@@ -26191,7 +26203,10 @@
         }
         this.update();
       } else {
-        var center, center_i, center_j, e_we, e_sn;
+        var center_i = (this.e_we - 1) / 2,
+          center_j = (this.e_sn - 1) / 2,
+          _e_we = this.e_we,
+          _e_sn = this.e_sn;
         if (this._resizeContext.iAxisOpt == WRFDomainGrid.IAxisOpt.I_PARENT_START) {
           if (delta_i > this._resizeContext.max_i_parent_start) {
             delta_i = this._resizeContext.max_i_parent_start;
@@ -26201,8 +26216,8 @@
           }
           center_i = (this.e_we - 1 + delta_i) / 2;
         } else if (this._resizeContext.iAxisOpt == WRFDomainGrid.IAxisOpt.E_WE) {
-          e_we = Math.max(this.e_we + delta_i, this._resizeContext.min_e_we);
-          center_i = (e_we - 1) / 2;
+          _e_we = Math.max(this.e_we + delta_i, this._resizeContext.min_e_we);
+          center_i = (_e_we - 1) / 2;
         }
         if (this._resizeContext.jAxisOpt == WRFDomainGrid.JAxisOpt.J_PARENT_START) {
           if (delta_j > this._resizeContext.max_j_parent_start) {
@@ -26213,10 +26228,10 @@
           }
           center_j = (this.e_sn - 1 + delta_j) / 2;
         } else if (this._resizeContext.jAxisOpt == WRFDomainGrid.JAxisOpt.E_SN) {
-          e_sn = Math.max(this.e_sn + delta_j, this._resizeContext.mine_sn);
-          center_j = (e_sn - 1) / 2;
+          _e_sn = Math.max(this.e_sn + delta_j, this._resizeContext.mine_sn);
+          center_j = (_e_sn - 1) / 2;
         }
-        center = this.geogrid.unstaggered_ij_to_latlon(center_i, center_j);
+        var center = this.geogrid.unstaggered_ij_to_latlon(center_i, center_j);
         this.domain.ref_lat = center[0];
         this.domain.ref_lon = center[1];
         //this.domain.stand_lon = this.domain.ref_lon + this._resizeContext.stand_lon_delta;
@@ -26229,7 +26244,7 @@
             this.nests[i].i_parent_start -= delta_i;
           }
         } else if (this._resizeContext.iAxisOpt == WRFDomainGrid.IAxisOpt.E_WE) {
-          this.e_we = e_we;
+          this.e_we = _e_we;
         }
         if (this._resizeContext.jAxisOpt == WRFDomainGrid.JAxisOpt.J_PARENT_START) {
           this.e_sn -= delta_j;
@@ -26237,7 +26252,7 @@
             this.nests[i].j_parent_start -= delta_j;
           }
         } else if (this._resizeContext.jAxisOpt == WRFDomainGrid.JAxisOpt.E_SN) {
-          this.e_sn = e_sn;
+          this.e_sn = _e_sn;
         }
         this.domain.update();
       }
@@ -26365,6 +26380,31 @@
           })
         })
       };
+      var resizeMarkerLocations = this._getResizeMarkerLocations();
+      if (this.options.showResizeMarkers === true) {
+        this._resizeMarkers = {
+          n: L.marker(resizeMarkerLocations.n, {
+            icon: L.divIcon({
+              className: this.options.editable ? 'wrf-domain-grid-corner cursor-ns-resize' : 'wrf-domain-grid-corner'
+            })
+          }),
+          s: L.marker(resizeMarkerLocations.s, {
+            icon: L.divIcon({
+              className: this.options.editable ? 'wrf-domain-grid-corner cursor-ns-resize' : 'wrf-domain-grid-corner'
+            })
+          }),
+          e: L.marker(resizeMarkerLocations.e, {
+            icon: L.divIcon({
+              className: this.options.editable ? 'wrf-domain-grid-corner cursor-ew-resize' : 'wrf-domain-grid-corner'
+            })
+          }),
+          w: L.marker(resizeMarkerLocations.w, {
+            icon: L.divIcon({
+              className: this.options.editable ? 'wrf-domain-grid-corner cursor-ew-resize' : 'wrf-domain-grid-corner'
+            })
+          })
+        };
+      }
       if (this.options.editable) {
         this._cornerMarkers.sw.on('mousedown', function (e) {
           this._resizeStart(e, WRFDomainGrid.IAxisOpt.I_PARENT_START, WRFDomainGrid.JAxisOpt.J_PARENT_START);
@@ -26382,6 +26422,24 @@
           this._resizeStart(e, WRFDomainGrid.IAxisOpt.I_PARENT_START, WRFDomainGrid.JAxisOpt.E_SN);
           this._map.on('mousemove', this._resize, this);
         }, this);
+        if (this.options.showResizeMarkers === true) {
+          this._resizeMarkers.n.on('mousedown', function (e) {
+            this._resizeStart(e, WRFDomainGrid.IAxisOpt.NONE, WRFDomainGrid.JAxisOpt.E_SN);
+            this._map.on('mousemove', this._resize, this);
+          }, this);
+          this._resizeMarkers.s.on('mousedown', function (e) {
+            this._resizeStart(e, WRFDomainGrid.IAxisOpt.NONE, WRFDomainGrid.JAxisOpt.J_PARENT_START);
+            this._map.on('mousemove', this._resize, this);
+          }, this);
+          this._resizeMarkers.e.on('mousedown', function (e) {
+            this._resizeStart(e, WRFDomainGrid.IAxisOpt.E_WE, WRFDomainGrid.JAxisOpt.NONE);
+            this._map.on('mousemove', this._resize, this);
+          }, this);
+          this._resizeMarkers.w.on('mousedown', function (e) {
+            this._resizeStart(e, WRFDomainGrid.IAxisOpt.I_PARENT_START, WRFDomainGrid.JAxisOpt.NONE);
+            this._map.on('mousemove', this._resize, this);
+          }, this);
+        }
       }
       this._map.on('zoomend moveend', this._onMapViewChanged, this);
       this._bindTooltip();
@@ -26471,6 +26529,13 @@
       this._cornerMarkers.se.setLatLng(this._corners.se);
       this._cornerMarkers.ne.setLatLng(this._corners.ne);
       this._cornerMarkers.nw.setLatLng(this._corners.nw);
+      var resizeMarkerLocations = this._getResizeMarkerLocations();
+      if (this.options.showResizeMarkers === true) {
+        this._resizeMarkers.n.setLatLng(resizeMarkerLocations.n);
+        this._resizeMarkers.s.setLatLng(resizeMarkerLocations.s);
+        this._resizeMarkers.e.setLatLng(resizeMarkerLocations.e);
+        this._resizeMarkers.w.setLatLng(resizeMarkerLocations.w);
+      }
       if (this._iGridLines) {
         this._removeGridLines();
       }
@@ -26508,6 +26573,12 @@
       this._cornerMarkers.se.remove();
       this._cornerMarkers.ne.remove();
       this._cornerMarkers.nw.remove();
+      if (this._resizeMarkers) {
+        this._resizeMarkers.n.remove();
+        this._resizeMarkers.s.remove();
+        this._resizeMarkers.e.remove();
+        this._resizeMarkers.w.remove();
+      }
       this._isSelected = false;
       if (this._isSelected && this.options.editable) {
         this.off('mousedown', this._dragStart, this);
@@ -26525,6 +26596,12 @@
       this._cornerMarkers.se.addTo(this._map);
       this._cornerMarkers.ne.addTo(this._map);
       this._cornerMarkers.nw.addTo(this._map);
+      if (this._resizeMarkers) {
+        this._resizeMarkers.n.addTo(this._map);
+        this._resizeMarkers.s.addTo(this._map);
+        this._resizeMarkers.e.addTo(this._map);
+        this._resizeMarkers.w.addTo(this._map);
+      }
       if (this.options.editable) {
         this.on('mousedown', this._dragStart, this);
       }
@@ -27326,8 +27403,8 @@
   */
   var WRFDomain = L.Layer.extend({
     options: {
-      'editable': true,
-      'showTooltip': true
+      editable: true,
+      showTooltip: true
     },
     _map: null,
     // main grid
@@ -27417,12 +27494,12 @@
       this._map = map;
       this._map.on('click', this._onMapClick, this);
       this._centerMarker = L.marker([this.ref_lat, this.ref_lon], {
-        draggable: this.options['editable'],
+        draggable: this.options.editable,
         title: 'Domain Center'
       }).addTo(map);
       this._mainGrid.addTo(map);
       this._orderGrids();
-      if (this.options['editable']) {
+      if (this.options.editable === true) {
         this._centerMarker.on('dragstart', function (event) {
           this._dragContext = {
             ref_lat: this.ref_lat,
@@ -27967,6 +28044,41 @@
       }
     }
 
+    // set new settings
+    function calculateGridValues(op, factor, grid, tmpGrid) {
+      var update = true;
+      // reverse operation will be applied to e_we and e_sn to preserve the domain area
+      var reverseOp = op == MulDivOp.DIV ? MulDivOp.MUL : MulDivOp.DIV;
+      if (grid.id == 1) {
+        tmpGrid.i_parent_start = 1;
+        tmpGrid.j_parent_start = 1;
+        tmpGrid.parent_grid_ratio = 1;
+        tmpGrid.e_we = Math.floor(mulDiv(grid.e_we, reverseOp, factor));
+        tmpGrid.e_sn = Math.floor(mulDiv(grid.e_sn, reverseOp, factor));
+        if (tmpGrid.e_we < WRFDomainGrid.minGridSize || tmpGrid.e_sn < WRFDomainGrid.minGridSize) {
+          return false;
+        }
+      } else {
+        // new values with new dx/dy
+        tmpGrid.parent_grid_ratio = grid.parent_grid_ratio;
+        tmpGrid.i_parent_start = Math.max(Math.floor(mulDiv(grid.i_parent_start, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
+        tmpGrid.j_parent_start = Math.max(Math.floor(mulDiv(grid.j_parent_start, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
+        var new_i_delta_end = Math.max(Math.floor(mulDiv(grid.i_delta_end, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
+        var new_j_delta_end = Math.max(Math.floor(mulDiv(grid.j_delta_end, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
+        tmpGrid.e_we = Math.floor((tmpGrid.parent.e_we - new_i_delta_end - tmpGrid.i_parent_start) * grid.parent_grid_ratio + 1);
+        tmpGrid.e_sn = Math.floor((tmpGrid.parent.e_sn - new_j_delta_end - tmpGrid.j_parent_start) * grid.parent_grid_ratio + 1);
+        if (tmpGrid.e_we < WRFDomainGrid.minGridSize || tmpGrid.e_sn < WRFDomainGrid.minGridSize) {
+          return false;
+        }
+      }
+      for (var i = 0; i < grid.nests.length; i++) {
+        var tmpNestGrid = new WRFDomainGrid(tmpGrid.domain, tmpGrid, grid.nests[i].id);
+        tmpGrid.nests.push(tmpNestGrid);
+        update = update && calculateGridValues(op, factor, grid.nests[i], tmpNestGrid);
+      }
+      return update;
+    }
+
     // handles multiplication/division of DX and DY via a button
     function modifyDxDy(op, factor) {
       var map_proj = selectMapProj.val();
@@ -27996,45 +28108,9 @@
         setDxDyFieldValues(map_proj, newDx, newDy);
         return;
       }
-
-      // reverse operation will be applied to e_we and e_sn to preserve the domain area
-      var reverseOp = op == MulDivOp.DIV ? MulDivOp.MUL : MulDivOp.DIV;
-
-      // set new settings
-      function calculateGridValues(grid, tmpGrid) {
-        var update = true;
-        if (grid.id == 1) {
-          tmpGrid.i_parent_start = 1;
-          tmpGrid.j_parent_start = 1;
-          tmpGrid.parent_grid_ratio = 1;
-          tmpGrid.e_we = Math.floor(mulDiv(grid.e_we, reverseOp, factor));
-          tmpGrid.e_sn = Math.floor(mulDiv(grid.e_sn, reverseOp, factor));
-          if (tmpGrid.e_we < WRFDomainGrid.minGridSize || tmpGrid.e_sn < WRFDomainGrid.minGridSize) {
-            return false;
-          }
-        } else {
-          // new values with new dx/dy
-          tmpGrid.parent_grid_ratio = grid.parent_grid_ratio;
-          tmpGrid.i_parent_start = Math.max(Math.floor(mulDiv(grid.i_parent_start, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
-          tmpGrid.j_parent_start = Math.max(Math.floor(mulDiv(grid.j_parent_start, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
-          var new_i_delta_end = Math.max(Math.floor(mulDiv(grid.i_delta_end, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
-          var new_j_delta_end = Math.max(Math.floor(mulDiv(grid.j_delta_end, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
-          tmpGrid.e_we = Math.floor((tmpGrid.parent.e_we - new_i_delta_end - tmpGrid.i_parent_start) * grid.parent_grid_ratio + 1);
-          tmpGrid.e_sn = Math.floor((tmpGrid.parent.e_sn - new_j_delta_end - tmpGrid.j_parent_start) * grid.parent_grid_ratio + 1);
-          if (tmpGrid.e_we < WRFDomainGrid.minGridSize || tmpGrid.e_sn < WRFDomainGrid.minGridSize) {
-            return false;
-          }
-        }
-        for (var i = 0; i < grid.nests.length; i++) {
-          var tmpNestGrid = new WRFDomainGrid(tmpGrid.domain, tmpGrid, grid.nests[i].id);
-          tmpGrid.nests.push(tmpNestGrid);
-          update = update && calculateGridValues(grid.nests[i], tmpNestGrid);
-        }
-        return update;
-      }
       var tmpDomain = createEmptyDomain();
       tmpDomain.createMainGrid();
-      if (calculateGridValues(domain.grid, tmpDomain.grid)) {
+      if (calculateGridValues(op, factor, domain.grid, tmpDomain.grid) === true) {
         var _copyGridValues = function copyGridValues(grid, tmpGrid) {
           grid.i_parent_start = tmpGrid.i_parent_start;
           grid.j_parent_start = tmpGrid.j_parent_start;

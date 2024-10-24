@@ -14,14 +14,15 @@ export var WRFDomainGrid = L.Polygon.extend({
         defaultGridRatio: 3,
         // minimum pixel per grid to show grid lines
         minPixelsPerGrid: 7,
-        IAxisOpt: Object.freeze({ I_PARENT_START: 0, E_WE: 1 }),
-        JAxisOpt: Object.freeze({ J_PARENT_START: 0, E_SN: 1 }),
+        IAxisOpt: Object.freeze({ NONE: 0, I_PARENT_START: 1, E_WE: 2 }),
+        JAxisOpt: Object.freeze({ NONE: 0, J_PARENT_START: 1, E_SN: 2 }),
     },
 
     options: {
         showTooltip: true,
         showGridLines: false,
         editable: true,
+        showResizeMarkers: true,
         opacity: 0.8,
         weight: 2,
         color: '#FF0000',
@@ -66,6 +67,7 @@ export var WRFDomainGrid = L.Polygon.extend({
 
     // corner markers
     _cornerMarkers: null,
+    _resizeMarkers: null,
     _corners: null,
 
     // grid state
@@ -102,6 +104,15 @@ export var WRFDomainGrid = L.Polygon.extend({
             se: L.latLng(this.geogrid.corners.se),
             ne: L.latLng(this.geogrid.corners.ne),
             nw: L.latLng(this.geogrid.corners.nw)
+        };  
+    },
+
+    _getResizeMarkerLocations: function () {
+        return {
+            n: L.latLng(this.geogrid.unstaggered_ij_to_latlon((this.geogrid.e_we - 1) / 2, this.geogrid.e_sn - 1)),
+            s: L.latLng(this.geogrid.unstaggered_ij_to_latlon((this.geogrid.e_we - 1) / 2, 0)),
+            e: L.latLng(this.geogrid.unstaggered_ij_to_latlon(this.geogrid.e_we - 1, (this.geogrid.e_sn - 1) / 2)),
+            w: L.latLng(this.geogrid.unstaggered_ij_to_latlon(0, (this.geogrid.e_sn - 1) / 2))
         };  
     },
 
@@ -151,7 +162,7 @@ export var WRFDomainGrid = L.Polygon.extend({
     },
 
     _bindTooltip: function (e) {
-        if (this.options.showTooltip) {
+        if (this.options.showTooltip === true) {
             this.on('mousemove', this._updateTooltip, this);
 
             L.Polygon.prototype.bindTooltip.call(
@@ -373,11 +384,10 @@ export var WRFDomainGrid = L.Polygon.extend({
             this.update();
         }
         else {
-            var center,
-                center_i,
-                center_j,
-                e_we,
-                e_sn;
+            let center_i = (this.e_we - 1) / 2,
+                center_j = (this.e_sn - 1) / 2,
+                e_we = this.e_we,
+                e_sn = this.e_sn;
 
             if (this._resizeContext.iAxisOpt == WRFDomainGrid.IAxisOpt.I_PARENT_START) {
                 if (delta_i > this._resizeContext.max_i_parent_start) {
@@ -409,7 +419,7 @@ export var WRFDomainGrid = L.Polygon.extend({
                 center_j = (e_sn - 1) / 2;
             }
 
-            center = this.geogrid.unstaggered_ij_to_latlon(center_i, center_j);
+            const center = this.geogrid.unstaggered_ij_to_latlon(center_i, center_j);
             this.domain.ref_lat = center[0];
             this.domain.ref_lon = center[1];
             //this.domain.stand_lon = this.domain.ref_lon + this._resizeContext.stand_lon_delta;
@@ -570,8 +580,26 @@ export var WRFDomainGrid = L.Polygon.extend({
             })
         }
 
+        const resizeMarkerLocations = this._getResizeMarkerLocations();
+        if (this.options.showResizeMarkers === true) {
+            this._resizeMarkers = {
+                n: L.marker(resizeMarkerLocations.n, {
+                    icon: L.divIcon({ className: (this.options.editable ? 'wrf-domain-grid-corner cursor-ns-resize' : 'wrf-domain-grid-corner') }),
+                }),
+                s: L.marker(resizeMarkerLocations.s, {
+                    icon: L.divIcon({ className: (this.options.editable ? 'wrf-domain-grid-corner cursor-ns-resize' : 'wrf-domain-grid-corner') })
+                }),
+                e: L.marker(resizeMarkerLocations.e, {
+                    icon: L.divIcon({ className: (this.options.editable ? 'wrf-domain-grid-corner cursor-ew-resize' : 'wrf-domain-grid-corner') }),
+                }),
+                w: L.marker(resizeMarkerLocations.w, {
+                    icon: L.divIcon({ className: (this.options.editable ? 'wrf-domain-grid-corner cursor-ew-resize' : 'wrf-domain-grid-corner') }),
+                })
+            }
+        }
+
         if (this.options.editable) {
-                this._cornerMarkers.sw.on('mousedown', function (e) {
+            this._cornerMarkers.sw.on('mousedown', function (e) {
                 this._resizeStart(e, WRFDomainGrid.IAxisOpt.I_PARENT_START, WRFDomainGrid.JAxisOpt.J_PARENT_START);
                 this._map.on('mousemove', this._resize, this);
             }, this);
@@ -590,6 +618,28 @@ export var WRFDomainGrid = L.Polygon.extend({
                 this._resizeStart(e, WRFDomainGrid.IAxisOpt.I_PARENT_START, WRFDomainGrid.JAxisOpt.E_SN);
                 this._map.on('mousemove', this._resize, this);
             }, this);
+
+            if (this.options.showResizeMarkers === true) {
+                this._resizeMarkers.n.on('mousedown', function (e) {
+                    this._resizeStart(e, WRFDomainGrid.IAxisOpt.NONE, WRFDomainGrid.JAxisOpt.E_SN);
+                    this._map.on('mousemove', this._resize, this);
+                }, this);
+
+                this._resizeMarkers.s.on('mousedown', function (e) {
+                    this._resizeStart(e, WRFDomainGrid.IAxisOpt.NONE, WRFDomainGrid.JAxisOpt.J_PARENT_START);
+                    this._map.on('mousemove', this._resize, this);
+                }, this);
+
+                this._resizeMarkers.e.on('mousedown', function (e) {
+                    this._resizeStart(e, WRFDomainGrid.IAxisOpt.E_WE, WRFDomainGrid.JAxisOpt.NONE);
+                    this._map.on('mousemove', this._resize, this);
+                }, this);
+
+                this._resizeMarkers.w.on('mousedown', function (e) {
+                    this._resizeStart(e, WRFDomainGrid.IAxisOpt.I_PARENT_START, WRFDomainGrid.JAxisOpt.NONE);
+                    this._map.on('mousemove', this._resize, this);
+                }, this);
+            }
         }
 
         this._map.on('zoomend moveend', this._onMapViewChanged, this);
@@ -699,6 +749,14 @@ export var WRFDomainGrid = L.Polygon.extend({
         this._cornerMarkers.ne.setLatLng(this._corners.ne);
         this._cornerMarkers.nw.setLatLng(this._corners.nw);
 
+        const resizeMarkerLocations = this._getResizeMarkerLocations();
+        if (this.options.showResizeMarkers === true) {
+            this._resizeMarkers.n.setLatLng(resizeMarkerLocations.n);
+            this._resizeMarkers.s.setLatLng(resizeMarkerLocations.s);
+            this._resizeMarkers.e.setLatLng(resizeMarkerLocations.e);
+            this._resizeMarkers.w.setLatLng(resizeMarkerLocations.w);
+        }
+
         if (this._iGridLines) {
             this._removeGridLines();
         }
@@ -742,6 +800,14 @@ export var WRFDomainGrid = L.Polygon.extend({
         this._cornerMarkers.se.remove();
         this._cornerMarkers.ne.remove();
         this._cornerMarkers.nw.remove();
+
+        if (this._resizeMarkers) {
+            this._resizeMarkers.n.remove();
+            this._resizeMarkers.s.remove();
+            this._resizeMarkers.e.remove();
+            this._resizeMarkers.w.remove();
+        }
+
         this._isSelected = false;
 
         if (this._isSelected && this.options.editable) {
@@ -765,6 +831,13 @@ export var WRFDomainGrid = L.Polygon.extend({
         this._cornerMarkers.se.addTo(this._map);
         this._cornerMarkers.ne.addTo(this._map);
         this._cornerMarkers.nw.addTo(this._map);
+
+        if (this._resizeMarkers) {
+            this._resizeMarkers.n.addTo(this._map);
+            this._resizeMarkers.s.addTo(this._map);
+            this._resizeMarkers.e.addTo(this._map);
+            this._resizeMarkers.w.addTo(this._map);
+        }
 
         if (this.options.editable) {
             this.on('mousedown', this._dragStart, this);

@@ -85,6 +85,12 @@ div#wps-save-dialog textarea {
 .wrf-domain-grid-corner.cursor-nwse-resize {
   cursor: nwse-resize;
 }
+.wrf-domain-grid-corner.cursor-ns-resize {
+  cursor: ns-resize;
+}
+.wrf-domain-grid-corner.cursor-ew-resize {
+  cursor: ew-resize;
+}
 .geogrid-corner-icon {
   background-color: yellow;
   border: 1px solid black;

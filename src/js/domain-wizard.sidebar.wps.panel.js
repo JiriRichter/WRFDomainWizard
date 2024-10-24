@@ -325,6 +325,49 @@ export class SidebarDomainsPanel {
             }
         }
 
+        // set new settings
+        function calculateGridValues(op, factor, grid, tmpGrid) {
+
+            var update = true;
+            // reverse operation will be applied to e_we and e_sn to preserve the domain area
+            var reverseOp = (op == MulDivOp.DIV) ? MulDivOp.MUL : MulDivOp.DIV;
+
+            if (grid.id == 1) {
+
+                tmpGrid.i_parent_start = 1;
+                tmpGrid.j_parent_start = 1;
+                tmpGrid.parent_grid_ratio = 1;
+                tmpGrid.e_we = Math.floor(mulDiv(grid.e_we, reverseOp, factor));
+                tmpGrid.e_sn = Math.floor(mulDiv(grid.e_sn, reverseOp, factor));
+
+                if (tmpGrid.e_we < WRFDomainGrid.minGridSize || tmpGrid.e_sn < WRFDomainGrid.minGridSize) {
+                    return false;
+                }
+            }
+            else {
+                // new values with new dx/dy
+                tmpGrid.parent_grid_ratio = grid.parent_grid_ratio;
+                tmpGrid.i_parent_start = Math.max(Math.floor(mulDiv(grid.i_parent_start, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
+                tmpGrid.j_parent_start = Math.max(Math.floor(mulDiv(grid.j_parent_start, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
+                const new_i_delta_end = Math.max(Math.floor(mulDiv(grid.i_delta_end, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
+                const new_j_delta_end = Math.max(Math.floor(mulDiv(grid.j_delta_end, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
+
+                tmpGrid.e_we = Math.floor((tmpGrid.parent.e_we - new_i_delta_end - tmpGrid.i_parent_start) * grid.parent_grid_ratio + 1);
+                tmpGrid.e_sn = Math.floor((tmpGrid.parent.e_sn - new_j_delta_end - tmpGrid.j_parent_start) * grid.parent_grid_ratio + 1);
+                if (tmpGrid.e_we < WRFDomainGrid.minGridSize || tmpGrid.e_sn < WRFDomainGrid.minGridSize) {
+                    return false;
+                }
+            }
+
+            for (var i = 0; i < grid.nests.length; i++) {
+                const tmpNestGrid = new WRFDomainGrid(tmpGrid.domain, tmpGrid, grid.nests[i].id);
+                tmpGrid.nests.push(tmpNestGrid);
+                update = update && calculateGridValues(op, factor, grid.nests[i], tmpNestGrid);
+            }
+
+            return update;
+        }
+
         // handles multiplication/division of DX and DY via a button
         function modifyDxDy(op, factor) {
 
@@ -362,54 +405,10 @@ export class SidebarDomainsPanel {
                 return;
             }
 
-            // reverse operation will be applied to e_we and e_sn to preserve the domain area
-            var reverseOp = (op == MulDivOp.DIV) ? MulDivOp.MUL : MulDivOp.DIV;
-
-            // set new settings
-            function calculateGridValues(grid, tmpGrid) {
-
-                var update = true;
-
-                if (grid.id == 1) {
-
-                    tmpGrid.i_parent_start = 1;
-                    tmpGrid.j_parent_start = 1;
-                    tmpGrid.parent_grid_ratio = 1;
-                    tmpGrid.e_we = Math.floor(mulDiv(grid.e_we, reverseOp, factor));
-                    tmpGrid.e_sn = Math.floor(mulDiv(grid.e_sn, reverseOp, factor));
-
-                    if (tmpGrid.e_we < WRFDomainGrid.minGridSize || tmpGrid.e_sn < WRFDomainGrid.minGridSize) {
-                        return false;
-                    }
-                }
-                else {
-                    // new values with new dx/dy
-                    tmpGrid.parent_grid_ratio = grid.parent_grid_ratio;
-                    tmpGrid.i_parent_start = Math.max(Math.floor(mulDiv(grid.i_parent_start, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
-                    tmpGrid.j_parent_start = Math.max(Math.floor(mulDiv(grid.j_parent_start, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
-                    var new_i_delta_end = Math.max(Math.floor(mulDiv(grid.i_delta_end, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
-                    var new_j_delta_end = Math.max(Math.floor(mulDiv(grid.j_delta_end, reverseOp, factor)), WRFDomainGrid.minNestGridPoints);
-
-                    tmpGrid.e_we = Math.floor((tmpGrid.parent.e_we - new_i_delta_end - tmpGrid.i_parent_start) * grid.parent_grid_ratio + 1);
-                    tmpGrid.e_sn = Math.floor((tmpGrid.parent.e_sn - new_j_delta_end - tmpGrid.j_parent_start) * grid.parent_grid_ratio + 1);
-                    if (tmpGrid.e_we < WRFDomainGrid.minGridSize || tmpGrid.e_sn < WRFDomainGrid.minGridSize) {
-                        return false;
-                    }
-                }
-
-                for (var i = 0; i < grid.nests.length; i++) {
-                    var tmpNestGrid = new WRFDomainGrid(tmpGrid.domain, tmpGrid, grid.nests[i].id);
-                    tmpGrid.nests.push(tmpNestGrid);
-                    update = update && calculateGridValues(grid.nests[i], tmpNestGrid);
-                }
-
-                return update;
-            }
-
             var tmpDomain = createEmptyDomain();
             tmpDomain.createMainGrid();
 
-            if (calculateGridValues(domain.grid, tmpDomain.grid)) {
+            if (calculateGridValues(op, factor, domain.grid, tmpDomain.grid) === true) {
 
                 domain.dx = newDx;
                 domain.dy = newDy;

@@ -9,8 +9,8 @@ import { WRFDomainGrid } from "./leaflet.wrf-grid"
  export var WRFDomain = L.Layer.extend({
 
     options: {
-        'editable': true,
-        'showTooltip': true,
+        editable: true,
+        showTooltip: true
     },
 
     _map: null,
@@ -121,14 +121,14 @@ import { WRFDomainGrid } from "./leaflet.wrf-grid"
         this._map.on('click', this._onMapClick, this);
 
         this._centerMarker = L.marker([this.ref_lat, this.ref_lon], {
-            draggable: this.options['editable'],
+            draggable: this.options.editable,
             title: 'Domain Center',
         }).addTo(map);
 
         this._mainGrid.addTo(map);
         this._orderGrids();
 
-        if (this.options['editable']) {
+        if (this.options.editable === true) {
             this._centerMarker.on('dragstart', function (event) {
                 this._dragContext = {
                     ref_lat: this.ref_lat,
