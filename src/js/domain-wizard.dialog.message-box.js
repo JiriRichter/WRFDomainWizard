@@ -106,10 +106,30 @@ export function enableGlobalErrorHandler() {
         errorDetails = errorDetails + `Stack:\n`;
         errorDetails = errorDetails + `${error.stack}`;
 
-        messageBoxDialog.dialogBody.querySelector('textarea').value = errorDetails;
+        messageBoxDialog.dialogBody.querySelector('textarea[name="error-details"]').value = errorDetails;
 
         const title = 'Error: ' + event + ' @ ' + source + ":" + lineno;
-        messageBoxDialog.dialogBody.querySelector('a#create-github-issue').href = `https://github.com/JiriRichter/WRFDomainWizard/issues/new?labels=bug&title=${encodeURI(title)}&body=${encodeURI(errorDetails)}`;
+        const linkCreateIssue = messageBoxDialog.dialogBody.querySelector('a#create-github-issue');
+        const form = messageBoxDialog.dialogBody.querySelector('form');
+
+        linkCreateIssue.addEventListener('click', (e) => {
+
+            const isValid = form.checkValidity();
+            form.classList.add('was-validated');
+
+            if (isValid === true) {
+                let issueBody = '';
+                issueBody = issueBody + 'Repro Steps:\n';
+                issueBody = issueBody + messageBoxDialog.dialogBody.querySelector('textarea[name="repro-steps"]').value;
+                issueBody = issueBody + '\n\n';
+                issueBody = issueBody + errorDetails;
+        
+                linkCreateIssue.href = `https://github.com/JiriRichter/WRFDomainWizard/issues/new?labels=bug&title=${encodeURI(title)}&body=${encodeURI(issueBody)}`;
+            } else {
+                e.preventDefault();
+                e.stopPropagation();
+            };
+        });
 
         messageBoxDialog.open();
     };

@@ -372,7 +372,7 @@ WRFDomain.prototype.addMainGrid = /** @this {WRFDomainGrid} */ function () {
         truelat1_delta = this.truelat1 - this.ref_lat;
         truelat2_delta = this.truelat2 - this.ref_lat;
 
-        center = this._mainGrid.projection.unstaggered_ij_to_latlon((this._mainGrid.e_we - 1) / 2, (this._mainGrid.e_sn - 1) / 2);
+        center = this._mainGrid.geogrid.unstaggered_ij_to_latlon((this._mainGrid.e_we - 1) / 2, (this._mainGrid.e_sn - 1) / 2);
         this.ref_lat = center[0];
         this.ref_lon = center[1];
         this.stand_lon = this.ref_lon + stand_lon_delta;
@@ -425,7 +425,7 @@ WRFDomain.prototype.removeMainGrid = /** @this {WRFDomainGrid} */ function () {
     stand_lon_delta = this._mainGrid.domain.stand_lon - this._mainGrid.domain.ref_lon;
     truelat1_delta = this._mainGrid.domain.truelat1 - this._mainGrid.domain.ref_lat;
     truelat2_delta = this._mainGrid.domain.truelat2 - this._mainGrid.domain.ref_lat;
-    center = this._mainGrid.nests[0].projection.unstaggered_ij_to_latlon((this._mainGrid.nests[0].e_we - 1) / 2, (this._mainGrid.nests[0].e_sn - 1) / 2);
+    center = this._mainGrid.nests[0].geogrid.unstaggered_ij_to_latlon((this._mainGrid.nests[0].e_we - 1) / 2, (this._mainGrid.nests[0].e_sn - 1) / 2);
 
     this.ref_lat = center[0];
     this.ref_lon = center[1];

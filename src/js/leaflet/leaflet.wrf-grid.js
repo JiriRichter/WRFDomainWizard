@@ -604,7 +604,7 @@ export var WRFDomainGrid = L.Polygon.extend({
     },
 
     getBounds: function () {
-        if (!this._corners || !this._projection) {
+        if (!this._corners) {
             this.geogrid = this._initGeogrid();
             this._corners = this._initCorners();
             this.setLatLngs(this.geogrid.polygonPath);
@@ -842,11 +842,6 @@ export var WRFDomainGrid = L.Polygon.extend({
 })
 
 Object.defineProperties(WRFDomainGrid.prototype, {
-    'projection': {
-        get() {
-            return this._projection;
-        }
-    },
     'name': {
         get() {
             return 'd' + this.id.toString().padStart(2, '0');

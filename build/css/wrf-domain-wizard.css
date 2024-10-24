@@ -505,11 +505,12 @@ div#message-box-dialog {
   z-index: 2050;
 }
 div#message-box-dialog div.global-error textarea {
-  height: 350px;
+  height: 200px;
   overflow: auto;
   resize: none;
   font-family: 'Courier New';
   font-size: small;
+  white-space: pre;
 }
 body.modal-open div.modal-backdrop ~ div.modal-backdrop {
   z-index: 2040;

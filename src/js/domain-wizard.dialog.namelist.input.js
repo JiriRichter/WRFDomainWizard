@@ -1,5 +1,5 @@
 import { NamelistInputEditor } from "./namelist.input/namelist.input.editor";
-import { getLocalTimeZone, listTimeZoneNames } from "./utils/time";
+import { getLocalTimeZone, appendTimeZoneSelectOptions } from "./utils/time";
 
 export class NamelistInputDialog {
 
@@ -164,19 +164,7 @@ export class NamelistInputDialog {
 
         // timezone select
         const timeZoneSelect = this.header.querySelector('select#select-timezone');
-        listTimeZoneNames().forEach((name) => {
-
-            var localTimeZone = getLocalTimeZone();
-
-            const option = document.createElement('option');
-            option.value = name;
-            option.innerText = name;
-            if (name == localTimeZone) {
-                option.selected = true;
-            }
-            timeZoneSelect.append(option);
-        });
-
+        appendTimeZoneSelectOptions(timeZoneSelect, getLocalTimeZone());
         $(timeZoneSelect).on('changed.bs.select', (e) => {
             this.editor.timeZone = timeZoneSelect.value;
         })
