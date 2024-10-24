@@ -1038,9 +1038,25 @@
       errorDetails = errorDetails + "Line: ".concat(lineno, "\n");
       errorDetails = errorDetails + "Stack:\n";
       errorDetails = errorDetails + "".concat(error.stack);
-      messageBoxDialog.dialogBody.querySelector('textarea').value = errorDetails;
+      messageBoxDialog.dialogBody.querySelector('textarea[name="error-details"]').value = errorDetails;
       var title = 'Error: ' + event + ' @ ' + source + ":" + lineno;
-      messageBoxDialog.dialogBody.querySelector('a#create-github-issue').href = "https://github.com/JiriRichter/WRFDomainWizard/issues/new?labels=bug&title=".concat(encodeURI(title), "&body=").concat(encodeURI(errorDetails));
+      var linkCreateIssue = messageBoxDialog.dialogBody.querySelector('a#create-github-issue');
+      var form = messageBoxDialog.dialogBody.querySelector('form');
+      linkCreateIssue.addEventListener('click', function (e) {
+        var isValid = form.checkValidity();
+        form.classList.add('was-validated');
+        if (isValid === true) {
+          var issueBody = '';
+          issueBody = issueBody + 'Repro Steps:\n';
+          issueBody = issueBody + messageBoxDialog.dialogBody.querySelector('textarea[name="repro-steps"]').value;
+          issueBody = issueBody + '\n\n';
+          issueBody = issueBody + errorDetails;
+          linkCreateIssue.href = "https://github.com/JiriRichter/WRFDomainWizard/issues/new?labels=bug&title=".concat(encodeURI(title), "&body=").concat(encodeURI(issueBody));
+        } else {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      });
       messageBoxDialog.open();
     };
   }
@@ -26377,7 +26393,7 @@
       }
     },
     getBounds: function getBounds() {
-      if (!this._corners || !this._projection) {
+      if (!this._corners) {
         this.geogrid = this._initGeogrid();
         this._corners = this._initCorners();
         this.setLatLngs(this.geogrid.polygonPath);
@@ -26569,11 +26585,6 @@
     }
   });
   Object.defineProperties(WRFDomainGrid.prototype, {
-    'projection': {
-      get: function get() {
-        return this._projection;
-      }
-    },
     'name': {
       get: function get() {
         return 'd' + this.id.toString().padStart(2, '0');
@@ -27617,7 +27628,7 @@
       stand_lon_delta = this.stand_lon - this.ref_lon;
       truelat1_delta = this.truelat1 - this.ref_lat;
       truelat2_delta = this.truelat2 - this.ref_lat;
-      center = this._mainGrid.projection.unstaggered_ij_to_latlon((this._mainGrid.e_we - 1) / 2, (this._mainGrid.e_sn - 1) / 2);
+      center = this._mainGrid.geogrid.unstaggered_ij_to_latlon((this._mainGrid.e_we - 1) / 2, (this._mainGrid.e_sn - 1) / 2);
       this.ref_lat = center[0];
       this.ref_lon = center[1];
       this.stand_lon = this.ref_lon + stand_lon_delta;
@@ -27660,7 +27671,7 @@
     stand_lon_delta = this._mainGrid.domain.stand_lon - this._mainGrid.domain.ref_lon;
     truelat1_delta = this._mainGrid.domain.truelat1 - this._mainGrid.domain.ref_lat;
     truelat2_delta = this._mainGrid.domain.truelat2 - this._mainGrid.domain.ref_lat;
-    center = this._mainGrid.nests[0].projection.unstaggered_ij_to_latlon((this._mainGrid.nests[0].e_we - 1) / 2, (this._mainGrid.nests[0].e_sn - 1) / 2);
+    center = this._mainGrid.nests[0].geogrid.unstaggered_ij_to_latlon((this._mainGrid.nests[0].e_we - 1) / 2, (this._mainGrid.nests[0].e_sn - 1) / 2);
     this.ref_lat = center[0];
     this.ref_lon = center[1];
     this.stand_lon = this.ref_lon + stand_lon_delta;
@@ -28288,6 +28299,17 @@
   function listTimeZoneNames() {
     return moment.tz.names();
   }
+  function appendTimeZoneSelectOptions(selectElement, selectedTimeZone) {
+    listTimeZoneNames().forEach(function (name) {
+      var option = document.createElement('option');
+      option.value = name;
+      option.innerText = name;
+      if (name == selectedTimeZone) {
+        option.selected = true;
+      }
+      selectElement.append(option);
+    });
+  }
 
   var NamelistDateTimePicker = /*#__PURE__*/function () {
     function NamelistDateTimePicker(inputGroup, options) {
@@ -28307,6 +28329,9 @@
         this._options.displayTimeZone = getLocalTimeZone();
       }
       this._input = inputGroup.querySelector('input');
+      if (!this._input) {
+        throw new Error("Error initializing date-time picker - INPUT element not found.");
+      }
       this._widget = inputGroup;
       this._init(inputGroup);
     }
@@ -30012,16 +30037,7 @@
 
       // timezone select
       var timeZoneSelect = this.header.querySelector('select#select-timezone');
-      listTimeZoneNames().forEach(function (name) {
-        var localTimeZone = getLocalTimeZone();
-        var option = document.createElement('option');
-        option.value = name;
-        option.innerText = name;
-        if (name == localTimeZone) {
-          option.selected = true;
-        }
-        timeZoneSelect.append(option);
-      });
+      appendTimeZoneSelectOptions(timeZoneSelect, getLocalTimeZone());
       $(timeZoneSelect).on('changed.bs.select', function (e) {
         _this.editor.timeZone = timeZoneSelect.value;
       });
@@ -31126,6 +31142,7 @@
   exports.DomainWizard = DomainWizard;
   exports.NamelistDateTimePicker = NamelistDateTimePicker;
   exports.NamelistInputPage = NamelistInputPage;
+  exports.appendTimeZoneSelectOptions = appendTimeZoneSelectOptions;
   exports.enableGlobalErrorHandler = enableGlobalErrorHandler;
   exports.errorMessageBox = errorMessageBox;
 

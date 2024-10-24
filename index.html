@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="build/lib/bootstrap-datetimepicker.min.css" />
     <link rel="stylesheet" href="build/lib/bootstrap-select.min.css" />
     
-    <link rel="stylesheet" href="build/css/wrf-domain-wizard.css?1727708168790" />
+    <link rel="stylesheet" href="build/css/wrf-domain-wizard.css?1729728148292" />
 
     <link rel="icon" href="build/img/globe_32x32.png" />
 
@@ -325,15 +325,21 @@
     <div template="global-error">
         <div class="global-error">
             <p>
-                The WRF domain wizard encountered an unexpected error. To help improve this tool, consider creating an <a href="https://github.com/JiriRichter/WRFDomainWizard/issues" target="_blank">issue on this project's GitHub page</a>. If you decide to create an issue, please, follow these steps: 
-                <ul>
-                    <li>Check an issue for this error has not already been created. If you are not sure, creating a duplicate issue is ok.</li>
-                    <li>If the error happened while opening a namelist file, please, attach the file to the issue. Make sure the file does not contain any personal information.</li>
-                    <li>Add brief description of steps taken before this error occured.</li>
-                </ul>
+                The WRF domain wizard encountered an unexpected error. To help improve this tool, please, create an <a href="https://github.com/JiriRichter/WRFDomainWizard/issues" target="_blank">issue on GitHub</a> using the form below.
             </p>
-            <h6>Error Details:</h6>
-            <textarea class="form-control" readonly></textarea>
+            <form class="needs-validation" novalidate>
+                <div class="form-group">
+                    <h6>Error:</h6>
+                    <textarea name="error-details" class="form-control" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <h6>[Required] Repro Steps:</h6>
+                    <textarea name="repro-steps" class="form-control" required placeholder="Steps to reproduce the issue" minlength="10"></textarea>
+                    <div class="invalid-feedback">
+                        Please provide steps to reproduce the issue.
+                    </div>
+                </div>
+            </form>
             <a id="create-github-issue" class="btn btn-primary my-2" href="#" role="button" target="_blank">Create Issue</a>
         </div>
     </div>

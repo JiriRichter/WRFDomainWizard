@@ -24,6 +24,11 @@ export class NamelistDateTimePicker {
         }
 
         this._input = inputGroup.querySelector('input');
+        
+        if (!this._input) {
+            throw new Error("Error initializing date-time picker - INPUT element not found.");
+        }
+
         this._widget = inputGroup;
         this._init(inputGroup);        
     }
