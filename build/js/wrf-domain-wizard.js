@@ -25900,7 +25900,7 @@
       })
     },
     options: {
-      showTooltip: false,
+      showTooltip: true,
       showGridLines: false,
       editable: true,
       showResizeMarkers: true,
